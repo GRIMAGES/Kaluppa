@@ -1,0 +1,15 @@
+[2024-11-05 19:04:30] EVENT: Email address is required for password reset.
+[2024-11-05 19:04:30] EVENT: Failed password reset attempt for 
+[2024-11-05 19:04:47] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:08:20] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:09:17] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:09:57] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:16:35] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:17:56] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:43:26] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:53:30] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:55:05] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 19:57:35] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 20:00:49] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 20:01:19] EVENT: Reset password link sent to redmercy.ros@gmail.com
+[2024-11-05 20:01:25] EVENT: Reset password link sent to redmercy.ros@gmail.com

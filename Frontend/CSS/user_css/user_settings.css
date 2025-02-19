@@ -1,0 +1,117 @@
+/* General Body Styling */
+body {
+    background-color: #f0f8f0; /* Soft light green background */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Container */
+.container {
+    max-width: 1100px;
+    margin-top: 50px;
+}
+
+/* Back Button Styling */
+.btn-back {
+    font-size: 14px;
+    padding: 8px 16px;
+    background-color: #4CAF50; /* Dark Green */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #45a049; /* Lighter Green */
+}
+
+/* Profile Picture Container */
+.profile-img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 2px solid #81c784; /* Light Green Border */
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.profile-img {
+    max-width: 100%;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+    transform: scale(1.05); /* Slightly zoom in on hover */
+}
+
+/* Card Styling */
+.card {
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #66bb6a; /* Medium Green */
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-body {
+    background-color: #e8f5e9; /* Lighter Green */
+    padding: 20px;
+}
+
+/* Form Elements */
+.form-label {
+    font-weight: bold;
+    color: #388e3c; /* Darker Green */
+}
+
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #81c784;
+}
+
+.btn-file {
+    background-color: #66bb6a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.btn-file:hover {
+    background-color: #81c784;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #388e3c; /* Dark Green */
+    border-color: #388e3c;
+}
+
+.btn-primary:hover {
+    background-color: #66bb6a;
+    border-color: #66bb6a;
+}
+
+.btn-warning {
+    background-color: #f57c00; /* Orange color for contrast */
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #ff7043;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .col-md-4, .col-md-8 {
+        margin-bottom: 20px;
+    }
+}
