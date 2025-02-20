@@ -12,11 +12,11 @@
     $message = '';
 
     // Fetch user details
-    $query = "SELECT id, first_name, middle_name, last_name, email, profile_picture, password FROM user WHERE email = ?";
+    $query = "SELECT id, first_name, middle_name, last_name, email, profile_picture, password, house_number, street, barangay, district, city, region, postal_code FROM user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $email);
     $stmt->execute();
-    $stmt->bind_result($user_id, $first_name, $middle_name, $last_name, $email, $profile_picture, $password);
+    $stmt->bind_result($user_id, $first_name, $middle_name, $last_name, $email, $profile_picture, $password, $house_number, $street, $barangay, $district, $city, $region, $postal_code);
     $stmt->fetch();
     $stmt->close();
 
@@ -69,6 +69,22 @@
         $stmt = $conn->prepare($query);
         $stmt->bind_param('ssssi', $first_name, $middle_name, $last_name, $email, $user_id);
         $message = $stmt->execute() ? 'Profile updated successfully.' : 'Error updating profile.';
+    }
+
+    // Update address
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_address'])) {
+        $house_number = $_POST['house_number'];
+        $street = $_POST['street'];
+        $barangay = $_POST['barangay'];
+        $district = $_POST['district'];
+        $city = $_POST['city'];
+        $region = $_POST['region'];
+        $postal_code = $_POST['postal_code'];
+
+        $query = "UPDATE user SET house_number = ?, street = ?, barangay = ?, district = ?, city = ?, region = ?, postal_code = ? WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('sssssssi', $house_number, $street, $barangay, $district, $city, $region, $postal_code, $user_id);
+        $message = $stmt->execute() ? 'Address updated successfully.' : 'Error updating address.';
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
@@ -221,6 +237,41 @@
                     <input type="file" name="profile_picture" class="form-control">
                 </div>
                 <button type="submit" name="upload_picture" class="btn btn-success w-100">Upload</button>
+            </form>
+        </div>
+
+        <div class="card shadow mt-4 p-3">
+            <h4 class="mb-3">Update Address</h4>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">House Number:</label>
+                    <input type="text" name="house_number" class="form-control" value="<?php echo $house_number; ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Street:</label>
+                    <input type="text" name="street" class="form-control" value="<?php echo $street; ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Barangay:</label>
+                    <input type="text" name="barangay" class="form-control" value="<?php echo $barangay; ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">District:</label>
+                    <input type="text" name="district" class="form-control" value="<?php echo $district; ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">City:</label>
+                    <input type="text" name="city" class="form-control" value="<?php echo $city; ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Region:</label>
+                    <input type="text" name="region" class="form-control" value="<?php echo $region; ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Postal Code:</label>
+                    <input type="text" name="postal_code" class="form-control" value="<?php echo $postal_code; ?>" required>
+                </div>
+                <button type="submit" name="update_address" class="btn btn-primary">Update Address</button>
             </form>
         </div>
     </div>

@@ -264,3 +264,26 @@
 [19-Feb-2025 14:26:21 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\php\Kaluppa\Frontend\user dashboard\sidebar.php on line 3
 [19-Feb-2025 14:26:23 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\php\Kaluppa\Frontend\user dashboard\sidebar.php on line 3
 [19-Feb-2025 14:26:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\php\Kaluppa\Frontend\user dashboard\sidebar.php on line 3
+[20-Feb-2025 17:37:32 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:37:34 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:38:27 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:38:31 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:38:33 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:38:33 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:38:33 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:38:33 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:43:43 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:43:44 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:43:45 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:43:45 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:43:45 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:43:45 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:46:06 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:57:01 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 17:57:03 Europe/Berlin] Missing required fields in form data.
+[20-Feb-2025 18:05:19 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'first_name' in 'field list' in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:133
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(133): mysqli->prepare('INSERT INTO app...')
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 133
+[20-Feb-2025 18:08:04 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, /Backend/Documents/Scholarship/1740071284_Gonzales_William_Duncan_Resume.pdf

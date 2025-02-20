@@ -33,14 +33,21 @@ if (!$user) {
 $user_id = $user['id']; // Get the logged-in user ID
 
 // Get form data
-$full_name = isset($_POST['full_name']) ? mysqli_real_escape_string($conn, $_POST['full_name']) : '';
+$first_name = isset($_POST['first_name']) ? mysqli_real_escape_string($conn, $_POST['first_name']) : '';
+$middle_name = isset($_POST['middle_name']) ? mysqli_real_escape_string($conn, $_POST['middle_name']) : '';
+$last_name = isset($_POST['last_name']) ? mysqli_real_escape_string($conn, $_POST['last_name']) : '';
 $email = isset($_POST['email']) ? mysqli_real_escape_string($conn, $_POST['email']) : '';
-$dob = isset($_POST['dob']) ? mysqli_real_escape_string($conn, $_POST['dob']) : '';
-$address = isset($_POST['address']) ? mysqli_real_escape_string($conn, $_POST['address']) : '';
+$house_number = isset($_POST['house_number']) ? mysqli_real_escape_string($conn, $_POST['house_number']) : '';
+$street = isset($_POST['street']) ? mysqli_real_escape_string($conn, $_POST['street']) : '';
+$barangay = isset($_POST['barangay']) ? mysqli_real_escape_string($conn, $_POST['barangay']) : '';
+$district = isset($_POST['district']) ? mysqli_real_escape_string($conn, $_POST['district']) : '';
+$city = isset($_POST['city']) ? mysqli_real_escape_string($conn, $_POST['city']) : '';
+$region = isset($_POST['region']) ? mysqli_real_escape_string($conn, $_POST['region']) : '';
+$postal_code = isset($_POST['postal_code']) ? mysqli_real_escape_string($conn, $_POST['postal_code']) : '';
 $course_id = isset($_POST['course_id']) ? mysqli_real_escape_string($conn, $_POST['course_id']) : '';
 
 // Validate form data
-if (empty($full_name) || empty($email) || empty($dob) || empty($address) || empty($course_id)) {
+if (empty($first_name) || empty($last_name) || empty($email) || empty($house_number) || empty($street) || empty($barangay) || empty($district) || empty($city) || empty($region) || empty($postal_code) || empty($course_id)) {
     echo json_encode(['success' => false, 'error_code' => 9, 'message' => 'All fields are required']);
     error_log("Missing required fields in form data.");
     exit();
@@ -122,17 +129,18 @@ if (isset($_FILES['document']) && $_FILES['document']['error'] == 0) {
 }
 
 // Insert application data into the database
-$application_query = "INSERT INTO applications (user_id, course_id, full_name, email, dob, address, document) VALUES (?, ?, ?, ?, ?, ?, ?)";
+$application_query = "INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($application_query);
-$stmt->bind_param("iisssss", $user_id, $course_id, $full_name, $email, $dob, $address, $document_path);
+$stmt->bind_param("iissssssssssss", $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document_path);
 
 // Debugging: Log the query to see what’s being executed
-error_log("Executing query: $application_query with values: $user_id, $course_id, $full_name, $email, $dob, $address, $document_path");
+error_log("Executing query: $application_query with values: $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document_path");
 
 // Execute the query
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Application submitted successfully']);
 } else {
-    
+    echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Error submitting application']);
+    error_log("Error executing query: " . $stmt->error);
 }
 ?>
