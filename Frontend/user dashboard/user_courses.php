@@ -39,42 +39,24 @@ if (!$courseResult) {
     die("Error fetching courses: " . mysqli_error($conn));
 }
 
-// Fetch all applications for the logged-in user with course name
-$applicationQuery = "SELECT applications.status, applications.applied_at, courses.name AS course_name 
-                     FROM applications 
-                     JOIN courses ON applications.course_id = courses.id 
-                     WHERE applications.email = ? 
-                     ORDER BY applications.applied_at DESC";
-$applicationStmt = $conn->prepare($applicationQuery);
-$applicationStmt->bind_param("s", $email);
-$applicationStmt->execute();
-$applicationResult = $applicationStmt->get_result();
-
-$applications = [];
-while ($row = $applicationResult->fetch_assoc()) {
-    $applications[] = $row;
-}
-
 // Function to categorize courses
-function categorizeCourses($applications) {
+function categorizeCourses($courses) {
     $categories = [
         'upcoming' => [],
         'ongoing' => [],
         'completed' => []
     ];
 
-    foreach ($applications as $application) {
-        switch ($application['status']) {
-            case 'pending':
-            case 'under review':
-                $categories['upcoming'][] = $application;
+    while ($course = mysqli_fetch_assoc($courses)) {
+        switch ($course['status']) {
+            case 'upcoming':
+                $categories['upcoming'][] = $course;
                 break;
-            case 'approved':
-            case 'enrolled':
-                $categories['ongoing'][] = $application;
+            case 'ongoing':
+                $categories['ongoing'][] = $course;
                 break;
             case 'completed':
-                $categories['completed'][] = $application;
+                $categories['completed'][] = $course;
                 break;
         }
     }
@@ -82,7 +64,7 @@ function categorizeCourses($applications) {
     return $categories;
 }
 
-$categorizedCourses = categorizeCourses($applications);
+$categorizedCourses = categorizeCourses($courseResult);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,51 +76,7 @@ $categorizedCourses = categorizeCourses($applications);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_courses.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        .right-sidebar {
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            width: 300px;
-            background: #023336;
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .right-sidebar h4 {
-            margin-bottom: 20px;
-        }
-
-        .course-category {
-            margin-bottom: 20px;
-        }
-
-        .course-category h5 {
-            margin-bottom: 10px;
-        }
-
-        .course-category .course-item {
-            background: #fff;
-            color: #333;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-
-        .course-category .course-item.upcoming {
-            border-left: 5px solid #f39c12;
-        }
-
-        .course-category .course-item.ongoing {
-            border-left: 5px solid #3498db;
-        }
-
-        .course-category .course-item.completed {
-            border-left: 5px solid #2ecc71;
-        }
-    </style>
+    
 </head>
 
 <body style="color: #C1E6BA; background-color:#C1E6BA;">
@@ -165,23 +103,25 @@ $categorizedCourses = categorizeCourses($applications);
 </div>
 <div class="main-content">
     <div class="course-container">
-        <?php while ($course = mysqli_fetch_assoc($courseResult)): 
-            $isFull = $course['enrolled_students'] >= $course['capacity'];
-            $availabilityText = $isFull ? "Full" : "Available";
-            $availabilityClass = $isFull ? "full" : "available";
-            $clickableClass = $isFull ? "unclickable" : "";
-        ?>
-        <div class="course-card <?php echo $availabilityClass . ' ' . $clickableClass; ?>" <?php echo $isFull ? '' : 'onclick="showCourseDetails(' . $course['id'] . ')"'; ?>>
-            <img src="<?php echo '../images/' . htmlspecialchars($course['image']); ?>" class="course-image" alt="Course Image">
-            <div class="course-details">
-                <h3 class="course-title"><?php echo htmlspecialchars($course['name']); ?></h3>
-                <p class="course-status <?php echo $availabilityClass; ?>"><?php echo $availabilityText; ?></p>
-                <?php if (!$isFull): ?>
-                    <button class="btn btn-outline-light view-details-button">View Details</button>
-                <?php endif; ?>
+        <?php foreach ($categorizedCourses as $category => $courses): ?>
+            <?php foreach ($courses as $course): 
+                $isFull = $course['enrolled_students'] >= $course['capacity'];
+                $availabilityText = $isFull ? "Full" : "Available";
+                $availabilityClass = $isFull ? "full" : "available";
+                $clickableClass = $isFull ? "unclickable" : "";
+            ?>
+            <div class="course-card <?php echo $availabilityClass . ' ' . $clickableClass; ?>" <?php echo $isFull ? '' : 'onclick="showCourseDetails(' . $course['id'] . ')"'; ?>>
+                <img src="<?php echo '../images/' . htmlspecialchars($course['image']); ?>" class="course-image" alt="Course Image">
+                <div class="course-details">
+                    <h3 class="course-title"><?php echo htmlspecialchars($course['name']); ?></h3>
+                    <p class="course-status <?php echo $availabilityClass; ?>"><?php echo $availabilityText; ?></p>
+                    <?php if (!$isFull): ?>
+                        <button class="btn btn-outline-light view-details-button">View Details</button>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
-        <?php endwhile; ?>
+            <?php endforeach; ?>
+        <?php endforeach; ?>
     </div>
 </div>
 
@@ -301,7 +241,7 @@ $categorizedCourses = categorizeCourses($applications);
         <h5>Upcoming Courses</h5>
         <?php foreach ($categorizedCourses['upcoming'] as $course): ?>
             <div class="course-item upcoming">
-                <?php echo htmlspecialchars($course['course_name']); ?>
+                <?php echo htmlspecialchars($course['name']); ?>
             </div>
         <?php endforeach; ?>
     </div>
@@ -309,7 +249,7 @@ $categorizedCourses = categorizeCourses($applications);
         <h5>Ongoing Courses</h5>
         <?php foreach ($categorizedCourses['ongoing'] as $course): ?>
             <div class="course-item ongoing">
-                <?php echo htmlspecialchars($course['course_name']); ?>
+                <?php echo htmlspecialchars($course['name']); ?>
             </div>
         <?php endforeach; ?>
     </div>
@@ -317,9 +257,25 @@ $categorizedCourses = categorizeCourses($applications);
         <h5>Completed Courses</h5>
         <?php foreach ($categorizedCourses['completed'] as $course): ?>
             <div class="course-item completed">
-                <?php echo htmlspecialchars($course['course_name']); ?>
+                <?php echo htmlspecialchars($course['name']); ?>
             </div>
         <?php endforeach; ?>
+    </div>
+    <!-- Legend -->
+    <div class="legend mt-4">
+        <h5>Legend</h5>
+        <div class="d-flex align-items-center mb-2">
+            <div class="legend-color" style="width: 20px; height: 20px; background-color: #f39c12; margin-right: 10px;"></div>
+            <span>Upcoming</span>
+        </div>
+        <div class="d-flex align-items-center mb-2">
+            <div class="legend-color" style="width: 20px; height: 20px; background-color: #3498db; margin-right: 10px;"></div>
+            <span>Ongoing</span>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="legend-color" style="width: 20px; height: 20px; background-color: #2ecc71; margin-right: 10px;"></div>
+            <span>Completed</span>
+        </div>
     </div>
 </div>
 
