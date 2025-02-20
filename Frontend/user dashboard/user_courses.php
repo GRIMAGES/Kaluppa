@@ -38,6 +38,51 @@ $courseResult = mysqli_query($conn, $courseQuery);
 if (!$courseResult) {
     die("Error fetching courses: " . mysqli_error($conn));
 }
+
+// Fetch all applications for the logged-in user with course name
+$applicationQuery = "SELECT applications.status, applications.applied_at, courses.name AS course_name 
+                     FROM applications 
+                     JOIN courses ON applications.course_id = courses.id 
+                     WHERE applications.email = ? 
+                     ORDER BY applications.applied_at DESC";
+$applicationStmt = $conn->prepare($applicationQuery);
+$applicationStmt->bind_param("s", $email);
+$applicationStmt->execute();
+$applicationResult = $applicationStmt->get_result();
+
+$applications = [];
+while ($row = $applicationResult->fetch_assoc()) {
+    $applications[] = $row;
+}
+
+// Function to categorize courses
+function categorizeCourses($applications) {
+    $categories = [
+        'upcoming' => [],
+        'ongoing' => [],
+        'completed' => []
+    ];
+
+    foreach ($applications as $application) {
+        switch ($application['status']) {
+            case 'pending':
+            case 'under review':
+                $categories['upcoming'][] = $application;
+                break;
+            case 'approved':
+            case 'enrolled':
+                $categories['ongoing'][] = $application;
+                break;
+            case 'completed':
+                $categories['completed'][] = $application;
+                break;
+        }
+    }
+
+    return $categories;
+}
+
+$categorizedCourses = categorizeCourses($applications);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +94,51 @@ if (!$courseResult) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_courses.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .right-sidebar {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 300px;
+            background: #023336;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .right-sidebar h4 {
+            margin-bottom: 20px;
+        }
+
+        .course-category {
+            margin-bottom: 20px;
+        }
+
+        .course-category h5 {
+            margin-bottom: 10px;
+        }
+
+        .course-category .course-item {
+            background: #fff;
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .course-category .course-item.upcoming {
+            border-left: 5px solid #f39c12;
+        }
+
+        .course-category .course-item.ongoing {
+            border-left: 5px solid #3498db;
+        }
+
+        .course-category .course-item.completed {
+            border-left: 5px solid #2ecc71;
+        }
+    </style>
 </head>
 
 <body style="color: #C1E6BA; background-color:#C1E6BA;">
@@ -204,6 +294,34 @@ if (!$courseResult) {
     </div>
 </div>
 
+<!-- Right Sidebar -->
+<div class="right-sidebar">
+    <h4>Courses Overview</h4>
+    <div class="course-category">
+        <h5>Upcoming Courses</h5>
+        <?php foreach ($categorizedCourses['upcoming'] as $course): ?>
+            <div class="course-item upcoming">
+                <?php echo htmlspecialchars($course['course_name']); ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="course-category">
+        <h5>Ongoing Courses</h5>
+        <?php foreach ($categorizedCourses['ongoing'] as $course): ?>
+            <div class="course-item ongoing">
+                <?php echo htmlspecialchars($course['course_name']); ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="course-category">
+        <h5>Completed Courses</h5>
+        <?php foreach ($categorizedCourses['completed'] as $course): ?>
+            <div class="course-item completed">
+                <?php echo htmlspecialchars($course['course_name']); ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
@@ -242,8 +360,6 @@ function showCourseDetails(courseId) {
             errorModal.show();
         });
 }
-
-
 
 // Handle application form submission
 document.getElementById("applicationForm").addEventListener("submit", function (event) {
@@ -317,7 +433,6 @@ document.getElementById("applicationForm").addEventListener("submit", function (
     });
 
 });
-
 
 // Reset form when application modal is closed
 document.getElementById("applicationModal").addEventListener("hidden.bs.modal", function () {

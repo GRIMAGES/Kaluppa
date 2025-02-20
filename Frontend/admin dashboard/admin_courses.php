@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     $capacity = $_POST['courseCapacity'];
     $requisites = $_POST['courseRequisites'];
     $description = $_POST['courseDescription'];
+    $status = $_POST['courseStatus'];
 
     // Handle image upload
     $targetDir = "../images/"; // Directory to store images
@@ -54,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
         // Move the uploaded file to the target directory
         if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $targetFilePath)) {
             // Prepared statement to insert course data
-            $stmt = $conn->prepare("INSERT INTO courses (name, image, duration, instructor, capacity, requisites, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssss", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description);
+            $stmt = $conn->prepare("INSERT INTO courses (name, image, duration, instructor, capacity, requisites, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssss", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status);
             
             // Execute the query
             if ($stmt->execute()) {
@@ -100,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $capacity = $_POST['courseCapacity'];
         $requisites = $_POST['courseRequisites'];
         $description = $_POST['courseDescription'];
+        $status = $_POST['courseStatus'];
 
         // Image upload handling (optional)
         if (!empty($_FILES["courseImage"]["name"])) {
@@ -111,13 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $targetFilePath)) {
                 // Update the course with the new image
-                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ? WHERE id = ?");
-                $stmt->bind_param("sssssssi", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $id);
+                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
+                $stmt->bind_param("ssssssssi", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
             }
         } else {
             // If no new image, just update course details
-            $stmt = $conn->prepare("UPDATE courses SET name = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ? WHERE id = ?");
-            $stmt->bind_param("ssssssi", $name, $duration, $instructor, $capacity, $requisites, $description, $id);
+            $stmt = $conn->prepare("UPDATE courses SET name = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
+            $stmt->bind_param("sssssssi", $name, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
         }
 
         if ($stmt->execute()) {
@@ -248,6 +250,7 @@ if ($scholarship_result->num_rows > 0) {
                         <p><strong>Capacity:</strong> <?php echo htmlspecialchars($course['capacity']); ?></p>
                         <p><strong>Enrolled Students:</strong> <?php echo htmlspecialchars($course['enrolled_students']); ?></p>
                         <p><strong>Requisites:</strong> <?php echo htmlspecialchars($course['requisites']); ?></p>
+                        <p><strong>Status:</strong> <?php echo htmlspecialchars($course['status']); ?></p>
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#approvedUsersModal" onclick="showApprovedUsers(<?php echo $course['id']; ?>)">
                             View Enrolled Users
                         </button>
@@ -261,7 +264,8 @@ if ($scholarship_result->num_rows > 0) {
                                 data-duration="<?= $course['duration'] ?>"
                                 data-capacity="<?= $course['capacity'] ?>"
                                 data-instructor="<?= $course['instructor'] ?>"
-                                data-requisites="<?= $course['requisites'] ?>">
+                                data-requisites="<?= $course['requisites'] ?>"
+                                data-status="<?= $course['status'] ?>">
                                 <i class="fas fa-edit"></i>
                         </button>
                     </div>
@@ -306,6 +310,14 @@ if ($scholarship_result->num_rows > 0) {
                     <div class="mb-3">
                         <label for="course_requisites" class="form-label"  style="color:black;">Requisites</label>
                         <input type="text" class="form-control" id="course_requisites" name="courseRequisites" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="course_status" class="form-label" style="color:black;">Status</label>
+                        <select class="form-select" id="course_status" name="courseStatus" required>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="course_image" class="form-label"  style="color:black;">Course Image</label>
@@ -354,6 +366,14 @@ if ($scholarship_result->num_rows > 0) {
                         <input type="text" class="form-control" id="edit_course_requisites" name="courseRequisites" required>
                     </div>
                     <div class="mb-3">
+                        <label for="edit_course_status" class="form-label" style="color:black;">Status</label>
+                        <select class="form-select" id="edit_course_status" name="courseStatus" required>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="edit_course_image" class="form-label"  style="color:black;">Course Image</label>
                         <input type="file" class="form-control" id="edit_course_image" name="courseImage">
                     </div>
@@ -395,6 +415,7 @@ if ($scholarship_result->num_rows > 0) {
             const capacity = this.getAttribute('data-capacity');
             const instructor = this.getAttribute('data-instructor');
             const requisites = this.getAttribute('data-requisites');
+            const status = this.getAttribute('data-status');
             
             document.getElementById('edit_course_id').value = id;
             document.getElementById('edit_course_name').value = name;
@@ -403,6 +424,7 @@ if ($scholarship_result->num_rows > 0) {
             document.getElementById('edit_course_capacity').value = capacity;
             document.getElementById('edit_course_instructor').value = instructor;
             document.getElementById('edit_course_requisites').value = requisites;
+            document.getElementById('edit_course_status').value = status;
 
             modal.show();
         });

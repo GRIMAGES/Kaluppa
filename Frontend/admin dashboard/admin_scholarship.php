@@ -68,10 +68,9 @@ if (isset($_POST['update_status'])) {
     }
 }
 // Define the SQL query with JOIN to get course name from courses table
-$sql = "SELECT applications.id, applications.full_name, courses.name, applications.email, applications.status, applications.applied_at, applications.document 
+$sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.document 
         FROM applications 
         JOIN courses ON applications.course_id = courses.id";
-?>
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,6 +92,9 @@ $sql = "SELECT applications.id, applications.full_name, courses.name, applicatio
         .dataTables_length select,
         .dataTables_filter input {
             color: white; /* Change the color of the text */
+        }
+        .table-responsive {
+            overflow: visible; /* Ensure the table is not scrollable */
         }
     </style>
 </head>
@@ -125,13 +127,17 @@ $sql = "SELECT applications.id, applications.full_name, courses.name, applicatio
                 <table id="scholarshipTable" class="display" style="color: black;">
                     <thead style="background-color: #f2f2f2; color: black;">
                         <tr>
-                            <th>Full Name</th>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Last Name</th>
                             <th>Course Name</th>
                             <th>Email</th>
                             <th>Status</th>
                             <th>Applied At</th>
                             <th>Actions</th>
                             <th>Update Status</th>
+                            <th>Update</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -140,7 +146,10 @@ $sql = "SELECT applications.id, applications.full_name, courses.name, applicatio
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
                                 echo '<tr>
-                                        <td>' . htmlspecialchars($row['full_name']) . '</td>
+                                        <td>' . htmlspecialchars($row['id']) . '</td>
+                                        <td>' . htmlspecialchars($row['first_name']) . '</td>
+                                        <td>' . htmlspecialchars($row['middle_name']) . '</td>
+                                        <td>' . htmlspecialchars($row['last_name']) . '</td>
                                         <td>' . htmlspecialchars($row['name']) . '</td>
                                         <td>' . htmlspecialchars($row['email']) . '</td>
                                         <td>' . htmlspecialchars($row['status']) . '</td>
@@ -148,7 +157,7 @@ $sql = "SELECT applications.id, applications.full_name, courses.name, applicatio
                                         <td>
                                             <div class="d-inline-flex gap-2">
                                                 <button type="button" class="btn btn-sm btn-outline-success" 
-                                                    onclick="showApplicationDetails(' . $row['id'] . ', \'' . addslashes($row['full_name']) . '\', \'' . addslashes($row['name']) . '\', \'' . addslashes($row['email']) . '\', \'' . addslashes($row['applied_at']) . '\', \'' . addslashes($row['status']) . '\', \'' . addslashes($row['document']) . '\')">
+                                                    onclick="showApplicationDetails(' . $row['id'] . ', \'' . addslashes($row['first_name']) . '\', \'' . addslashes($row['middle_name']) . '\', \'' . addslashes($row['last_name']) . '\', \'' . addslashes($row['name']) . '\', \'' . addslashes($row['email']) . '\', \'' . addslashes($row['applied_at']) . '\', \'' . addslashes($row['status']) . '\', \'' . addslashes($row['document']) . '\')">
                                                     <i class="fas fa-eye"></i> View
                                                 </button>
                                                 <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($row['document']) . '&action=download" class="btn btn-sm btn-outline-primary">
@@ -167,8 +176,10 @@ $sql = "SELECT applications.id, applications.full_name, courses.name, applicatio
                                                         <option value="Under Review" ' . ($row['status'] === 'Under Review' ? 'selected' : '') . '>Under Review</option>
                                                         <option value="Enrolled" ' . ($row['status'] === 'Enrolled' ? 'selected' : '') . '>Enrolled</option>
                                                     </select>
-                                                    <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
                                                 </div>
+                                        </td>
+                                        <td>
+                                            <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
                                             </form>
                                         </td>
                                     </tr>';
@@ -216,12 +227,14 @@ $sql = "SELECT applications.id, applications.full_name, courses.name, applicatio
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <!-- JavaScript for Handling Modal -->
     <script>
-        function showApplicationDetails(id, fullName, courseName, email, appliedAt, status, document) {
+        function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, document) {
     console.log("Application details function called"); // Debugging line
 
     // Prepare details for modal
     var detailsHtml = `
-        <p><strong>Full Name:</strong> ${fullName}</p>
+        <p><strong>First Name:</strong> ${firstName}</p>
+        <p><strong>Middle Name:</strong> ${middleName}</p>
+        <p><strong>Last Name:</strong> ${lastName}</p>
         <p><strong>Course Name:</strong> ${courseName}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Applied At:</strong> ${appliedAt}</p>
