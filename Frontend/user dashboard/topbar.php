@@ -4,6 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 ?>
 
+<link rel="stylesheet" href="../CSS/user_css/topbar.css">
+<link rel="stylesheet" href="../CSS/user_css/new_styles.css">
 
 <!-- Top Header -->
 <header class="top-header d-flex justify-content-between align-items-center p-2 bg-dark">

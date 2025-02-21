@@ -1,0 +1,170 @@
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 1%;
+    left: 10px;
+    width: 250px;
+    height: 97vh;
+    background: #023336;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    padding: 2rem;
+    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+    border-radius: 15px; /* Soft edges */
+}
+
+/* Collapsed Sidebar */
+.sidebar.collapsed {
+    width: 80px;
+}
+
+.sidebar.collapsed .nav-menu a {
+    justify-content: center;
+}
+
+.sidebar.collapsed .nav-menu a span {
+    display: none;
+}
+
+.sidebar.collapsed .profile-section {
+    display: none;
+}
+
+/* Profile Section */
+.profile-section {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+}
+
+.profile-pic:hover {
+    transform: scale(1.1);
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: left;
+    margin-top: 1rem;
+}
+
+.nav-menu a {
+    padding: 0.75rem 1rem;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+/* Sidebar Hover Carve-Out Effect */
+.nav-menu a:hover {
+    background-color: #C1E6BA;
+    transform: translateX(10px); /* Move to the right */
+    clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%); /* Carved effect */
+    border-radius: 0 20px 20px 0;
+    box-shadow: 2px 0px 10px rgba(193, 230, 186, 0.5);
+}
+
+/* Sidebar Active Indicator */
+.nav-menu a.active::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    width: 5px;
+    height: 60%;
+    background-color: #C1E6BA;
+    border-radius: 5px;
+}
+
+/* Icons */
+.nav-menu a i {
+    margin-right: 10px;
+}
+
+/* Logout Button */
+.logout-btn {
+    margin-top: auto;
+    color: inherit;
+    font-weight: bold;
+    padding: 0.75rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+.logout-btn i {
+    font-size: 1.25rem;
+}
+
+/* Hover effect for logout */
+.logout-btn:hover {
+    background-color: #C1E6BA;
+    transform: translateX(10px);
+    clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%);
+    border-radius: 0 20px 20px 0;
+    box-shadow: 2px 0px 10px rgba(193, 230, 186, 0.5);
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+    .sidebar {
+        left: -250px; /* Hide the sidebar off-screen */
+    }
+
+    .sidebar.open {
+        left: 10px; /* Show the sidebar when open */
+    }
+
+    .sidebar .nav-menu a {
+        justify-content: center;
+    }
+
+    .sidebar .nav-menu a span {
+        display: none;
+    }
+
+    .sidebar .profile-section {
+        display: none;
+    }
+
+    .burger-button {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: #023336;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 1100;
+        cursor: pointer;
+        display: block; /* Show the burger button */
+    }
+}
+
+/* Hide the burger button on larger screens */
+@media (min-width: 769px) {
+    .burger-button {
+        display: none;
+    }
+}

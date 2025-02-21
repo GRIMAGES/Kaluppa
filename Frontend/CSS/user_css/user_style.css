@@ -3,127 +3,6 @@ body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #C1E6BA; /* Light green gradient */
-
-}
-
-/* Sidebar Styling */
-.sidebar {
-    position: fixed;
-    top: 70px;
-    left: 20px;
-    width: 250px;
-    background: #023336;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    padding: 2rem;
-    height: calc(100vh - 80px);
-    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-/* Profile Section */
-.profile-section {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.profile-pic {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 1rem;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Navigation Menu */
-.nav-menu {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    text-align: left;
-    margin-top: 1rem;
-}
-
-.nav-menu a {
-    padding: 0.75rem;
-    color: white;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.nav-menu a:hover {
-    background-color: #C1E6BA;
-}
-
-/* Logout Button */
-.logout-btn {
-    margin-top: auto;
-    color: ;
-    font-weight: bold;
-    padding: 0.75rem;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.logout-btn i {
-    font-size: 1.25rem;
-}
-
-.logout-btn:hover {
-    background-color: #C1E6BA;
-}
-
-/* Top Header */
-.top-header {
-    position: fixed;
-    top: 0;
-    left: 20px;
-    width: calc(100% - 40px);
-    background: #023336;
-    color: white;
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    border-radius: 10px;
-}
-
-.top-header h1 {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.top-header .nav-links {
-    display: flex;
-    gap: 1rem;
-}
-
-.top-header .nav-links a {
-    color: white;
-    font-weight: 600;
-}
-
-.top-header .nav-links i {
-    font-size: 1.25rem;
-}
-
-/* Time & Date Styling */
-.time-date {
-    font-size: 1rem;
-    font-weight: bold;
-    color: white;
-    padding: 0.75rem 2rem;
-    background: #2c6e3d;
-    margin-top: 80px;
-    text-align: center;
 }
 
 /* Main Content */
@@ -144,7 +23,7 @@ body {
 }
 
 .featured-card {
-    background:#023336;
+    background: #023336;
     padding: 2rem;
     border-radius: 12px;
     color: white;
@@ -211,6 +90,7 @@ body {
     transform: scale(1.02); /* Slight zoom on hover */
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow */
 }
+
 .modal-content {
     background-color: #fff;
     border-radius: 10px;
@@ -248,4 +128,30 @@ body {
     padding-bottom: 1.5rem;
     display: flex;
     justify-content: space-between;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .featured-section {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 60px;
+    }
+
+    .featured-card {
+        margin-top: 0;
+    }
+
+    .calendar-wrapper {
+        padding: 10px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
 }

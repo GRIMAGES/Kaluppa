@@ -1,5 +1,6 @@
 <?php
 require_once '../../Backend/connection.php';
+
 session_start();
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/multiuserlogin.php");
@@ -7,7 +8,6 @@ if (!isset($_SESSION['email'])) {
 }
 
 $email = $_SESSION['email'];
-
 
 // Use prepared statements to prevent SQL injection
 $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
