@@ -79,7 +79,7 @@ $categorizedCourses = categorizeCourses($courseResult);
     
 </head>
 
-<body style="color: #C1E6BA; background-color:#C1E6BA;">
+<body style="background: #ddead1;">
 
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>

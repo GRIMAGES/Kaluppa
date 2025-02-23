@@ -2,8 +2,7 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #C1E6BA; /* Light green gradient */
-
+    background: #4b6043; /* Change background color */
 }
 
 /* Main Content Adjustments */
@@ -11,7 +10,6 @@ body {
     margin-left: 260px; /* Matches sidebar width */
     padding: 2rem;
     padding-top: 5.5rem; /* Space for top header, increased to move content down */
-   
 }
 
 .nav-link.active {
@@ -27,18 +25,16 @@ body {
     margin-bottom: 1.5rem;
 }
 
-
 /* Button Styling */
 .btn-outline-success {
-    border-color: #38a169;
-    color: #38a169;
+    border-color: #4CAF50; /* Change button border color */
+    color: #4CAF50; /* Change button text color */
 }
 
 .btn-outline-success:hover {
-    background-color: #38a169;
+    background-color: #4CAF50; /* Change button background color on hover */
     color: white;
 }
-
 
 /* Modal Styling */
 .modal-content {
@@ -79,11 +75,6 @@ body {
     justify-content: space-between;
 }
 
-
-
-/* Add this to your user_courses.css */
-
-
 /* Course Card Styling */
 .course-container {
     display: flex;
@@ -97,7 +88,7 @@ body {
 .course-card {
     width: 550px; /* Increased width for even longer rectangular shape */
     height: 300px; /* Slightly adjusted height */
-    background: #023336;
+    background: #4b6043; /* Change course card color */
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -106,14 +97,13 @@ body {
     align-items: center;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    
 }
 
 .course-card img {
-        width: 500px; /* Fixed image width */
-        height: 160px; /* Fixed image height */
-        object-fit: cover; /* Maintain aspect ratio and crop if needed */
-        border-radius: 8px;
+    width: 500px; /* Fixed image width */
+    height: 160px; /* Fixed image height */
+    object-fit: cover; /* Maintain aspect ratio and crop if needed */
+    border-radius: 8px;
 }
 
 .course-card:hover {
@@ -143,7 +133,7 @@ body {
 }
 
 .course-card .view-details-button {
-    background: #007bff;
+    background: #4CAF50; /* Change button background color */
     color: #fff;
     border: none;
     padding: 8px 12px;
@@ -151,12 +141,15 @@ body {
     cursor: pointer;
     font-size: 1em;
     margin-top: auto; /* Pushes the button to the bottom */
-   
-  
+    transition: all 0.3s ease;
 }
 
 .course-card .view-details-button:hover {
-    background: #0056b3;
+    background: #388E3C; /* Change button background color on hover */
+    transform: translateX(10px); /* Move to the right */
+    clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%); /* Carved effect */
+    border-radius: 0 20px 20px 0;
+    box-shadow: 2px 0px 10px rgba(193, 230, 186, 0.5);
 }
 
 .course-card .course-status {
@@ -170,6 +163,7 @@ body {
     color: #f8f9fa;
     text-align: center;
 }
+
 .modal .modal-header {
     background-color: #023336;
     color: white;
@@ -205,8 +199,8 @@ body {
 .btn {
     border-radius: 50px;
 }
-/* Course status classes */
 
+/* Course status classes */
 .course-card.full {
     background-color: #ffcccc; /* Light red background for full courses */
     color: black; /* Change text color when course is full */
@@ -215,14 +209,13 @@ body {
 .course-card.full .card-header,
 .course-card.full .card-body {
     color: black; /* Change text color when course is full */
-    
 }
 
 .course-card.unclickable {
     pointer-events: none;
 }
+
 .available {
-    
     color: white;
 }
 
@@ -235,19 +228,17 @@ body {
     z-index: 1050 !important;
 }
 
-
 .modal-content {
     background-color: #f8f9fa;
 }
 
-/*right side bar*/
-
+/* Right Sidebar */
 .right-sidebar {
     position: fixed;
-    top: 70px;
+    top: 90px;
     right: 20px;
     width: 300px;
-    background: #023336;
+    background: #4b6043; /* Change right sidebar color to match course card */
     color: white;
     padding: 20px;
     border-radius: 10px;
@@ -285,6 +276,7 @@ body {
 .course-category .course-item.completed {
     border-left: 5px solid #2ecc71;
 }
+
 .course-item {
     padding: 5px;
     margin-bottom: 5px;
@@ -315,13 +307,13 @@ body {
 }
 
 .btn-enroll {
-    background-color: #38a169;
+    background-color: #4CAF50; /* Change button background color */
     color: white;
     border: none;
 }
 
 .btn-enroll:hover {
-    background-color: #2f8e56;
+    background-color: #388E3C; /* Change button background color on hover */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -341,8 +333,7 @@ body {
     }
 }
 
-/* loading animation */
-
+/* Loading animation */
 #loading-spinner {
     position: fixed;
     top: 0;

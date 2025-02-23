@@ -4,9 +4,9 @@
     top: 1%;
     left: 15%;
     width: 83%;
-    background: #023336;
+    background:rgb(248, 248, 248);
     color: white;
-    padding: 0.75rem 1rem; /* Adjust padding */
+    padding: 0.75rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;

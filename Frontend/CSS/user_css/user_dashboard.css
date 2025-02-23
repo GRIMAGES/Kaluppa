@@ -1,0 +1,264 @@
+/* General Body and Layout */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ddead1; /* Change background color */
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 290px;
+    padding-top: 120px;
+    padding: 2rem;
+    margin-top: 10px;
+}
+
+/* Featured Cards */
+.featured-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 120px;
+    margin-bottom: 2rem;
+}
+
+.featured-card {
+    background: #4b6043; /* Change featured card color */
+    padding: 2rem;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 30%;
+    margin-top: -85px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.featured-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.featured-card:hover::before {
+    opacity: 1;
+}
+
+.featured-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.featured-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.featured-card img:hover {
+    transform: scale(1.05);
+}
+
+.featured-card h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.featured-card p {
+    font-size: 1rem;
+    color: #f0fff4;
+    margin-bottom: 1rem;
+}
+
+.featured-card a {
+    padding: 0.75rem 1.5rem;
+    background-color: #4DA674;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-card a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.featured-card a:hover::before {
+    opacity: 1;
+}
+
+.featured-card a:hover {
+    background-color: #2f8e56; /* Change hover effect color */
+    transform: translateX(10px); /* Move to the right */
+    clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%); /* Carved effect */
+    border-radius: 0 20px 20px 0;
+    box-shadow: 2px 0px 10px rgba(193, 230, 186, 0.5);
+}
+
+/* Calendar */
+.calendar-container {
+    background: #4b6043; /* Container background color */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    animation: slideIn 0.6s ease-in-out;
+}
+
+.calendar-wrapper {
+    width: 100%; /* Increase the width to make it wider horizontally */
+    height: 450px; /* Change calendar height */
+    margin: 0 auto;
+    border-radius: 10px;
+    background: #4b6043; /* Change wrapper color */
+    padding: 10px;
+}
+
+#calendar {
+    width: 100%;
+    height: 100%;
+    background: #ddead1; /* Ensure calendar background color is changed */
+    border-radius: 10px;
+}
+
+/* Adjust the title font size to fit the smaller calendar */
+.fc-toolbar-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600;
+    font-size: 18px; /* Reduced font size */
+}
+
+/* Adjust the event styles */
+.fc-event {
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    font-size: 12px; /* Smaller font size */
+}
+
+.fc-event:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.fc-prev-button, .fc-next-button {
+    background-color: #008CBA;
+    border-radius: 50%;
+    color: white;
+}
+
+.fc-prev-button:hover, .fc-next-button:hover {
+    background-color: #007B8C;
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+}
+
+/* Progress Container */
+.progress-container {
+    padding: 20px;
+    background-color: #4b6043; /* Change progress container color */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    margin-top: 20px;
+}
+
+.progress {
+    background: #4b6043;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 30px;
+    transition: width 0.6s ease;
+    background: linear-gradient(90deg, #4CAF50, #81c784); /* Change progress bar color */
+}
+
+.progress-label {
+    color: #fff;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-label i {
+    margin-right: 5px;
+}
+
+/* Advanced Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .featured-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .featured-card {
+        width: 80%;
+        margin-bottom: 1rem;
+    }
+
+    .calendar-wrapper {
+        padding: 10px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+}

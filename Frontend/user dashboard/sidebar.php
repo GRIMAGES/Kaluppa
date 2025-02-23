@@ -1,7 +1,5 @@
 <?php
 require_once '../../Backend/connection.php';
-session_start();
-
 // Redirect if not logged in
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/multiuserlogin.php");

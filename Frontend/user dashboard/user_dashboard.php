@@ -69,95 +69,12 @@ function getProgress($status) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../CSS/user_css/user_style.css">
+    <link rel="stylesheet" href="../CSS/user_css/user_dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-
-    <style>
-       #calendar {
-    width: 100%; /* Increase the width to make it wider horizontally */
-    height: 550px; /* Set a specific height to make it smaller vertically */
-    margin: 0 auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: #f5f5f5;
-    padding: 10px;
-}
-
-/* Adjust the title font size to fit the smaller calendar */
-.fc-toolbar-title {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 600;
-    font-size: 18px; /* Reduced font size */
-}
-
-/* Adjust the event styles */
-.fc-event {
-    border-radius: 8px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 5px;
-    font-size: 12px; /* Smaller font size */
-}
-
-.fc-event:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-    transition: all 0.3s ease;
-}
-
-        .fc-prev-button, .fc-next-button {
-            background-color: #008CBA;
-            border-radius: 50%;
-            color: white;
-        }
-
-        .fc-prev-button:hover, .fc-next-button:hover {
-            background-color: #007B8C;
-            transform: scale(1.1);
-            transition: all 0.3s ease;
-        }
-
-        
-        .progress-container {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.progress {
-    background: #e9ecef;
-    border-radius: 30px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 35px;
-    text-align: center;
-    border-radius: 30px;
-    transition: width 0.6s ease;
-}
-
-.progress-label {
-    color: #fff;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.progress-label i {
-    margin-right: 5px;
-}
-
-    </style>
 </head>
-<body style="color: #C1E6BA; background-color:#C1E6BA;">
+<body style="background-color: #ddead1;">
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
@@ -208,7 +125,7 @@ function getProgress($status) {
                 $status = ucfirst($application['status']);
                 $courseName = htmlspecialchars($application['course_name']);
             ?>
-            <div class="progress mb-3" style="height: 35px; background: #f3f4f6; border-radius: 30px; overflow: hidden;">
+            <div class="progress mb-3" style="height: 35px; border-radius: 30px; overflow: hidden;">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" 
                     role="progressbar" 
                     style="width: <?php echo $progress; ?>%; 
@@ -227,9 +144,11 @@ function getProgress($status) {
     </div>
 
    <!-- Calendar Section -->
-   <div class="calendar-section mt-4">
+   <div class="calendar-container">
         <h3 class="mb-3">Event Calendar</h3>
-        <div id="calendar"></div>
+        <div class="calendar-wrapper">
+            <div id="calendar"></div>
+        </div>
     </div>
 
     <!-- Event Description Modal -->
