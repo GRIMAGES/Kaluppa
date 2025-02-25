@@ -1,0 +1,58 @@
+/* DataTables Styling */
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    color: #333; /* Change the color of the text */
+}
+
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label {
+    color: #333; /* Change the color of the text */
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border-radius: 0.25rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #388E3C;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #388E3C;
+}
+
+.table-responsive {
+    overflow: visible; /* Ensure the table is not scrollable */
+}
+
+/* Table Container Styling */
+.table-container {
+    margin-top: 100px; /* Move the table lower */
+    background-color: #f8f9fa; /* Light grey background for the container */
+    padding: 20px; /* Padding inside the container */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    animation: fadeIn 1s ease-in-out; /* Add fade-in effect */
+}
+
+/* Add smooth hover effect for table rows */
+.table tbody tr:hover {
+    background-color: #e0f7fa; /* Light cyan background on hover */
+    transition: background-color 0.3s ease;
+}
+
+/* Keyframes for fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

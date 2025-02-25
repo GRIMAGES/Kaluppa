@@ -295,3 +295,67 @@ Stack trace:
 [21-Feb-2025 19:00:45 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\php\Kaluppa\Frontend\user dashboard\sidebar.php on line 3
 [21-Feb-2025 19:00:51 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\php\Kaluppa\Frontend\user dashboard\sidebar.php on line 3
 [21-Feb-2025 19:14:19 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\php\Kaluppa\Frontend\user dashboard\sidebar.php on line 3
+[25-Feb-2025 17:42:44 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:42:44 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:42:52 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:42:52 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:44:04 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:44:04 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:44:05 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:44:05 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:44:06 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:44:06 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:44:06 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:44:06 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:44:06 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:44:06 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:44:06 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:44:06 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:45:31 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, /Backend/Documents/Scholarship/1740501931_5._Recommendation_Letter.docx
+[25-Feb-2025 17:52:05 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, 
+[25-Feb-2025 17:52:05 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Column 'document' cannot be null in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:140
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(140): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 140
+[25-Feb-2025 17:56:08 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'documents' in 'field list' in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php:143
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php(143): mysqli->prepare('INSERT INTO app...')
+#1 {main}
+  thrown in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 143
+[25-Feb-2025 17:57:06 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 147
+[25-Feb-2025 17:57:06 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, Array
+[25-Feb-2025 17:57:06 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 150
+[25-Feb-2025 18:01:46 Europe/Berlin] User with ID 34 already applied for course ID 36

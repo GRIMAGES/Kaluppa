@@ -80,63 +80,54 @@ if (mysqli_num_rows($check_existing_result) > 0) {
 }
 
 // Handle file upload (optional)
-$document_path = null; // Default in case no file is uploaded
+$document_paths = []; // Array to store paths of uploaded files
 
-if (isset($_FILES['document']) && $_FILES['document']['error'] == 0) {
-    $document = $_FILES['document'];
-    $document_name = time() . "_" . preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", basename($document['name']));
-    $document_tmp_name = $document['tmp_name'];
+if (isset($_FILES['documents'])) {
+    foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
+        if ($_FILES['documents']['error'][$key] == 0) {
+            $document = $_FILES['documents'];
+            $document_name = time() . "_" . preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", basename($document['name'][$key]));
+            $document_tmp_name = $document['tmp_name'][$key];
 
-    // Define the base directory
-    $baseDirectory = realpath(__DIR__ . '/../Documents/Scholarship/');
+            $baseDirectory = realpath(__DIR__ . '/../Documents/Scholarship/');
 
-    if ($baseDirectory === false) {
-        error_log("Base directory not found: /../Documents/Scholarship/");
-        echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Server error: Document directory not found.']);
-        exit();
-    }
+            if ($baseDirectory === false) {
+                error_log("Base directory not found: /../Documents/Scholarship/");
+                echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Server error: Document directory not found.']);
+                exit();
+            }
 
-    // Ensure directory exists and is writable
-    if (!is_dir($baseDirectory)) {
-        if (!mkdir($baseDirectory, 0777, true)) {
-            error_log("Failed to create base directory: $baseDirectory");
-            echo json_encode(['success' => false, 'error_code' => 11, 'message' => 'Server error: Unable to create document directory.']);
-            exit();
+            if (!is_dir($baseDirectory) && !mkdir($baseDirectory, 0777, true)) {
+                error_log("Failed to create base directory: $baseDirectory");
+                echo json_encode(['success' => false, 'error_code' => 11, 'message' => 'Server error: Unable to create document directory.']);
+                exit();
+            }
+
+            if (!is_writable($baseDirectory)) {
+                error_log("Base directory is not writable: $baseDirectory");
+                echo json_encode(['success' => false, 'error_code' => 12, 'message' => 'Server error: Document directory not writable.']);
+                exit();
+            }
+
+            $document_path = $baseDirectory . DIRECTORY_SEPARATOR . $document_name;
+
+            if (!move_uploaded_file($document_tmp_name, $document_path)) {
+                error_log("Error uploading document to $document_path");
+                echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Error uploading document']);
+                exit();
+            }
+
+            $document_paths[] = str_replace('\\', '/', str_replace(realpath(__DIR__ . '/../../'), '', $document_path));
         }
     }
-
-    if (!is_writable($baseDirectory)) {
-        error_log("Base directory is not writable: $baseDirectory");
-        echo json_encode(['success' => false, 'error_code' => 12, 'message' => 'Server error: Document directory not writable.']);
-        exit();
-    }
-
-    // Set the full path for the document
-    $document_path = $baseDirectory . DIRECTORY_SEPARATOR . $document_name;
-
-    // Move the uploaded file
-    if (!move_uploaded_file($document_tmp_name, $document_path)) {
-        error_log("Error uploading document to $document_path");
-        echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Error uploading document']);
-        exit();
-    }
-
-    // Convert path to relative for database storage
-    $document_path = str_replace(realpath(__DIR__ . '/../../'), '', $document_path);
-
-    // Ensure the path uses front slashes for web compatibility
-    $document_path = str_replace('\\', '/', $document_path);
 }
 
-// Insert application data into the database
+$document = implode(',', $document_paths);
+
 $application_query = "INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($application_query);
-$stmt->bind_param("iissssssssssss", $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document_path);
+$stmt->bind_param("iissssssssssss", $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document);
 
-// Debugging: Log the query to see what’s being executed
-error_log("Executing query: $application_query with values: $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document_path");
-
-// Execute the query
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Application submitted successfully']);
 } else {

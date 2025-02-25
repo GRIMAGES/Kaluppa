@@ -204,8 +204,8 @@ $categorizedCourses = categorizeCourses($courseResult);
                                 <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
                             </div>
                             <div class="mb-3">
-                                <label for="document" class="form-label">Upload Document</label>
-                                <input type="file" class="form-control" id="document" name="document" required>
+                                <label for="documents" class="form-label">Upload Documents</label>
+                                <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
                             </div>
                             <input type="hidden" id="course_id" name="course_id">
                             <button type="submit" class="btn btn-success w-100">Submit Application</button>

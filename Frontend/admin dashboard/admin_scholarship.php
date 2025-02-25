@@ -203,11 +203,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                 <div class="modal-body">
                     <div id="applicationDetails"></div>
                     <hr>
-                    <div>
-                        <a href="#" id="viewDocumentLink" target="_blank" class="btn btn-primary w-100 mb-2">View Document</a>
-                        <a href="#" id="downloadDocumentLink" class="btn btn-success w-100">Download Document</a>
-                    </div>
-                    
+                    <div id="documentLinks"></div>
                 </div>
             </div>
         </div>
@@ -227,7 +223,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <!-- JavaScript for Handling Modal -->
     <script>
-        function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, document) {
+        function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
     console.log("Application details function called"); // Debugging line
 
     // Prepare details for modal
@@ -244,9 +240,20 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     // Populate modal with application details
     document.getElementById('applicationDetails').innerHTML = detailsHtml;
 
-    // Set the links for document view and download
-    document.getElementById('viewDocumentLink').href = "../../Backend/admin_controller/view_document.php?file=" + encodeURIComponent(document) + "&action=view";
-    document.getElementById('downloadDocumentLink').href = "../../Backend/admin_controller/view_document.php?file=" + encodeURIComponent(document) + "&action=download";
+    // Prepare document links
+    var documentLinksHtml = '';
+    var documentArray = documents.split(',');
+    documentArray.forEach(function(document, index) {   
+        documentLinksHtml += `
+            <div>
+                <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(document.trim())}&action=view" target="_blank" class="btn btn-primary w-100 mb-2">View Document ${index + 1}</a>
+                <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(document.trim())}&action=download" class="btn btn-success w-100">Download Document ${index + 1}</a>
+            </div>
+        `;
+    });
+
+    // Populate modal with document links
+    document.getElementById('documentLinks').innerHTML = documentLinksHtml;
     
     // Show the modal
     var viewApplicationModal = new bootstrap.Modal(document.getElementById('viewApplicationModal'));

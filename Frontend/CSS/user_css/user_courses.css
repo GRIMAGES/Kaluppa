@@ -3,6 +3,7 @@ body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #4b6043; /* Change background color */
+    animation: fadeIn 1s ease-in-out; /* Add fade-in effect */
 }
 
 /* Main Content Adjustments */
@@ -10,6 +11,7 @@ body {
     margin-left: 260px; /* Matches sidebar width */
     padding: 2rem;
     padding-top: 5.5rem; /* Space for top header, increased to move content down */
+    animation: slideIn 1s ease-in-out; /* Add slide-in effect */
 }
 
 .nav-link.active {
@@ -83,6 +85,7 @@ body {
     justify-content: flex-start; /* Align items to the left */
     max-width: 1200px; /* Adjusted width to fit longer cards */
     margin-left: 20px; /* Small left margin */
+    animation: fadeIn 1s ease-in-out; /* Add fade-in effect */
 }
 
 .course-card {
@@ -243,6 +246,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: slideIn 1s ease-in-out; /* Add slide-in effect */
 }
 
 .right-sidebar h4 {
@@ -359,5 +363,24 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Keyframes for fade-in and slide-in effects */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
 }
 
