@@ -46,6 +46,9 @@
         <li class="nav-item">
             <a href="reports.php" class="nav-link active"><i class="fas fa-chart-bar me-2"></i> Reports</a>
         </li>
+        <li class="nav-item">
+            <a href="admin_announcements.php" class="nav-link"><i class="fas fa-bullhorn me-2"></i> Announcements</a>
+        </li>
     </ul>
     <button class="btn btn-danger mt-auto w-100" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
 </div>

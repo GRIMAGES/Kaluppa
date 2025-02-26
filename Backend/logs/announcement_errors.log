@@ -1,0 +1,8 @@
+[26-Feb-2025 17:42:54 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'kaluppa.announcements' doesn't exist in C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_announcements.php:57
+Stack trace:
+#0 C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_announcements.php(57): mysqli->query('SELECT * FROM a...')
+#1 C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_announcements.php(131): getAnnouncements()
+#2 {main}
+  thrown in C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_announcements.php on line 57
+[26-Feb-2025 17:45:03 Europe/Berlin] PHP Warning:  Undefined variable $adminName in C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_sidebar.php on line 5
+[26-Feb-2025 17:45:03 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_sidebar.php on line 5
