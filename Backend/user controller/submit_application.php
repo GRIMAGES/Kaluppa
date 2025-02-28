@@ -79,6 +79,19 @@ if (mysqli_num_rows($check_existing_result) > 0) {
     exit();
 }
 
+// Generate custom application ID (APP-00001 format)
+$query = "SELECT id FROM applications ORDER BY id DESC LIMIT 1";
+$result = $conn->query($query);
+$row = $result->fetch_assoc();
+
+if ($row) {
+    $lastId = $row['id'];
+    $num = (int)substr($lastId, 4); // Extract numeric part
+    $newId = 'APP-' . str_pad($num + 1, 5, '0', STR_PAD_LEFT);
+} else {
+    $newId = 'APP-00001'; // First entry
+}
+
 // Handle file upload (optional)
 $document_paths = []; // Array to store paths of uploaded files
 
@@ -124,9 +137,10 @@ if (isset($_FILES['documents'])) {
 
 $document = implode(',', $document_paths);
 
-$application_query = "INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// Insert application with custom ID
+$application_query = "INSERT INTO applications (id, user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($application_query);
-$stmt->bind_param("iissssssssssss", $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document);
+$stmt->bind_param("siissssssssssss", $newId, $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Application submitted successfully']);

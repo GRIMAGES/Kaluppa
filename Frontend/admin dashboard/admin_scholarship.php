@@ -166,7 +166,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                                             </div>
                                         </td>
                                         <td>
-                                            <form action="" method="POST">
+                                            <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
                                                 <input type="hidden" name="application_id" value="' . $row['id'] . '">
                                                 <div class="input-group">
                                                     <select name="status" class="form-select form-select-sm">

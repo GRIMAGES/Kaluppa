@@ -86,7 +86,7 @@ $stmt->close();
             border: none;
         }
     </style>
-</head>
+</head> 
 <body>
 <?php include 'admin_sidebar.php'; ?>
 
@@ -115,14 +115,14 @@ $stmt->close();
         <h1 class="mb-3">Reports</h1>
         <p>Export various reports such as:</p>
         <ul>
-            <li>Accepted Scholars</li>
+            <li>Enrolled Scholars</li>
             <li>Accepted Volunteers</li>
         </ul>
         <form action="../../Backend/admin_controller/export_reports.php" method="GET">
             <div class="mb-3">
                 <label for="reportType" class="form-label">Select Report Type</label>
                 <select class="form-select form-select-sm" id="reportType" name="report_type">
-                    <option value="accepted_scholars">Accepted Scholars</option>
+                    <option value="enrolled_scholars">Enrolled Scholars</option>
                     <option value="accepted_volunteers">Accepted Volunteers</option>
                 </select>
             </div>

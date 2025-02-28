@@ -17,8 +17,11 @@ $reportType = isset($_GET['report_type']) ? htmlspecialchars($_GET['report_type'
 $customFileName = isset($_GET['customTitle']) ? htmlspecialchars($_GET['customTitle']) : 'report';
 $adminEmail = $_SESSION['email'];
 
+// Debugging: Check the value of report_type
+error_log("Report Type: " . $reportType);
+
 // Validate report type
-$validReportTypes = ['accepted_scholars', 'accepted_volunteers'];
+$validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
 if (!in_array($reportType, $validReportTypes)) {
     die("Invalid report type.");
 }
@@ -57,15 +60,16 @@ header('Cache-Control: max-age=0');
 // Fetch data based on the report type
 $query = '';
 $columns = [];
-if ($reportType === 'accepted_scholars') {
+if ($reportType === 'enrolled_scholars') {
     $query = "
         SELECT 
-            a.full_name, 
+            a.id,
+            a.last_name, 
+            a.middle_name, 
+            a.first_name, 
             c.name AS course_name, 
-            a.address, 
             a.email, 
             a.status, 
-            a.applied_at, 
             a.document 
         FROM 
             applications a 
@@ -74,9 +78,9 @@ if ($reportType === 'accepted_scholars') {
         ON 
             a.course_id = c.id 
         WHERE 
-            a.status = 'approved'
+            a.status = 'enrolled'
     ";
-    $columns = ['Full Name', 'Course Name', 'Address', 'Email', 'Status', 'Applied At', 'Document'];
+    $columns = ['ID', 'Last Name', 'Middle Name', 'First Name', 'Course Name', 'Email', 'Status', 'Document'];
 } elseif ($reportType === 'accepted_volunteers') {
     $query = "
         SELECT 
@@ -114,8 +118,8 @@ if ($fileType === 'csv') {
     echo "<table border='1'>";
     
     // Conditional headers for Excel
-    if ($reportType === 'accepted_scholars') {
-        echo "<tr><th>Full Name</th><th>Course Name</th><th>Address</th><th>Email</th><th>Status</th><th>Applied At</th><th>Document</th></tr>";
+    if ($reportType === 'enrolled_scholars') {
+        echo "<tr><th>ID</th><th>Last Name</th><th>Middle Name</th><th>First Name</th><th>Course Name</th><th>Email</th><th>Status</th><th>Document</th></tr>";
     } elseif ($reportType === 'accepted_volunteers') {
         echo "<tr><th>ID</th><th>Name</th><th>Email</th><th>Application Date</th><th>Status</th><th>Resume Path</th><th>Phone</th></tr>";
     }
@@ -134,8 +138,8 @@ if ($fileType === 'csv') {
     echo "<table border='1'>";
     
     // Conditional headers for PDF
-    if ($reportType === 'accepted_scholars') {
-        echo "<tr><th>Full Name</th><th>Course Name</th><th>Address</th><th>Email</th><th>Status</th><th>Applied At</th><th>Document</th></tr>";
+    if ($reportType === 'enrolled_scholars') {
+        echo "<tr><th>ID</th><th>Last Name</th><th>Middle Name</th><th>First Name</th><th>Course Name</th><th>Email</th><th>Status</th><th>Document</th></tr>";
     } elseif ($reportType === 'accepted_volunteers') {
         echo "<tr><th>ID</th><th>Name</th><th>Email</th><th>Application Date</th><th>Status</th><th>Resume Path</th><th>Phone</th></tr>";
     }
