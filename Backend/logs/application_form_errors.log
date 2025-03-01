@@ -359,3 +359,52 @@ Stack trace:
 [25-Feb-2025 17:57:06 Europe/Berlin] Executing query: INSERT INTO applications (user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) with values: 34, 36, WILLIAM DUNCAN, OLLERO, GONZALES, botchok.gonzales@gmail.com, 350, Chico, Cembo, 2, Makati, NCR, 1214, Array
 [25-Feb-2025 17:57:06 Europe/Berlin] PHP Warning:  Array to string conversion in C:\xampp\php\Kaluppa\Backend\user controller\submit_application.php on line 150
 [25-Feb-2025 18:01:46 Europe/Berlin] User with ID 34 already applied for course ID 36
+[01-Mar-2025 10:10:39 Europe/Berlin] PHP Warning:  Undefined array key "phone" in C:\xampp\php\Kaluppa\Backend\user controller\submit_applications.php on line 40
+[01-Mar-2025 10:10:39 Europe/Berlin] PHP Warning:  mkdir(): Invalid path in C:\xampp\php\Kaluppa\Backend\user controller\submit_applications.php on line 53
+[01-Mar-2025 10:10:39 Europe/Berlin] Failed to create directory: 
+[01-Mar-2025 10:14:36 Europe/Berlin] PHP Warning:  Undefined array key "phone" in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 39
+[01-Mar-2025 10:14:37 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:14:37 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:14:37 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:15:10 Europe/Berlin] PHP Warning:  Undefined array key "phone" in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 39
+[01-Mar-2025 10:15:10 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:15:10 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:15:10 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:15:33 Europe/Berlin] PHP Warning:  Undefined array key "phone" in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 39
+[01-Mar-2025 10:15:33 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:15:33 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:15:33 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\user dashboard\user_work.php on line 151
+[01-Mar-2025 10:44:08 Europe/Berlin] PHP Warning:  mkdir(): Invalid path in C:\xampp\php\Kaluppa\Backend\user controller\submit_applications.php on line 53
+[01-Mar-2025 10:44:08 Europe/Berlin] Failed to create directory: 
+[01-Mar-2025 16:54:52 Europe/Berlin] Invalid base directory path.
+[01-Mar-2025 16:59:27 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[01-Mar-2025 16:59:27 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[01-Mar-2025 16:59:27 Europe/Berlin] Application submitted successfully for user ID: 34
+[01-Mar-2025 16:59:27 Europe/Berlin] Executed query: 
+[01-Mar-2025 17:49:17 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[01-Mar-2025 17:49:17 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[01-Mar-2025 17:49:17 Europe/Berlin] Application submitted successfully for user ID: 34
+[01-Mar-2025 17:49:17 Europe/Berlin] Executed query: 
+[01-Mar-2025 17:51:44 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[01-Mar-2025 17:51:44 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[01-Mar-2025 17:51:44 Europe/Berlin] Application submitted successfully for user ID: 34
+[01-Mar-2025 17:51:44 Europe/Berlin] Executed query: 
+[01-Mar-2025 17:54:07 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[01-Mar-2025 17:54:07 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[01-Mar-2025 17:54:07 Europe/Berlin] Application submitted successfully for user ID: 34
+[01-Mar-2025 17:54:07 Europe/Berlin] Executed query: 
+[01-Mar-2025 17:59:52 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[01-Mar-2025 17:59:52 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\1740507175_CLP-QF-05_SIPP_MOA_Template__061924___1_ (1).docx
+[01-Mar-2025 17:59:52 Europe/Berlin] Generated new ID: VOL-00001
+[01-Mar-2025 17:59:52 Europe/Berlin] Application submitted successfully for user ID: 34
+[01-Mar-2025 17:59:52 Europe/Berlin] Executed query: 
+[01-Mar-2025 18:01:37 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[01-Mar-2025 18:01:37 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[01-Mar-2025 18:01:37 Europe/Berlin] Generated new ID: VOL-00001
+[01-Mar-2025 18:01:37 Europe/Berlin] Application submitted successfully for user ID: 34
+[01-Mar-2025 18:01:37 Europe/Berlin] Executed query: 
+[01-Mar-2025 18:03:19 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[01-Mar-2025 18:03:19 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[01-Mar-2025 18:03:19 Europe/Berlin] Generated new ID: VOL-00001
+[01-Mar-2025 18:03:19 Europe/Berlin] Application submitted successfully for user ID: 34
+[01-Mar-2025 18:03:19 Europe/Berlin] Executed query: 

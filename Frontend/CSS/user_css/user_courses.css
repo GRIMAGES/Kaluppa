@@ -136,7 +136,7 @@ body {
 }
 
 .course-card .view-details-button {
-    background: #4CAF50; /* Change button background color */
+    /* Change button background color */
     color: #fff;
     border: none;
     padding: 8px 12px;

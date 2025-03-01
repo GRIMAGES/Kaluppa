@@ -43,6 +43,22 @@ while ($row = $applicationResult->fetch_assoc()) {
     $applications[] = $row;
 }
 
+// Fetch all volunteer applications for the logged-in user with work title
+$volunteerQuery = "SELECT volunteer_application.status, volunteer_application.applied_at, works.title AS work_title 
+                   FROM volunteer_application 
+                   JOIN works ON volunteer_application.work_id = works.id 
+                   WHERE volunteer_application.email = ? 
+                   ORDER BY volunteer_application.applied_at DESC";
+$volunteerStmt = $conn->prepare($volunteerQuery);
+$volunteerStmt->bind_param("s", $email);
+$volunteerStmt->execute();
+$volunteerResult = $volunteerStmt->get_result();
+
+$volunteerApplications = [];
+while ($row = $volunteerResult->fetch_assoc()) {
+    $volunteerApplications[] = $row;
+}
+
 // Function to map status to progress percentage
 function getProgress($status) {
     switch ($status) {
@@ -118,7 +134,7 @@ function getProgress($status) {
     </div>
 
     <div class="progress-container my-4">
-        <h4>Application Status Progress</h4>
+        <h4> Scholarship Application Status Progress</h4>
         <?php foreach ($applications as $application): ?>
             <?php 
                 $progress = getProgress($application['status']);
@@ -137,6 +153,32 @@ function getProgress($status) {
                     aria-valuemax="100">
                     <span class="progress-label">
                         <?php echo $courseName; ?> - <?php echo $status; ?> - <?php echo $progress; ?>%
+                    </span>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="progress-container my-4">
+        <h4>Volunteer Application Status Progress</h4>
+        <?php foreach ($volunteerApplications as $application): ?>
+            <?php 
+                $progress = getProgress($application['status']);
+                $status = ucfirst($application['status']);
+                $workTitle = htmlspecialchars($application['work_title']);
+            ?>
+            <div class="progress mb-3" style="height: 35px; border-radius: 30px; overflow: hidden;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                    role="progressbar" 
+                    style="width: <?php echo $progress; ?>%; 
+                           background: <?php echo ($application['status'] == 'rejected') 
+                           ? 'linear-gradient(90deg, #e74c3c, #e57373)' 
+                           : 'linear-gradient(90deg, #4caf50, #81c784)'; ?> !important;"
+                    aria-valuenow="<?php echo $progress; ?>"
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                    <span class="progress-label">
+                        <?php echo $workTitle; ?> - <?php echo $status; ?> - <?php echo $progress; ?>%
                     </span>
                 </div>
             </div>

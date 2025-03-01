@@ -70,7 +70,9 @@ if (isset($_POST['update_status'])) {
 $sql = "
     SELECT 
         a.id,
-        a.name AS full_name, 
+        a.first_name, 
+        a.middle_name, 
+        a.last_name, 
         a.email, 
         a.status, 
         a.application_date AS applied_at, 
@@ -135,7 +137,10 @@ $result = mysqli_query($conn, $sql);
             <table id="volunteerTable" class="display" style="color: black;">
                 <thead style="background-color: #f2f2f2; color: black;">
                     <tr>
-                        <th>Full Name</th>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Last Name</th>
                         <th>Email</th>
                         <th>Status</th>
                         <th>Applied At</th>
@@ -147,14 +152,17 @@ $result = mysqli_query($conn, $sql);
                     <?php if ($result && mysqli_num_rows($result) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result)): ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['full_name']) ?></td>
+                                <td><?= htmlspecialchars($row['id']) ?></td>
+                                <td><?= htmlspecialchars($row['first_name']) ?></td>
+                                <td><?= htmlspecialchars($row['middle_name']) ?></td>
+                                <td><?= htmlspecialchars($row['last_name']) ?></td>
                                 <td><?= htmlspecialchars($row['email']) ?></td>
                                 <td><?= htmlspecialchars($row['status']) ?></td>
                                 <td><?= htmlspecialchars($row['applied_at']) ?></td>
                                 <td>
                                     <div class="d-inline-flex gap-2">
                                         <button type="button" class="btn btn-sm btn-outline-success" 
-                                            onclick="showApplicationDetails('<?= $row['id'] ?>', '<?= addslashes($row['full_name']) ?>', '<?= addslashes($row['email']) ?>', '<?= addslashes($row['applied_at']) ?>', '<?= addslashes($row['status']) ?>', '<?= addslashes($row['document']) ?>')">
+                                            onclick="showApplicationDetails('<?= $row['id'] ?>', '<?= addslashes($row['first_name']) ?>', '<?= addslashes($row['middle_name']) ?>', '<?= addslashes($row['last_name']) ?>', '<?= addslashes($row['email']) ?>', '<?= addslashes($row['applied_at']) ?>', '<?= addslashes($row['status']) ?>', '<?= addslashes($row['document']) ?>')">
                                             <i class="fas fa-eye"></i> View
                                         </button>
                                         <a href="<?= '/Backend/admin_controller/view_documents.php?file=' . urlencode($row['document']) . '&action=download' ?>" class="btn btn-sm btn-outline-primary">
@@ -181,7 +189,7 @@ $result = mysqli_query($conn, $sql);
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="6" class="text-center">No volunteer applications found.</td>
+                            <td colspan="9" class="text-center">No volunteer applications found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -199,7 +207,9 @@ $result = mysqli_query($conn, $sql);
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+                <p><strong>First Name:</strong> <span id="modalFirstName"></span></p>
+                <p><strong>Middle Name:</strong> <span id="modalMiddleName"></span></p>
+                <p><strong>Last Name:</strong> <span id="modalLastName"></span></p>
                 <p><strong>Email:</strong> <span id="modalEmail"></span></p>
                 <p><strong>Applied At:</strong> <span id="modalAppliedAt"></span></p>
                 <p><strong>Status:</strong> <span id="modalStatus"></span></p>
@@ -223,8 +233,10 @@ $result = mysqli_query($conn, $sql);
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <!-- JavaScript for Handling Modal -->
 <script>
-    function showApplicationDetails(id, fullName, email, appliedAt, status, document) {
-        document.getElementById('modalFullName').textContent = fullName;
+    function showApplicationDetails(id, firstName, middleName, lastName, email, appliedAt, status, document) {
+        document.getElementById('modalFirstName').textContent = firstName;
+        document.getElementById('modalMiddleName').textContent = middleName;
+        document.getElementById('modalLastName').textContent = lastName;
         document.getElementById('modalEmail').textContent = email;
         document.getElementById('modalAppliedAt').textContent = appliedAt;
         document.getElementById('modalStatus').textContent = status;

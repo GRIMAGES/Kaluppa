@@ -92,6 +92,8 @@ if ($row) {
     $newId = 'APP-00001'; // First entry
 }
 
+error_log("Generated new ID: " . $newId); // Debugging statement
+
 // Handle file upload (optional)
 $document_paths = []; // Array to store paths of uploaded files
 

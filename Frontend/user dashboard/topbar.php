@@ -30,6 +30,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="notification-dropdown bg-white shadow p-3 position-absolute d-none">
                 <h6 class="fw-bold">Notifications</h6>
                 <ul id="notification-list" class="list-unstyled mb-0"></ul>
+                <a href="user_notifications.php" class="btn btn-link">View All Notifications</a>
             </div>
         </div>
     </div>
@@ -64,6 +65,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         notificationCount.textContent = notifications.length;
         notificationCount.classList.toggle("d-none", notifications.length === 0);
+
+        // Add notification effect if there are new notifications
+        if (notifications.length > 0) {
+            notificationIcon.classList.add("notification-effect");
+            notificationDropdown.classList.remove("d-none");
+        } else {
+            notificationIcon.classList.remove("notification-effect");
+            notificationDropdown.classList.add("d-none");
+        }
     }
 
     // Toggle notification dropdown
@@ -81,6 +91,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fetch notifications initially
     fetchNotifications();
+
+    // Poll for new notifications every 30 seconds
+    setInterval(fetchNotifications, 30000);
 });
 </script>
 
@@ -125,10 +138,25 @@ document.addEventListener("DOMContentLoaded", function () {
     font-size: 0.9rem;
     padding: 5px;
     border-bottom: 1px solid #ddd;
+    color: black; /* Change text color to black */
 }
 
 .notification-dropdown ul li:last-child {
     border-bottom: none;
+}
+
+/* Notification effect */
+.notification-effect {
+    animation: notification-blink 1s infinite;
+}
+
+@keyframes notification-blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 </style>
 
