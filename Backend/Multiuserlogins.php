@@ -52,10 +52,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     $password = password_hash($_POST['reg_password'], PASSWORD_DEFAULT);
     $gender = $_POST['gender'];
     $birthday = $_POST['birthday']; // Capture birthday
+    $house_number = $_POST['house_number'];
+    $street = $_POST['street'];
+    $barangay = $_POST['barangay'];
+    $district = $_POST['district'];
+    $city = $_POST['city'];
+    $region = $_POST['region'];
+    $postal_code = $_POST['postal_code'];
+    $phone = $_POST['phone'];
     $otp = generateOTP();
 
-    $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, password, role, gender, birthday, otp, is_verified) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, 0)");
-    $stmt->bind_param("sssssssi", $first_name, $middle_name, $last_name, $email, $password, $gender, $birthday, $otp);
+    $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, password, role, gender, birthday, house_number, street, barangay, district, city, region, postal_code, phone, otp, is_verified) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
+
+$stmt->bind_param("ssssssssssssssss", $first_name, $middle_name, $last_name, $email, $password, $gender, $birthday, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $phone, $otp);
 
     if ($stmt->execute()) {
         $subject = "Verify Your Email";

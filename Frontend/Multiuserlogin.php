@@ -19,12 +19,14 @@ session_start();
     <?php
     // Check for session messages
     if (isset($_SESSION['info'])) {
-        echo "<div class='popup' id='popupMessage'>
-                <button class='close-btn' onclick='closePopup()'>&times;</button>
-                <h4>Success!</h4>
-                <p>{$_SESSION['info']}</p>
-              </div>
-              <div class='overlay' id='popupOverlay' onclick='closePopup()'></div>";
+        echo "<div id='successModal' class='modal'>
+                <div class='modal-content'>
+                    <span class='close' onclick='closeModal()'>&times;</span>
+                    <h4>Success!</h4>
+                    <p>{$_SESSION['info']}</p>
+                    <button onclick='closeModal()'>Close</button>
+                </div>
+              </div>";
         unset($_SESSION['info']); // Clear the message after displaying it
     }
     ?>
@@ -111,16 +113,14 @@ session_start();
     <script>
         // Display popup on page load if it exists
         document.addEventListener("DOMContentLoaded", function() {
-            if (document.getElementById('popupMessage')) {
-                document.getElementById('popupMessage').style.display = 'block';
-                document.getElementById('popupOverlay').style.display = 'block';
+            if (document.getElementById('successModal')) {
+                document.getElementById('successModal').style.display = 'block';
             }
         });
 
-        // Close popup function
-        function closePopup() {
-            document.getElementById('popupMessage').style.display = 'none';
-            document.getElementById('popupOverlay').style.display = 'none';
+        // Close modal function
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
         }
 
         // Switch between login and signup forms
