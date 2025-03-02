@@ -1,48 +1,46 @@
-const container = document.getElementById('container');
-const registerBtn = document.getElementById('sign_up');
-const loginBtn = document.getElementById('login');
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.getElementById("container");
+    const registerBtn = document.getElementById("sign_up");
+    const loginBtn = document.getElementById("login");
+    const roleSelect = document.getElementById("role");
+    const adminKeyInput = document.getElementById("adminKeyInput");
+    const passwordInput = document.getElementById("password");
+    const passwordStrength = document.getElementById("passwordStrength");
 
-registerBtn.addEventListener('click', () => {
-    container.classList.add("active");
-});
-
-loginBtn.addEventListener('click', () => {
-    container.classList.remove("active");
-})
-
-function toggleAdminKeyInput() {
-    var roleSelect = document.getElementById("role");
-    var adminKeyInput = document.getElementById("adminKeyInput");
-
-    if (roleSelect.value === "admin") {
-        adminKeyInput.style.display = "block";
-    } else {
-        adminKeyInput.style.display = "none";
-    }
-}
-
-  // Add an event listener to the "Register" button
-  document.getElementById('sign_up').addEventListener('click', function() {
-    // Wait for the next animation frame to allow the DOM to update
-    requestAnimationFrame(function() {
-        // Scroll to the bottom of the container to ensure all elements are visible
-        document.getElementById('container').scrollbottom = document.getElementById('container').scrollHeight;
+    // Toggle between login and register
+    registerBtn.addEventListener("click", () => {
+        container.classList.add("active");
     });
-});
 
-function checkPasswordStrength() {
-    var password = document.getElementById("password").value;
-    var passwordStrength = document.getElementById("passwordStrength");
+    loginBtn.addEventListener("click", () => {
+        container.classList.remove("active");
+    });
 
-    // Define regex patterns
-    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,20})");
-    var mediumRegex = new RegExp("^((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,20}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\$%\^&\*])(?=.{8,20}))|((?=.*[a-z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,20}))|((?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,20}))");
-    
-    if(strongRegex.test(password)) {
-        passwordStrength.innerHTML = '<div class="alert alert-success" role="alert">Strong password</div>';
-    } else if(mediumRegex.test(password)) {
-        passwordStrength.innerHTML = '<div class="alert alert-warning" role="alert">Medium password</div>';
-    } else {
-        passwordStrength.innerHTML = '<div class="alert alert-danger" role="alert">Weak password</div>';
+    // Show/Hide Admin Key field based on role selection
+    function toggleAdminKeyInput() {
+        if (roleSelect.value === "admin") {
+            adminKeyInput.style.display = "block";
+        } else {
+            adminKeyInput.style.display = "none";
+        }
     }
-}
+    
+    roleSelect.addEventListener("change", toggleAdminKeyInput);
+
+    // Password Strength Checker
+    function checkPasswordStrength() {
+        const password = passwordInput.value;
+        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+        const mediumRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,20}$/;
+
+        if (strongRegex.test(password)) {
+            passwordStrength.innerHTML = '<div class="alert alert-success">Strong password</div>';
+        } else if (mediumRegex.test(password)) {
+            passwordStrength.innerHTML = '<div class="alert alert-warning">Medium password</div>';
+        } else {
+            passwordStrength.innerHTML = '<div class="alert alert-danger">Weak password</div>';
+        }
+    }
+
+    passwordInput.addEventListener("input", checkPasswordStrength);
+});

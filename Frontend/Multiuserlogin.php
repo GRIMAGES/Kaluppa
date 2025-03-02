@@ -4,7 +4,6 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,10 +13,8 @@ session_start();
     <link rel="stylesheet" href="CSS/login_style.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-
 <body>
     <?php
     // Check for session messages
@@ -33,90 +30,83 @@ session_start();
     ?>
 
     <div class="container" id="container">
-        <!-- Registration Form -->
-        <div class="form-container sign-up" id="signupContainer">
+        <div class="form-container sign-up-container">
             <form action="../Backend/Multiuserlogins.php" method="POST">
-                <h2>Create Account</h2>
-                <div class="input-box">
-                    <input class="form-control" type="text" name="reg_first_name" placeholder="First Name" required>
+                <h1>Create Account</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                 </div>
-                <div class="input-box">
-                    <input class="form-control" type="text" name="reg_middle_name" placeholder="Middle Name (Optional)">
-                </div>
-                <div class="input-box">
-                    <input class="form-control" type="text" name="reg_last_name" placeholder="Last Name" required>
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="password" id="password" name="reg_password" placeholder="Password" required>
-                    <small class="form-text text-muted">Password must be 8-20 characters and include special and uppercase characters.</small>
-                </div>
-                <div class="form-group">
-                    <input class="form-control" type="password" name="confirm_password" placeholder="Confirm Password" required>
-                </div>
-                <div class="input-box">
-                    <input class="form-control" type="email" name="email" placeholder="Email" required>
-                </div>
-                <div class="input-box">
+                <span>or use your email for registration</span>
+                
+                <!-- Scrollable form fields -->
+                <div class="signup-form-fields">
+                    <input type="text" name="reg_first_name" placeholder="First Name" required />
+                    <input type="text" name="reg_middle_name" placeholder="Middle Name (Optional)" />
+                    <input type="text" name="reg_last_name" placeholder="Last Name" required />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="password" name="reg_password" placeholder="Password" required onkeyup="checkPasswordStrength()" />
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" required />
                     <label for="birthday">Birthday:</label>
-                    <input class="form-control" type="date" name="birthday" required>
-                </div>
-                <div class="input-box">
+                    <input type="date" name="birthday" required />
                     <label for="gender">Gender:</label>
-                    <select name="gender" id="gender" class="form-control" required>
+                    <select name="gender" id="gender" required>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                     </select>
+                    <input type="text" name="phone" placeholder="Phone Number" required />
+                    <input type="text" name="house_number" placeholder="House Number" required />
+                    <input type="text" name="street" placeholder="Street" required />
+                    <input type="text" name="barangay" placeholder="Barangay" required />
+                    <input type="text" name="district" placeholder="District" required />
+                    <input type="text" name="city" placeholder="City" required />
+                    <input type="text" name="region" placeholder="Region" required />
+                    <input type="text" name="postal_code" placeholder="Postal Code" required />
+                    <input type="checkbox" name="data_privacy" required />
+                    <label for="data_privacy">I agree to the <a href="data_privacy_policy.php" target="_blank">Data Privacy Act</a></label>
                 </div>
-                <div class="form-group">
-                    <button class="btn btn-primary" type="submit" style="background-color: #023336; border-color: #023336; color: white;">Signup</button>
-                </div>
+                
+                <!-- Button always stays at the bottom -->
+                <button type="submit" class="signup-btn">Sign Up</button>
             </form>
         </div>
 
-        <!-- Login Form -->
-        <div class="form-container sign-in">
+        <div class="form-container sign-in-container">
             <form action="../Backend/Multiuserlogins.php" method="POST">
-                <img src="kaalu.png" alt="Your Logo" class="logo">
-                <h1>Login</h1>
-                <!-- Error Message -->
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="error-message">
-                <?php echo $_SESSION['error']; ?>
-            </div>
-            <?php unset($_SESSION['error']); // Clear the error after displaying ?>
-        <?php endif; ?>
-                
-                
-                
-                <div class="input-box">
-                    <input class="form-control" type="text" name="email" placeholder="Email" required>
+                <h1>Sign in</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
                 </div>
-                <div class="input-box">
-                    <input class="form-control" type="password" name="password" placeholder="Password" required>
-                </div>
-                <a href="forgots.php">Forgot Your Password?</a>
-                <button type="submit" class="btn btn-primary" style="background-color: #023336; border-color: #023336; color: white;">Login</button>
-
+                <span>or use your account</span>
+                <input type="email" name="email" placeholder="Email" required />
+                <input type="password" name="password" placeholder="Password" required />
+                <a href="forgots.php">Forgot your password?</a>
+                <button type="submit">Sign In</button>
             </form>
         </div>
-
-        <!-- Toggle Panels for Login and Signup -->
-        <div class="toggle-container">
-    <div class="toggle">
-        <div class="toggle-panel toggle-left">
-            <h1>Good Day</h1>
-            <p>Enter your personal details to access the site features.</p>
-            <button class="btn" id="login" style="background-color: #28a745; border-color: #28a745; color: white;">Login</button>
-        </div>
-        <div class="toggle-panel toggle-right">
-            <h1>Good Day</h1>
-            <p>Register with your details to use all of the site’s features.</p>
-            <button class="btn" id="sign_up" style="background-color: #28a745; border-color: #28a745; color: white;">Register</button>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start journey with us</p>
+                    <button class="ghost" id="signUp">Sign Up</button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- JS Links -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="JS/login_script.js"></script>
     <script>
         // Display popup on page load if it exists
@@ -132,11 +122,19 @@ session_start();
             document.getElementById('popupMessage').style.display = 'none';
             document.getElementById('popupOverlay').style.display = 'none';
         }
-;
 
-// Close error popup function
+        // Switch between login and signup forms
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
 
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
     </script>
 </body>
-
 </html>

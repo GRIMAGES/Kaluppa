@@ -408,3 +408,13 @@ Stack trace:
 [01-Mar-2025 18:03:19 Europe/Berlin] Generated new ID: VOL-00001
 [01-Mar-2025 18:03:19 Europe/Berlin] Application submitted successfully for user ID: 34
 [01-Mar-2025 18:03:19 Europe/Berlin] Executed query: 
+[02-Mar-2025 08:06:57 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[02-Mar-2025 08:06:57 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[02-Mar-2025 08:06:57 Europe/Berlin] Generated new ID: VOL-00002
+[02-Mar-2025 08:06:57 Europe/Berlin] Application submitted successfully for user ID: 34
+[02-Mar-2025 08:06:57 Europe/Berlin] Executed query: 
+[02-Mar-2025 08:08:36 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[02-Mar-2025 08:08:36 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\5. Recommendation Letter.docx
+[02-Mar-2025 08:08:36 Europe/Berlin] Generated new ID: VOL-00003
+[02-Mar-2025 08:08:36 Europe/Berlin] Application submitted successfully for user ID: 34
+[02-Mar-2025 08:08:36 Europe/Berlin] Executed query: 

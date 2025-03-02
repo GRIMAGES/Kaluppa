@@ -127,7 +127,7 @@ if (!$workResult) {
 
                                     <!-- Right Column: Application Form -->
                                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
-                                        <form id="applicationForm" method="POST" enctype="multipart/form-data">
+                                        <form id="applicationForm<?php echo $work['id']; ?>" method="POST" enctype="multipart/form-data">
                                             <input type="hidden" name="work_id" value="<?php echo $work['id']; ?>">
                                             <div class="mb-3">
                                                 <label for="first_name" class="form-label">First Name</label>
@@ -300,27 +300,29 @@ if (!$workResult) {
     }
 
     // JavaScript for form submission
-    document.getElementById('applicationForm').addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent the default form submission
+    document.querySelectorAll('form[id^="applicationForm"]').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
 
-        var formData = new FormData(this);
+            var formData = new FormData(this);
 
-        // Send AJAX request to submit the form
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '../../Backend/user controller/submit_applications.php', true);
+            // Send AJAX request to submit the form
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '../../Backend/user controller/submit_applications.php', true);
 
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                // Show success modal
-                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
-                document.getElementById('applicationForm').reset(); // Reset form fields
-            } else {
-                console.error('Form submission failed');
-            }
-        };
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Show success modal
+                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+                    form.reset(); // Reset form fields
+                } else {
+                    console.error('Form submission failed');
+                }
+            };
 
-        xhr.send(formData);
+            xhr.send(formData);
+        });
     });
 </script>
 </body>
