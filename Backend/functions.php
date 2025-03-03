@@ -18,13 +18,13 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'BarangayMSP@gmail.com'; // Replace with your Gmail address
-        $mail->Password   = 'xnbt fsfu bvai kpfu'; // Replace with your Gmail app-specific password
+        $mail->Username   = 'wgonzales@kaluppa.org'; // Replace with your Gmail address
+        $mail->Password   = 'ngqt vydl kvjz lgsl'; // Replace with your Gmail app-specific password
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
 
         // Set email details
-        $mail->setFrom('BarangayMSP@gmail.com', 'BSMP'); // Replace with your name
+        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA'); // Replace with your name
         $mail->addAddress($toEmail, $username);
 
         // Generate the verification link

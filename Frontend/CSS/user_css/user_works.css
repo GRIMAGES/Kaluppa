@@ -92,7 +92,7 @@ body {
 .work-card {
     width: 550px; /* Increased width for even longer rectangular shape */
     height: 300px; /* Slightly adjusted height */
-    background: #4b6043; /* Change work card color */
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update work card color */
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -223,7 +223,7 @@ body {
     top: 90px;
     right: 20px;
     width: 300px;
-    background: #4b6043; /* Change right sidebar color to match work card */
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update right sidebar color */
     color: white;
     padding: 20px;
     border-radius: 10px;

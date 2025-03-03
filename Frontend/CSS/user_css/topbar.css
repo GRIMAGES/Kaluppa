@@ -4,7 +4,7 @@
     top: 1%;
     left: 15%;
     width: 83%;
-    background:rgb(248, 248, 248);
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update topbar background color */
     color: white;
     padding: 0.75rem 1rem;
     display: flex;

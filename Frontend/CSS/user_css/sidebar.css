@@ -5,7 +5,7 @@
     left: 10px;
     width: 250px;
     height: 97vh;
-    background: #4b6043; 
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update sidebar background color */
     color: white;
     display: flex;
     flex-direction: column;

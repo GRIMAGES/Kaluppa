@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 <link rel="stylesheet" href="../CSS/user_css/topbar.css">
 
 <!-- Top Header -->
-<header class="top-header d-flex justify-content-between align-items-center p-2" style="background: #4b6043;">
+<header class="top-header d-flex justify-content-between align-items-center p-2">
     <h1 class="text-white font-bold mb-0">Kaluppa Foundation</h1>
     <div class="nav-icons d-flex align-items-center">
         <i class="fas fa-home text-white me-3"></i>

@@ -78,9 +78,9 @@ if ($result->num_rows > 0) {
                     echo '<img src="default-event-image.jpg" alt="Default Event Image" class="card-img-top event-img">';
                 }
                 echo '<div class="card-body">';
-                echo '<h5 class="card-title text-success">' . htmlspecialchars($event['title']) . '</h5>';
-                echo '<p class="card-text text-muted"><i class="far fa-clock me-1"></i>' . htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))) . '</p>';
-                echo '<p class="card-text text-truncate">' . htmlspecialchars($event['description']) . '</p>';
+                echo '<h5 class="card-title" >' . htmlspecialchars($event['title']) . '</h5>';
+                echo '<p class="card-text "><i class="far fa-clock me-1"></i>' . htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))) . '</p>';
+                echo '<p class="card-text ">' . htmlspecialchars($event['description']) . '</p>';
                 echo '</div>';
                 echo '</div>';
                 echo '</div>';

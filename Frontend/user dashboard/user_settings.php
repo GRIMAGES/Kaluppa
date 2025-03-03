@@ -115,67 +115,37 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Profile Settings</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../CSS/user_css/user_settings.css">
         <style>
-            body {
-                background: linear-gradient(135deg, #e3f2fd, #ffffff);
-                min-height: 100vh;
+            .form-row {
                 display: flex;
-                justify-content: center;
-                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
             }
-            .container {
-                max-width: 1100px;
+            .form-row .form-group {
+                flex: 1;
+                min-width: 200px;
             }
-            .card {
-                border-radius: 15px;
-                padding: 20px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                background: #ffffff;
+            .btn-green {
+                background-color: #4CAF50; /* Match the sidebar color */
+                border-color: #4CAF50;
+                color: #fff;
             }
-            .profile-picture {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+            .btn-green:hover {
+                background-color: #45a049;
+                border-color: #45a049;
             }
-            .profile-picture img {
-                border-radius: 50%;
-                border: 4px solid #007bff;
-                width: 120px;
-                height: 120px;
-                object-fit: cover;
-            }
-            .form-control {
-                border-radius: 10px;
-                padding: 10px;
-            }
-            .btn {
-                border-radius: 10px;
-                padding: 10px;
-            }
-            img.rounded-circle {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 3px solid #ddd; /* Optional */
-    }
-        .alert {
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
         </style>
     </head>
-    <body>
+    <body style="background-color: #ddead1;">
+    <?php include 'sidebar.php'; ?>
+<?php include 'topbar.php'; ?>
 
     <div class="container">
         <h2 class="text-center mb-4">Profile Settings</h2>
         <div id="message" class="text-center"><?php if ($message) echo '<div class="alert alert-success">' . $message . '</div>'; ?></div>
 
         <!-- Back to Dashboard button placed lower and left-aligned -->
-        <div class="mb-3">
-            <a href="user_dashboard.php" class="btn btn-secondary" style="margin-left: 10px;">⬅ Back to Dashboard</a>
-        </div>
 
         <div class="row">
             <div class="col-md-6">
@@ -198,7 +168,7 @@
                             <label class="form-label">Email:</label>
                             <input type="email" name="email" class="form-control" value="<?php echo $email; ?>" required>
                         </div>
-                        <button type="submit" name="update_profile" class="btn btn-primary">Update Profile</button>
+                        <button type="submit" name="update_profile" class="btn btn-green">Update Profile</button>
                     </form>
                 </div>
 
@@ -217,7 +187,7 @@
                             <label class="form-label">Confirm New Password:</label>
                             <input type="password" name="confirm_password" class="form-control" required>
                         </div>
-                        <button type="submit" name="change_password" class="btn btn-danger">Change Password</button>
+                        <button type="submit" name="change_password" class="btn btn-green">Change Password</button>
                     </form>
                 </div>
             </div>
@@ -236,45 +206,58 @@
                     <label class="form-label">Upload New Picture:</label>
                     <input type="file" name="profile_picture" class="form-control">
                 </div>
-                <button type="submit" name="upload_picture" class="btn btn-success w-100">Upload</button>
+                <button type="submit" name="upload_picture" class="btn btn-green w-100">Upload</button>
             </form>
         </div>
 
         <div class="card shadow mt-4 p-3">
             <h4 class="mb-3">Update Address</h4>
             <form method="POST">
-                <div class="mb-3">
-                    <label class="form-label">House Number:</label>
-                    <input type="text" name="house_number" class="form-control" value="<?php echo $house_number; ?>" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">House Number:</label>
+                        <input type="text" name="house_number" class="form-control" value="<?php echo $house_number; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Street:</label>
+                        <input type="text" name="street" class="form-control" value="<?php echo $street; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Barangay:</label>
+                        <input type="text" name="barangay" class="form-control" value="<?php echo $barangay; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">District:</label>
+                        <input type="text" name="district" class="form-control" value="<?php echo $district; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City:</label>
+                        <input type="text" name="city" class="form-control" value="<?php echo $city; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Region:</label>
+                        <input type="text" name="region" class="form-control" value="<?php echo $region; ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Postal Code:</label>
+                        <input type="text" name="postal_code" class="form-control" value="<?php echo $postal_code; ?>" required>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Street:</label>
-                    <input type="text" name="street" class="form-control" value="<?php echo $street; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Barangay:</label>
-                    <input type="text" name="barangay" class="form-control" value="<?php echo $barangay; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">District:</label>
-                    <input type="text" name="district" class="form-control" value="<?php echo $district; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">City:</label>
-                    <input type="text" name="city" class="form-control" value="<?php echo $city; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Region:</label>
-                    <input type="text" name="region" class="form-control" value="<?php echo $region; ?>" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Postal Code:</label>
-                    <input type="text" name="postal_code" class="form-control" value="<?php echo $postal_code; ?>" required>
-                </div>
-                <button type="submit" name="update_address" class="btn btn-primary">Update Address</button>
+                <button type="submit" name="update_address" class="btn btn-green mt-3">Update Address</button>
             </form>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alert = document.querySelector('.alert');
+        if (alert) {
+            setTimeout(() => {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 500);
+            }, 3000);
+        }
+    });
+    </script>
     </body>
     </html>

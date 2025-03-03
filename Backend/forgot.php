@@ -41,12 +41,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['forgot_password'])) {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'BarangayMSP@gmail.com';
-            $mail->Password   = 'xnbt fsfu bvai kpfu';
+            $mail->Username   = 'wgonzales@kaluppa.org';
+            $mail->Password   = 'ngqt vydl kvjz lgsl';
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
 
-            $mail->setFrom('BarangayMSP@gmail.com', 'BPMS | Reset Password');
+            $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA | RESET PASSWORD');
             $mail->addAddress($forgot_email);
 
             $mail->isHTML(true);
