@@ -60,7 +60,7 @@ body {
 
 /* Announcement Modal Enhancements */
 .modal-header {
-    background-color: #023336;
+    background-color: #023336; /* Change background color */
     color: white;
     border-bottom: none;
     position: relative;
@@ -92,6 +92,15 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    line-height: 1.6; /* Add line height for better spacing */
+}
+
+.modal-body p {
+    margin-bottom: 1rem; /* Add margin to paragraphs for spacing */
+}
+
+.modal-body img {
+    margin-top: 1rem; /* Add margin to images for spacing */
 }
 
 .modal-body:hover {

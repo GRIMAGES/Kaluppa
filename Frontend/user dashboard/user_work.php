@@ -58,6 +58,11 @@ if (!$workResult) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_works.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .modal-body p {
+            margin-bottom: 1rem; /* Add spacing between paragraphs */
+        }
+    </style>
 </head>
 <body style="background: #ddead1;">
 <?php include 'sidebar.php'; ?>
@@ -221,7 +226,7 @@ if (!$workResult) {
 <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white position-relative overflow-hidden">
+            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
                 <h5 class="modal-title" id="announcementModalLabel">Announcement Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="modal-header-overlay"></div>
@@ -291,7 +296,7 @@ if (!$workResult) {
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">${data.title}</h5>
-                                <p class="card-text">${data.content}</p>
+                                <p class="card-text">${data.content.replace(/\n/g, '<br>')}</p>
                                 ${data.image ? `<img src="${finalImagePath}" alt="Announcement Image" class="img-fluid rounded">` : ''}
                             </div>
                         </div>
