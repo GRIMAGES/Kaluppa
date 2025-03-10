@@ -181,7 +181,7 @@ if (!$workResult) {
                                             <div class="mb-3">
                                                 <label for="postal_code" class="form-label">Postal Code</label>
                                                 <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode ?? ''); ?>" required>
-                                            </div>
+                                            </div> <!-- Close the div tag -->
                                             <div class="mb-3">
                                                 <label for="resume" class="form-label">Upload Resume</label>
                                                 <input type="file" class="form-control" id="resume" name="resume" accept=".pdf, .doc, .docx" required>
