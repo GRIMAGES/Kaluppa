@@ -2,6 +2,299 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ddead1; /* Change background color */
+    animation: fadeIn 1s ease-in-out; /* Add fade-in effect */
+}
+
+/* Theme Colors */
+.bg-theme {
+    background-color: rgb(2, 61, 15); /* Theme background color */
+}
+
+.btn-theme {
+    background-color: rgb(2, 61, 15); /* Theme button color */
+    border: none;
+    color: white; /* Change text color to white */
+}
+
+.btn-theme:hover {
+    background-color: rgb(26, 70, 41); /* Theme button hover color */
+    color: white; /* Ensure text color remains white */
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 290px;
+    padding-top: 120px;
+    padding: 2rem;
+    margin-top: 10px;
+    animation: slideIn 1s ease-in-out; /* Add slide-in effect */
+}
+
+/* Featured Cards */
+.featured-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 120px;
+    margin-bottom: 2rem;
+}
+
+.featured-card {
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update featured card color */
+    padding: 2rem;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 30%;
+    margin-top: -85px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.featured-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.featured-card:hover::before {
+    opacity: 1;
+}
+
+.featured-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.featured-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.featured-card img:hover {
+    transform: scale(1.05);
+}
+
+.featured-card h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.featured-card p {
+    font-size: 1rem;
+    color: #f0fff4;
+    margin-bottom: 1rem;
+}
+
+.featured-card a {
+    padding: 0.75rem 1.5rem;
+    background-color: #4DA674;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-card a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+
+.featured-card a:hover::before {
+    opacity: 1;
+}
+
+.featured-card a:hover {
+    background-color: #2f8e56; /* Change hover effect color */
+    transform: translateX(10px); /* Move to the right */
+    clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%); /* Carved effect */
+    border-radius: 0 20px 20px 0;
+    box-shadow: 2px 0px 10px rgba(193, 230, 186, 0.5);
+}
+
+/* Calendar */
+.calendar-container {
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update container background color */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    animation: slideIn 0.6s ease-in-out;
+}
+
+.calendar-container h3 {
+    color: white; /* Update h3 text color */
+}
+
+.calendar-wrapper {
+    width: 100%; /* Increase the width to make it wider horizontally */
+    height: 450px; /* Change calendar height */
+    margin: 0 auto;
+    border-radius: 10px;
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update wrapper color */
+    padding: 10px;
+}
+
+#calendar {
+    width: 100%;
+    height: 100%;
+    background: #ddead1; /* Ensure calendar background color is changed */
+    border-radius: 10px;
+}
+
+/* Adjust the title font size to fit the smaller calendar */
+.fc-toolbar-title {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match sidebar font */
+    font-weight: 600;
+    font-size: 18px; /* Reduced font size */
+    color: white; /* Update text color */
+}
+
+/* Adjust the event styles */
+.fc-event {
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    font-size: 12px; /* Smaller font size */
+    transition: all 0.3s ease;
+}
+
+.fc-event:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.fc-prev-button, .fc-next-button {
+    background-color: #008CBA;
+    border-radius: 50%;
+    color: white;
+}
+
+.fc-prev-button:hover, .fc-next-button:hover {
+    background-color: #007B8C;
+    transform: scale(1.1);
+}
+
+/* Progress Container */
+.progress-container {
+    padding: 20px;
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update progress container color */
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    margin-top: 20px;
+}
+
+.progress-container h4 {
+    color: white; /* Update h4 text color */
+}
+
+.progress {
+    background: #4b6043;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Match sidebar font */
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 30px;
+    transition: width 0.6s ease;
+    background: linear-gradient(90deg, #4CAF50, #81c784); /* Change progress bar color */
+    color: white; /* Update text color */
+}
+
+.progress-label {
+    color: white; /* Update text color */
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-label i {
+    margin-right: 5px;
+}
+
+/* Advanced Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .featured-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .featured-card {
+        width: 80%;
+        margin-bottom: 1rem;
+    }
+
+    .calendar-wrapper {
+        padding: 10px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+}
+
+/* General Body and Layout */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #4b6043; /* Change background color */
     animation: fadeIn 1s ease-in-out; /* Add fade-in effect */
 }
@@ -36,46 +329,6 @@ body {
 .btn-outline-success:hover {
     background-color: #4CAF50; /* Change button background color on hover */
     color: white;
-}
-
-/* Modal Styling */
-.modal-content {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    max-width: 900px;
-    margin: 0 auto;
-    border: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.modal-header {
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 1.5rem;
-    padding-top: 1.5rem;
-    background-color: #023336;
-}
-
-.modal-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    text-align: center;
-    width: 100%;
-}
-
-.modal-body {
-    padding-top: 0;
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #555;
-}
-
-.modal-footer {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
 }
 
 /* Event Card Styling */
@@ -193,42 +446,6 @@ body {
     color: white; /* Ensure div class card-body text color is white */
 }
 
-.modal .modal-header {
-    background-color: #023336;
-    color: white;
-    border-bottom: none;
-}
-
-.modal .modal-title {
-    font-size: 1.75rem;
-}
-
-.modal .modal-body {
-    padding: 20px;
-}
-
-.modal .event-detail-header {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #007BFF;
-}
-
-.modal .event-detail-subtitle {
-    font-size: 1.25rem;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.modal .event-detail-text {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.btn {
-    border-radius: 50px;
-}
-
 /* Ensure the modal closes properly */
 .modal-backdrop {
     z-index: 1040 !important;
@@ -321,3 +538,103 @@ body {
     display: flex; /* Ensure the cards sit side by side */
     flex-wrap: wrap; /* Allow wrapping if necessary */
 }
+
+/* Modal Design */
+.custom-modal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+.custom-modal .modal-header {
+    background-color: #1a4629;
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.custom-modal .modal-body {
+    background-color: #f9f9f9;
+    color: #333;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.modal-footer.justify-content-center .btn-theme {
+    background-color: rgb(2, 61, 15);
+    border: none;
+    color: white; /* Change text color to white */
+}
+
+/* Featured Card */
+.card:hover {
+    transform: scale(1.02);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.featured-card {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 25px 30px;
+    height: 90%; /* Further reduced height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 100%; /* Make width responsive */
+    margin-top: 50px;
+    margin-left: 20px; /* Move more to the right */
+    border-radius: 8px; /* More rectangular shape */
+}
+
+.featured-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.featured-card-img {
+    width: 100%;
+    height: 250px; /* Consistent height */
+    object-fit: cover; /* Ensure the image covers the area */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    transition: transform 0.4s ease;
+}
+
+.featured-card:hover .featured-card-img {
+    transform: scale(1.05);
+}
+
+.featured-card-body {
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.featured-card-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.view-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #1a4629;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.view-btn:hover {
+    background-color: #0f3d22;
+    transform: scale(1.05);
+}
+
+

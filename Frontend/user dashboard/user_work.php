@@ -72,16 +72,16 @@ if (!$workResult) {
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
-                
+            <div class="modal-header bg-theme text-white">
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="color:black;">
-                Are you sure you want to log out?
+            <div class="modal-body text-center">
+                <p>Are you sure you want to log out?</p>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Frontend/logout.php" class="btn btn-danger">Logout</a>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a> <!-- Add btn-theme class -->
             </div>
         </div>
     </div>
@@ -103,7 +103,7 @@ if (!$workResult) {
                 <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <div class="modal-header">
+                            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">    
                                 <h5 class="modal-title" id="workModalLabel"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>

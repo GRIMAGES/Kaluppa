@@ -21,7 +21,7 @@ $stmt->close();
 $fullName = trim("$first_name $middle_name $last_name");
 
 // Set profile picture path (use a default if empty)
-$profilePic = !empty($profile_picture) ? "/Frontend/admin dashboard/uploads/profile_pics/" . $profile_picture : "/Frontend/assets/default-profile.png";
+$profilePic = !empty($profile_picture) ? "/Frontend/admin%20dashboard/uploads/profile_pics/" . $profile_picture : "/Frontend/assets/default-profile.png";
 
 // Get the current page filename
 $current_page = basename($_SERVER['PHP_SELF']);

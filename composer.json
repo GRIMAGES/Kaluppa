@@ -4,6 +4,11 @@
         "phpoffice/phpspreadsheet": "^3.5",
         "dompdf/dompdf": "^3.0",
         "setasign/fpdf": "^1.8",
-        "setasign/fpdi": "^2.6"
+        "setasign/fpdi": "^2.6",
+        "sonata-project/google-authenticator": "^2.3",
+        "facebook/graph-sdk": "^5.1",
+        "google/apiclient": "2.12",
+        "google/apiclient-services": "^0.396.0",
+        "guzzlehttp/guzzle": "^6.2"
     }
 }

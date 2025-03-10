@@ -149,3 +149,27 @@ body {
         opacity: 1;
     }
 }
+.modal-content {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+ .modal-header {
+    background-color: #1a4629;
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.custom-modal .modal-body {
+    background-color: #f9f9f9;
+    color: #333;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+.modal-footer.justify-content-center .btn-theme {
+    background-color: rgb(2, 61, 15);
+    border: none;
+    color: white; /* Change text color to white */
+}

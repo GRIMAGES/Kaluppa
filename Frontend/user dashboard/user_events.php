@@ -40,17 +40,17 @@ if ($result->num_rows > 0) {
 <!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
-                
+        <div class="modal-content text-black"> <!-- Add custom-modal class -->
+            <div class="modal-header bg-theme text-white"> <!-- Add bg-theme and text-white classes -->
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="color:black;">
-                Are you sure you want to log out?
+            <div class="modal-body text-center">
+                <p>Are you sure you want to log out?</p>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Frontend/logout.php" class="btn btn-danger">Logout</a>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a> <!-- Add btn-theme class -->
             </div>
         </div>
     </div>
@@ -86,15 +86,15 @@ if ($result->num_rows > 0) {
                 echo '</div>';
 
                 // Modal structure
-                echo '<div class="modal fade" id="' . $modalId . '" tabindex="-1" aria-labelledby="' . $modalId . 'Label" aria-hidden="true">';
-                echo '<div class="modal-dialog modal-lg">';
+                echo '<div class="modal fade custom-modal" id="' . $modalId . '" tabindex="-1" aria-labelledby="' . $modalId . 'Label" aria-hidden="true">'; // Add custom-modal class
+                echo '<div class="modal-dialog modal-lg modal-dialog-centered">';
                 echo '<div class="modal-content">';
-                echo '<div class="modal-header">';
+                echo '<div class="modal-header bg-theme text-white">'; // Add bg-theme and text-white classes
                 echo '<h5 class="modal-title" id="' . $modalId . 'Label">' . htmlspecialchars($event['title']) . '</h5>';
                 echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
                 echo '</div>';
-                echo '<div class="modal-body">';
-                echo '<img src="../images/' . (empty($event['image']) ? 'default-event-image.jpg' : htmlspecialchars($event['image'])) . '" alt="Event Image" class="img-fluid mb-3">';
+                echo '<div class="modal-body text-center">';
+                echo '<img src="../images/' . (empty($event['image']) ? 'default-event-image.jpg' : htmlspecialchars($event['image'])) . '" alt="Event Image" class="img-fluid mb-3 rounded shadow" style="width: 100%; height: 250px; object-fit: cover;">'; // Consistent image size
                 echo '<p><strong>Event Time:</strong> ' . htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))) . '</p>';
                 echo '<p><strong>Organizer:</strong> ' . htmlspecialchars($event['organizer']) . '</p>';
                 echo '<p><strong>Description:</strong> ' . htmlspecialchars($event['description']) . '</p>';

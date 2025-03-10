@@ -27,20 +27,5 @@ document.addEventListener("DOMContentLoaded", function () {
     
     roleSelect.addEventListener("change", toggleAdminKeyInput);
 
-    // Password Strength Checker
-    function checkPasswordStrength() {
-        const password = passwordInput.value;
-        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
-        const mediumRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,20}$/;
-
-        if (strongRegex.test(password)) {
-            passwordStrength.innerHTML = '<div class="alert alert-success">Strong password</div>';
-        } else if (mediumRegex.test(password)) {
-            passwordStrength.innerHTML = '<div class="alert alert-warning">Medium password</div>';
-        } else {
-            passwordStrength.innerHTML = '<div class="alert alert-danger">Weak password</div>';
-        }
-    }
-
-    passwordInput.addEventListener("input", checkPasswordStrength);
+   
 });

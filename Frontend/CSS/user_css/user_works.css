@@ -6,6 +6,40 @@ body {
     animation: fadeIn 1s ease-in-out; /* Add fade-in effect */
 }
 
+/* Theme Colors */
+.bg-theme {
+    background-color: rgb(2, 61, 15); /* Theme background color */
+}
+
+.btn-theme {
+    background-color: rgb(2, 61, 15); /* Theme button color */
+    border: none;
+    color: white; /* Change text color to white */
+}
+
+.btn-theme:hover {
+    background-color: rgb(26, 70, 41); /* Theme button hover color */
+    color: white; /* Ensure text color remains white */
+}
+.custom-modal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+.custom-modal .modal-header {
+    background-color: rgb(2, 61, 15); /* Updated background color */
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.custom-modal .modal-body {
+    background-color: #f9f9f9;
+    color: #333;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
 /* Main Content Adjustments */
 .main-content {
     margin-left: 260px; /* Matches sidebar width */
@@ -37,112 +71,6 @@ body {
     background-color: #4CAF50; /* Change button background color on hover */
     color: white;
 }
-
-/* Modal Styling */
-.modal-content {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 30px;
-    max-width: 900px;
-    margin: 0 auto;
-    border: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Change font */
-}
-
-.modal-header {
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 1.5rem;
-    padding-top: 1.5rem;
-    background-color: #023336; /* Change background color */
-    color: white; /* Change text color */
-}
-
-/* Announcement Modal Enhancements */
-.modal-header {
-    background-color: #023336; /* Change background color */
-    color: white;
-    border-bottom: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.modal-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 75%, transparent 75%, transparent);
-    background-size: 50px 50px;
-    opacity: 0.3;
-    z-index: 0;
-}
-
-.modal-title {
-    font-size: 1.75rem;
-    z-index: 1;
-    position: relative;
-}
-
-.modal-body {
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    line-height: 1.6; /* Add line height for better spacing */
-}
-
-.modal-body p {
-    margin-bottom: 1rem; /* Add margin to paragraphs for spacing */
-}
-
-.modal-body img {
-    margin-top: 1rem; /* Add margin to images for spacing */
-}
-
-.modal-body:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-}
-
-.modal-title {
-    font-size: 2rem; /* Increase font size */
-    font-weight: bold; /* Make text bold */
-    color: #fff; /* Change text color */
-    text-align: center;
-    width: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Change font */
-}
-
-.modal-body {
-    padding-top: 0;
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #555;
-}
-
-.modal-footer {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    background-color: #f1f1f1;
-    border-top: none;
-    padding: 15px;
-    display: flex;
-    justify-content: flex-end;
-    border-radius: 0 0 10px 10px;
-}
-
-/* Bold necessary text */
-.modal-body strong {
-    font-weight: bold;
-    color: #333;
-}
-
 /* Work Card Styling */
 .work-container {
     display: flex;
@@ -233,41 +161,7 @@ body {
     text-align: center;
 }
 
-.modal .modal-header {
-    background-color: #023336;
-    color: white;
-    border-bottom: none;
-}
 
-.modal .modal-title {
-    font-size: 1.75rem;
-}
-
-.modal .modal-body {
-    padding: 20px;
-}
-
-.modal .work-detail-header {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #007BFF;
-}
-
-.modal .work-detail-subtitle {
-    font-size: 1.25rem;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.modal .work-detail-text {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 10px;
-}
-
-.btn {
-    border-radius: 50px;
-}
 
 /* Ensure the modal closes properly */
 .modal-backdrop {
@@ -281,6 +175,7 @@ body {
 .modal-content {
     background-color: #f8f9fa;
 }
+
 
 /* Right Sidebar */
 .right-sidebar {
@@ -436,4 +331,8 @@ body {
     display: flex; /* Ensure the cards sit side by side */
     flex-wrap: wrap; /* Allow wrapping if necessary */
 }
-
+.modal-footer.justify-content-center .btn-theme {
+    background-color: rgb(2, 61, 15);
+    border: none;
+    color: white; /* Change text color to white */
+}

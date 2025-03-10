@@ -5,6 +5,22 @@ body {
     background: #ddead1; /* Change background color */
 }
 
+/* Theme Colors */
+.bg-theme {
+    background-color: rgb(2, 61, 15); /* Theme background color */
+}
+
+.btn-theme {
+    background-color: rgb(2, 61, 15); /* Theme button color */
+    border: none;
+    color: white; /* Change text color to white */
+}
+
+.btn-theme:hover {
+    background-color: rgb(26, 70, 41); /* Theme button hover color */
+    color: white; /* Ensure text color remains white */
+}
+
 /* Main Content */
 .main-content {
     margin-left: 290px;
@@ -361,5 +377,11 @@ body {
     color: #333;
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
+}
+
+.modal-footer.justify-content-center .btn-theme {
+    background-color: rgb(2, 61, 15);
+    border: none;
+    color: white; /* Change text color to white */
 }
 

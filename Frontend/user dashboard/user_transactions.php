@@ -55,25 +55,23 @@ unset($_SESSION['success_message']);
 <body style="background-color: #ddead1;">
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
-
-<!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
+        <div class="modal-content"> <!-- Add custom-modal class -->
+            <div class="modal-header bg-theme text-white"> <!-- Add bg-theme and text-white classes -->
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="color:black;">
-                Are you sure you want to log out?
+            <div class="modal-body text-center">
+                <p>Are you sure you want to log out?</p>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Frontend/logout.php" class="btn btn-danger">Logout</a>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a> <!-- Add btn-theme class -->
             </div>
         </div>
     </div>
 </div>
-
 <!-- Transactions Section -->
 <div class="container mt-5 mb-5">
     <?php if ($success_message): ?>
