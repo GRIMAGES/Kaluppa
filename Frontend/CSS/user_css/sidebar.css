@@ -64,7 +64,7 @@
 
 .nav-menu a {
     padding: 0.75rem 1rem;
-    color: white;
+    color: white; /* Set default color to white */
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -75,6 +75,7 @@
 /* Sidebar Hover Carve-Out Effect */
 .nav-menu a:hover {
     background-color: #C1E6BA;
+    color: rgb(2, 61, 15); /* Change text color on hover */
     transform: translateX(10px); /* Move to the right */
     clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%); /* Carved effect */
     border-radius: 0 20px 20px 0;

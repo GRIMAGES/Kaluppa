@@ -47,20 +47,24 @@ body {
     margin: 0 auto;
     border: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Change font */
 }
 
 .modal-header {
     border-bottom: 2px solid #ddd;
     padding-bottom: 1.5rem;
     padding-top: 1.5rem;
+    background-color: #023336; /* Change background color */
+    color: white; /* Change text color */
 }
 
 .modal-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
+    font-size: 2rem; /* Increase font size */
+    font-weight: bold; /* Make text bold */
+    color: #fff; /* Change text color */
     text-align: center;
     width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Change font */
 }
 
 .modal-body {
@@ -75,6 +79,12 @@ body {
     padding-bottom: 1.5rem;
     display: flex;
     justify-content: space-between;
+}
+
+/* Bold necessary text */
+.modal-body strong {
+    font-weight: bold;
+    color: #333;
 }
 
 /* Course Card Styling */

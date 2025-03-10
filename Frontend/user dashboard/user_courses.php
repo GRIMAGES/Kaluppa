@@ -84,6 +84,7 @@ $categorizedCourses = categorizeCourses($courseResult);
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 <!-- Logout Confirmation Modal -->
+
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -101,6 +102,7 @@ $categorizedCourses = categorizeCourses($courseResult);
         </div>
     </div>
 </div>
+
 <div class="main-content">
     <div class="course-container">
         <?php foreach ($categorizedCourses as $category => $courses): ?>
@@ -234,6 +236,18 @@ $categorizedCourses = categorizeCourses($courseResult);
     </div>
 </div>
 
+<!-- Success Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; min-height: 100px;">
+        <div class="d-flex">
+            <div class="toast-body">
+                Your application has been submitted successfully!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <!-- Right Sidebar -->
 <div class="right-sidebar">
     <h4>Courses Overview</h4>
@@ -341,12 +355,12 @@ document.getElementById("applicationForm").addEventListener("submit", function (
     })
     .then(data => {
         if (data.success) {
-            // Show success modal
-            const successModal = new bootstrap.Modal(document.getElementById("successModal"));
-            successModal.show();
+            // Show success toast
+            const successToast = new bootstrap.Toast(document.getElementById("successToast"));
+            successToast.show();
 
             // Close application modal
-            const applicationModal = bootstrap.Modal.getInstance(document.getElementById("applicationModal"));
+            const applicationModal = bootstrap.Modal.getInstance(document.getElementById("courseApplicationModal"));
             applicationModal.hide();
 
             // Remove the backdrop manually
@@ -357,11 +371,6 @@ document.getElementById("applicationForm").addEventListener("submit", function (
 
             // Reset form
             document.getElementById("applicationForm").reset();
-
-            // Hide success modal after 3 seconds
-            setTimeout(() => {
-                successModal.hide();
-            }, 3000);
 
             // Clear any previous error message
             if (errorContainer) {
@@ -391,9 +400,9 @@ document.getElementById("applicationForm").addEventListener("submit", function (
 });
 
 // Reset form when application modal is closed
-document.getElementById("applicationModal").addEventListener("hidden.bs.modal", function () {
+document.getElementById("courseApplicationModal").addEventListener("hidden.bs.modal", function () {
     // Get the modal instance
-    const applicationModal = bootstrap.Modal.getInstance(document.getElementById("applicationModal"));
+    const applicationModal = bootstrap.Modal.getInstance(document.getElementById("courseApplicationModal"));
 
     // Hide the modal and clear the backdrop
     applicationModal.hide();

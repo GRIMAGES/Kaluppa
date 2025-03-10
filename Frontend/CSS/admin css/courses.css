@@ -202,9 +202,9 @@ body {
 }
 
 .course-card.full {
-        background-color:rgb(255, 0, 0); /* Light red background for full courses */
-    }
-    .course-card.full .card-header, .course-card.full .card-body p {
+    background-color: rgb(255, 0, 0); /* Light red background for full courses */
+}
+.course-card.full .card-header, .course-card.full .card-body p {
     color: black; /* Change text color when course is full */
 }
 

@@ -198,8 +198,8 @@ if (!$workResult) {
 </div>
 
 <!-- Right Sidebar -->
-<div class="right-sidebar">
-    <h4>Announcements</h4>
+<div class="right-sidebar p-3 bg-light border rounded shadow-sm">
+    <h4 class="text-primary">Announcements</h4>
     <?php
     // Fetch published announcements
     $announcementQuery = "SELECT * FROM announcements WHERE status = 'published' ORDER BY created_at DESC";
@@ -207,9 +207,9 @@ if (!$workResult) {
 
     if ($announcementResult->num_rows > 0): ?>
         <?php while ($announcement = mysqli_fetch_assoc($announcementResult)): ?>
-            <div class="announcement-item" onclick="showAnnouncementDetails(<?php echo $announcement['id']; ?>)">
+            <div class="announcement-item p-2 mb-2 border-bottom" onclick="showAnnouncementDetails(<?php echo $announcement['id']; ?>)">
                 <span class="megaphone">📢</span>
-                <h5><?php echo htmlspecialchars($announcement['title'] ?? ''); ?></h5>
+                <h5 class="text-dark"><?php echo htmlspecialchars($announcement['title'] ?? ''); ?></h5>
             </div>
         <?php endwhile; ?>
     <?php else: ?>
@@ -221,12 +221,13 @@ if (!$workResult) {
 <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-primary text-white position-relative overflow-hidden">
                 <h5 class="modal-title" id="announcementModalLabel">Announcement Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header-overlay"></div>
             </div>
-            <div class="modal-body">
-                <div id="announcementDetails"></div>
+            <div class="modal-body p-4 bg-light border rounded shadow-sm">
+                <div id="announcementDetails" class="p-3 bg-light border rounded shadow-sm"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -237,19 +238,26 @@ if (!$workResult) {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<!-- Success Message Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="successModalLabel">Success</h5>
-            </div>
-            <div class="modal-body" style="color:black;">
+<!-- Success Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; min-height: 100px;">
+        <div class="d-flex">
+            <div class="toast-body">
                 Your application has been submitted successfully!
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Error Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="errorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; min-height: 100px;">
+        <div class="d-flex">
+            <div class="toast-body">
+                Error submitting application. Please try again later.
             </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -312,12 +320,24 @@ if (!$workResult) {
 
             xhr.onload = function() {
                 if (xhr.status === 200) {
-                    // Show success modal
-                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                    successModal.show();
+                    // Show success toast
+                    var successToast = new bootstrap.Toast(document.getElementById('successToast'));
+                    successToast.show();
                     form.reset(); // Reset form fields
+
+                    // Close the modal
+                    var modal = bootstrap.Modal.getInstance(form.closest('.modal'));
+                    modal.hide();
+
+                    // Remove the backdrop manually
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
                 } else {
-                    console.error('Form submission failed');
+                    // Show error toast
+                    var errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+                    errorToast.show();
                 }
             };
 

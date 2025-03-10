@@ -1,54 +1,126 @@
-<!-- sidebar.php -->
-<div class="sidebar p-3">
+<?php
+require_once '../../Backend/connection.php';
+
+// Redirect if not logged in
+if (!isset($_SESSION['email'])) {
+    header("Location: /Frontend/multiuserlogin.php");
+    exit();
+}
+
+$email = $_SESSION['email'];
+
+// Fetch admin details from the user table
+$query = "SELECT first_name, middle_name, last_name, profile_picture, role FROM user WHERE email = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$stmt->bind_result($first_name, $middle_name, $last_name, $profile_picture, $role);
+$stmt->fetch();
+$stmt->close();
+
+// Construct full name
+$adminName = trim("$first_name $middle_name $last_name");
+
+// Set profile picture path (use a default if empty)
+$profilePic = !empty($profile_picture) ? "/Frontend/admin dashboard/uploads/profile_pics/" . $profile_picture : "/Frontend/assets/default-profile.png";
+
+// Get the current page filename
+$current_page = basename($_SERVER['PHP_SELF']);
+
+$navLinks = [
+    ['href' => 'admin_dashboard.php', 'icon' => 'fas fa-home', 'text' => 'Dashboard'],
+    ['href' => 'admin_users.php', 'icon' => 'fas fa-users', 'text' => 'Users', 'role' => 'superadmin'],
+    ['href' => '#', 'icon' => 'fas fa-cogs', 'text' => 'Content Manager', 'dropdown' => [
+        ['href' => 'admin_events.php', 'icon' => 'fas fa-calendar', 'text' => 'Events'],
+        ['href' => 'admin_works.php', 'icon' => 'fas fa-briefcase', 'text' => 'Works'],
+        ['href' => 'admin_courses.php', 'icon' => 'fas fa-book', 'text' => 'Courses'],
+        ['href' => 'admin_announcements.php', 'icon' => 'fas fa-bullhorn', 'text' => 'Announcements'],
+        ['href' => 'featured_card.php', 'icon' => 'fas fa-star', 'text' => 'Featured Cards'], // New link
+    ]],
+    ['href' => '#', 'icon' => 'fas fa-tasks', 'text' => 'Application Manager', 'dropdown' => [ // New dropdown
+        ['href' => 'admin_scholarship.php', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship'],
+        ['href' => 'admin_volunteer.php', 'icon' => 'fas fa-handshake', 'text' => 'Volunteer'],
+    ]],
+    ['href' => 'admin_analytics.php', 'icon' => 'fas fa-chart-line', 'text' => 'Analytics'],
+    ['href' => 'reports.php', 'icon' => 'fas fa-chart-bar', 'text' => 'Reports'],
+    ['href' => 'admin_settings.php', 'icon' => 'fas fa-cog', 'text' => 'Admin Settings'],
+    ['href' => '#', 'icon' => 'fas fa-certificate', 'text' => 'Certificates', 'dropdown' => [
+        ['href' => 'admin_certificates.php?type=scholarship', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship'],
+        ['href' => 'admin_certificates.php?type=training', 'icon' => 'fas fa-chalkboard-teacher', 'text' => 'Training'],
+        ['href' => 'admin_certificates.php?type=event', 'icon' => 'fas fa-calendar-check', 'text' => 'Event'],
+    ]],
+];
+?>
+
+<link rel="stylesheet" href="../CSS/admin_css/admin_sidebar.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<button class="burger-button d-block d-md-none" onclick="toggleSidebar()">☰</button>
+
+<div class="sidebar p-3 d-flex flex-column">
     <div class="text-center mb-3">
-        <img src="profile-pic.jpg" alt="Profile" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
+        <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
         <h5><?php echo htmlspecialchars($adminName); ?></h5>
     </div>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a href="admin_dashboard.php" class="nav-link"><i class="fas fa-home me-2"></i> Dashboard</a>
-        </li>
-        <li class="nav-item">
-            <a href="admin_users.php" class="nav-link"><i class="fas fa-users me-2"></i> Users</a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#contentManager"><i class="fas fa-cogs me-2"></i> Content Manager</a>
-            <div class="collapse" id="contentManager">
-                <ul class="nav flex-column ms-3">
+    <ul class="nav flex-column flex-grow-1">
+        <?php foreach ($navLinks as $link): ?>
+            <?php if (!isset($link['role']) || $link['role'] == $role): ?>
+                <?php if (isset($link['dropdown'])): ?>
                     <li class="nav-item">
-                        <a href="admin_events.php" class="nav-link text-light"><i class="fas fa-calendar me-2"></i> Events</a>
+                        <a class="nav-link small" href="#" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo str_replace(' ', '', $link['text']); ?>">
+                            <i class="<?php echo htmlspecialchars($link['icon']); ?>"></i> <span class="nav-text"><?php echo htmlspecialchars($link['text']); ?></span>
+                        </a>
+                        <div class="collapse <?php echo in_array($current_page, array_column($link['dropdown'], 'href')) ? 'show' : ''; ?>" id="collapse<?php echo str_replace(' ', '', $link['text']); ?>">
+                            <ul class="nav flex-column ms-3">
+                                <?php foreach ($link['dropdown'] as $sublink): ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link small <?php echo ($current_page == $sublink['href']) ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($sublink['href']); ?>">
+                                            <i class="<?php echo htmlspecialchars($sublink['icon']); ?>"></i> <span class="nav-text"><?php echo htmlspecialchars($sublink['text']); ?></span>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
                     </li>
+                <?php else: ?>
                     <li class="nav-item">
-                        <a href="admin_works.php" class="nav-link text-light"><i class="fas fa-briefcase me-2"></i> Works</a>
+                        <a class="nav-link small <?php echo ($current_page == $link['href']) ? 'active' : ''; ?>" href="<?php echo htmlspecialchars($link['href']); ?>">
+                            <i class="<?php echo htmlspecialchars($link['icon']); ?>"></i> <span class="nav-text"><?php echo htmlspecialchars($link['text']); ?></span>
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="admin_courses.php" class="nav-link text-light"><i class="fas fa-book me-2"></i> Courses</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#applicationManager"><i class="fas fa-file-alt me-2"></i> Application Manager</a>
-            <div class="collapse" id="applicationManager">
-                <ul class="nav flex-column ms-3">
-                    <li class="nav-item">
-                        <a href="admin_scholarship.php" class="nav-link text-light"><i class="fas fa-graduation-cap me-2"></i> Scholarship</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="admin_volunteer.php" class="nav-link text-light"><i class="fas fa-handshake me-2"></i> Volunteer</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a href="admin_analytics.php" class="nav-link"><i class="fas fa-chart-line me-2"></i> Analytics</a>
-        </li>
-        <li class="nav-item">
-            <a href="reports.php" class="nav-link active"><i class="fas fa-chart-bar me-2"></i> Reports</a>
-        </li>
-        <li class="nav-item">
-            <a href="admin_announcements.php" class="nav-link"><i class="fas fa-bullhorn me-2"></i> Announcements</a>
-        </li>
+                <?php endif; ?>
+            <?php endif; ?>
+        <?php endforeach; ?>
     </ul>
     <button class="btn btn-danger mt-auto w-100" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
 </div>
+
+<script>
+    function toggleSidebar() {
+        document.querySelector('.sidebar').classList.toggle('open');
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var collapseElements = document.querySelectorAll('.collapse');
+        collapseElements.forEach(function (collapseElement) {
+            collapseElement.addEventListener('show.bs.collapse', function () {
+                var openCollapseElements = document.querySelectorAll('.collapse.show');
+                openCollapseElements.forEach(function (openCollapseElement) {
+                    if (openCollapseElement !== collapseElement) {
+                        var collapseInstance = bootstrap.Collapse.getInstance(openCollapseElement);
+                        collapseInstance.hide();
+                    }
+                });
+            });
+        });
+    });
+</script>
+<style>
+    .nav-text {
+        font-size: 0.875rem; /* Smaller font size */
+    }
+</style>

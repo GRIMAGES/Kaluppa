@@ -272,3 +272,94 @@ body {
         padding: 20px;
     }
 }
+//featured card//
+.card:hover {
+    transform: scale(1.02);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.featured-card {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 25px 30px;
+    height: 90%; /* Further reduced height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 100%; /* Make width responsive */
+    margin-top: 50px;
+    margin-left: 20px; /* Move more to the right */
+    border-radius: 8px; /* More rectangular shape */
+}
+
+.featured-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.featured-card-img {
+    width: 100%;
+    height: 250px; /* Consistent height */
+    object-fit: cover; /* Ensure the image covers the area */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    transition: transform 0.4s ease;
+}
+
+.featured-card:hover .featured-card-img {
+    transform: scale(1.05);
+}
+
+.featured-card-body {
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+
+.featured-card-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.view-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #1a4629;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.view-btn:hover {
+    background-color: #0f3d22;
+    transform: scale(1.05);
+}
+
+/* Modal Design */
+.custom-modal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+.custom-modal .modal-header {
+    background-color: #1a4629;
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.custom-modal .modal-body {
+    background-color: #f9f9f9;
+    color: #333;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+

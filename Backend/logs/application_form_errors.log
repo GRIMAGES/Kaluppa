@@ -418,3 +418,20 @@ Stack trace:
 [02-Mar-2025 08:08:36 Europe/Berlin] Generated new ID: VOL-00003
 [02-Mar-2025 08:08:36 Europe/Berlin] Application submitted successfully for user ID: 34
 [02-Mar-2025 08:08:36 Europe/Berlin] Executed query: 
+[10-Mar-2025 14:08:09 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[10-Mar-2025 14:08:09 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\generated_certificates (1).pdf
+[10-Mar-2025 14:08:09 Europe/Berlin] Generated new ID: VOL-00004
+[10-Mar-2025 14:08:09 Europe/Berlin] Application submitted successfully for user ID: 43
+[10-Mar-2025 14:08:09 Europe/Berlin] Executed query: 
+[10-Mar-2025 14:28:35 Europe/Berlin] Generated new ID: APP-00003
+[10-Mar-2025 14:32:51 Europe/Berlin] Generated new ID: APP-00004
+[10-Mar-2025 14:33:03 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[10-Mar-2025 14:33:03 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\generated_certificates (1).pdf
+[10-Mar-2025 14:33:03 Europe/Berlin] Generated new ID: VOL-00005
+[10-Mar-2025 14:33:03 Europe/Berlin] Application submitted successfully for user ID: 43
+[10-Mar-2025 14:33:03 Europe/Berlin] Executed query: 
+[10-Mar-2025 14:34:55 Europe/Berlin] Resolved path: 'C:\\xampp\\php\\Kaluppa\\Backend\\Documents\\Volunteer'
+[10-Mar-2025 14:34:55 Europe/Berlin] File uploaded successfully to: C:\xampp\php\Kaluppa\Backend\Documents\Volunteer\generated_certificates (4).pdf
+[10-Mar-2025 14:34:55 Europe/Berlin] Generated new ID: VOL-00006
+[10-Mar-2025 14:34:55 Europe/Berlin] Application submitted successfully for user ID: 43
+[10-Mar-2025 14:34:55 Europe/Berlin] Executed query: 

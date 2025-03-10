@@ -112,8 +112,6 @@ $stmt->close();
 <body>
 <?php include 'admin_sidebar.php'; ?>
 
-
-
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -201,6 +199,7 @@ $stmt->close();
 </div>
 
     </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -126,23 +126,33 @@
                 flex: 1;
                 min-width: 200px;
             }
-            .btn-green {
-                background-color: #4CAF50; /* Match the sidebar color */
-                border-color: #4CAF50;
-                color: #fff;
-            }
-            .btn-green:hover {
-                background-color: #45a049;
-                border-color: #45a049;
+            .container {
+                margin-top: 80px; /* Adjust this value to move the cards lower */
             }
         </style>
     </head>
     <body style="background-color: #ddead1;">
     <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
-
-    <div class="container">
-        <h2 class="text-center mb-4">Profile Settings</h2>
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color:black;">
+                Are you sure you want to log out?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="/Frontend/logout.php" class="btn btn-danger">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="container"> 
         <div id="message" class="text-center"><?php if ($message) echo '<div class="alert alert-success">' . $message . '</div>'; ?></div>
 
         <!-- Back to Dashboard button placed lower and left-aligned -->
@@ -168,7 +178,7 @@
                             <label class="form-label">Email:</label>
                             <input type="email" name="email" class="form-control" value="<?php echo $email; ?>" required>
                         </div>
-                        <button type="submit" name="update_profile" class="btn btn-green">Update Profile</button>
+                        <button type="submit" name="update_profile" class="btn btn-primary">Update Profile</button>
                     </form>
                 </div>
 
@@ -187,7 +197,7 @@
                             <label class="form-label">Confirm New Password:</label>
                             <input type="password" name="confirm_password" class="form-control" required>
                         </div>
-                        <button type="submit" name="change_password" class="btn btn-green">Change Password</button>
+                        <button type="submit" name="change_password" class="btn btn-warning">Change Password</button>
                     </form>
                 </div>
             </div>
@@ -206,7 +216,7 @@
                     <label class="form-label">Upload New Picture:</label>
                     <input type="file" name="profile_picture" class="form-control">
                 </div>
-                <button type="submit" name="upload_picture" class="btn btn-green w-100">Upload</button>
+                <button type="submit" name="upload_picture" class="btn btn-success w-100">Upload</button>
             </form>
         </div>
 
@@ -243,7 +253,7 @@
                         <input type="text" name="postal_code" class="form-control" value="<?php echo $postal_code; ?>" required>
                     </div>
                 </div>
-                <button type="submit" name="update_address" class="btn btn-green mt-3">Update Address</button>
+                <button type="submit" name="update_address" class="btn btn-info mt-3">Update Address</button>
             </form>
         </div>
     </div>

@@ -76,6 +76,19 @@ function getProgress($status) {
             return 0;
     }
 }
+
+// Fetch card content data
+$queryCards = "SELECT * FROM featured_cards";
+$resultCards = $conn->query($queryCards);
+$cards = [];
+while ($row = $resultCards->fetch_assoc()) {
+    $cards[] = $row;
+}
+
+// Fetch the featured card details
+$query = "SELECT * FROM featured_cards ORDER BY id ASC";
+$result = $conn->query($query);
+$featuredCards = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,26 +126,49 @@ function getProgress($status) {
     </div>
 </div>
 
-<!-- Main Content -->
-<div class="main-content">
-    <div class="featured-section">
-        <div class="featured-card">
-            <h3 class="card-title">Featured Course</h3>
-            <p>Agricultural Course</p>
-            <a href="user_courses.php" class="btn btn-outline-success">More Courses</a>
-        </div>
-        <div class="featured-card">
-            <h3 class="card-title">Featured Work</h3>
-            <p>Tree Planting</p>
-            <a href="user_work.php" class="btn btn-outline-success">More Volunteer</a>
-        </div>
-        <div class="featured-card">
-            <h3 class="card-title">Featured Event</h3>
-            <p>Community Event</p>
-            <a href="user_events.php" class="btn btn-outline-success">More Events</a>
-        </div>
-    </div>
+<!-- Featured Cards Section -->
+<div class="container mt-5" style="margin-top: 200px;"> <!-- Further adjusted margin-top -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"> <!-- Added Bootstrap classes for responsive layout and gaps -->
+        <?php foreach ($featuredCards as $card): ?>
+            <div class="col">
+                <div class="featured-card d-flex flex-column justify-content-between">
+                    <img src="../../Frontend/admin dashboard/uploads/featured/<?php echo htmlspecialchars($card['image']); ?>" class="featured-card-img" alt="Card Image" style="width: 100%; height: 250px; object-fit: cover;"> <!-- Consistent image size -->
+                    <div class="featured-card-body">
+                        <h5 class="featured-card-title"><?php echo htmlspecialchars($card['title']); ?></h5>
+                        <p class="featured-card-text"><?php echo htmlspecialchars($card['description']); ?></p>
+                    </div>
+                    <div class="text-center mb-3">
+                        <a href="#" class="view-btn" data-bs-toggle="modal" data-bs-target="#featuredModal<?php echo $card['id']; ?>">View More</a>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Modal -->
+            <div class="modal fade custom-modal" id="featuredModal<?php echo $card['id']; ?>" tabindex="-1" aria-labelledby="featuredModalLabel<?php echo $card['id']; ?>" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="featuredModalLabel<?php echo $card['id']; ?>"><?php echo htmlspecialchars($card['title']); ?></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="../../Frontend/admin dashboard/uploads/featured/<?php echo htmlspecialchars($card['image']); ?>" class="img-fluid mb-3 rounded shadow" alt="Card Image" style="width: 100%; height: 250px; object-fit: cover;"> <!-- Consistent image size -->
+                            <p><strong><?php echo nl2br(htmlspecialchars($card['description'])); ?></strong></p>
+                            <!-- Add additional details here -->
+                            <p><strong>Additional Details:</strong></p>
+                            <div style="text-align: left; padding: 10px;">
+                                <?php echo nl2br(htmlspecialchars($card['details'])); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+    
+<!-- Main Content -->   
+<div class="main-content">
     <div class="progress-container my-4">
         <h4> Scholarship Application Status Progress</h4>
         <?php foreach ($applications as $application): ?>
@@ -185,8 +221,10 @@ function getProgress($status) {
         <?php endforeach; ?>
     </div>
 
+    
+
    <!-- Calendar Section -->
-   <div class="calendar-container">
+   <div class="calendar-container mt-5">
         <h3 class="mb-3">Event Calendar</h3>
         <div class="calendar-wrapper">
             <div id="calendar"></div>
@@ -212,6 +250,7 @@ function getProgress($status) {
         </div>
     </div>
 
+    
 <!-- FullCalendar and Dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
