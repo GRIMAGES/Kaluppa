@@ -181,7 +181,7 @@ if (isset($_POST['change_password'])) {
                 <div class="card-body">
                     <form method="POST" action="admin_settings.php" enctype="multipart/form-data">
                         <div class="mb-3 text-center">
-                            <img src="/Frontend/admin dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px;">
+                            <img src="KALUPPA/Frontend/admin dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px;">
                         </div>
                         <div class="mb-3">
                             <label for="profile_picture" class="form-label">Profile Picture</label>

@@ -1,0 +1,129 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    color:white;
+}
+
+.card {
+    border: none;
+    border-radius: 20px;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    background: linear-gradient(135deg,rgba(17, 77, 42, 0.9),rgb(16, 134, 65)); /* Default gradient */
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.03);
+    
+}
+
+.card .card-body {
+    padding: 30px;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.card-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Different color themes for each card */
+.card.users {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+}
+.card.users:hover {
+    background: linear-gradient(135deg, #0083b0, #00b4db);
+}
+
+.card.scholarships {
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+.card.scholarships:hover {
+    background: linear-gradient(135deg, #f7971e, #fceabb);
+}
+
+.card.volunteers {
+    background: linear-gradient(135deg, #ff5858, #f09819);
+}
+.card.volunteers:hover {
+    background: linear-gradient(135deg, #ff7e5f, #feb47b);
+}
+.chart-container {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease-in-out;
+}
+
+.event-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeInRight 0.6s ease-in-out;
+}
+
+.event-title {
+    font-weight: 500;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.card-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.card-header{
+    background-color:rgb(241, 241, 241);
+    border-bottom: none;
+    padding: 1.25rem 1.5rem;
+}
+
+
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

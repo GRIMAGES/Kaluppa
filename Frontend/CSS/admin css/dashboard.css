@@ -1,213 +1,123 @@
-/* Background Gradient */
-body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #0a2a5b, #1d3d6b);
-    color: white;
-}
 
-/* Sidebar Styles */
-/* Sidebar Styles */
-.sidebar {
-    background: #1b2a46;
-    height: 100vh;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    color: white;
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar .nav {
-    flex-grow: 1;
-}
-
-.sidebar img {
-    width: 60px;
-    border-radius: 50%;
-}
-
-.sidebar .nav-link {
-    color: white !important;
-}
-
-.sidebar .nav-link:hover {
-    background-color: #003d73;
-}
-
-.sidebar .nav-link:active {
-    background-color: #00508e;
-}
-
-/* Logout Button at the Bottom */
-.sidebar .btn {
-    margin-top: auto;
-    border-radius: 5px;
-    background-color: #dc3545;
-    border-color: #c82333;
-}
-
-.sidebar .btn:hover {
-    background-color: #c82333;
-}
-
-/* Topbar Styles */
-.topbar {
-    background: #0e2a56;
-    color: white;
-    height: 50px;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.topbar a {
-    color: white;
-}
-
-/* Cards and Sections */
-.card {
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.card-body {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Dropdown and Buttons */
-.dropdown-menu {
-    min-width: 250px;
-}
-
-.chart-container {
-    width: 100%;
-    height: 300px;
-}
-
-.schedule-table {
-    border: 1px solid #ddd;
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 30px;
-}
-
-.schedule-table th, .schedule-table td {
-    padding: 10px;
-    text-align: left;
-}
-
-.schedule-table th {
-    background-color: #003d73;
-    color: white;
-}
-
-.schedule-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-.schedule-table tr:nth-child(odd) {
-    background-color: #e0e5f2;
-}
-
-.btn-primary, .btn-danger {
-    border-radius: 5px;
-}
-
-.btn-primary {
-    background-color: #0066cc;
-    border-color: #005bb5;
-}
-
-.btn-primary:hover {
-    background-color: #005bb5;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-    border-color: #c82333;
-}
-
-.btn-danger:hover {
-    background-color: #c82333;
-}
-/* Event Card */
-.event-card {
-    height: 300px; /* Set a shorter height */
-    width: 520px; /* Set a wider width */
-    border-radius: 8px;
-    background-color: #f8f9fa;
-    overflow: hidden; /* Clip content that overflows */
-    display: inline-block; /* Align next to the chart */
-    margin: 5px; /* Small margin between cards */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
-    transition: box-shadow 0.3s; /* Smooth shadow transition on hover */
-}
-/* Header Styling */
-.event-card .card-header {
-    font-size: 1.2rem;
-    font-weight: 600;
-    background: linear-gradient(45deg, #4e73df, #1cc88a);
-    padding: 8px 12px;
-}
-
-/* List Items */
-.list-group-item {
-    font-size: 0.85rem;
-    padding: 8px 10px;
-    border: none;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.2s ease;
-}
-
-.list-group-item:hover {
-    background-color: #e9ecef;
-}
-
-.bi-calendar2-event-fill {
-    font-size: 1rem;
-    color: #1cc88a;
-}
-
-.event-title {
-    font-weight: 500;
-    color: #343a40;
-    margin-left: 5px;
-}
-
-/* Footer Action */
-.card-footer {
-    padding: 8px 10px;
-}
-
-.card-footer .btn {
-    font-size: 0.8rem;
-    font-weight: bold;
-    padding: 5px 10px;
-    border-radius: 12px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .event-card {
-        max-width: 100%;
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        color:white;
     }
-}
-.black-text {
-            color: black;
-        }
-        .dataTables_filter input {
-        background-color: #f2f2f2;
-        color: black;
-        border: 1px solid #ccc;
-        padding: 5px;
+
+    .card {
+        border: none;
+        border-radius: 20px;
+        color: #fff;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb); /* Default gradient */
+        position: relative;
+        overflow: hidden;
     }
     
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(135deg, #667eea, #764ba2);
+    }
+    
+    .card .card-body {
+        padding: 30px;
+        text-align: center;
+    }
+    
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    
+    .card-text {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #fff;
+    }
+    
+    /* Different color themes for each card */
+    .card.users {
+        background: linear-gradient(135deg, #00c6ff, #0072ff);
+    }
+    .card.users:hover {
+        background: linear-gradient(135deg, #0083b0, #00b4db);
+    }
+    
+    .card.scholarships {
+        background: linear-gradient(135deg, #f7971e, #ffd200);
+    }
+    .card.scholarships:hover {
+        background: linear-gradient(135deg, #f7971e, #fceabb);
+    }
+    
+    .card.volunteers {
+        background: linear-gradient(135deg, #ff5858, #f09819);
+    }
+    .card.volunteers:hover {
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+    }
+    .chart-container {
+        background-color: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        animation: fadeInUp 0.6s ease-in-out;
+    }
+
+    .event-card {
+        background-color: white;
+        border-radius: 20px;
+        padding: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        animation: fadeInRight 0.6s ease-in-out;
+    }
+
+    .event-title {
+        font-weight: 500;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .card-text {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+
+    .fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
