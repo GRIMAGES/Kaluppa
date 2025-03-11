@@ -99,10 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_card'])) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Frontend/logout.php" class="btn btn-danger">Logout</a>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a>
             </div>
         </div>
-    </div>  
+    </div>
 </div>
 
 <div class="container mt-4" style="margin-left: 250px;">

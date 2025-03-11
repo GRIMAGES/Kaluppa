@@ -101,7 +101,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 <body>
 <?php include 'admin_sidebar.php'; ?>
 
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -113,7 +113,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Frontend/logout.php" class="btn btn-danger">Logout</a>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a>
             </div>
         </div>
     </div>

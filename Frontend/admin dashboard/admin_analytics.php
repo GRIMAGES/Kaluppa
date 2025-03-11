@@ -125,7 +125,7 @@ $colors = array_map(function($item) {
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="logoutForm" action="admin_scholarship.php" method="POST">
-                    <button type="submit" name="logout" class="btn btn-danger">Logout</button>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a>
                 </form>
             </div>
         </div>
