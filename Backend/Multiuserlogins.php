@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
         $_SESSION['error'] = "User not found.";
     }
     // Redirect to login page to show error message
-    header("Location: ../Frontend/Multiuserlogin.php");
+    header("Location: ../Frontend/index.php");
     exit();
 }
 
@@ -91,13 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
         !preg_match('/[0-9]/', $password) || 
         !preg_match('/[@$!%*?&#^+=._-]/', $password)) {
         $_SESSION['error'] = "Password must be 10-16 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
-        header("Location: ../Frontend/Multiuserlogin.php");
+        header("Location: ../Frontend/index.php");
         exit();
     }
 
     if ($password !== $confirm_password) {
         $_SESSION['error'] = "Passwords do not match.";
-        header("Location: ../Frontend/Multiuserlogin.php");
+        header("Location: ../Frontend/index.php");
         exit();
     }
 
@@ -118,16 +118,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
             $_SESSION['resend_email'] = $email;
             $_SESSION['resend_first_name'] = $first_name;
             $_SESSION['resend_otp'] = $otp;
-            header("Location: ../Frontend/Multiuserlogin.php"); 
+            header("Location: ../Frontend/index.php"); 
             exit();
         } else {
             $_SESSION['error'] = "Error sending verification email: " . $mailResult;
-            header("Location: ../Frontend/Multiuserlogin.php");
+            header("Location: ../Frontend/index.php");
             exit();
         }
     } else {
         $_SESSION['error'] = "Error in registration. Please try again.";
-        header("Location: ../Frontend/Multiuserlogin.php");
+        header("Location: ../Frontend/index.php");
         exit();
     }
 }
@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_confirmation']
     } else {
         $_SESSION['error'] = "Error resending verification email: " . $mailResult;
     }
-    header("Location: ../Frontend/Multiuserlogin.php");
+    header("Location: ../Frontend/index.php");
     exit();
 }
 ?>

@@ -18,21 +18,21 @@ if (isset($_GET['email'], $_GET['otp'])) {
         $updateStmt->bind_param("s", $email);
         if ($updateStmt->execute()) {
             $_SESSION['info'] = "Account successfully verified! You can now log in.";
-            header("Location: ../Frontend/Multiuserlogin.php");
+            header("Location: ../Frontend/index.php");
             exit();
         } else {
             $_SESSION['error'] = "Verification failed. Please try again later.";
-            header("Location: ../Frontend/Multiuserlogin.php");
+            header("Location: ../Frontend/index.php");
             exit();
         }
     } else {
         $_SESSION['error'] = "Invalid or expired verification link.";
-        header("Location: ../Frontend/Multiuserlogin.php");
+        header("Location: ../Frontend/index.php");
         exit();
     }
 } else {
     $_SESSION['error'] = "Invalid verification request.";
-    header("Location: ../Frontend/Multiuserlogin.php");
+    header("Location: ../Frontend/index.php");
     exit();
 }
 ?>
