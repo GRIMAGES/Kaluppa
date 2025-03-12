@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     if ($stmt->execute()) {
         $subject = "Verify Your Email";
         $message = "Click the link to verify your account: ";
-        $message .= "http://localhost:3000/Backend/otpverification.html?email=$email&otp=$otp"; 
+        $message .= "http://localhost/Kaluppa/Backend/otpverification.html?email=$email&otp=$otp"; 
         $mailResult = sendOTPByEmail($email, $first_name, $otp, $subject);
 
         if ($mailResult === true) {
