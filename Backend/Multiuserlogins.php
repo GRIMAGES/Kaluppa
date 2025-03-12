@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
+
 require_once 'connection.php';
 require_once 'functions.php'; // Include the functions.php file for sendOTPByEmail
 require_once '../vendor/autoload.php'; // if using composer
@@ -10,7 +13,7 @@ $errors = [];
 function resendConfirmationLink($email, $first_name, $otp) {
     $subject = "Resend: Verify Your Email";
     $message = "Click the link to verify your account: ";
-    $message .= "http://localhost:3000/Backend/otpverification.html?email=$email&otp=$otp"; 
+    $message .= "http://54.151.138.43/Backend/otpverification.html?email=$email&otp=$otp"; 
     return sendOTPByEmail($email, $first_name, $otp, $subject);
 }
 
@@ -110,7 +113,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     if ($stmt->execute()) {
         $subject = "Verify Your Email";
         $message = "Click the link to verify your account: ";
+<<<<<<< HEAD
         $message .= "http://localhost/Kaluppa/Backend/otpverification.html?email=$email&otp=$otp"; 
+=======
+        $message .= "http://54.151.138.43/Backend/otpverification.html?email=$email&otp=$otp"; 
+>>>>>>> ff71895629d112a5d66f3a4004a43f9bd6565c92
         $mailResult = sendOTPByEmail($email, $first_name, $otp, $subject);
 
         if ($mailResult === true) {

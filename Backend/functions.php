@@ -28,7 +28,7 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
         $mail->addAddress($toEmail, $username);
 
         // Generate the verification link
-        $verificationLink = "http://localhost:3000/Backend/otpverification.php?email=" . urlencode($toEmail) . "&otp=" . urlencode($otp);
+        $verificationLink = "http://54.151.138.43/Backend/otpverification.php?email=" . urlencode($toEmail) . "&otp=" . urlencode($otp);
 
         // Set email content with the verification link
         $mail->isHTML(true);
