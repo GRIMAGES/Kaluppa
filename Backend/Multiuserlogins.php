@@ -108,9 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
 
     $password_hashed = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, password, role, gender, birthday, house_number, street, barangay, district, city, region, postal_code, phone, otp, google_auth_secret, is_verified) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
+    $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, password, role, gender, birthday, house_number, street, barangay, district, city, region, postal_code, phone, otp, is_verified) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
 
-    $stmt->bind_param("ssssssssssssssssss", $first_name, $middle_name, $last_name, $email, $password_hashed, $gender, $birthday, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $phone, $otp, $secret);
+    $stmt->bind_param("ssssssssssssssss", $first_name, $middle_name, $last_name, $email, $password_hashed, $gender, $birthday, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $phone, $otp);
+
 
     if ($stmt->execute()) {
         $subject = "Verify Your Email";
