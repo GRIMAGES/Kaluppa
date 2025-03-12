@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
 }
 
 // Registration Handling
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_POST['reg_password'], $_POST['gender'], $_POST['birthday'], $_POST['google_auth_code'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_POST['reg_password'], $_POST['gender'], $_POST['birthday'],)) {
     $first_name = $_POST['reg_first_name'];
     $middle_name = $_POST['reg_middle_name'];
     $last_name = $_POST['reg_last_name'];
