@@ -1,0 +1,102 @@
+/* Dark Theme Card Style */
+.card {
+    background-color: #1e1e2f;
+    border-radius: 16px;
+    color:rgb(0, 0, 0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #2c2c3c;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); /* Stronger shadow */
+}
+
+/* Hover effect */
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.7); /* Enhanced on hover */
+}
+
+/* Card Image Styling */
+.card-img-top {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+/* Card Body Text */
+.card-body h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color:rgb(0, 0, 0);
+}
+
+.card-body p {
+    font-size: 0.95rem;
+    color:rgb(0, 0, 0);
+}
+
+/* Card Footer Buttons */
+.card-footer {
+    background-color: #2a2a3a;
+    border-top: 1px solid #444;
+}
+
+.card-footer .btn-outline-success,
+.card-footer .btn-outline-danger {
+    border-radius: 8px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.card-footer .btn-outline-success:hover {
+    background-color: #1f9d55;
+    color: #fff;
+    border-color: #1f9d55;
+}
+
+.card-footer .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+/* Badge Styling */
+.badge.bg-success,
+.badge.bg-secondary {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border-radius: 12px;
+}
+
+/* Add Announcement Button Styling - Dark Theme Enhanced */
+.btn.btn-primary {
+    background-color:rgb(0, 0, 0); /* New color: soft violet-blue */
+    border-color:rgb(255, 255, 255);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(92, 124, 250, 0.3); /* Soft glow effect */
+    color: #fff;
+}
+
+.btn.btn-primary:hover {
+    background-color: #4263eb;
+    border-color: #4263eb;
+    box-shadow: 0 6px 18px rgba(66, 99, 235, 0.5); /* Stronger glow on hover */
+    color: #fff;
+}
+
+/* Modal Styling for Dark Mode */
+.modal-content {
+    background-color: #1f1f2d;
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+    border-color: #333;
+}
+
+.modal-title {
+    color: #ffffff;
+}

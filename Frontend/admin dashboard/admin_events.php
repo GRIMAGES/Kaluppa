@@ -6,7 +6,7 @@ $timeout_duration = 1000; // 30 minutes
 
 // Redirect to login page if not logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 $adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
@@ -24,7 +24,7 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
     // Last activity was more than 30 minutes ago
     session_unset();     // unset $_SESSION variable for the run-time
     session_destroy();   // destroy session data
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -33,14 +33,14 @@ $_SESSION['LAST_ACTIVITY'] = time();
 // Logout logic
 if (isset($_POST['logout'])) {
     session_destroy();
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
 // Logout logic
 if (isset($_POST['logout'])) {
     session_destroy();
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -68,7 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addEvent'])) {
         
         if ($stmt->execute()) {
             // Redirect to trigger the modal after event is added
-            echo "<script>window.location.href='admin_events.php?success=true';</script>";
+            $_SESSION['toast_success'] = "Event added successfully!";
+header("Location: admin_events.php");
+exit();
+
+            ;
         } else {
             echo "<div class='alert alert-danger'>Error adding event: " . $stmt->error . "</div>";
         }
@@ -108,7 +112,10 @@ if (isset($_GET['edit_event'])) {
         $stmt->bind_param("sssssi", $updatedTitle, $imageName, $updatedEventTime, $updatedOrganizer, $updatedDescription, $eventId);
         
         if ($stmt->execute()) {
-            echo "<script>window.location.href='admin_events.php?edit_success=true';</script>";
+            $_SESSION['toast_success'] = "Event updated successfully!";
+            header("Location: admin_events.php");
+            exit();
+            
         } else {
             echo "<div class='alert alert-danger'>Error editing event: " . $stmt->error . "</div>";
         }
@@ -122,7 +129,9 @@ if (isset($_GET['delete_event'])) {
     $stmt = $conn->prepare($deleteQuery);
     $stmt->bind_param("i", $eventId);
     if ($stmt->execute()) {
-        echo "<div class='alert alert-success'>Event deleted successfully.</div>";
+        $_SESSION['toast_success'] = "Event deleted successfully!";
+        header("Location: admin_events.php");
+        exit();
     } else {
         echo "<div class='alert alert-danger'>Error deleting event: " . $stmt->error . "</div>";
     }
@@ -137,8 +146,10 @@ if (isset($_GET['delete_event'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Event Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../CSS/admin css/events.css">
+    <link rel="stylesheet" href="../CSS/admin css/event.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
 <?php include 'admin_sidebar.php'; ?>
@@ -166,37 +177,34 @@ if (isset($_GET['delete_event'])) {
 
         <h1>Event Manager</h1>
 
-        <!-- Button to Trigger Add Event Modal -->
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEventModal">Add Event</button>
-
         <!-- Add Event Modal -->
         <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addEventModalLabel" style="color:black;">Add New Event</h5>
+                        <h5 class="modal-title" id="addEventModalLabel">Add New Event</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label for="eventTitle" class="form-label" style="color:black;">Event Title</label>
+                                <label for="eventTitle" class="form-label">Event Title</label>
                                 <input type="text" class="form-control" name="eventTitle" id="eventTitle" required>
                             </div>
                             <div class="mb-3">
-                                <label for="eventImage" class="form-label" style="color:black;">Event Image</label>
+                                <label for="eventImage" class="form-label" >Event Image</label>
                                 <input type="file" class="form-control" name="eventImage" id="eventImage" required>
                             </div>
                             <div class="mb-3">
-                                <label for="eventTime" class="form-label" sstyle="color:black;">Event Time</label>
+                                <label for="eventTime" class="form-label" >Event Time</label>
                                 <input type="datetime-local" class="form-control" name="eventTime" id="eventTime" required>
                             </div>
                             <div class="mb-3">
-                                <label for="organizerName" class="form-label" style="color:black;">Organizer Name</label>
+                                <label for="organizerName" class="form-label" >Organizer Name</label>
                                 <input type="text" class="form-control" name="organizerName" id="organizerName" required>
                             </div>
                             <div class="mb-3">
-                                <label for="eventDescription" class="form-label" style="color:black;">Description</label>
+                                <label for="eventDescription" class="form-label">Description</label>
                                 <textarea class="form-control" name="eventDescription" id="eventDescription" rows="4" required></textarea>
                             </div>
                             <button type="submit" name="addEvent" class="btn btn-success">Add Event</button>
@@ -204,51 +212,68 @@ if (isset($_GET['delete_event'])) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
 
-          <!-- Event List as Cards -->
-        <h2 class="mt-4">List of Events</h2>
-        <div class="event-list">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="text-white">Event Listings</h2>
+    <a href="#" class="btn btn-add-event text-white" data-bs-toggle="modal" data-bs-target="#addEventModal">
+        <i class="fas fa-plus-circle me-1"></i> Add Event
+    </a>
+</div>
+
+
+    <div class="row g-4">
+        <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
-                <div class="event-card card">
-                    <img src="../images/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Event Image">
-                    <div class="card-body">
-                        <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
-                        <p class="card-text"><?php echo htmlspecialchars(substr($row['description'], 0, 100)) . '...'; ?></p>
-                        <a href="admin_events.php?edit_event=<?php echo $row['id']; ?>" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editEventModal<?php echo $row['id']; ?>">Edit</a>
-                        <a href="admin_events.php?delete_event=<?php echo $row['id']; ?>" class="btn btn-danger">Delete</a>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card event-card h-100 border-0">
+                        <div class="card-img-top-wrapper">
+                            <img src="../images/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Event Image">
+                        </div>
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
+                                <p class="card-text mb-1"><i class="fas fa-calendar-alt me-1"></i> <?php echo date("F j, Y, g:i a", strtotime($row['event_time'])); ?></p>
+                                <p class="card-text"><i class="fas fa-user me-1"></i> <strong>Organizer:</strong> <?php echo htmlspecialchars($row['organizer']); ?></p>
+                                <p class="card-text"><?php echo nl2br(htmlspecialchars($row['description'])); ?></p>
+                            </div>
+                            <div class="mt-3 d-flex justify-content-between">
+                                <a href="#" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEventModal<?php echo $row['id']; ?>"><i class="fas fa-edit me-1"></i>Edit</a>
+                                <a href="admin_events.php?delete_event=<?php echo $row['id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this event?');"><i class="fas fa-trash-alt me-1"></i>Delete</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Edit Event Modal -->
-                <div class="modal fade" id="editEventModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
+                <!-- Edit Event Modal (Move this inside the loop) -->
+                <div class="modal fade" id="editEventModal<?php echo $row['id']; ?>" tabindex="-1" aria-labelledby="editEventModalLabel<?php echo $row['id']; ?>" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editEventModalLabel" style="color:black;">Edit Event</h5>
+                                <h5 class="modal-title" id="editEventModalLabel<?php echo $row['id']; ?>" style="color:black;">Edit Event</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <form action="admin_events.php?edit_event=<?php echo $row['id']; ?>" method="POST" enctype="multipart/form-data">
                                     <div class="mb-3">
-                                        <label for="eventTitle" class="form-label" style="color:black;">Event Title</label>
-                                        <input type="text" class="form-control" name="eventTitle" id="eventTitle" value="<?php echo $row['title']; ?>" required>
+                                        <label for="eventTitle<?php echo $row['id']; ?>" class="form-label" style="color:black;">Event Title</label>
+                                        <input type="text" class="form-control" name="eventTitle" id="eventTitle<?php echo $row['id']; ?>" value="<?php echo htmlspecialchars($row['title']); ?>" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="eventImage" class="form-label" style="color:black;">Event Image</label>
-                                        <input type="file" class="form-control" name="eventImage" id="eventImage">
+                                        <label for="eventImage<?php echo $row['id']; ?>" class="form-label" style="color:black;">Event Image</label>
+                                        <input type="file" class="form-control" name="eventImage" id="eventImage<?php echo $row['id']; ?>">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="eventTime" class="form-label" style="color:black;">Event Time</label>
-                                        <input type="datetime-local" class="form-control" name="eventTime" id="eventTime" value="<?php echo date('Y-m-d\TH:i', strtotime($row['event_time'])); ?>" required>
+                                        <label for="eventTime<?php echo $row['id']; ?>" class="form-label" style="color:black;">Event Time</label>
+                                        <input type="datetime-local" class="form-control" name="eventTime" id="eventTime<?php echo $row['id']; ?>" value="<?php echo date('Y-m-d\TH:i', strtotime($row['event_time'])); ?>" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="organizerName" class="form-label" style="color:black;">Organizer Name</label>
-                                        <input type="text" class="form-control" name="organizerName" id="organizerName" value="<?php echo $row['organizer']; ?>" required>
+                                        <label for="organizerName<?php echo $row['id']; ?>" class="form-label" style="color:black;">Organizer Name</label>
+                                        <input type="text" class="form-control" name="organizerName" id="organizerName<?php echo $row['id']; ?>" value="<?php echo htmlspecialchars($row['organizer']); ?>" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="eventDescription" class="form-label" style="color:black;">Description</label>
-                                        <textarea class="form-control" name="eventDescription" id="eventDescription" rows="4" required><?php echo $row['description']; ?></textarea>
+                                        <label for="eventDescription<?php echo $row['id']; ?>" class="form-label" style="color:black;">Description</label>
+                                        <textarea class="form-control" name="eventDescription" id="eventDescription<?php echo $row['id']; ?>" rows="4" required><?php echo htmlspecialchars($row['description']); ?></textarea>
                                     </div>
                                     <button type="submit" name="editEvent" class="btn btn-success">Save Changes</button>
                                 </form>
@@ -256,85 +281,44 @@ if (isset($_GET['delete_event'])) {
                         </div>
                     </div>
                 </div>
+
             <?php endwhile; ?>
-        </div>
-
-        <!-- Success Modal -->
-        <?php if (isset($_GET['edit_success'])): ?>
-            <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="successModalLabel">Success</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Event updated successfully!
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script>
-                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
-            </script>
+        <?php else: ?>
+            <p>No events found.</p>
         <?php endif; ?>
-
     </div>
-    
-    <!-- Success Modal (Add Event) -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Event added successfully!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+</div>
+
+
+
+            
+           <!-- Bootstrap Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toastMessage" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <?php
+                if (isset($_SESSION['toast_success'])) {
+                    echo $_SESSION['toast_success'];
+                    unset($_SESSION['toast_success']);
+                }
+                ?>
             </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+</div>
 
-    <!-- Success Modal (Delete Event) -->
-    <div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteSuccessModalLabel">Success</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Event deleted successfully!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastEl = document.getElementById('toastMessage');
+        if (toastEl && toastEl.querySelector('.toast-body').innerText.trim() !== "") {
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    });
+</script>
 
-    <script>
-        // Check URL parameters to show modals
-        <?php if (isset($_GET['success'])): ?>
-            // Show success modal for adding event
-            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-            successModal.show();
-        <?php endif; ?>
-        
-        <?php if (isset($_GET['deleted'])): ?>
-            // Show success modal for deleting event
-            var deleteSuccessModal = new bootstrap.Modal(document.getElementById('deleteSuccessModal'));
-            deleteSuccessModal.show();
-        <?php endif; ?>
-    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -6,3 +6,6 @@ Stack trace:
   thrown in C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_announcements.php on line 57
 [26-Feb-2025 17:45:03 Europe/Berlin] PHP Warning:  Undefined variable $adminName in C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_sidebar.php on line 5
 [26-Feb-2025 17:45:03 Europe/Berlin] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in C:\xampp\php\Kaluppa\Frontend\admin dashboard\admin_sidebar.php on line 5
+[11-Mar-2025 19:55:06 Europe/Berlin] PHP Warning:  Undefined array key "description" in C:\xampp\htdocs\Kaluppa\Frontend\admin dashboard\admin_announcements.php on line 258
+[11-Mar-2025 20:03:05 Europe/Berlin] PHP Warning:  Undefined array key "toast" in C:\xampp\htdocs\Kaluppa\Frontend\admin dashboard\admin_announcements.php on line 369
+[11-Mar-2025 20:03:05 Europe/Berlin] PHP Warning:  Undefined array key "toast" in C:\xampp\htdocs\Kaluppa\Frontend\admin dashboard\admin_announcements.php on line 376

@@ -1,0 +1,170 @@
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.event-card {
+    background-color: #111111; /* Even darker card */
+    color:rgb(5, 5, 5);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    transform: scale(1);
+}
+
+.event-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.event-card .card-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.event-card .card-text {
+    font-size: 0.95rem;
+    color: black;
+}
+
+.event-card .btn {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+}
+
+.event-card .btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.event-card .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.card-img-top-wrapper {
+    height: 200px;
+    overflow: hidden;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+.card-img-top {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.event-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Dark Modal Styling */
+.modal-content {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.85);
+}
+
+.modal-header,
+.modal-body {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+.form-label {
+    color: #cccccc;
+    font-weight: 500;
+}
+
+.form-control {
+    background-color: #2b2b2b;
+    color: #ffffff;
+    border: 1px solid #444;
+    border-radius: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+/* Submit Button Styling */
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+}
+
+/* Refine Warning & Danger Buttons in Modal */
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+    color: #000;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+    color: #000;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
+/* Custom Add Event Button */
+.btn-add-event {
+    background: linear-gradient(135deg,rgb(10, 7, 14),rgb(3, 16, 29));
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-add-event:hover {
+    background: linear-gradient(135deg, #0041a8, #0069d9);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
+    transform: translateY(-2px);
+    color: #fff;
+}

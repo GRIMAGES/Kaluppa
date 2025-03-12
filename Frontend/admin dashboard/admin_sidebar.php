@@ -52,7 +52,7 @@ $navLinks = [
 ];
 ?>
 
-<link rel="stylesheet" href="../CSS/admin_css/admin_sidebar.css">
+<link rel="stylesheet" href="../CSS/admin_css/sidebar.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <button class="burger-button d-block d-md-none" onclick="toggleSidebar()">☰</button>
