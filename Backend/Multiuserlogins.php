@@ -110,7 +110,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
 
     $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, password, role, gender, birthday, house_number, street, barangay, district, city, region, postal_code, phone, otp, is_verified) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
     $otp_expiry = date('Y-m-d H:i:s', strtotime('+2 hour'));
+<<<<<<< HEAD
     $stmt->bind_param("ssssssssssssssss", $first_name, $middle_name, $last_name, $email, $password_hashed, $gender, $birthday, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $phone, $otp);
+=======
+    $stmt->bind_param("sssssssssssssssss", $first_name, $middle_name, $last_name, $email, $password_hashed, $gender, $birthday, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $phone, $otp);
+>>>>>>> 6a2de3ffe26caaa23a1e4637b9b38e44b8931c33
 
 
     if ($stmt->execute()) {
