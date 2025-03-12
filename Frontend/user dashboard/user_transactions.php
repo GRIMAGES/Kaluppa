@@ -67,7 +67,8 @@ unset($_SESSION['success_message']);
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a> <!-- Add btn-theme class -->
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+
             </div>
         </div>
     </div>

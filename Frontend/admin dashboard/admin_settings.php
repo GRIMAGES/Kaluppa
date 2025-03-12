@@ -165,7 +165,8 @@ if (isset($_POST['change_password'])) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme" onclick="console.log('Logout link clicked');">Logout</a>
+                <<a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+
             </div>
         </div>
     </div>
