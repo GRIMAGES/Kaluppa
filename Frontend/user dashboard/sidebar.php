@@ -20,14 +20,19 @@ $stmt->close();
 // Construct full name
 $fullName = trim("$first_name $middle_name $last_name");
 
-// Set profile picture path (use a default if empty)
-$profilePic = !empty($profile_picture) ? "/KALUPPA/Frontend/admin dashboard/uploads/profile_pics/" . $profile_picture : "/Frontend/assets/default-profile.png";
+$profilePic = !empty($profile_picture) 
+    ? "/Frontend/admin dashboard/uploads/profile_pics/" . $profile_picture 
+    : "/Frontend/assets/default-profile.png";
 
-// Debugging: Check if the profile picture file exists
-if (!file_exists($_SERVER['DOCUMENT_ROOT'] . $profilePic)) {
-    error_log("Profile picture not found: " . $_SERVER['DOCUMENT_ROOT'] . $profilePic);
+// Debugging: Log profile picture file existence
+$fullPath = $_SERVER['DOCUMENT_ROOT'] . $profilePic;
+if (!file_exists($fullPath)) {
+    error_log("Profile picture not found at: " . $fullPath);
     $profilePic = "/Frontend/assets/default-profile.png";
+} else {
+    error_log("Profile picture found: " . $fullPath);
 }
+
 
 // Get the current page filename
 $current_page = basename($_SERVER['PHP_SELF']);
