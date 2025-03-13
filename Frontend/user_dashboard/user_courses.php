@@ -160,8 +160,8 @@ $categorizedCourses = categorizeCourses($courseResult);
 
                     <!-- Right Column: Application Form -->
                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
-                        <form id="applicationForm" method="POST" enctype="multipart/form-data">
-                            <div class="mb-3">
+                    <form id="applicationForm" method="POST" action="submit_application.php" enctype="multipart/form-data">
+                    <div class="mb-3">
                                 <label for="first_name" class="form-label">First Name</label>
                                 <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
                             </div>
@@ -210,8 +210,8 @@ $categorizedCourses = categorizeCourses($courseResult);
                                 <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
                             </div>
                             <input type="hidden" id="course_id" name="course_id">
-                            <button type="submit" class="btn btn-success w-100">Submit Application</button>
-                        </form>
+                            <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
+                            </form>
                     </div>
                 </div>
             </div>
