@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "Oi";
+$password = "Oipm9cZUcYI/";
 $dbname = "kaluppa";
 
 // Create connection
