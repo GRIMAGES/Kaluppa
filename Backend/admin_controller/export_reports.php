@@ -31,7 +31,7 @@ $adminEmail = $_SESSION['email'];
 $exportPassword = bin2hex(random_bytes(4)); // Example: "d1e2f3a4"
 
 /// Fetch admin name and birthdate
-$adminQuery = $conn->prepare("SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS full_name, birthdate FROM user WHERE email = ?");
+$adminQuery = $conn->prepare("SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS full_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
 $adminResult = $adminQuery->get_result();
