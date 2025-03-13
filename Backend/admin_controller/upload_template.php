@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
-$uploadDir = '../../Frontend/admin_dashboard/templates/';
+$uploadDir = '../../Frontend/admin dashboard/templates/';
 
 if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['templateFile'])) {
     } else {
         $_SESSION['uploadMessage'] = "Only PNG and PDF templates are allowed.";
     }
-    header("Location: ../../Frontend/admin_dashboard/admin_certificate.php");
+    header("Location: ../../Frontend/admin dashboard/admin_certificate.php");
     exit();
 }
 ?>
