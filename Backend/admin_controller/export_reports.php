@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require_once '../../Backend/connection.php'; // This is correct, assuming the path to connection.php is right.
+require_once '../../Backend/connection.php'; // Path to connection.php
 require_once '../../vendor/autoload.php';  // PHPMailer, PhpSpreadsheet, TCPDF should be in the Backend vendor folder.
 require_once '../../vendor/setasign/fpdf/fpdf.php'; // Correct path to FPDF
 require_once '../../vendor/setasign/fpdi/src/autoload.php'; // Correct path to FPDI
@@ -11,12 +11,12 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf as PdfWriter;  // Correct import for Mpdf
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 session_start();
 
+// Ensure the user is logged in
 if (!isset($_SESSION['email'])) {
     die("Unauthorized access.");
 }
@@ -55,7 +55,7 @@ $password = strtoupper($lastName) . "_" . $formattedBirthday;  // Format: LASTNA
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
 if (!in_array($reportType, $validReportTypes)) die("Invalid report type.");
 
-// Fetch data
+// Fetch data based on report type
 if ($reportType === 'enrolled_scholars') {
     $query = "SELECT a.id, a.last_name, a.middle_name, a.first_name, c.name AS course_name, a.email, a.status, a.document 
               FROM applications a 
@@ -94,7 +94,7 @@ if ($fileType === 'excel') {
 
     $writer = new Xlsx($spreadsheet);
 
-    // Remove Excel encryption (no direct support for .xlsx)
+    // Save Excel file
     $writer->save($tempFilePath);
 
 } elseif ($fileType === 'pdf') {
@@ -125,7 +125,7 @@ if ($fileType === 'excel') {
     $html .= "</tbody></table>";
     $pdf->writeHTML($html);
 
-    // Ensure the file path is correct and the directory is writable
+    // Output the PDF file
     $pdf->Output($tempFilePath, 'F');
 } else {
     die("Invalid file type.");
