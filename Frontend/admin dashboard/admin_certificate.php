@@ -63,7 +63,9 @@ $courseApplicantsQuery = "
         ca.applied_at AS application_date
     FROM applications ca
     JOIN user u ON ca.user_id = u.id
+    WHERE ca.status = 'enrolled'
 ";
+
 $courseApplicantsResult = $conn->query($courseApplicantsQuery);
 while ($row = $courseApplicantsResult->fetch_assoc()) {
     $courseApplicants[$row['course_id']][] = $row;
@@ -71,14 +73,16 @@ while ($row = $courseApplicantsResult->fetch_assoc()) {
 
 // Fetch users who applied to each volunteer work
 $workApplicants = [];
-$workApplicantsQuery = "
-    SELECT 
-        va.work_id,
-        CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS applicant_name,
-        va.application_date
-    FROM volunteer_application va
-    JOIN user u ON va.user_id = u.id
+$$workApplicantsQuery = "
+SELECT 
+    va.work_id,
+    CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS applicant_name,
+    va.application_date
+FROM volunteer_application va
+JOIN user u ON va.user_id = u.id
+WHERE va.status = 'accepted'
 ";
+
 $workApplicantsResult = $conn->query($workApplicantsQuery);
 while ($row = $workApplicantsResult->fetch_assoc()) {
     $workApplicants[$row['work_id']][] = $row;
@@ -122,71 +126,39 @@ while ($row = $workApplicantsResult->fetch_assoc()) {
                 <label class="form-label">Recipient Name</label>
                 <input type="text" class="form-control" name="recipientName" id="recipientName" required>
             </div>
-            <div class="col-md-6">
-                <label class="form-label">Select Course</label>
-                <select class="form-select" name="courseName" id="courseName" required>
-                    <option value="">-- Select Course --</option>
-                    <?php foreach ($courses as $course): ?>
-                        <option value="<?php echo htmlspecialchars($course['name']); ?>">
-                            <?php echo htmlspecialchars($course['name']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <h4 class="mt-5">Applicants Per Course</h4>
-<?php foreach ($courses as $course): ?>
-    <div class="card mb-3">
-        <div class="card-header bg-primary text-white">
-            Course: <?php echo htmlspecialchars($course['name']); ?>
-        </div>
-        <div class="card-body">
-            <?php if (!empty($courseApplicants[$course['id']])): ?>
-                <ul class="list-group">
-                    <?php foreach ($courseApplicants[$course['id']] as $applicant): ?>
-                        <li class="list-group-item">
-                            <?php echo htmlspecialchars($applicant['applicant_name']); ?> - Applied on <?php echo date("F j, Y", strtotime($applicant['application_date'])); ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p>No applicants for this course.</p>
-            <?php endif; ?>
-        </div>
-    </div>
-<?php endforeach; ?>
 
-<h4 class="mt-5">Applicants Per Volunteer Work</h4>
-<?php foreach ($works as $work): ?>
-    <div class="card mb-3">
-        <div class="card-header bg-success text-white">
-            Volunteer Work: <?php echo htmlspecialchars($work['title']); ?>
-        </div>
-        <div class="card-body">
-            <?php if (!empty($workApplicants[$work['id']])): ?>
-                <ul class="list-group">
-                    <?php foreach ($workApplicants[$work['id']] as $applicant): ?>
-                        <li class="list-group-item">
-                            <?php echo htmlspecialchars($applicant['applicant_name']); ?> - Applied on <?php echo date("F j, Y", strtotime($applicant['application_date'])); ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p>No applicants for this volunteer work.</p>
-            <?php endif; ?>
-        </div>
+            <div id="volunteerSection" style="display:none;">
+    <div class="col-md-6">
+        <label class="form-label">Select Volunteer Work</label>
+        <select class="form-select" name="workName" id="workName">
+            <option value="">-- Select Work --</option>
+            <?php foreach ($works as $work): ?>
+                <option value="<?= htmlspecialchars($work['id']) ?>"><?= htmlspecialchars($work['title']) ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
-<?php endforeach; ?>
-            <div class="col-md-6">
-                <label class="form-label">Select Volunteer Work</label>
-                <select class="form-select" name="workName" id="workName">
-                    <option value="">-- Select Work (optional) --</option>
-                    <?php foreach ($works as $work): ?>
-                        <option value="<?php echo htmlspecialchars($work['title']); ?>">
-                            <?php echo htmlspecialchars($work['title']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+</div>
+
+            <div id="scholarshipSection" style="display:none;">
+    <div class="col-md-6">
+        <label class="form-label">Select Course</label>
+        <select class="form-select" name="courseName" id="courseName">
+            <option value="">-- Select Course --</option>
+            <?php foreach ($courses as $course): ?>
+                <option value="<?= htmlspecialchars($course['id']) ?>"><?= htmlspecialchars($course['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <label class="form-label">Select Type</label>
+    <select class="form-select" id="typeSelector" onchange="handleTypeSelection()">
+        <option value="">-- Select Type --</option>
+        <option value="scholarship">Scholarship</option>
+        <option value="volunteer">Volunteer</option>
+    </select>
+</div>
 
             <div class="col-md-6">
                 <label class="form-label">Date Awarded</label>
@@ -352,6 +324,14 @@ foreach ($templateFiles as $file) {
 
         document.getElementById('certificatePreview').style.display = 'block';
     }
+   
+function handleTypeSelection() {
+    const type = document.getElementById('typeSelector').value;
+    document.getElementById('scholarshipSection').style.display = (type === 'scholarship') ? 'block' : 'none';
+    document.getElementById('volunteerSection').style.display = (type === 'volunteer') ? 'block' : 'none';
+}
+
+
 </script>
 </body>
 </html>
