@@ -60,7 +60,7 @@ while ($row = $worksResult->fetch_assoc()) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Certificate Generator</title>
+    <title>Scholarship Certificate Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -96,7 +96,9 @@ while ($row = $worksResult->fetch_assoc()) {
         }
 
         @media print {
-            body * { visibility: hidden; }
+            body * {
+                visibility: hidden;
+            }
             #certificatePreview, #certificatePreview * {
                 visibility: visible;
             }
@@ -113,8 +115,9 @@ while ($row = $worksResult->fetch_assoc()) {
 </head>
 <body>
 <?php include 'admin_sidebar.php'; ?>
+
 <div class="container mt-5">
-    <h2 class="text-center mb-4">Certificate Generator</h2>
+    <h2 class="text-center mb-4">Scholarship Certificate Generator</h2>
 
     <?php if (!empty($uploadMessage)): ?>
         <div class="alert alert-info"><?php echo $uploadMessage; ?></div>
@@ -133,37 +136,31 @@ while ($row = $worksResult->fetch_assoc()) {
     <form id="certificateForm" class="mb-5" method="POST" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
         <div class="row g-3">
             <div class="col-md-6">
-                <label class="form-label">Certificate Type</label>
-                <select class="form-select" id="certificateType" onchange="toggleRecipientDropdown()" required>
-                    <option value="">-- Select Type --</option>
-                    <option value="scholarship">Scholarship</option>
-                    <option value="volunteer">Volunteer</option>
-                </select>
+                <label class="form-label">Recipient Name</label>
+                <input type="text" class="form-control" name="recipientName" id="recipientName" required>
             </div>
-
-            <div class="col-md-6" id="courseContainer" style="display:none;">
+            <div class="col-md-6">
                 <label class="form-label">Select Course</label>
-                <select class="form-select" id="courseSelect">
+                <select class="form-select" name="courseName" id="courseName" required>
                     <option value="">-- Select Course --</option>
                     <?php foreach ($courses as $course): ?>
-                        <option value="<?php echo $course['id']; ?>"><?php echo htmlspecialchars($course['name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="col-md-6" id="workContainer" style="display:none;">
-                <label class="form-label">Select Volunteer Work</label>
-                <select class="form-select" id="workSelect">
-                    <option value="">-- Select Work --</option>
-                    <?php foreach ($works as $work): ?>
-                        <option value="<?php echo $work['id']; ?>"><?php echo htmlspecialchars($work['title']); ?></option>
+                        <option value="<?php echo htmlspecialchars($course['name']); ?>">
+                            <?php echo htmlspecialchars($course['name']); ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Recipient Name</label>
-                <input type="text" class="form-control" id="recipientName" required>
+                <label class="form-label">Select Volunteer Work</label>
+                <select class="form-select" name="workName" id="workName">
+                    <option value="">-- Select Work (optional) --</option>
+                    <?php foreach ($works as $work): ?>
+                        <option value="<?php echo htmlspecialchars($work['title']); ?>">
+                            <?php echo htmlspecialchars($work['title']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-6">
@@ -173,7 +170,7 @@ while ($row = $worksResult->fetch_assoc()) {
 
             <div class="col-md-6">
                 <label class="form-label">Signed By</label>
-                <input type="text" class="form-control" name="signedBy" value="<?php echo htmlspecialchars($adminName); ?>" required>
+                <input type="text" class="form-control" name="signedBy" id="signedBy" value="<?php echo htmlspecialchars($adminName); ?>" required>
             </div>
 
             <div class="col-md-12">
@@ -195,8 +192,9 @@ while ($row = $worksResult->fetch_assoc()) {
             <h3><strong>Certificate of Completion</strong></h3>
             <p>This is to certify that</p>
             <h2 id="certName"></h2>
-            <p>has successfully completed</p>
-            <h4 id="certDetail"></h4>
+            <p>has successfully completed the course</p>
+            <h4 id="certCourse"></h4>
+            <p id="certWork"></p>
             <p>Date Awarded: <span id="certDate"></span></p>
         </div>
         <div class="signed-by">
@@ -211,12 +209,6 @@ while ($row = $worksResult->fetch_assoc()) {
 </div>
 
 <script>
-    function toggleRecipientDropdown() {
-        const type = document.getElementById('certificateType').value;
-        document.getElementById('courseContainer').style.display = type === 'scholarship' ? 'block' : 'none';
-        document.getElementById('workContainer').style.display = type === 'volunteer' ? 'block' : 'none';
-    }
-
     function updateTemplatePreview() {
         const selector = document.getElementById('templateSelector');
         const preview = document.getElementById('certificatePreview');
@@ -240,22 +232,26 @@ while ($row = $worksResult->fetch_assoc()) {
 
     function generateCertificate() {
         const name = document.getElementById('recipientName').value;
-        const course = document.getElementById('courseSelect').selectedOptions[0]?.text || '';
-        const work = document.getElementById('workSelect').selectedOptions[0]?.text || '';
-        const type = document.getElementById('certificateType').value;
+        const course = document.getElementById('courseName').value;
         const date = document.getElementById('awardDate').value;
+        const work = document.getElementById('workName').value;
         const signed = document.getElementById('signedBy').value;
+        const template = document.getElementById('templateSelector').value;
+
+        if (!template || !template.endsWith('.png')) {
+            alert('Please select a valid PNG template for preview.');
+            return;
+        }
 
         document.getElementById('certName').textContent = name;
-        document.getElementById('certSignedBy').textContent = signed;
+        document.getElementById('certCourse').textContent = course;
         document.getElementById('certDate').textContent = date;
+        document.getElementById('certSignedBy').textContent = signed;
 
-        if (type === 'scholarship') {
-            document.getElementById('certDetail').textContent = `the scholarship course: ${course}`;
-        } else if (type === 'volunteer') {
-            document.getElementById('certDetail').textContent = `the volunteer work: ${work}`;
+        if (work) {
+            document.getElementById('certWork').textContent = `With Volunteer Work: ${work}`;
         } else {
-            document.getElementById('certDetail').textContent = '';
+            document.getElementById('certWork').textContent = '';
         }
 
         document.getElementById('certificatePreview').style.display = 'block';
