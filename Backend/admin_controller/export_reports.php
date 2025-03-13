@@ -72,6 +72,11 @@ while ($row = $result->fetch_assoc()) {
 // Generate file
 $tempFilePath = "/mnt/data/{$customFileName}." . ($fileType === 'pdf' ? 'pdf' : 'xlsx');
 
+// Ensure that the file path is valid and the directory is writable
+if (!is_writable('/mnt/data/')) {
+    die("Directory is not writable. Please check the directory permissions.");
+}
+
 if ($fileType === 'excel') {
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
@@ -110,6 +115,8 @@ if ($fileType === 'excel') {
     }
     $html .= "</tbody></table>";
     $pdf->writeHTML($html);
+
+    // Ensure the file path is correct and the directory is writable
     $pdf->Output($tempFilePath, 'F');
 } else {
     die("Invalid file type.");
@@ -122,8 +129,8 @@ try {
     $mail->isSMTP();
     $mail->Host = 'smtp.example.com'; // Replace with your SMTP host
     $mail->SMTPAuth = true;
-    $mail->Username = 'your_email@example.com'; // Sender email
-    $mail->Password = 'your_email_password';    // Sender email password
+    $mail->Username = 'wgonzales@kaluppa.org'; // Sender email
+    $mail->Password = 'ngqt vydl kvjz lgsl';    // Sender email password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
