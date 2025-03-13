@@ -191,7 +191,78 @@ while ($row = $worksResult->fetch_assoc()) {
         <div class="overlay-content">
             <h3><strong>Certificate of Completion</strong></h3>
             <p>This is to certify that</p>
-            <h2 id="certName"></h2>
+            <h2 id="certName"></h2>```php
+<?php
+// ... (rest of the code remains the same)
+
+// Fetch courses
+$courses = [];
+$courseQuery = "SELECT id, name FROM courses";
+$courseResult = $conn->query($courseQuery);
+while ($row = $courseResult->fetch_assoc()) {
+    $courses[] = $row;
+}
+
+// Fetch volunteer works
+$works = [];
+$worksQuery = "SELECT id, title FROM works";
+$worksResult = $conn->query($worksQuery);
+while ($row = $worksResult->fetch_assoc()) {
+    $works[] = $row;
+}
+
+// ... (rest of the code remains the same)
+
+// Improved code for template files
+$templateFiles = array_filter(glob("templates/*.{png,pdf}", GLOB_BRACE));
+$templateOptions = '';
+foreach ($templateFiles as $file) {
+    $templateOptions .= '<option value="' . htmlspecialchars($file) . '">' . basename($file) . '</option>';
+}
+
+// ... (rest of the code remains the same)
+
+?>
+
+<!-- ... (rest of the HTML code remains the same) -->
+
+<div class="col-md-12">
+    <label class="form-label">Select Template</label>
+    <select class="form-select" name="templateSelector" id="templateSelector" onchange="updateTemplatePreview()">
+        <option value="">-- Select Template --</option>
+        <?= $templateOptions ?>
+    </select>
+</div>
+
+<!-- ... (rest of the HTML code remains the same) -->
+
+<script>
+    // ... (rest of the JavaScript code remains the same)
+
+    function updateTemplatePreview() {
+        const selector = document.getElementById('templateSelector');
+        const preview = document.getElementById('certificatePreview');
+        const selectedTemplate = selector.value;
+
+        if (selectedTemplate.endsWith('.png')) {
+            const img = new Image();
+            img.onload = function () {
+                const aspectRatio = img.height / img.width;
+                preview.style.height = `${preview.offsetWidth * aspectRatio}px`;
+                preview.style.backgroundImage = `url('${selectedTemplate}')`;
+                preview.style.display = 'block';
+            };
+            img.src = selectedTemplate;
+        } else {
+            preview.style.backgroundImage = '';
+            preview.style.display = 'none';
+            alert('PDF preview not supported. Proceed to print manually.');
+        }
+    }
+
+    // ... (rest of the JavaScript code remains the same)
+</script>
+```
             <p>has successfully completed the course</p>
             <h4 id="certCourse"></h4>
             <p id="certWork"></p>
