@@ -9,6 +9,7 @@
         "facebook/graph-sdk": "^5.1",
         "google/apiclient": "^2.14",
         "google/apiclient-services": "^0.396.0",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "tecnickcom/tcpdf": "^6.8"
     }
 }

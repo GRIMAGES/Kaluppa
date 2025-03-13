@@ -2,10 +2,10 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require_once '../../Backend/connection.php';
-require_once '../../Frontend/vendor/autoload.php'; // PHPMailer, PhpSpreadsheet, TCPDF
-require_once '../../Frontend/vendor/setasign/fpdf/fpdf.php';
-require_once '../../Frontend/vendor/setasign/fpdi/src/autoload.php';
+require_once '../../Backend/connection.php'; // This is correct, assuming the path to connection.php is right.
+require_once '../../vendor/autoload.php';  // PHPMailer, PhpSpreadsheet, TCPDF should be in the Backend vendor folder.
+require_once '../../vendor/setasign/fpdf/fpdf.php'; // Correct path to FPDF
+require_once '../../vendor/setasign/fpdi/src/autoload.php'; // Correct path to FPDI
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
