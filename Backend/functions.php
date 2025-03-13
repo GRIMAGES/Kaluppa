@@ -32,7 +32,7 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
         $mail->addAddress($toEmail, $username);
 
         // Generate the verification link
-        $verificationLink = "http:/Kaluppa.online/Backend/otpverification.html?email=" . urlencode($toEmail) . "&otp=" . urlencode($otp);
+        $verificationLink = "http:/Kaluppa.online/Backend/otpverification.php?email=" . urlencode($toEmail) . "&otp=" . urlencode($otp);
 
         // Set email content with the verification link
         $mail->isHTML(true);
