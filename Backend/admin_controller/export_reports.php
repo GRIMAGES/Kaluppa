@@ -134,7 +134,7 @@ try {
     $mail->Subject = "Exported Report: $customFileName";
     $mail->Body = "Hello $adminEmail,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
 <strong>File Type:</strong> $fileType<br>
-<strong>Password:</strong> The password for the report is <strong>$exportPassword</strong>.<br><br>Best regards,<br>System Admin";
+<strong>Password:</strong> The password for the report is your birthday YYYYMMDD .<br><br>Best regards,<br>System Admin";
 
     $mail->send();
     // Success message to be displayed after redirection
