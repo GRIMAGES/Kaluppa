@@ -127,7 +127,7 @@ $mail = new PHPMailer(true);
 
 try {
     $mail->isSMTP();
-    $mail->Host = 'smtp.example.com'; // Replace with your SMTP host
+    $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
     $mail->SMTPAuth = true;
     $mail->Username = 'wgonzales@kaluppa.org'; // Sender email
     $mail->Password = 'ngqt vydl kvjz lgsl';    // Sender email password
