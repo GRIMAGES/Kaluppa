@@ -2,6 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 require_once '../../Backend/connection.php'; // Path to connection.php
 require_once '../../vendor/autoload.php';  // PHPMailer, PhpSpreadsheet, TCPDF should be in the Backend vendor folder.
 require_once '../../vendor/setasign/fpdf/fpdf.php'; // Correct path to FPDF
@@ -161,5 +162,4 @@ $logQuery = $conn->prepare("INSERT INTO export_logs (admin_email, admin_name, re
 $logQuery->bind_param('sssss', $adminEmail, $adminEmail, $reportType, $customFileName, $fileType);
 $logQuery->execute();
 $conn->close();
-
 ?>
