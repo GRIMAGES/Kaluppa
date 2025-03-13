@@ -41,7 +41,7 @@ unset($_SESSION['uploadMessage']);
 
 // Fetch courses
 $courses = [];
-$courseQuery = "SELECT id, course_name FROM courses";
+$courseQuery = "SELECT id, name FROM courses";
 $courseResult = $conn->query($courseQuery);
 while ($row = $courseResult->fetch_assoc()) {
     $courses[] = $row;
@@ -49,7 +49,7 @@ while ($row = $courseResult->fetch_assoc()) {
 
 // Fetch volunteer works
 $works = [];
-$worksQuery = "SELECT id, work_name FROM works";
+$worksQuery = "SELECT id, title FROM works";
 $worksResult = $conn->query($worksQuery);
 while ($row = $worksResult->fetch_assoc()) {
     $works[] = $row;
@@ -144,8 +144,8 @@ while ($row = $worksResult->fetch_assoc()) {
                 <select class="form-select" name="courseName" id="courseName" required>
                     <option value="">-- Select Course --</option>
                     <?php foreach ($courses as $course): ?>
-                        <option value="<?php echo htmlspecialchars($course['course_name']); ?>">
-                            <?php echo htmlspecialchars($course['course_name']); ?>
+                        <option value="<?php echo htmlspecialchars($course['name']); ?>">
+                            <?php echo htmlspecialchars($course['name']); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -156,8 +156,8 @@ while ($row = $worksResult->fetch_assoc()) {
                 <select class="form-select" name="workName" id="workName">
                     <option value="">-- Select Work (optional) --</option>
                     <?php foreach ($works as $work): ?>
-                        <option value="<?php echo htmlspecialchars($work['work_name']); ?>">
-                            <?php echo htmlspecialchars($work['work_name']); ?>
+                        <option value="<?php echo htmlspecialchars($work['title']); ?>">
+                            <?php echo htmlspecialchars($work['title']); ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
