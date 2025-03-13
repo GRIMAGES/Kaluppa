@@ -22,13 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Update application status
     $update_sql = "UPDATE applications SET status = ? WHERE id = ?";
     $stmt = $conn->prepare($update_sql);
-    $stmt->bind_param("si", $new_status, $application_id);
+    $stmt->bind_param("ss", $new_status, $application_id); // both are strings now
 
     if ($stmt->execute()) {
         // Fetch user_id from applications
         $query = "SELECT user_id FROM applications WHERE id = ?";
         $stmt2 = $conn->prepare($query);
-        $stmt2->bind_param("i", $application_id);
+        $stmt2->bind_param("s", $application_id);
         $stmt2->execute();
         $result = $stmt2->get_result();
         $application = $result->fetch_assoc();
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Fetch user email and name
         $query = "SELECT email, first_name FROM user WHERE id = ?";
         $stmt3 = $conn->prepare($query);
-        $stmt3->bind_param("i", $user_id);
+        $stmt3->bind_param("i", $user_id); // user_id is still INT
         $stmt3->execute();
         $result = $stmt3->get_result();
         $user = $result->fetch_assoc();
@@ -57,15 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Send email notification
         $mail = new PHPMailer(true);
         try {
-            // Enable debugging (For Testing Only - Remove When Live)
-            $mail->SMTPDebug = 2; 
+            // Enable debugging (remove in production)
+            $mail->SMTPDebug = 2;
 
             // Server settings
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; 
+            $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'wgonzales@kaluppa.org';
-            $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with a new App Password
+            $mail->Password = 'qfsp ihop mdqg ngoy'; // use app-specific password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
@@ -76,12 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Email content
             $mail->isHTML(true);
             $mail->Subject = 'Application Status Update';
-            $mail->Body = "Dear $user_name,<br><br>Your application status has been updated to: <strong>$new_status</strong>.<br><br>Best regards,<br>Your Team";
+            $mail->Body = "Dear $user_name,<br><br>Your application status has been updated to: <strong>$new_status</strong>.<br><br>Best regards,<br>KALUPPA Team";
 
             // Send email
-            if (!$mail->send()) {
-                die("Mailer Error: " . $mail->ErrorInfo);
-            }
+            $mail->send();
 
         } catch (Exception $e) {
             die("Mailer Error: " . $mail->ErrorInfo);
