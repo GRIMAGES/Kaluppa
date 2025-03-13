@@ -30,26 +30,22 @@ $adminEmail = $_SESSION['email'];
 $exportPassword = bin2hex(random_bytes(4)); // Example: "d1e2f3a4"
 
 // Fetch admin name and birthday
-$adminQuery = $conn->prepare("SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS full_name, birthday FROM user WHERE email = ?");
+$adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
 $adminResult = $adminQuery->get_result();
 if ($adminRow = $adminResult->fetch_assoc()) {
-    $adminName = $adminRow['full_name'];
     $adminBirthday = $adminRow['birthday']; // Fetching birthday
 } else {
     die("Admin not found.");
 }
 $adminQuery->close();
 
-// Format the birthday (MM-DD-YYYY)
-$formattedBirthday = date('m-d-Y', strtotime($adminBirthday));  // e.g., '03-13-1990'
+// Format the birthday (YYYYMMDD)
+$formattedBirthday = date('Ymd', strtotime($adminBirthday));  // e.g., '19900313'
 
-// Extract and trim the last name
-$lastName = trim(explode(" ", $adminName)[2]);  // Assuming the full name is in "First Middle Last" format
-
-// Format the password to include last name and admin birthday
-$password = strtoupper($lastName) . "_" . $formattedBirthday;  // Format: LASTNAME_MM-DD-YYYY
+// Format the password to include only the birthday
+$password = $formattedBirthday;  // Format: YYYYMMDD
 
 // Validate report types
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
@@ -101,7 +97,7 @@ if ($fileType === 'excel') {
     // Create PDF manually using FPDF + FPDI
     $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
     $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor($adminName);
+    $pdf->SetAuthor($adminEmail);
     $pdf->SetTitle($customFileName);
     $pdf->SetSubject($reportType);
 
@@ -144,15 +140,15 @@ try {
     $mail->Port = 587;
 
     $mail->setFrom('your_email@example.com', 'Report System');
-    $mail->addAddress($adminEmail, $adminName);
+    $mail->addAddress($adminEmail, $adminEmail);  // You can change this to the admin name or another name
     $mail->addAttachment($tempFilePath);
 
     $mail->isHTML(true);
     $mail->Subject = "Exported Report: $customFileName";
-    $mail->Body = "Hello $adminName,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
+    $mail->Body = "Hello $adminEmail,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
     <strong>File Type:</strong> $fileType<br>
     <strong>Password Instructions:</strong> Please use the following format to retrieve your password:<br>
-    <code>LASTNAME_MM-DD-YYYY</code> (Replace with your last name and birthday).<br><br>Best regards,<br>System Admin";
+    <code>YYYYMMDD</code> (Replace with your birthday).<br><br>Best regards,<br>System Admin";
 
     $mail->send();
     echo "Report exported and emailed successfully.";
@@ -162,7 +158,7 @@ try {
 
 // Log export
 $logQuery = $conn->prepare("INSERT INTO export_logs (admin_email, admin_name, report_type, file_name, file_type) VALUES (?, ?, ?, ?, ?)");
-$logQuery->bind_param('sssss', $adminEmail, $adminName, $reportType, $customFileName, $fileType);
+$logQuery->bind_param('sssss', $adminEmail, $adminEmail, $reportType, $customFileName, $fileType);
 $logQuery->execute();
 $conn->close();
 
