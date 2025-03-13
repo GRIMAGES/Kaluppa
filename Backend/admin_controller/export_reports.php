@@ -1,10 +1,17 @@
 <?php
 require_once '../../Backend/connection.php';
-require_once '../../Frontend/vendor/autoload.php'; // For PDF generation and PHPMailer autoload
+require_once '../../Frontend/vendor/autoload.php'; // PHPMailer, PhpSpreadsheet, TCPDF
+require_once '../../Frontend/vendor/setasign/fpdf/fpdf.php';
+require_once '../../Frontend/vendor/setasign/fpdi/src/autoload.php';
 
-use Dompdf\Dompdf;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf as PdfWriter;  // Correct import for Mpdf
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 session_start();
 
@@ -12,158 +19,131 @@ if (!isset($_SESSION['email'])) {
     die("Unauthorized access.");
 }
 
-// Collect data from the request
 $reportType = isset($_GET['report_type']) ? htmlspecialchars($_GET['report_type']) : 'unknown';
 $customFileName = isset($_GET['customTitle']) ? htmlspecialchars($_GET['customTitle']) : 'report';
+$fileType = isset($_GET['file_type']) ? strtolower($_GET['file_type']) : 'xlsx';  // Ensure $fileType is always set.
 $adminEmail = $_SESSION['email'];
 
-// Debugging: Check the value of report_type
-error_log("Report Type: " . $reportType);
+// Password for encryption
+$exportPassword = bin2hex(random_bytes(4)); // Example: "d1e2f3a4"
 
-// Validate report type
-$validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
-if (!in_array($reportType, $validReportTypes)) {
-    die("Invalid report type.");
-}
-
-// Fetch the admin's full name from the user table
+// Fetch admin name
 $adminQuery = $conn->prepare("SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS full_name FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
 $adminResult = $adminQuery->get_result();
-$adminRow = $adminResult->fetch_assoc();
-$adminName = $adminRow['full_name'];
+if ($adminRow = $adminResult->fetch_assoc()) {
+    $adminName = $adminRow['full_name'];
+} else {
+    die("Admin not found.");
+}
 $adminQuery->close();
 
-// Determine file type based on the selected type
-$fileType = strtolower($_GET['file_type']);
+// Validate report types
+$validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
+if (!in_array($reportType, $validReportTypes)) die("Invalid report type.");
 
-// Set headers for download
-switch ($fileType) {
-    case 'csv':
-        header('Content-Type: text/csv');
-        header("Content-Disposition: attachment; filename=$customFileName.csv");
-        break;
-    case 'excel':
-        header('Content-Type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment; filename=$customFileName.xls");
-        break;
-    case 'pdf':
-        header('Content-Type: application/pdf');
-        header("Content-Disposition: attachment; filename=$customFileName.pdf");
-        break;
-    default:
-        die("Unsupported file type.");
-}
-header('Cache-Control: max-age=0');
-
-// Fetch data based on the report type
-$query = '';
-$columns = [];
+// Fetch data
 if ($reportType === 'enrolled_scholars') {
-    $query = "
-        SELECT 
-            a.id,
-            a.last_name, 
-            a.middle_name, 
-            a.first_name, 
-            c.name AS course_name, 
-            a.email, 
-            a.status, 
-            a.document 
-        FROM 
-            applications a 
-        INNER JOIN 
-            courses c 
-        ON 
-            a.course_id = c.id 
-        WHERE 
-            a.status = 'enrolled'
-    ";
+    $query = "SELECT a.id, a.last_name, a.middle_name, a.first_name, c.name AS course_name, a.email, a.status, a.document 
+              FROM applications a 
+              INNER JOIN courses c ON a.course_id = c.id 
+              WHERE a.status = 'enrolled'";
     $columns = ['ID', 'Last Name', 'Middle Name', 'First Name', 'Course Name', 'Email', 'Status', 'Document'];
-} elseif ($reportType === 'accepted_volunteers') {
-    $query = "
-        SELECT 
-            v.id,
-            v.name, 
-            v.email, 
-            v.application_date, 
-            v.status, 
-            v.resume_path, 
-            v.phone 
-        FROM 
-            volunteer_application v 
-        WHERE 
-            v.status = 'approved'
-    ";
-    $columns = ['ID', 'Name', 'Email', 'Application Date', 'Status', 'Resume Path', 'Phone'];
 } else {
-    die("Invalid report type.");
+    $query = "SELECT v.id, v.name, v.email, v.application_date, v.status, v.resume_path, v.phone 
+              FROM volunteer_application v 
+              WHERE v.status = 'approved'";
+    $columns = ['ID', 'Name', 'Email', 'Application Date', 'Status', 'Resume Path', 'Phone'];
 }
 
 $result = $conn->query($query);
-if (!$result) {
-    die("Query error: " . $conn->error);
+if (!$result) die("Query error: " . $conn->error);
+
+// Store result in array
+$data = [];
+while ($row = $result->fetch_assoc()) {
+    $data[] = array_values($row);
 }
 
-// Generate output for the selected file type
-if ($fileType === 'csv') {
-    $output = fopen('php://output', 'w');
-    fputcsv($output, $columns);
-    while ($row = $result->fetch_assoc()) {
-        fputcsv($output, $row);
-    }
-    fclose($output);
-} elseif ($fileType === 'excel') {
-    echo "<table border='1'>";
-    
-    // Conditional headers for Excel
-    if ($reportType === 'enrolled_scholars') {
-        echo "<tr><th>ID</th><th>Last Name</th><th>Middle Name</th><th>First Name</th><th>Course Name</th><th>Email</th><th>Status</th><th>Document</th></tr>";
-    } elseif ($reportType === 'accepted_volunteers') {
-        echo "<tr><th>ID</th><th>Name</th><th>Email</th><th>Application Date</th><th>Status</th><th>Resume Path</th><th>Phone</th></tr>";
-    }
-    
-    while ($row = $result->fetch_assoc()) {
-        echo "<tr>";
-        foreach ($row as $cell) {
-            echo "<td>" . htmlspecialchars($cell) . "</td>";
-        }
-        echo "</tr>";
-    }
-    echo "</table>";
+// Generate file
+$tempFilePath = "/mnt/data/{$customFileName}." . ($fileType === 'pdf' ? 'pdf' : 'xlsx');
+
+if ($fileType === 'excel') {
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->fromArray($columns, NULL, 'A1');
+    $sheet->fromArray($data, NULL, 'A2');
+
+    $writer = new Xlsx($spreadsheet);
+
+    // Remove Excel encryption (no direct support for .xlsx)
+    $writer->save($tempFilePath);
+
 } elseif ($fileType === 'pdf') {
-    $dompdf = new Dompdf();
-    ob_start();
-    echo "<table border='1'>";
-    
-    // Conditional headers for PDF
-    if ($reportType === 'enrolled_scholars') {
-        echo "<tr><th>ID</th><th>Last Name</th><th>Middle Name</th><th>First Name</th><th>Course Name</th><th>Email</th><th>Status</th><th>Document</th></tr>";
-    } elseif ($reportType === 'accepted_volunteers') {
-        echo "<tr><th>ID</th><th>Name</th><th>Email</th><th>Application Date</th><th>Status</th><th>Resume Path</th><th>Phone</th></tr>";
+    // Create PDF manually using FPDF + FPDI
+    $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor($adminName);
+    $pdf->SetTitle($customFileName);
+    $pdf->SetSubject($reportType);
+
+    // PDF Password Protection
+    $pdf->SetProtection(['print', 'copy'], $exportPassword, null, 0, null);
+
+    $pdf->AddPage();
+    $html = "<h3>{$customFileName}</h3><table border='1' cellspacing='0' cellpadding='4'><thead><tr>";
+    foreach ($columns as $col) {
+        $html .= "<th>$col</th>";
     }
-    
-    while ($row = $result->fetch_assoc()) {
-        echo "<tr>";
+    $html .= "</tr></thead><tbody>";
+
+    foreach ($data as $row) {
+        $html .= "<tr>";
         foreach ($row as $cell) {
-            echo "<td>" . htmlspecialchars($cell) . "</td>";
+            $html .= "<td>" . htmlspecialchars($cell) . "</td>";
         }
-        echo "</tr>";
+        $html .= "</tr>";
     }
-    echo "</table>";
-    $html = ob_get_clean();
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'landscape');
-    $dompdf->render();
-    $dompdf->stream($customFileName . '.pdf');
+    $html .= "</tbody></table>";
+    $pdf->writeHTML($html);
+    $pdf->Output($tempFilePath, 'F');
+} else {
+    die("Invalid file type.");
 }
 
-// Log the export with the full admin name and file type
+// Send email with attachment
+$mail = new PHPMailer(true);
+
+try {
+    $mail->isSMTP();
+    $mail->Host = 'smtp.example.com'; // Replace with your SMTP host
+    $mail->SMTPAuth = true;
+    $mail->Username = 'your_email@example.com'; // Sender email
+    $mail->Password = 'your_email_password';    // Sender email password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587;
+
+    $mail->setFrom('your_email@example.com', 'Report System');
+    $mail->addAddress($adminEmail, $adminName);
+    $mail->addAttachment($tempFilePath);
+
+    $mail->isHTML(true);
+    $mail->Subject = "Exported Report: $customFileName";
+    $mail->Body = "Hello $adminName,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
+    <strong>File Type:</strong> $fileType<br>
+    <strong>Password:</strong> <code>$exportPassword</code><br><br>
+    Please use this password to unlock the file.<br><br>Best regards,<br>System Admin";
+
+    $mail->send();
+    echo "Report exported and emailed successfully.";
+} catch (Exception $e) {
+    echo "Email could not be sent. Error: {$mail->ErrorInfo}";
+}
+
+// Log export
 $logQuery = $conn->prepare("INSERT INTO export_logs (admin_email, admin_name, report_type, file_name, file_type) VALUES (?, ?, ?, ?, ?)");
 $logQuery->bind_param('sssss', $adminEmail, $adminName, $reportType, $customFileName, $fileType);
 $logQuery->execute();
-
 $conn->close();
-exit();
 ?>

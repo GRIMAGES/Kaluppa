@@ -4,9 +4,11 @@ namespace PhpOffice\PhpSpreadsheet;
 
 use JsonSerializable;
 use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
+use PhpOffice\PhpSpreadsheet\Cell\IValueBinder;
 use PhpOffice\PhpSpreadsheet\Document\Properties;
 use PhpOffice\PhpSpreadsheet\Document\Security;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Shared\File;
 use PhpOffice\PhpSpreadsheet\Shared\StringHelper;
 use PhpOffice\PhpSpreadsheet\Style\Style;
@@ -30,6 +32,8 @@ class Spreadsheet implements JsonSerializable
         self::VISIBILITY_HIDDEN,
         self::VISIBILITY_VERY_HIDDEN,
     ];
+
+    protected int $excelCalendar = Date::CALENDAR_WINDOWS_1900;
 
     /**
      * Unique ID.
@@ -170,6 +174,8 @@ class Spreadsheet implements JsonSerializable
 
     private Theme $theme;
 
+    private ?IValueBinder $valueBinder = null;
+
     public function getTheme(): Theme
     {
         return $this->theme;
@@ -253,7 +259,7 @@ class Spreadsheet implements JsonSerializable
      */
     public function setRibbonXMLData(mixed $target, mixed $xmlData): void
     {
-        if ($target !== null && $xmlData !== null) {
+        if (is_string($target) && is_string($xmlData)) {
             $this->ribbonXMLData = ['target' => $target, 'data' => $xmlData];
         } else {
             $this->ribbonXMLData = null;
@@ -508,7 +514,7 @@ class Spreadsheet implements JsonSerializable
     public function createSheet(?int $sheetIndex = null): Worksheet
     {
         $newSheet = new Worksheet($this);
-        $this->addSheet($newSheet, $sheetIndex);
+        $this->addSheet($newSheet, $sheetIndex, true);
 
         return $newSheet;
     }
@@ -523,14 +529,35 @@ class Spreadsheet implements JsonSerializable
         return $this->getSheetByName($worksheetName) !== null;
     }
 
+    public function duplicateWorksheetByTitle(string $title): Worksheet
+    {
+        $original = $this->getSheetByNameOrThrow($title);
+        $index = $this->getIndex($original) + 1;
+        $clone = clone $original;
+
+        return $this->addSheet($clone, $index, true);
+    }
+
     /**
      * Add sheet.
      *
      * @param Worksheet $worksheet The worksheet to add
      * @param null|int $sheetIndex Index where sheet should go (0,1,..., or null for last)
      */
-    public function addSheet(Worksheet $worksheet, ?int $sheetIndex = null): Worksheet
+    public function addSheet(Worksheet $worksheet, ?int $sheetIndex = null, bool $retitleIfNeeded = false): Worksheet
     {
+        if ($retitleIfNeeded) {
+            $title = $worksheet->getTitle();
+            if ($this->sheetNameExists($title)) {
+                $i = 1;
+                $newTitle = "$title $i";
+                while ($this->sheetNameExists($newTitle)) {
+                    ++$i;
+                    $newTitle = "$title $i";
+                }
+                $worksheet->setTitle($newTitle);
+            }
+        }
         if ($this->sheetNameExists($worksheet->getTitle())) {
             throw new Exception(
                 "Workbook already contains a worksheet named '{$worksheet->getTitle()}'. Rename this worksheet first."
@@ -554,6 +581,9 @@ class Spreadsheet implements JsonSerializable
             // Adjust active sheet index if necessary
             if ($this->activeSheetIndex >= $sheetIndex) {
                 ++$this->activeSheetIndex;
+            }
+            if ($this->activeSheetIndex < 0) {
+                $this->activeSheetIndex = 0;
             }
         }
 
@@ -651,12 +681,16 @@ class Spreadsheet implements JsonSerializable
      *
      * @return int index
      */
-    public function getIndex(Worksheet $worksheet): int
+    public function getIndex(Worksheet $worksheet, bool $noThrow = false): int
     {
+        $wsHash = $worksheet->getHashInt();
         foreach ($this->workSheetCollection as $key => $value) {
-            if ($value->getHashCode() === $worksheet->getHashCode()) {
+            if ($value->getHashInt() === $wsHash) {
                 return $key;
             }
+        }
+        if ($noThrow) {
+            return -1;
         }
 
         throw new Exception('Sheet does not exist.');
@@ -1065,6 +1099,11 @@ class Spreadsheet implements JsonSerializable
     public function getCellXfByIndex(int $cellStyleIndex): Style
     {
         return $this->cellXfCollection[$cellStyleIndex];
+    }
+
+    public function getCellXfByIndexOrNull(?int $cellStyleIndex): ?Style
+    {
+        return ($cellStyleIndex === null) ? null : ($this->cellXfCollection[$cellStyleIndex] ?? null);
     }
 
     /**
@@ -1552,5 +1591,49 @@ class Spreadsheet implements JsonSerializable
         }
 
         return $table;
+    }
+
+    /**
+     * @return bool Success or failure
+     */
+    public function setExcelCalendar(int $baseYear): bool
+    {
+        if (($baseYear === Date::CALENDAR_WINDOWS_1900) || ($baseYear === Date::CALENDAR_MAC_1904)) {
+            $this->excelCalendar = $baseYear;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return int Excel base date (1900 or 1904)
+     */
+    public function getExcelCalendar(): int
+    {
+        return $this->excelCalendar;
+    }
+
+    public function deleteLegacyDrawing(Worksheet $worksheet): void
+    {
+        unset($this->unparsedLoadedData['sheets'][$worksheet->getCodeName()]['legacyDrawing']);
+    }
+
+    public function getLegacyDrawing(Worksheet $worksheet): ?string
+    {
+        return $this->unparsedLoadedData['sheets'][$worksheet->getCodeName()]['legacyDrawing'] ?? null;
+    }
+
+    public function getValueBinder(): ?IValueBinder
+    {
+        return $this->valueBinder;
+    }
+
+    public function setValueBinder(?IValueBinder $valueBinder): self
+    {
+        $this->valueBinder = $valueBinder;
+
+        return $this;
     }
 }

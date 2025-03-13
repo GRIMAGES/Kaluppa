@@ -185,6 +185,7 @@ class NumberFormatter extends BaseFormatter
         return self::pregReplace(self::NUMBER_REGEX, $value, $format);
     }
 
+    /** @param float|int|numeric-string $value value to be formatted */
     public static function format(mixed $value, string $format): string
     {
         // The "_" in this string has already been stripped out,
@@ -235,6 +236,7 @@ class NumberFormatter extends BaseFormatter
 
         if (preg_match('/\[\$(.*)\]/u', $format, $m)) {
             //  Currency or Accounting
+            $value = preg_replace('/-0+(( |\\xc2\\xa0))?\\[/', '- [', (string) $value) ?? $value;
             $currencyCode = $m[1];
             [$currencyCode] = explode('-', $currencyCode);
             if ($currencyCode == '') {

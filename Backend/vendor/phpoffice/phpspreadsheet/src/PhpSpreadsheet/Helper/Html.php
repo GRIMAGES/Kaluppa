@@ -2,6 +2,7 @@
 
 namespace PhpOffice\PhpSpreadsheet\Helper;
 
+use DOMAttr;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
@@ -532,13 +533,10 @@ class Html
         'yellowgreen' => '9acd32',
     ];
 
-    /** @var ?string */
     private ?string $face = null;
 
-    /** @var ?string */
     private ?string $size = null;
 
-    /** @var ?string */
     private ?string $color = null;
 
     private bool $bold = false;
@@ -563,6 +561,7 @@ class Html
         'u' => [self::class, 'startUnderlineTag'],
         'ins' => [self::class, 'startUnderlineTag'],
         'del' => [self::class, 'startStrikethruTag'],
+        's' => [self::class, 'startStrikethruTag'],
         'sup' => [self::class, 'startSuperscriptTag'],
         'sub' => [self::class, 'startSubscriptTag'],
     ];
@@ -577,6 +576,7 @@ class Html
         'u' => [self::class, 'endUnderlineTag'],
         'ins' => [self::class, 'endUnderlineTag'],
         'del' => [self::class, 'endStrikethruTag'],
+        's' => [self::class, 'endStrikethruTag'],
         'sup' => [self::class, 'endSuperscriptTag'],
         'sub' => [self::class, 'endSubscriptTag'],
         'br' => [self::class, 'breakTag'],
@@ -693,7 +693,7 @@ class Html
     {
         preg_match_all('/\d+/', $rgbValue, $values);
         foreach ($values[0] as &$value) {
-            $value = str_pad(dechex($value), 2, '0', STR_PAD_LEFT);
+            $value = str_pad(dechex((int) $value), 2, '0', STR_PAD_LEFT);
         }
 
         return implode('', $values[0]);
@@ -708,6 +708,7 @@ class Html
     {
         $attrs = $tag->attributes;
         if ($attrs !== null) {
+            /** @var DOMAttr $attribute */
             foreach ($attrs as $attribute) {
                 $attributeName = strtolower($attribute->name);
                 $attributeName = preg_replace('/^html:/', '', $attributeName) ?? $attributeName; // in case from Xml spreadsheet

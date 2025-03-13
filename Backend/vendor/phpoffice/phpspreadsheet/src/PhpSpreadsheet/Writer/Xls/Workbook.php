@@ -2,6 +2,7 @@
 
 namespace PhpOffice\PhpSpreadsheet\Writer\Xls;
 
+use Composer\Pcre\Preg;
 use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\DefinedName;
@@ -210,8 +211,20 @@ class Workbook extends BIFFwriter
         $xfWriter->setFontIndex($fontIndex);
 
         // Background colors, best to treat these after the font so black will come after white in custom palette
-        $xfWriter->setFgColor($this->addColor($style->getFill()->getStartColor()->getRGB()));
-        $xfWriter->setBgColor($this->addColor($style->getFill()->getEndColor()->getRGB()));
+        if ($style->getFill()->getStartColor()->getRGB()) {
+            $xfWriter->setFgColor(
+                $this->addColor(
+                    $style->getFill()->getStartColor()->getRGB()
+                )
+            );
+        }
+        if ($style->getFill()->getEndColor()->getRGB()) {
+            $xfWriter->setBgColor(
+                $this->addColor(
+                    $style->getFill()->getEndColor()->getRGB()
+                )
+            );
+        }
         $xfWriter->setBottomColor($this->addColor($style->getBorders()->getBottom()->getColor()->getRGB()));
         $xfWriter->setTopColor($this->addColor($style->getBorders()->getTop()->getColor()->getRGB()));
         $xfWriter->setRightColor($this->addColor($style->getBorders()->getRight()->getColor()->getRGB()));
@@ -272,7 +285,7 @@ class Workbook extends BIFFwriter
      *
      * @return int Color index
      */
-    private function addColor(string $rgb): int
+    public function addColor(string $rgb, int $default = 0): int
     {
         if (!isset($this->colors[$rgb])) {
             $color
@@ -298,7 +311,7 @@ class Workbook extends BIFFwriter
                     $this->colors[$rgb] = $colorIndex;
                 } else {
                     // no room for more custom colors, just map to black
-                    $colorIndex = 0;
+                    $colorIndex = $default;
                 }
             }
         } else {
@@ -496,14 +509,13 @@ class Workbook extends BIFFwriter
     private function parseDefinedNameValue(DefinedName $definedName): string
     {
         $definedRange = $definedName->getValue();
-        $splitCount = preg_match_all(
+        $splitCount = Preg::matchAllWithOffsets(
             '/' . Calculation::CALCULATION_REGEXP_CELLREF . '/mui',
             $definedRange,
-            $splitRanges,
-            PREG_OFFSET_CAPTURE
+            $splitRanges
         );
 
-        $lengths = array_map('strlen', array_column($splitRanges[0], 0));
+        $lengths = array_map([StringHelper::class, 'strlenAllowNull'], array_column($splitRanges[0], 0));
         $offsets = array_column($splitRanges[0], 1);
 
         $worksheets = $splitRanges[2];
@@ -910,9 +922,9 @@ class Workbook extends BIFFwriter
         $record = 0x0022; // Record identifier
         $length = 0x0002; // Bytes to follow
 
-        $f1904 = (Date::getExcelCalendar() === Date::CALENDAR_MAC_1904)
-            ? 1
-            : 0; // Flag for 1904 date system
+        $f1904 = ($this->spreadsheet->getExcelCalendar() === Date::CALENDAR_MAC_1904)
+            ? 1  // Flag for 1904 date system
+            : 0; // Flag for 1900 date system
 
         $header = pack('vv', $record, $length);
         $data = pack('v', $f1904);

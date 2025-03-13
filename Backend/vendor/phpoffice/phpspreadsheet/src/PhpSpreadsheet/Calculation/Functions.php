@@ -26,6 +26,8 @@ class Functions
     const RETURNDATE_PHP_DATETIME_OBJECT = 'O';
     const RETURNDATE_EXCEL = 'E';
 
+    public const NOT_YET_IMPLEMENTED = '#Not Yet Implemented';
+
     /**
      * Compatibility mode to use for error checking and responses.
      */
@@ -123,7 +125,7 @@ class Functions
      */
     public static function DUMMY(): string
     {
-        return '#Not Yet Implemented';
+        return self::NOT_YET_IMPLEMENTED;
     }
 
     public static function isMatrixValue(mixed $idx): bool
@@ -162,8 +164,10 @@ class Functions
 
             return str_replace('""""', '""', '=' . $condition);
         }
-        preg_match('/(=|<[>=]?|>=?)(.*)/', $condition, $matches);
-        [, $operator, $operand] = $matches;
+        $operator = $operand = '';
+        if (1 === preg_match('/(=|<[>=]?|>=?)(.*)/', $condition, $matches)) {
+            [, $operator, $operand] = $matches;
+        }
 
         $operand = self::operandSpecialHandling($operand);
         if (is_numeric(trim($operand, '"'))) {
@@ -210,6 +214,32 @@ class Functions
             return (array) $array;
         }
 
+        $flattened = [];
+        $stack = array_values($array);
+
+        while (!empty($stack)) {
+            $value = array_shift($stack);
+
+            if (is_array($value)) {
+                array_unshift($stack, ...array_values($value));
+            } else {
+                $flattened[] = $value;
+            }
+        }
+
+        return $flattened;
+    }
+
+    /**
+     * Convert a multi-dimensional array to a simple 1-dimensional array.
+     * Same as above but argument is specified in ... format.
+     *
+     * @param mixed $array Array to be flattened
+     *
+     * @return array Flattened array
+     */
+    public static function flattenArray2(mixed ...$array): array
+    {
         $flattened = [];
         $stack = array_values($array);
 
