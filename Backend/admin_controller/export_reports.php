@@ -126,7 +126,7 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
-    $mail->setFrom('your_email@example.com', 'Report System');
+    $mail->setFrom('wgonzales@kaluppa.org', 'Report System');
     $mail->addAddress($adminEmail, $adminEmail);  // You can change this to the admin name or another name
     $mail->addAttachment($tempFilePath);
 
