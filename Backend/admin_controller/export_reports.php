@@ -27,9 +27,6 @@ $customFileName = isset($_GET['customTitle']) ? htmlspecialchars($_GET['customTi
 $fileType = isset($_GET['file_type']) ? strtolower($_GET['file_type']) : 'xlsx';  // Ensure $fileType is always set.
 $adminEmail = $_SESSION['email'];
 
-// Password for encryption
-$exportPassword = bin2hex(random_bytes(4)); // Example: "d1e2f3a4"
-
 // Fetch admin name and birthday
 $adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
@@ -45,8 +42,8 @@ $adminQuery->close();
 // Format the birthday (YYYYMMDD)
 $formattedBirthday = date('Ymd', strtotime($adminBirthday));  // e.g., '19900313'
 
-// Format the password to include only the birthday
-$password = $formattedBirthday;  // Format: YYYYMMDD
+// Password for encryption (based on admin's birthday)
+$exportPassword = $formattedBirthday;  // Set the password to the admin's birthday in YYYYMMDD format
 
 // Validate report types
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
@@ -125,7 +122,7 @@ try {
     $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
     $mail->SMTPAuth = true;
     $mail->Username = 'wgonzales@kaluppa.org'; // Sender email
-    $mail->Password = 'qfsp ihop mdqg ngoy';    // Sender email password
+    $mail->Password = 'ngqt vydl kvjz lgsl';    // Sender email password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
@@ -140,9 +137,10 @@ try {
 <strong>Password:</strong> The password for the report is <strong>$exportPassword</strong>.<br><br>Best regards,<br>System Admin";
 
     $mail->send();
-    echo "Report exported and emailed successfully.";
+    // Success message to be displayed after redirection
+    $_SESSION['message'] = "Report exported and emailed successfully.";
 } catch (Exception $e) {
-    echo "Email could not be sent. Error: {$mail->ErrorInfo}";
+    $_SESSION['message'] = "Email could not be sent. Error: {$mail->ErrorInfo}";
 }
 
 // Log export
@@ -150,4 +148,8 @@ $logQuery = $conn->prepare("INSERT INTO export_logs (admin_email, admin_name, re
 $logQuery->bind_param('sssss', $adminEmail, $adminEmail, $reportType, $customFileName, $fileType);
 $logQuery->execute();
 $conn->close();
+
+// Redirect back to the same page
+header("Location: {$_SERVER['HTTP_REFERER']}");
+exit();
 ?>
