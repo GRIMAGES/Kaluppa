@@ -46,7 +46,6 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Update application status logic
 if (isset($_POST['update_status'])) {
     $application_id = $_POST['application_id'];
     $new_status = $_POST['status'];
@@ -58,7 +57,7 @@ if (isset($_POST['update_status'])) {
         die("SQL error in preparation: " . $conn->error);
     }
 
-    $stmt->bind_param("si", $new_status, $application_id);
+    $stmt->bind_param("ss", $new_status, $application_id); // Fixed: both are strings now
 
     if ($stmt->execute()) {
         $stmt->close();
