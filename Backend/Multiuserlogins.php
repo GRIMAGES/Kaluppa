@@ -48,11 +48,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
 
                 if ($user['role'] === 'superadmin' || $user['role'] === 'admin') {
                     error_log("Redirecting to admin dashboard");
-                    header("Location: ../Frontend/admin dashboard/admin_dashboard.php");
+                    header("Location: ../Frontend/admin_dashboard/admin_dashboard.php");
                     exit();
                 } else if ($user['role'] === 'user' || $user['role'] === 'alumni') {
                     error_log("Redirecting to user dashboard");
-                    header("Location: ../Frontend/user dashboard/user_dashboard.php");
+                    header("Location: ../Frontend/user_dashboard/user_dashboard.php");
                     exit();
                 }
             } else {
