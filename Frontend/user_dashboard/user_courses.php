@@ -113,13 +113,13 @@ $categorizedCourses = categorizeCourses($courseResult);
                 $clickableClass = $isFull ? "unclickable" : "";
             ?>
             <div class="course-card <?php echo $availabilityClass . ' ' . $clickableClass; ?>" <?php echo $isFull ? '' : 'onclick="showCourseDetails(' . $course['id'] . ')"'; ?>>
-                <img src="../../Frontend/admin_dashboard/uploads/courses/<?php echo htmlspecialchars($card['image']); ?>" class="course-image" alt="Course Image">
-                <div class="course-details">
+            <img src="../../Kaluppa/Frontend/admin_dashboard/uploads/courses/<?php echo htmlspecialchars($course['image']); ?>" class="course-image" alt="Course Image">
+            <div class="course-details">
                     <h3 class="course-title"><?php echo htmlspecialchars($course['name']); ?></h3>
                     <p class="course-status <?php echo $availabilityClass; ?>"><?php echo $availabilityText; ?></p>
                     <?php if (!$isFull): ?>
-                        <button class="btn btn-outline-light view-details-button">View Details</button>
-                    <?php endif; ?>
+                        <button class="btn btn-outline-light view-details-button" data-course-id="<?php echo $course['id']; ?>">View Details</button>
+                        <?php endif; ?>
                 </div>
             </div>
             <?php endforeach; ?>
@@ -219,23 +219,7 @@ $categorizedCourses = categorizeCourses($courseResult);
     </div>
 </div>
 
-<!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">Application Submitted Successfully</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Your application has been submitted successfully. You will be notified once it is processed.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- Success Toast -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -297,10 +281,12 @@ $categorizedCourses = categorizeCourses($courseResult);
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
 function showCourseDetails(courseId) {
-    fetch(`../../Backend/user controller/fetch_course.php?course_id=${courseId}`)
+    fetch(`../../Backend/user_controller/fetch_course.php?course_id=${courseId}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
