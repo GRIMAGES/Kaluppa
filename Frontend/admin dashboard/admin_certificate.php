@@ -73,7 +73,8 @@ while ($row = $courseApplicantsResult->fetch_assoc()) {
 
 // Fetch users who applied to each volunteer work
 $workApplicants = [];
-$$workApplicantsQuery = "
+
+$workApplicantsQuery = "
 SELECT 
     va.work_id,
     CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS applicant_name,
@@ -84,8 +85,13 @@ WHERE va.status = 'accepted'
 ";
 
 $workApplicantsResult = $conn->query($workApplicantsQuery);
-while ($row = $workApplicantsResult->fetch_assoc()) {
-    $workApplicants[$row['work_id']][] = $row;
+
+if ($workApplicantsResult) {
+    while ($row = $workApplicantsResult->fetch_assoc()) {
+        $workApplicants[$row['work_id']][] = $row;
+    }
+} else {
+    echo "Query failed: " . $conn->error;
 }
 ?>
 
