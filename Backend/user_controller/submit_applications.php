@@ -10,7 +10,7 @@ ini_set("error_log", "../../Backend/logs/application_form_errors.log");
 
 if (!isset($_SESSION['email'])) {
     error_log("User not logged in. Session email is not set.");
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 

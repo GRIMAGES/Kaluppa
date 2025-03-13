@@ -3,7 +3,7 @@ require_once '../connection.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_param('si', $file_name, $application_id);
             if ($stmt->execute()) {
                 $_SESSION['success_message'] = "Document updated successfully.";
-                header("Location: /Frontend/user dashboard/user_transactions.php");
+                header("Location: /Frontend/user_dashboard/user_transactions.php");
                 exit();
             } else {
                 echo "Error: Failed to update document in database.";
