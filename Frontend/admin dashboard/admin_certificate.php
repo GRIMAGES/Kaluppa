@@ -54,33 +54,8 @@ $worksResult = $conn->query($worksQuery);
 while ($row = $worksResult->fetch_assoc()) {
     $works[] = $row;
 }
-
-// Steganography upload handling (QR code removed)
-$uploadStatus = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['uploadStego'])) {
-    if (isset($_FILES['stegoCertificate']) && $_FILES['stegoCertificate']['error'] === UPLOAD_ERR_OK) {
-        $fileTmp = $_FILES['stegoCertificate']['tmp_name'];
-        $fileName = $_FILES['stegoCertificate']['name'];
-        $uploadDir = 'uploads/';
-        $targetPath = $uploadDir . basename($fileName);
-
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-
-        // Move uploaded stego certificate
-        if (move_uploaded_file($fileTmp, $targetPath)) {
-            $uploadStatus = "Steganographed Certificate uploaded successfully.";
-        } else {
-            $uploadStatus = "Error uploading the certificate.";
-        }
-    } else {
-        $uploadStatus = "No file uploaded or upload error occurred.";
-    }
-}
 ?>
 
-<!-- HTML content below remains -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,8 +63,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['uploadStego'])) {
     <title>Certificate Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../CSS/admin_css/admin_scholar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        #certificatePreview {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: auto;
+            min-height: 800px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            padding: 100px 60px;
+            margin: auto;
+            color: #000;
+            display: none;
+        }
+
+        .overlay-content {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -30%);
+            width: 90%;
+            text-align: center;
+        }
+
+        .signed-by {
+            position: absolute;
+            bottom: 40px;
+            right: 80px;
+            text-align: right;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            #certificatePreview, #certificatePreview * {
+                visibility: visible;
+            }
+            #certificatePreview {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                padding: 0;
+            }
+        }
+    </style>
 </head>
 <body>
 <?php include 'admin_sidebar.php'; ?>
@@ -98,11 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['uploadStego'])) {
 
     <?php if (!empty($uploadMessage)): ?>
         <div class="alert alert-info"><?php echo $uploadMessage; ?></div>
-    <?php endif; ?>
-
-    <!-- ✅ Stego Certificate Upload Status -->
-    <?php if (!empty($uploadStatus)): ?>
-        <div class="alert alert-info"><?php echo $uploadStatus; ?></div>
     <?php endif; ?>
 
     <div class="card mb-4">
@@ -115,17 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['uploadStego'])) {
         </div>
     </div>
 
-    <!-- ✅ Updated: Steganography Upload Only -->
-    <div class="card mb-4">
-        <div class="card-header">Upload Steganographed Certificate</div>
-        <div class="card-body">
-            <form method="POST" enctype="multipart/form-data">
-                <input type="file" name="stegoCertificate" accept=".png,.jpg,.jpeg" class="form-control mb-3" required>
-                <button type="submit" name="uploadStego" class="btn btn-dark">Upload Certificate</button>
-            </form>
-        </div>
-    </div>
-</div>
     <form id="certificateForm" class="mb-5" method="POST" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
         <div class="row g-3">
             <div class="col-md-6">
@@ -256,7 +260,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['uploadStego'])) {
 
         document.getElementById('certificatePreview').style.display = 'block';
     }
-    
 </script>
 </body>
 </html>
