@@ -1,59 +1,26 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 600px;
-    background: white;
-    padding: 20px;
-    margin: 50px auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-h2 {
-    color: #333;
-    margin-bottom: 20px;
-}
-
-label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-}
-
-select {
+#certificatePreview {
+    font-family: 'Georgia', serif;
+    border: 10px double #444;
+    padding: 30px;
+    background: #fff;
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 16px;
+    max-width: 800px;
+    margin: auto;
+    margin-bottom: 50px;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-top: 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background 0.3s ease-in-out;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-@media (max-width: 768px) {
-    .container {
-        width: 90%;
-        padding: 15px;
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #certificatePreview, #certificatePreview * {
+        visibility: visible;
+    }
+    #certificatePreview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
     }
 }
