@@ -61,8 +61,9 @@ if (isset($_POST['update_status'])) {
 
     if ($stmt->execute()) {
         $stmt->close();
-        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_volunteer.php");
-        exit();
+        header("Location: https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_volunteer.php?status=success");
+exit();
+
     } else {
         die("SQL error during execution: " . $stmt->error);
     }
@@ -96,6 +97,8 @@ $result = mysqli_query($conn, $sql);
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Include DataTables CSS -->
     <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         .dataTables_length label,
         .dataTables_filter label {
@@ -219,6 +222,18 @@ $result = mysqli_query($conn, $sql);
     </div>
 </div>
 
+<!-- Toast Notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+    <div id="statusToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Status updated successfully!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap JS and Dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -253,6 +268,16 @@ $result = mysqli_query($conn, $sql);
         $("#volunteerTable tbody").sortable();
         $("#volunteerTable tbody").disableSelection();
     });
+    // Check for success flag in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') === 'success') {
+        const toastEl = document.getElementById('statusToast');
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+
+        // Optionally remove query param after showing toast (for cleaner URL)
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
 </script>
 </body>
 </html>
