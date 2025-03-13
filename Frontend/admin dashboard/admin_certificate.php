@@ -128,11 +128,6 @@ if ($workApplicantsResult) {
 
     <form id="certificateForm" class="mb-5" method="POST" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
         <div class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label">Recipient Name</label>
-                <input type="text" class="form-control" name="recipientName" id="recipientName" required>
-            </div>
-
             <div id="volunteerSection" style="display:none;">
     <div class="col-md-6">
         <label class="form-label">Select Volunteer Work</label>
@@ -164,6 +159,33 @@ if ($workApplicantsResult) {
         <option value="scholarship">Scholarship</option>
         <option value="volunteer">Volunteer</option>
     </select>
+</div>
+
+<div id="courseApplicantsTable" class="mt-4" style="display: none;">
+    <h5>Enrolled Course Applicants:</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Applicant Name</th>
+                <th>Application Date</th>
+            </tr>
+        </thead>
+        <tbody id="courseApplicantsBody"></tbody>
+    </table>
+</div>
+
+<!-- Work Applicants Table -->
+<div id="workApplicantsTable" class="mt-4" style="display: none;">
+    <h5>Accepted Volunteer Applicants:</h5>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Applicant Name</th>
+                <th>Application Date</th>
+            </tr>
+        </thead>
+        <tbody id="workApplicantsBody"></tbody>
+    </table>
 </div>
 
             <div class="col-md-6">
@@ -337,7 +359,76 @@ function handleTypeSelection() {
     document.getElementById('volunteerSection').style.display = (type === 'volunteer') ? 'block' : 'none';
 }
 
+const courseApplicants = <?= json_encode($courseApplicants); ?>;
+    const workApplicants = <?= json_encode($workApplicants); ?>;
 
+    // Populate Course Applicants Table
+    document.getElementById('courseName').addEventListener('change', function () {
+        const courseId = this.value;
+        const tbody = document.getElementById('courseApplicantsBody');
+        tbody.innerHTML = '';
+
+        if (courseApplicants[courseId]) {
+            courseApplicants[courseId].forEach(applicant => {
+                const row = `<tr>
+                    <td>${applicant.applicant_name}</td>
+                    <td>${applicant.application_date}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+            document.getElementById('courseApplicantsTable').style.display = 'block';
+        } else {
+            document.getElementById('courseApplicantsTable').style.display = 'none';
+        }
+
+        // Hide volunteer table if switching types
+        document.getElementById('workApplicantsTable').style.display = 'none';
+    });
+
+    // Populate Work Applicants Table
+    document.getElementById('workName').addEventListener('change', function () {
+        const workId = this.value;
+        const tbody = document.getElementById('workApplicantsBody');
+        tbody.innerHTML = '';
+
+        if (workApplicants[workId]) {
+            workApplicants[workId].forEach(applicant => {
+                const row = `<tr>
+                    <td>${applicant.applicant_name}</td>
+                    <td>${applicant.application_date}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+            document.getElementById('workApplicantsTable').style.display = 'block';
+        } else {
+            document.getElementById('workApplicantsTable').style.display = 'none';
+        }
+
+        // Hide course table if switching types
+        document.getElementById('courseApplicantsTable').style.display = 'none';
+    });
+
+    function handleTypeSelection() {
+        const type = document.getElementById('typeSelector').value;
+        const volunteerSection = document.getElementById('volunteerSection');
+        const scholarshipSection = document.getElementById('scholarshipSection');
+
+        document.getElementById('workApplicantsTable').style.display = 'none';
+        document.getElementById('courseApplicantsTable').style.display = 'none';
+
+        if (type === 'volunteer') {
+            volunteerSection.style.display = 'block';
+            scholarshipSection.style.display = 'none';
+            document.getElementById('workName').value = '';
+        } else if (type === 'scholarship') {
+            scholarshipSection.style.display = 'block';
+            volunteerSection.style.display = 'none';
+            document.getElementById('courseName').value = '';
+        } else {
+            volunteerSection.style.display = 'none';
+            scholarshipSection.style.display = 'none';
+        }
+    }
 </script>
 </body>
 </html>
