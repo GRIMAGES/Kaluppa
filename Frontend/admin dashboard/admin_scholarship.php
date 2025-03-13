@@ -64,7 +64,8 @@ if (isset($_POST['update_status'])) {
 
     if ($stmt->execute()) {
         $stmt->close();
-        header("Location: admin_scholarship.php"); // Refresh page to show updated status
+        // New (clean and correct):
+header("Location: https://kaluppa.online/Frontend/admin dashboard/admin_scholarship.php");
         exit();
     } else {
         die("SQL error during execution: " . $stmt->error);

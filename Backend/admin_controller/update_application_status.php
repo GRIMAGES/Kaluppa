@@ -92,7 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt4->bind_param("iss", $user_id, $user_email, $message);
         $stmt4->execute();
 
-        header("Location: /Frontend/admin dashboard/admin_scholarship.php");
+        // New (clean and correct):
+header("Location: https://kaluppa.online/Frontend/admin dashboard/admin_scholarship.php");
         exit();
     } else {
         die("SQL error during execution: " . $stmt->error);
