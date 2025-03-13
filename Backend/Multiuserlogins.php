@@ -15,7 +15,7 @@ $errors = [];
 function resendConfirmationLink($email, $first_name, $otp) {
     $subject = "Resend: Verify Your Email";
     $message = "Click the link to verify your account: ";
-    $message .= "http:/Kaluppa.online/Backend/otpverification.html?email=$email&otp=$otp"; 
+    $message .= "http:/Kaluppa.online/Backend/otpverification.php?email=$email&otp=$otp"; 
     return sendOTPByEmail($email, $first_name, $otp, $subject);
 }
 
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     if ($stmt->execute()) {
         $subject = "Verify Your Email";
         $message = "Click the link to verify your account: ";
-        $message .= "http:/Kaluppa.online/Backend/otpverification.html?email=$email&otp=$otp"; 
+        $message .= "http:/Kaluppa.online/Backend/otpverification.php?email=$email&otp=$otp"; 
         $mailResult = sendOTPByEmail($email, $first_name, $otp, $subject);
 
         if ($mailResult === true) {
