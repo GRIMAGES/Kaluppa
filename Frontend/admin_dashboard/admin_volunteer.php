@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 // Set session timeout duration (in seconds)
@@ -59,7 +62,7 @@ if (isset($_POST['update_status'])) {
 
     if ($stmt->execute()) {
         $stmt->close();
-        header("Location: admin_volunteer.php"); // Refresh page to show updated status
+        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_volunteer.php");
         exit();
     } else {
         die("SQL error during execution: " . $stmt->error);
