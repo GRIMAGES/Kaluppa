@@ -54,6 +54,35 @@ $worksResult = $conn->query($worksQuery);
 while ($row = $worksResult->fetch_assoc()) {
     $works[] = $row;
 }
+// Fetch users who applied to each course
+$courseApplicants = [];
+$courseApplicantsQuery = "
+    SELECT 
+        ca.course_id,
+        CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS applicant_name,
+        ca.applied_at AS application_date
+    FROM applications ca
+    JOIN user u ON ca.user_id = u.id
+";
+$courseApplicantsResult = $conn->query($courseApplicantsQuery);
+while ($row = $courseApplicantsResult->fetch_assoc()) {
+    $courseApplicants[$row['course_id']][] = $row;
+}
+
+// Fetch users who applied to each volunteer work
+$workApplicants = [];
+$workApplicantsQuery = "
+    SELECT 
+        va.work_id,
+        CONCAT(u.first_name, ' ', COALESCE(u.middle_name, ''), ' ', u.last_name) AS applicant_name,
+        va.application_date
+    FROM volunteer_application va
+    JOIN user u ON va.user_id = u.id
+";
+$workApplicantsResult = $conn->query($workApplicantsQuery);
+while ($row = $workApplicantsResult->fetch_assoc()) {
+    $workApplicants[$row['work_id']][] = $row;
+}
 ?>
 
 <!DOCTYPE html>
@@ -63,55 +92,9 @@ while ($row = $worksResult->fetch_assoc()) {
     <title>Scholarship Certificate Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        #certificatePreview {
-            position: relative;
-            width: 100%;
-            max-width: 1200px;
-            height: auto;
-            min-height: 800px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            padding: 100px 60px;
-            margin: auto;
-            color: #000;
-            display: none;
-        }
-
-        .overlay-content {
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -30%);
-            width: 90%;
-            text-align: center;
-        }
-
-        .signed-by {
-            position: absolute;
-            bottom: 40px;
-            right: 80px;
-            text-align: right;
-        }
-
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #certificatePreview, #certificatePreview * {
-                visibility: visible;
-            }
-            #certificatePreview {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-                padding: 0;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../CSS/admin_css/admin_scholar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
 </head>
 <body>
 <?php include 'admin_sidebar.php'; ?>
@@ -150,7 +133,49 @@ while ($row = $worksResult->fetch_assoc()) {
                     <?php endforeach; ?>
                 </select>
             </div>
+            <h4 class="mt-5">Applicants Per Course</h4>
+<?php foreach ($courses as $course): ?>
+    <div class="card mb-3">
+        <div class="card-header bg-primary text-white">
+            Course: <?php echo htmlspecialchars($course['name']); ?>
+        </div>
+        <div class="card-body">
+            <?php if (!empty($courseApplicants[$course['id']])): ?>
+                <ul class="list-group">
+                    <?php foreach ($courseApplicants[$course['id']] as $applicant): ?>
+                        <li class="list-group-item">
+                            <?php echo htmlspecialchars($applicant['applicant_name']); ?> - Applied on <?php echo date("F j, Y", strtotime($applicant['application_date'])); ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>No applicants for this course.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endforeach; ?>
 
+<h4 class="mt-5">Applicants Per Volunteer Work</h4>
+<?php foreach ($works as $work): ?>
+    <div class="card mb-3">
+        <div class="card-header bg-success text-white">
+            Volunteer Work: <?php echo htmlspecialchars($work['title']); ?>
+        </div>
+        <div class="card-body">
+            <?php if (!empty($workApplicants[$work['id']])): ?>
+                <ul class="list-group">
+                    <?php foreach ($workApplicants[$work['id']] as $applicant): ?>
+                        <li class="list-group-item">
+                            <?php echo htmlspecialchars($applicant['applicant_name']); ?> - Applied on <?php echo date("F j, Y", strtotime($applicant['application_date'])); ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>No applicants for this volunteer work.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endforeach; ?>
             <div class="col-md-6">
                 <label class="form-label">Select Volunteer Work</label>
                 <select class="form-select" name="workName" id="workName">
