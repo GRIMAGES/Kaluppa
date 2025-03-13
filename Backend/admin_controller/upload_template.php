@@ -3,10 +3,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
-require_once '../connection.php'; // Adjust path if needed
+require_once '../connection.php';
 
-$targetDirectory = "../../Frontend/admin dashboard/templates/";
+$targetDirectory = realpath(__DIR__ . "/../../Frontend/admin dashboard/templates/") . "/";
 $allowedTypes = ['png', 'pdf'];
+
+if (!is_dir($targetDirectory)) {
+    mkdir($targetDirectory, 0777, true);
+}
 
 if (isset($_FILES['templateFile']) && $_FILES['templateFile']['error'] === UPLOAD_ERR_OK) {
     $fileTmpPath = $_FILES['templateFile']['tmp_name'];
@@ -16,23 +20,21 @@ if (isset($_FILES['templateFile']) && $_FILES['templateFile']['error'] === UPLOA
     if (in_array($fileExtension, $allowedTypes)) {
         $targetFilePath = $targetDirectory . $fileName;
 
-        // Create folder if not exists
-        if (!is_dir($targetDirectory)) {
-            mkdir($targetDirectory, 0777, true);
-        }
-
-        if (move_uploaded_file($fileTmpPath, $targetFilePath)) {
+        if (!is_writable($targetDirectory)) {
+            $_SESSION['uploadMessage'] = "Target directory not writable: " . $targetDirectory;
+        } elseif (move_uploaded_file($fileTmpPath, $targetFilePath)) {
             $_SESSION['uploadMessage'] = "Template uploaded successfully.";
         } else {
-            $_SESSION['uploadMessage'] = "Failed to move uploaded file.";
+            $_SESSION['uploadMessage'] = "move_uploaded_file() failed. Temp: $fileTmpPath | Target: $targetFilePath";
         }
     } else {
         $_SESSION['uploadMessage'] = "Invalid file type. Only PNG and PDF allowed.";
     }
 } else {
-    $_SESSION['uploadMessage'] = "No file uploaded or upload error occurred.";
+    $_SESSION['uploadMessage'] = "No file uploaded or error code: " . $_FILES['templateFile']['error'];
 }
 
 header("Location: ../../Frontend/admin dashboard/admin_certificate.php");
 exit();
 
+?>
