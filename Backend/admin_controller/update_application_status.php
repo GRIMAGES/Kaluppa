@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 require_once '../../Frontend/vendor/autoload.php'; // PHPMailer autoload
 
@@ -8,7 +11,7 @@ use PHPMailer\PHPMailer\Exception;
 session_start();
 
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -61,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com'; 
             $mail->SMTPAuth = true;
-            $mail->Username = 'BarangayMSP@gmail.com';
-            $mail->Password = 'xnbt fsfu bvai kpfu'; // Replace with a new App Password
+            $mail->Username = 'wgonzales@kaluppa.org';
+            $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with a new App Password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
             // Recipients
-            $mail->setFrom('BarangayMSP@gmail.com', 'KALUPPA');
+            $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA');
             $mail->addAddress($user_email, $user_name);
 
             // Email content
@@ -87,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Store notification in the database
         $notification_sql = "INSERT INTO notifications (user_id, email, message, category, status) VALUES (?, ?, ?, 'application', 'unread')";
         $stmt4 = $conn->prepare($notification_sql);
-        $message = "Your application status has been updated to: $new_status.";
+        $message = "Your application status has been updated: $new_status.";
         $stmt4->bind_param("iss", $user_id, $user_email, $message);
         $stmt4->execute();
 
