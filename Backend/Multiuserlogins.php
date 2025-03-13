@@ -89,16 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     $phone = $_POST['phone'];
     $otp = generateOTP();
 
-    // Validate password
-    if (strlen($password) < 10 || strlen($password) > 16 || 
-        !preg_match('/[A-Z]/', $password) || 
-        !preg_match('/[a-z]/', $password) || 
-        !preg_match('/[0-9]/', $password) || 
-        !preg_match('/[@$!%*?&#^+=._-]/', $password)) {
-        $_SESSION['error'] = "Password must be 10-16 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
-        header("Location: ../Frontend/index.php");
-        exit();
-    }
+    if (strlen($password) < 10 || 
+    !preg_match('/[A-Z]/', $password) || 
+    !preg_match('/[a-z]/', $password) || 
+    !preg_match('/[0-9]/', $password) || 
+    !preg_match('/[@$!%*?&#^+=._-]/', $password)) {
+    
+    $_SESSION['error'] = "Password must be at least 10 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+    header("Location: ../Frontend/index.php");
+    exit();
+}
 
     if ($password !== $confirm_password) {
         $_SESSION['error'] = "Passwords do not match.";
@@ -111,7 +111,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, password, role, gender, birthday, house_number, street, barangay, district, city, region, postal_code, phone, otp, is_verified) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
 
     $otp_expiry = date('Y-m-d H:i:s', strtotime('+2 hour'));
-    $stmt->bind_param("ssssssssssssssss", $first_name, $middle_name, $last_name, $email, $password_hashed, $gender, $birthday, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $phone, $otp);
+
+    $stmt = $conn->prepare("INSERT INTO user (
+        first_name, middle_name, last_name, email, password, role, gender,
+        birthday, house_number, street, barangay, district, city, region,
+        postal_code, phone, otp, otp_expiry, is_verified
+    ) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
+    
+    $stmt->bind_param(
+        "ssssssssssssssss",  // 16 values (excluding hardcoded ones)
+        $first_name,
+        $middle_name,
+        $last_name,
+        $email,
+        $password_hashed,
+        $gender,
+        $birthday,
+        $house_number,
+        $street,
+        $barangay,
+        $district,
+        $city,
+        $region,
+        $postal_code,
+        $phone,
+        $otp,
+        $otp_expiry
+    );
+
 
 
 
