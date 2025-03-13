@@ -3,7 +3,7 @@ require_once '../../Backend/connection.php';
 
 // Redirect if not logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 

@@ -3,7 +3,7 @@ require_once '../../Backend/connection.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -100,7 +100,7 @@ $stmt->close();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function markAsRead(notificationId) {
-        fetch(`../../Backend/user controller/mark_notification_read.php?id=${notificationId}`)
+        fetch(`../../Backend/user_controller/mark_notification_read.php?id=${notificationId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -115,7 +115,7 @@ $stmt->close();
     }
 
     function closeNotification(notificationId) {
-        fetch(`../../Backend/user controller/close_notification.php?id=${notificationId}`)
+        fetch(`../../Backend/user_controller/close_notification.php?id=${notificationId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {

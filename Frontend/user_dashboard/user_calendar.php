@@ -2,7 +2,7 @@
 require_once '../../Backend/connection.php';
 session_start();
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -81,7 +81,7 @@ $email = $_SESSION['email'];
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: 'http://localhost:3000//Backend/user controller/get_events.php', // Endpoint for fetching events
+            events: 'https://kaluppa.online/Kaluppa/Backend/user controller/get_events.php', // Endpoint for fetching events
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',

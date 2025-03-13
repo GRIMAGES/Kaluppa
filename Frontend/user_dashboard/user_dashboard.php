@@ -133,7 +133,7 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
         <?php foreach ($featuredCards as $card): ?>
             <div class="col">
                 <div class="featured-card d-flex flex-column justify-content-between">
-                    <img src="../../Frontend/admin dashboard/uploads/featured/<?php echo htmlspecialchars($card['image']); ?>" class="featured-card-img" alt="Card Image" style="width: 100%; height: 250px; object-fit: cover;"> <!-- Consistent image size -->
+                    <img src="../../Frontend/admin_dashboard/uploads/featured/<?php echo htmlspecialchars($card['image']); ?>" class="featured-card-img" alt="Card Image" style="width: 100%; height: 250px; object-fit: cover;"> <!-- Consistent image size -->
                     <div class="featured-card-body">
                         <h5 class="featured-card-title"><?php echo htmlspecialchars($card['title']); ?></h5>
                         <p class="featured-card-text"><?php echo htmlspecialchars($card['description']); ?></p>
@@ -153,7 +153,7 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center">
-                            <img src="../../Frontend/admin dashboard/uploads/featured/<?php echo htmlspecialchars($card['image']); ?>" class="img-fluid mb-3 rounded shadow" alt="Card Image" style="width: 100%; height: 250px; object-fit: cover;"> <!-- Consistent image size -->
+                            <img src="../../Frontend/admin_dashboard/uploads/featured/<?php echo htmlspecialchars($card['image']); ?>" class="img-fluid mb-3 rounded shadow" alt="Card Image" style="width: 100%; height: 250px; object-fit: cover;"> <!-- Consistent image size -->
                             <p><strong><?php echo nl2br(htmlspecialchars($card['description'])); ?></strong></p>
                             <!-- Add additional details here -->
                             <p><strong>Additional Details:</strong></p>
@@ -263,7 +263,7 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: 'http://localhost:3000//Backend/user controller/get_events.php', // Endpoint for fetching events
+            events: 'https://kaluppa.online/Kaluppa/Backend/user controller/get_events.php', // Endpoint for fetching events
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',

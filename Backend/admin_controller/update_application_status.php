@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt4->execute();
 
         // New (clean and correct):
-header("Location: https://kaluppa.online/Frontend/admin dashboard/admin_scholarship.php");
+header("Location: https://kaluppa.online/Frontend/admin_dashboard/admin_scholarship.php");
         exit();
     } else {
         die("SQL error during execution: " . $stmt->error);

@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 session_start();
 require_once '../connection.php'; // Adjust path if needed
 
-$targetDirectory = __DIR__ . "/../../Frontend/admin dashboard/templates/";
+$targetDirectory = __DIR__ . "/../../Frontend/admin_dashboard/templates/";
 $allowedTypes = ['png', 'pdf'];
 
 if (isset($_FILES['templateFile']) && $_FILES['templateFile']['error'] === UPLOAD_ERR_OK) {

@@ -3,7 +3,7 @@ require_once '../../Backend/connection.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 

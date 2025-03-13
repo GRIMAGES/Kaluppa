@@ -10,7 +10,7 @@ ini_set("error_log", "../../Backend/logs/application_form_errors.log");
 
 // Redirect if user is not logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -275,7 +275,7 @@ if (!$workResult) {
     }
 
     function showAnnouncementDetails(announcementId) {
-        fetch(`../../Backend/user controller/fetch_announcement.php?id=${announcementId}`)
+        fetch(`../../Backend/user_controller/fetch_announcement.php?id=${announcementId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -287,9 +287,9 @@ if (!$workResult) {
                     imagePath = imagePath.replace(/(Frontend\/uploads\/)+/, "Frontend/uploads/").replace(/(uploads\/)+/, "uploads/");
 
                     // Ensure final path is correct
-                    let finalImagePath = imagePath.includes("Frontend/admin dashboard/uploads/")
+                    let finalImagePath = imagePath.includes("Frontend/admin_dashboard/uploads/")
                         ? "../../" + imagePath
-                        : "../../Frontend/admin dashboard/uploads/" + imagePath.replace("Frontend/uploads/", "");
+                        : "../../Frontend/admin_dashboard/uploads/" + imagePath.replace("Frontend/uploads/", "");
 
                     console.log("Final Image Path:", finalImagePath); // Debugging
 
@@ -322,7 +322,7 @@ if (!$workResult) {
 
             // Send AJAX request to submit the form
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '../../Backend/user controller/submit_applications.php', true);
+            xhr.open('POST', '../../Backend/user_controller/submit_applications.php', true);
 
             xhr.onload = function() {
                 if (xhr.status === 200) {

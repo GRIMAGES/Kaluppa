@@ -6,7 +6,7 @@ $timeout_duration = 1000; // 30 minutes
 
 // Redirect to login page if not logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -15,7 +15,7 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
     // Last activity was more than 30 minutes ago
     session_unset();     // unset $_SESSION variable for the run-time
     session_destroy();   // destroy session data
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -24,7 +24,7 @@ $_SESSION['LAST_ACTIVITY'] = time();
 // Logout logic
 if (isset($_POST['logout'])) {
     session_destroy();
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -182,7 +182,7 @@ if (isset($_POST['change_password'])) {
                 <div class="card-body">
                     <form method="POST" action="admin_settings.php" enctype="multipart/form-data">
                         <div class="mb-3 text-center">
-                            <img src="KALUPPA/Frontend/admin dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px;">
+                            <img src="KALUPPA/Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px;">
                         </div>
                         <div class="mb-3">
                             <label for="profile_picture" class="form-label">Profile Picture</label>

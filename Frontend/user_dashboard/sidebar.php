@@ -2,7 +2,7 @@
 require_once '../../Backend/connection.php';
 // Redirect if not logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -21,7 +21,7 @@ $stmt->close();
 $fullName = trim("$first_name $middle_name $last_name");
 
 $profilePic = !empty($profile_picture) 
-    ? "/Frontend/admin dashboard/uploads/profile_pics/" . $profile_picture 
+    ? "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture 
     : "/Frontend/assets/default-profile.png";
 
 // Debugging: Log profile picture file existence

@@ -4,7 +4,7 @@
 
     // Redirect if not logged in
     if (!isset($_SESSION['email'])) {
-        header("Location: /Frontend/multiuserlogin.php");
+        header("Location: /Frontend/index.php");
         exit();
     }
 
@@ -20,7 +20,7 @@
     $stmt->fetch();
     $stmt->close();
 
-    $target_dir = __DIR__ . "/../../admin dashboard/uploads/profile_pics/";
+    $target_dir = __DIR__ . "/../../admin_dashboard/uploads/profile_pics/";
 
     // Ensure directory exists
     if (!is_dir($target_dir)) {
@@ -30,7 +30,7 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload_picture'])) {
         if (isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["error"] === UPLOAD_ERR_OK) {
             
-            $upload_dir = "C:/xampp/htdocs/Kaluppa/Frontend/admin dashboard/uploads/profile_pics/";
+            $upload_dir = "https://kaluppa.online/Kaluppa/Frontend/admin dashboard/uploads/profile_pics/";
             $file_tmp = $_FILES["profile_picture"]["tmp_name"];
             $file_name = basename($_FILES["profile_picture"]["name"]);
             $target_file = $upload_dir . $file_name;
@@ -208,7 +208,7 @@
         <div class="card shadow p-3">
             <h4 class="mb-3 text-center">Profile Picture</h4>
             <div class="text-center">
-            <img src="/Frontend/admin dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture); ?>" 
+            <img src="/Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture); ?>" 
      alt="Profile Picture" class="rounded-circle img-fluid" 
      style="max-width: 200px;">
 

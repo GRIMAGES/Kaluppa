@@ -3,7 +3,7 @@ require_once '../../Backend/connection.php';
 
 session_start();
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -113,7 +113,7 @@ $categorizedCourses = categorizeCourses($courseResult);
                 $clickableClass = $isFull ? "unclickable" : "";
             ?>
             <div class="course-card <?php echo $availabilityClass . ' ' . $clickableClass; ?>" <?php echo $isFull ? '' : 'onclick="showCourseDetails(' . $course['id'] . ')"'; ?>>
-                <img src="../../Frontend/admin dashboard/uploads/courses/<?php echo htmlspecialchars($card['image']); ?>" class="course-image" alt="Course Image">
+                <img src="../../Frontend/admin_dashboard/uploads/courses/<?php echo htmlspecialchars($card['image']); ?>" class="course-image" alt="Course Image">
                 <div class="course-details">
                     <h3 class="course-title"><?php echo htmlspecialchars($course['name']); ?></h3>
                     <p class="course-status <?php echo $availabilityClass; ?>"><?php echo $availabilityText; ?></p>
@@ -344,7 +344,7 @@ document.getElementById("applicationForm").addEventListener("submit", function (
     const formData = new FormData(this);
     const errorContainer = document.getElementById("error-message"); // Assuming an error container exists
 
-    fetch("../../Backend/user controller/submit_application.php", {
+    fetch("../../Backend/user_controller/submit_application.php", {
         method: "POST",
         body: formData,
     })
