@@ -45,9 +45,7 @@ $navLinks = [
     ['href' => 'reports.php', 'icon' => 'fas fa-chart-bar', 'text' => 'Reports'],
     ['href' => 'admin_settings.php', 'icon' => 'fas fa-cog', 'text' => 'Admin Settings'],
     ['href' => '#', 'icon' => 'fas fa-certificate', 'text' => 'Certificates', 'dropdown' => [
-        ['href' => 'admin_certificates.php?type=scholarship', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship'],
-        ['href' => 'admin_certificates.php?type=training', 'icon' => 'fas fa-chalkboard-teacher', 'text' => 'Training'],
-        ['href' => 'admin_certificates.php?type=event', 'icon' => 'fas fa-calendar-check', 'text' => 'Event'],
+        ['href' => 'admin_certificate.php?type=scholarship', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship']
     ]],
 ];
 ?>
