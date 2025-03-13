@@ -147,9 +147,8 @@ try {
     $mail->isHTML(true);
     $mail->Subject = "Exported Report: $customFileName";
     $mail->Body = "Hello $adminEmail,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
-    <strong>File Type:</strong> $fileType<br>
-    <strong>Password Instructions:</strong> Please use the following format to retrieve your password:<br>
-    <code>YYYYMMDD</code> (Replace with your birthday).<br><br>Best regards,<br>System Admin";
+<strong>File Type:</strong> $fileType<br>
+<strong>Password:</strong> The password for the report is <strong>$exportPassword</strong>.<br><br>Best regards,<br>System Admin";
 
     $mail->send();
     echo "Report exported and emailed successfully.";
