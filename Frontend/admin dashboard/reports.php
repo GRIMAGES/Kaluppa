@@ -45,20 +45,25 @@ $stmt->close();
     <link rel="stylesheet" href="../CSS/admin css/events.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        body {
+            background-color: #121212;
+            color: white;
+        }
         .content {
             margin-left: 250px;
-            padding: 15px;
+            padding: 20px;
         }
         table {
             width: 100%;
             margin-top: 15px;
         }
         table th, table td {
-            padding: 8px;
+            padding: 10px;
             text-align: left;
         }
         .form-label {
             font-weight: bold;
+            color: white;
         }
         .form-group {
             display: flex;
@@ -66,57 +71,51 @@ $stmt->close();
             align-items: center;
             margin-bottom: 15px;
         }
-        .modal-content {
-            border-radius: 10px;
-        }
-        .modal-header, .modal-footer {
-            display: flex;
-            justify-content: space-between;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            border: none;
+        .form-control {
+            background-color: #2c2f38;
+            color: white;
+            border: 1px solid #444;
         }
         .btn-primary {
             background-color: #007bff;
             border: none;
         }
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .container {
+            background-color: #1f1f1f;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
         }
     </style>
 </head> 
 <body>
 <?php include 'admin_sidebar.php'; ?>
 
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="color:black;">
-                Are you sure you want to log out?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
-
-            </div>
-        </div>
+<!-- Toast Success Message -->
+<div class="toast" id="successToast" style="display: none;">
+    <div class="toast-body bg-success text-white">
+        Report generated successfully!
     </div>
 </div>
 
-    <!-- Main Content -->
-    <div class="content">
-        <h1 class="mb-3">Reports</h1>
-        <p>Export various reports such as:</p>
-        <ul>
-            <li>Enrolled Scholars</li>
-            <li>Accepted Volunteers</li>
-        </ul>
+<!-- Main Content -->
+<div class="content">
+    <h1 class="mb-3">Reports</h1>
+    <p>Export various reports such as:</p>
+    <ul>
+        <li>Enrolled Scholars</li>
+        <li>Accepted Volunteers</li>
+    </ul>
+
+    <div class="container">
         <form action="../../Backend/admin_controller/export_reports.php" method="GET">
             <div class="mb-3">
                 <label for="reportType" class="form-label">Select Report Type</label>
@@ -128,9 +127,7 @@ $stmt->close();
             <div class="mb-3">
                 <label for="fileType" class="form-label">Select File Type</label>
                 <select class="form-select form-select-sm" id="fileType" name="file_type">
-                    <option value="csv">CSV</option>
-                    <option value="excel">Excel</option>
-                    <option value="pdf">PDF</option>
+                    <option value="pdf">PDF</option> <!-- Only PDF remains -->
                 </select>
             </div>
             <div class="form-group">
@@ -145,46 +142,56 @@ $stmt->close();
                 <label for="adminEmail" class="form-label">Admin Email</label>
                 <input type="email" class="form-control form-control-sm" id="adminEmail" name="adminEmail" value="<?php echo htmlspecialchars($adminEmail); ?>" readonly>
             </div>
-            <button type="submit" class="btn btn-primary">Generate Report</button>
+            <button type="submit" class="btn btn-primary" onclick="showToast()">Generate Report</button>
         </form>
-
-        <h2 class="mt-5">Exported Logs</h2>
-        <table class="table table-bordered table-striped mt-3">
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Admin Name</th>
-                    <th>Admin Email</th>
-                    <th>Report Type</th>
-                    <th>File Name</th>
-                    <th>File Type</th>
-                    <th>Generated Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if ($logs->num_rows > 0) {
-                    while ($row = $logs->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row['id']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['admin_name']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['admin_email']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['report_type']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['file_name']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['file_type']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['export_date']) . "</td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='7' class='text-center'>No exported logs found.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
     </div>
 
-    <!-- Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <h2 class="mt-5">Exported Logs</h2>
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Admin Name</th>
+                <th>Admin Email</th>
+                <th>Report Type</th>
+                <th>File Name</th>
+                <th>File Type</th>
+                <th>Generated Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($logs->num_rows > 0) {
+                while ($row = $logs->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . htmlspecialchars($row['id']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['admin_name']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['admin_email']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['report_type']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['file_name']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['file_type']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['export_date']) . "</td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='7' class='text-center'>No exported logs found.</td></tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- Bootstrap and Toast JS -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script>
+    function showToast() {
+        var toast = document.getElementById('successToast');
+        toast.style.display = 'block';
+        setTimeout(function() {
+            toast.style.display = 'none';
+        }, 3000); // Hide toast after 3 seconds
+    }
+</script>
 </body>
 </html>
