@@ -27,9 +27,6 @@ $customFileName = isset($_GET['customTitle']) ? htmlspecialchars($_GET['customTi
 $fileType = isset($_GET['file_type']) ? strtolower($_GET['file_type']) : 'xlsx';  // Ensure $fileType is always set.
 $adminEmail = $_SESSION['email'];
 
-// Password for encryption
-$exportPassword = bin2hex(random_bytes(4)); // Example: "d1e2f3a4"
-
 // Fetch admin name and birthday
 $adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
@@ -45,8 +42,8 @@ $adminQuery->close();
 // Format the birthday (YYYYMMDD)
 $formattedBirthday = date('Ymd', strtotime($adminBirthday));  // e.g., '19900313'
 
-// Format the password to include only the birthday
-$password = $formattedBirthday;  // Format: YYYYMMDD
+// Password for encryption (based on admin's birthday)
+$exportPassword = $formattedBirthday;  // Set the password to the admin's birthday in YYYYMMDD format
 
 // Validate report types
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
@@ -83,18 +80,7 @@ if (!is_writable('/mnt/data/')) {
     die("Directory is not writable. Please check the directory permissions.");
 }
 
-if ($fileType === 'excel') {
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-    $sheet->fromArray($columns, NULL, 'A1');
-    $sheet->fromArray($data, NULL, 'A2');
-
-    $writer = new Xlsx($spreadsheet);
-
-    // Save Excel file
-    $writer->save($tempFilePath);
-
-} elseif ($fileType === 'pdf') {
+if ($fileType === 'pdf') {
     // Create PDF manually using FPDF + FPDI
     $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
     $pdf->SetCreator(PDF_CREATOR);
@@ -151,9 +137,10 @@ try {
 <strong>Password:</strong> The password for the report is <strong>$exportPassword</strong>.<br><br>Best regards,<br>System Admin";
 
     $mail->send();
-    echo "Report exported and emailed successfully.";
+    // Success message to be displayed after redirection
+    $_SESSION['message'] = "Report exported and emailed successfully.";
 } catch (Exception $e) {
-    echo "Email could not be sent. Error: {$mail->ErrorInfo}";
+    $_SESSION['message'] = "Email could not be sent. Error: {$mail->ErrorInfo}";
 }
 
 // Log export
@@ -161,4 +148,8 @@ $logQuery = $conn->prepare("INSERT INTO export_logs (admin_email, admin_name, re
 $logQuery->bind_param('sssss', $adminEmail, $adminEmail, $reportType, $customFileName, $fileType);
 $logQuery->execute();
 $conn->close();
+
+// Redirect back to the same page
+header("Location: {$_SERVER['HTTP_REFERER']}");
+exit();
 ?>
