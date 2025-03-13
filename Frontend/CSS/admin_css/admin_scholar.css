@@ -1,26 +1,45 @@
 #certificatePreview {
-    font-family: 'Georgia', serif;
-    border: 10px double #444;
-    padding: 30px;
-    background: #fff;
+    position: relative;
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
+    height: auto;
+    min-height: 800px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 100px 60px;
     margin: auto;
-    margin-bottom: 50px;
+    color: #000;
+    display: none;
+}
+
+.overlay-content {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    width: 90%;
+    text-align: center;
+}
+
+.signed-by {
+    position: absolute;
+    bottom: 40px;
+    right: 80px;
+    text-align: right;
 }
 
 @media print {
-    body * {
-        visibility: hidden;
-    }
+    body * { visibility: hidden; }
     #certificatePreview, #certificatePreview * {
         visibility: visible;
     }
     #certificatePreview {
         position: absolute;
-        left: 0;
         top: 0;
+        left: 0;
         width: 100%;
-        border: none;
+        height: 100vh;
+        padding: 0;
     }
 }
