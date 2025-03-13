@@ -15,7 +15,6 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-
 session_start();
 
 if (!isset($_SESSION['email'])) {
@@ -30,27 +29,27 @@ $adminEmail = $_SESSION['email'];
 // Password for encryption
 $exportPassword = bin2hex(random_bytes(4)); // Example: "d1e2f3a4"
 
-/// Fetch admin name and birthdate
+// Fetch admin name and birthday
 $adminQuery = $conn->prepare("SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS full_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
 $adminResult = $adminQuery->get_result();
 if ($adminRow = $adminResult->fetch_assoc()) {
     $adminName = $adminRow['full_name'];
-    $adminBirthdate = $adminRow['birthdate']; // Fetching birthdate
+    $adminBirthday = $adminRow['birthday']; // Fetching birthday
 } else {
     die("Admin not found.");
 }
 $adminQuery->close();
 
-// Format the birthdate (MM-DD-YYYY)
-$formattedBirthdate = date('m-d-Y', strtotime($adminBirthdate));  // e.g., '03-13-1990'
+// Format the birthday (MM-DD-YYYY)
+$formattedBirthday = date('m-d-Y', strtotime($adminBirthday));  // e.g., '03-13-1990'
 
 // Extract and trim the last name
 $lastName = trim(explode(" ", $adminName)[2]);  // Assuming the full name is in "First Middle Last" format
 
-// Format the password to include last name and admin birthdate
-$password = strtoupper($lastName) . "_" . $formattedBirthdate;  // Format: LASTNAME_MM-DD-YYYY
+// Format the password to include last name and admin birthday
+$password = strtoupper($lastName) . "_" . $formattedBirthday;  // Format: LASTNAME_MM-DD-YYYY
 
 // Validate report types
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
@@ -152,8 +151,8 @@ try {
     $mail->Subject = "Exported Report: $customFileName";
     $mail->Body = "Hello $adminName,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
     <strong>File Type:</strong> $fileType<br>
-    <strong>Password:</strong> <code>$password</code><br><br>
-    Please use this password to unlock the file.<br><br>Best regards,<br>System Admin";
+    <strong>Password Instructions:</strong> Please use the following format to retrieve your password:<br>
+    <code>LASTNAME_MM-DD-YYYY</code> (Replace with your last name and birthday).<br><br>Best regards,<br>System Admin";
 
     $mail->send();
     echo "Report exported and emailed successfully.";
