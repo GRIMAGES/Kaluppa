@@ -64,9 +64,10 @@ if (isset($_POST['update_status'])) {
 
     if ($stmt->execute()) {
         $stmt->close();
-        // New (clean and correct):
-header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_scholarship.php");
+        $_SESSION['status_updated'] = true; // ✅ Add this line
+        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_scholarship.php");
         exit();
+    
     } else {
         die("SQL error during execution: " . $stmt->error);
     }
@@ -88,6 +89,8 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Include DataTables CSS -->
     <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         .dataTables_length label,
         .dataTables_filter label {
@@ -214,6 +217,19 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
         </div>
     </div>
 
+    <!-- Success Toast Notification -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    <div id="statusToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Application status updated successfully!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
     <!-- Bootstrap JS and Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -273,6 +289,18 @@ $(document).ready(function() {
         $("#scholarshipTable tbody").sortable();
         $("#scholarshipTable tbody").disableSelection();
     });
+
+    <?php if (isset($_SESSION['status_updated']) && $_SESSION['status_updated']): ?>
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+            var toastEl = document.getElementById('statusToast');
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        });
+    </script>
+    <?php unset($_SESSION['status_updated']); ?>
+<?php endif; ?>
+
     </script>
 </body>
 </html>
