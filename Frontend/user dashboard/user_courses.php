@@ -113,7 +113,7 @@ $categorizedCourses = categorizeCourses($courseResult);
                 $clickableClass = $isFull ? "unclickable" : "";
             ?>
             <div class="course-card <?php echo $availabilityClass . ' ' . $clickableClass; ?>" <?php echo $isFull ? '' : 'onclick="showCourseDetails(' . $course['id'] . ')"'; ?>>
-                <img src="<?php echo '../images/' . htmlspecialchars($course['image']); ?>" class="course-image" alt="Course Image">
+                <img src="../../Frontend/admin dashboard/uploads/courses/<?php echo htmlspecialchars($card['image']); ?>" class="course-image" alt="Course Image">
                 <div class="course-details">
                     <h3 class="course-title"><?php echo htmlspecialchars($course['name']); ?></h3>
                     <p class="course-status <?php echo $availabilityClass; ?>"><?php echo $availabilityText; ?></p>
