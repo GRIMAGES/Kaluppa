@@ -23,7 +23,7 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'wgonzales@kaluppa.org'; // Replace with your Gmail address
-        $mail->Password   = 'ngqt vydl kvjz lgsl'; // Replace with your Gmail app-specific password
+        $mail->Password   = 'qfsp ihop mdqg ngoy'; // Replace with your Gmail app-specific password
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
 
@@ -58,7 +58,7 @@ function sendEmail($toEmail, $username, $subject, $message) {
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'wgonzales@kaluppa.org'; // Replace with your Gmail address
-        $mail->Password   = 'ngqt vydl kvjz lgsl'; // Replace with your Gmail app-specific password
+        $mail->Password   = 'qfsp ihop mdqg ngoy'; // Replace with your Gmail app-specific password
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
 

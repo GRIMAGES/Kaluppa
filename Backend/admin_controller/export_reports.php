@@ -125,7 +125,7 @@ try {
     $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
     $mail->SMTPAuth = true;
     $mail->Username = 'wgonzales@kaluppa.org'; // Sender email
-    $mail->Password = 'ngqt vydl kvjz lgsl';    // Sender email password
+    $mail->Password = 'qfsp ihop mdqg ngoy';    // Sender email password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
