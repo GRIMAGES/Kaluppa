@@ -30,17 +30,27 @@ $adminEmail = $_SESSION['email'];
 // Password for encryption
 $exportPassword = bin2hex(random_bytes(4)); // Example: "d1e2f3a4"
 
-// Fetch admin name
-$adminQuery = $conn->prepare("SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS full_name FROM user WHERE email = ?");
+/// Fetch admin name and birthdate
+$adminQuery = $conn->prepare("SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS full_name, birthdate FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
 $adminResult = $adminQuery->get_result();
 if ($adminRow = $adminResult->fetch_assoc()) {
     $adminName = $adminRow['full_name'];
+    $adminBirthdate = $adminRow['birthdate']; // Fetching birthdate
 } else {
     die("Admin not found.");
 }
 $adminQuery->close();
+
+// Format the birthdate (MM-DD-YYYY)
+$formattedBirthdate = date('m-d-Y', strtotime($adminBirthdate));  // e.g., '03-13-1990'
+
+// Extract and trim the last name
+$lastName = trim(explode(" ", $adminName)[2]);  // Assuming the full name is in "First Middle Last" format
+
+// Format the password to include last name and admin birthdate
+$password = strtoupper($lastName) . "_" . $formattedBirthdate;  // Format: LASTNAME_MM-DD-YYYY
 
 // Validate report types
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
@@ -142,7 +152,7 @@ try {
     $mail->Subject = "Exported Report: $customFileName";
     $mail->Body = "Hello $adminName,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
     <strong>File Type:</strong> $fileType<br>
-    <strong>Password:</strong> <code>$exportPassword</code><br><br>
+    <strong>Password:</strong> <code>$password</code><br><br>
     Please use this password to unlock the file.<br><br>Best regards,<br>System Admin";
 
     $mail->send();
@@ -156,4 +166,5 @@ $logQuery = $conn->prepare("INSERT INTO export_logs (admin_email, admin_name, re
 $logQuery->bind_param('sssss', $adminEmail, $adminName, $reportType, $customFileName, $fileType);
 $logQuery->execute();
 $conn->close();
+
 ?>
