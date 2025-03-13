@@ -49,31 +49,52 @@ unset($_SESSION['uploadMessage']);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+          #certificatePreview {
+        position: relative;
+        width: 100%;
+        max-width: 100%; /* Allow full container width */
+        height: auto;
+        background-size: contain; /* Show actual image aspect ratio */
+        background-repeat: no-repeat;
+        background-position: center top;
+        padding: 80px 60px; /* Adjust padding inside certificate */
+        margin: auto;
+        color: #000;
+        display: none;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%, -30%);
+        width: 90%;
+        text-align: center;
+    }
+
+    .signed-by {
+        position: absolute;
+        bottom: 40px;
+        right: 80px;
+        text-align: right;
+    }
+
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #certificatePreview, #certificatePreview * {
+            visibility: visible;
+        }
         #certificatePreview {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            height: auto;
-            background-size: cover;
-            background-position: center;
-            padding: 60px;
-            margin: auto;
-            color: #000;
-        }
-
-        .overlay-content {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            text-align: center;
-            top: 30%;
+            height: 100vh;
+            padding: 0;
         }
-
-        .signed-by {
-            position: absolute;
-            bottom: 20px;
-            right: 50px;
-            text-align: right;
-        }
+    }
     </style>
 </head>
 <body>
@@ -187,6 +208,26 @@ unset($_SESSION['uploadMessage']);
         document.getElementById('certDate').textContent = date;
         document.getElementById('certSignedBy').textContent = signed;
         document.getElementById('certificatePreview').style.display = 'block';
+    }
+    function updateTemplatePreview() {
+        const selector = document.getElementById('templateSelector');
+        const preview = document.getElementById('certificatePreview');
+        const selectedTemplate = selector.value;
+
+        if (selectedTemplate.endsWith('.png')) {
+            const img = new Image();
+            img.onload = function () {
+                const aspectRatio = img.height / img.width;
+                preview.style.height = `${preview.offsetWidth * aspectRatio}px`; // Maintain aspect ratio
+                preview.style.backgroundImage = `url('${selectedTemplate}')`;
+                preview.style.display = 'block';
+            };
+            img.src = selectedTemplate;
+        } else {
+            preview.style.backgroundImage = '';
+            preview.style.display = 'none';
+            alert('PDF preview not supported. Proceed to print manually.');
+        }
     }
 </script>
 
