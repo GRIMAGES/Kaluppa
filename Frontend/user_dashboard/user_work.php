@@ -92,7 +92,7 @@ if (!$workResult) {
     <div class="work-container">
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
-                <div class="work-card" onclick="showWorkDetails(<?php echo $work['id']; ?>)">
+                <div class="work-card">
                     <img src="<?php echo '../admin_dashboard/uploads/' . htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
                     <div class="work-details">
                         <h3 class="work-title"><?php echo htmlspecialchars($work['title']); ?></h3>
@@ -101,8 +101,13 @@ if (!$workResult) {
                         </button>
                     </div>
                 </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No volunteer works available at the moment.</p>
+        <?php endif; ?>
     </div>
 </div>
+
 
 
                 <!-- ✅ Modal for work details (MUST BE INSIDE THE LOOP) -->
@@ -200,11 +205,8 @@ if (!$workResult) {
                         </div>
                     </div>
                 </div> <!-- End of modal -->
-                <?php endwhile; ?>
-        <?php else: ?>
-            <p>No volunteer works available at the moment.</p>
-        <?php endif; ?>
-            </div>
+
+    </div>
 </div>
 
 
