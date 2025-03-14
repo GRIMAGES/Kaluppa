@@ -46,11 +46,7 @@ $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name'])
 
 if (isset($_POST['add_work'])) {
     // Get the form data
-    if (isset($_POST['title'])) {
-        echo "Title: " . $_POST['title'];
-    } else {
-        echo "Title is not set!";
-    }
+    $workTitle = $_POST['title'];
     $workDescription = $_POST['description'];
     $workDatetime = $_POST['work_datetime'];
     $workLocation = $_POST['location'];
@@ -61,8 +57,6 @@ if (isset($_POST['add_work'])) {
         $image = $_FILES['image'];
         $imageName = basename($image['name']);
         $imageTmpName = $image['tmp_name'];
-        $imageSize = $image['size'];
-        $imageError = $image['error'];
 
         // Get file extension
         $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
@@ -72,7 +66,6 @@ if (isset($_POST['add_work'])) {
         if (in_array($imageExt, $allowedExts)) {
             // Move the image to the uploads directory
             $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
-
             $newImageName = uniqid('', true) . '.' . $imageExt;
             $uploadPath = $uploadDir . $newImageName;
 
@@ -81,39 +74,38 @@ if (isset($_POST['add_work'])) {
                 $imagePath = $uploadPath;
 
                 // Insert data into the database
-                $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements) VALUES (?, ?, ?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements, image) VALUES (?, ?, ?, ?, ?, ?)");
                 if ($stmt === false) {
                     die('MySQL prepare error: ' . $conn->error);
                 }
-                
-                $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $imagePath, $workLocation, $workRequirements);
+
+                $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath);
 
                 if ($stmt->execute()) {
-                    echo "Work added successfully.";
+                    echo "✅ Work added successfully.";
                 } else {
-                    echo "Error adding work: " . $stmt->error;
+                    echo "❌ Error adding work: " . $stmt->error;
                 }
+
+                $stmt->close();
             } else {
-                echo "Error uploading image.";
+                echo "❌ Error uploading image.";
             }
         } else {
-            echo "Invalid image format. Only JPG, JPEG, PNG, or GIF allowed.";
+            echo "❌ Invalid image format. Only JPG, JPEG, PNG, or GIF allowed.";
         }
     } else {
-        echo "Please upload an image.";
+        echo "❌ Please upload an image.";
     }
 }
 
-// Edit Work (Update)
+// ----------------------------
+// Edit Work (Update Section)
+// ----------------------------
 if (isset($_POST['edit_work'])) {
     // Get the form data
     $workId = $_POST['id'];
-    if (isset($_POST['title'])) {
-        $workTitle = $_POST['title'];
-    } else {
-        echo "Title is required.";
-        exit;
-    }
+    $workTitle = $_POST['title'];
     $workDescription = $_POST['description'];
     $workDatetime = $_POST['work_datetime'];
     $workLocation = $_POST['location'];
@@ -124,8 +116,6 @@ if (isset($_POST['edit_work'])) {
         $image = $_FILES['image'];
         $imageName = basename($image['name']);
         $imageTmpName = $image['tmp_name'];
-        $imageSize = $image['size'];
-        $imageError = $image['error'];
 
         // Get file extension
         $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
@@ -133,38 +123,37 @@ if (isset($_POST['edit_work'])) {
 
         // Validate file extension
         if (in_array($imageExt, $allowedExts)) {
-            // Move file to the desired directory
             $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
-
             $newImageName = uniqid('', true) . '.' . $imageExt;
             $uploadPath = $uploadDir . $newImageName;
 
             if (move_uploaded_file($imageTmpName, $uploadPath)) {
-                // Image uploaded successfully
                 $imagePath = $uploadPath;
             } else {
-                echo "Error uploading the image.";
+                echo "❌ Error uploading the image.";
+                exit;
             }
         } else {
-            echo "Invalid image format.";
+            echo "❌ Invalid image format.";
+            exit;
         }
     } else {
-        // If no new image is uploaded, retain the current image path
-        $imagePath = $_POST['existing_image']; // Assuming you passed the existing image path
+        // If no new image is uploaded, use existing image path
+        $imagePath = $_POST['existing_image']; // You must pass this from your form
     }
 
-    // Prepare the SQL query for updating the work record
-    $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements) VALUES (?, ?, ?, ?, ?)");
+    // Update the work record
+    $stmt = $conn->prepare("UPDATE works SET title=?, description=?, work_datetime=?, location=?, requirements=?, image=? WHERE id=?");
     if ($stmt === false) {
         die('MySQL prepare error: ' . $conn->error);
     }
-    
+
     $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
 
     if ($stmt->execute()) {
-        echo "Work updated successfully.";
+        echo "✅ Work updated successfully.";
     } else {
-        echo "Error updating the work.";
+        echo "❌ Error updating the work: " . $stmt->error;
     }
 }
 
