@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     $status = $_POST['courseStatus'];
 
     // Image upload handling
-    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/"; // Path to your image folder
+    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/"; // Path to your image folder
     $imageName = basename($_FILES["courseImage"]["name"]);
     $target_file = $target_dir . $imageName;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
     // Check if an image is uploaded
     if (!empty($_FILES["courseImage"]["name"])) {
         // Image upload logic (if new image uploaded)
-        $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/";
+        $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
         $imageName = basename($_FILES["courseImage"]["name"]);
         $target_file = $target_dir . $imageName;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -284,7 +284,7 @@ if ($scholarship_result->num_rows > 0) {
                         <strong><?php echo htmlspecialchars($course['name']); ?></strong>
                     </div>
                     <div class="card-body">
-                        <img src="<?php echo '../images/' . htmlspecialchars($course['image']); ?>" alt="Course Image" class="img-fluid" />
+                        <img src="<?php echo '../Images/' . htmlspecialchars($course['image']); ?>" alt="Course Image" class="img-fluid" />
                         <p><strong>Instructor:</strong> <?php echo htmlspecialchars($course['instructor']); ?></p>
                         <p><strong>Duration:</strong> <?php echo htmlspecialchars($course['duration']); ?></p>
                         <p><strong>Capacity:</strong> <?php echo htmlspecialchars($course['capacity']); ?></p>
