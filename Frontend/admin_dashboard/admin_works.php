@@ -51,7 +51,7 @@ if (isset($_POST['add_work'])) {
     $location = $_POST['location']; // New field
     $requirements = $_POST['requirements']; // New field
     $image = $_FILES['image']['name'];
-    $target_dir = "../images/";
+    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
     $target_file = $target_dir . basename($image);
 
     if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
@@ -73,7 +73,7 @@ if (isset($_POST['edit_work'])) {
     $location = $_POST['location']; // New field
     $requirements = $_POST['requirements']; // New field
     $image = $_FILES['image']['name'];
-    $target_dir = "../images/";
+    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
     $target_file = $target_dir . basename($image);
 
     if ($image) {
