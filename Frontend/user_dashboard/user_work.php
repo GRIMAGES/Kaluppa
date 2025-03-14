@@ -101,10 +101,6 @@ if (!$workResult) {
                         </button>
                     </div>
                 </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p>No volunteer works available at the moment.</p>
-        <?php endif; ?>
     </div>
 </div>
 
@@ -204,7 +200,11 @@ if (!$workResult) {
                         </div>
                     </div>
                 </div> <!-- End of modal -->
-    </div>
+                <?php endwhile; ?>
+        <?php else: ?>
+            <p>No volunteer works available at the moment.</p>
+        <?php endif; ?>
+            </div>
 </div>
 
 
