@@ -62,18 +62,16 @@ if (isset($_POST['add_work'])) {
         $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
 
-        // Validate file extension
         if (in_array($imageExt, $allowedExts)) {
-            // Move the image to the uploads directory
-            $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
+            // Save only the filename in DB
             $newImageName = uniqid('', true) . '.' . $imageExt;
+            $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
             $uploadPath = $uploadDir . $newImageName;
 
             if (move_uploaded_file($imageTmpName, $uploadPath)) {
-                // Image uploaded successfully, now insert data into the database
-                $imagePath = $uploadPath;
+                // ✅ Save ONLY filename in DB
+                $imagePath = $newImageName;
 
-                // Insert data into the database
                 $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements, image) VALUES (?, ?, ?, ?, ?, ?)");
                 if ($stmt === false) {
                     die('MySQL prepare error: ' . $conn->error);
@@ -103,7 +101,6 @@ if (isset($_POST['add_work'])) {
 // Edit Work (Update Section)
 // ----------------------------
 if (isset($_POST['edit_work'])) {
-    // Get the form data
     $workId = $_POST['id'];
     $workTitle = $_POST['title'];
     $workDescription = $_POST['description'];
@@ -111,24 +108,22 @@ if (isset($_POST['edit_work'])) {
     $workLocation = $_POST['location'];
     $workRequirements = $_POST['requirements'];
 
-    // Check if a new image is uploaded
+    // Check if new image uploaded
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $image = $_FILES['image'];
         $imageName = basename($image['name']);
         $imageTmpName = $image['tmp_name'];
 
-        // Get file extension
         $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
 
-        // Validate file extension
         if (in_array($imageExt, $allowedExts)) {
-            $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
             $newImageName = uniqid('', true) . '.' . $imageExt;
+            $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
             $uploadPath = $uploadDir . $newImageName;
 
             if (move_uploaded_file($imageTmpName, $uploadPath)) {
-                $imagePath = $uploadPath;
+                $imagePath = $newImageName;
             } else {
                 echo "❌ Error uploading the image.";
                 exit;
@@ -138,11 +133,10 @@ if (isset($_POST['edit_work'])) {
             exit;
         }
     } else {
-        // If no new image is uploaded, use existing image path
-        $imagePath = $_POST['existing_image']; // You must pass this from your form
+        // Keep existing image filename
+        $imagePath = $_POST['existing_image']; // Make sure your form includes <input type="hidden" name="existing_image" value="filename.jpg">
     }
 
-    // Update the work record
     $stmt = $conn->prepare("UPDATE works SET title=?, description=?, work_datetime=?, location=?, requirements=?, image=? WHERE id=?");
     if ($stmt === false) {
         die('MySQL prepare error: ' . $conn->error);
@@ -155,6 +149,7 @@ if (isset($_POST['edit_work'])) {
     } else {
         echo "❌ Error updating the work: " . $stmt->error;
     }
+    $stmt->close();
 }
 
 // Delete Work
@@ -266,7 +261,8 @@ if (isset($_GET['id'])) {
     <?php while ($row = mysqli_fetch_assoc($works)): ?>
     <div class="col-md-4 mb-4">
         <div class="card">
-        <img src="<?php echo htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
+        <img src="uploads/<?php echo htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
+
 
             <div class="card-body">
                 <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
