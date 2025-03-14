@@ -45,31 +45,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     $status = $_POST['courseStatus'];
 
     // Handle image upload
-    $targetDir = "Frontend/images/"; // Directory to store images
-    $imageName = basename($_FILES["courseImage"]["name"]); // Get image name
-    $targetFilePath = $targetDir . $imageName; // Path to store image
-    $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION)); // File extension
-
-    // Initialize the message variable
-    $message = "";
-
-    // Validate the file type (optional: you can add more checks, e.g., file size, etc.)
+    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/";
+    $imageName = basename($_FILES["courseImage"]["name"]);
+    $target_file = $target_dir . $imageName; // Use $imageName instead of hardcoding file name
+    
+    // Validate file type
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+    // Handle file upload
     if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-        // Move the uploaded file to the target directory
-        if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $targetFilePath)) {
-            // Prepared statement to insert course data
-            $stmt = $conn->prepare("INSERT INTO courses (name, image, duration, instructor, capacity, requisites, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssssss", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status);
-            
-            // Execute the query
-            if ($stmt->execute()) {
-                $message = "Course added successfully!";
-                echo "<script>$('#successModal').modal('show');</script>";
-            } else {
-                $message = "Error adding course: " . $stmt->error;
-                echo "<script>$('#errorModal').modal('show');</script>";
-            }
-            $stmt->close();
+        if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
+            // Proceed with database insertion
+        } else {
+            echo "Error uploading file.";
         }
     }
 
@@ -106,21 +94,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $description = $_POST['courseDescription'];
         $status = $_POST['courseStatus'];
 
+        // Initialize the image path to preserve existing image if no new image is uploaded
+        $imageName = $_POST['existingImage'] ?? '';  // Use existing image if no new one is uploaded
+
         // Image upload handling (optional)
         if (!empty($_FILES["courseImage"]["name"])) {
             // Only process image upload if a new image is selected
-            $targetDir = "../images/"; // Directory for images
+            $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/";
             $imageName = basename($_FILES["courseImage"]["name"]); // Get the image name
-            $targetFilePath = $targetDir . $imageName;
-            $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION)); // Get the file extension
+            $target_file = $target_dir . $imageName; // Correct path for the uploaded file
+            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION)); // Get the file extension
 
-            if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $targetFilePath)) {
-                // Update the course with the new image
-                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
-                $stmt->bind_param("ssssssssi", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
+            // Check if the uploaded file is an allowed image type
+            if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+                // Attempt to move the uploaded file to the target directory
+                if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
+                    // Image upload success, update the course record with the new image
+                    $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
+                    $stmt->bind_param("ssssssssi", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
+                } else {
+                    $_SESSION['error_message'] = 'Error uploading image.';
+                    header("Location: /path/to/error/page"); // Redirect to error page if image upload fails
+                    exit();
+                }
+            } else {
+                $_SESSION['error_message'] = 'Invalid file type for image.';
+                header("Location: /path/to/error/page"); // Redirect to error page if invalid file type
+                exit();
             }
         } else {
-            // If no new image, just update course details
+            // If no new image, just update the course details without changing the image
             $stmt = $conn->prepare("UPDATE courses SET name = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
             $stmt->bind_param("sssssssi", $name, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
         }
