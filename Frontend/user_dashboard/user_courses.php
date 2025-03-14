@@ -160,7 +160,7 @@ $categorizedCourses = categorizeCourses($courseResult);
 
                     <!-- Right Column: Application Form -->
                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
-                    <form id="applicationForm" method="POST" action="submit_application.php" enctype="multipart/form-data">
+                    <form action="submit_application.php" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                                 <label for="first_name" class="form-label">First Name</label>
                                 <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
@@ -278,6 +278,17 @@ $categorizedCourses = categorizeCourses($courseResult);
     </div>
 </div>
 
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+  <div id="toastMessage" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastContent">
+        <!-- Error Message Goes Here -->
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -319,73 +330,47 @@ function showCourseDetails(courseId) {
 }
 
 // Handle application form submission
-document.getElementById("applicationForm").addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    // Disable the submit button to prevent multiple submissions
-    const submitButton = this.querySelector('button[type="submit"]');
-    submitButton.disabled = true;
-    submitButton.textContent = "Submitting...";
+document.getElementById('applicationForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // prevent default form submission
 
     const formData = new FormData(this);
-    const errorContainer = document.getElementById("error-message"); // Assuming an error container exists
 
-    fetch("../../Backend/user_controller/submit_application.php", {
-        method: "POST",
-        body: formData,
+    fetch('submit_application.php', {
+        method: 'POST',
+        body: formData
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
+    .then(response => response.text())  // assuming your PHP returns plain success or error text
     .then(data => {
-        if (data.success) {
-            // Show success toast
-            const successToast = new bootstrap.Toast(document.getElementById("successToast"));
-            successToast.show();
-
-            // Close application modal
-            const applicationModal = bootstrap.Modal.getInstance(document.getElementById("courseApplicationModal"));
-            applicationModal.hide();
-
-            // Remove the backdrop manually
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) {
-                backdrop.remove();
-            }
-
-            // Reset form
-            document.getElementById("applicationForm").reset();
-
-            // Clear any previous error message
-            if (errorContainer) {
-                errorContainer.textContent = "";
-                errorContainer.style.display = "none";
-            }
+        if (data.includes("success")) {
+            showToast("Application submitted successfully!", "success");
         } else {
-            if (errorContainer) {
-                errorContainer.textContent = "Error submitting application. Please try again later.";
-                errorContainer.style.display = "block";
-            }
+            showToast("Error submitting application: " + data, "danger");
         }
     })
     .catch(error => {
-        if (errorContainer) {
-            errorContainer.textContent = "Error submitting application. Please check your connection and try again.";
-            errorContainer.style.display = "block";
-        }
-        console.error("Form submission error:", error);
-    })
-    .finally(() => {
-        // Re-enable the submit button
-        submitButton.disabled = false;
-        submitButton.textContent = "Submit Application";
+        showToast("Submission failed: " + error.message, "danger");
     });
-
 });
 
+// Simple Toast Function
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type} border-0 show`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    document.getElementById('toastContainer').appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 5000);
+}
 // Reset form when application modal is closed
 document.getElementById("courseApplicationModal").addEventListener("hidden.bs.modal", function () {
     // Get the modal instance
@@ -418,6 +403,18 @@ document.getElementById("courseModal").addEventListener("hidden.bs.modal", funct
         backdrop.remove();
     }
 });
+
+
+  function showErrorToast(message) {
+    const toastContent = document.getElementById("toastContent");
+    toastContent.textContent = message;
+
+    const toast = new bootstrap.Toast(document.getElementById("toastMessage"));
+    toast.show();
+  }
+
+
+
 
 </script>
 </body>
