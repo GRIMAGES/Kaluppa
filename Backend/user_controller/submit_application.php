@@ -57,17 +57,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['course_id'])) {
         
         // Collect form data
-        $firstName = mysqli_real_escape_string($conn, $_POST['first_name']);
-        $middleName = mysqli_real_escape_string($conn, $_POST['middle_name']);
-        $lastName = mysqli_real_escape_string($conn, $_POST['last_name']);
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
-        $houseNumber = mysqli_real_escape_string($conn, $_POST['house_number']);
-        $street = mysqli_real_escape_string($conn, $_POST['street']);
-        $barangay = mysqli_real_escape_string($conn, $_POST['barangay']);
-        $district = mysqli_real_escape_string($conn, $_POST['district']);
-        $city = mysqli_real_escape_string($conn, $_POST['city']);
-        $region = mysqli_real_escape_string($conn, $_POST['region']);
-        $postalCode = mysqli_real_escape_string($conn, $_POST['postal_code']);
+        $firstName = $_POST['first_name'];
+        $middleName = $_POST['middle_name'] ?? ''; // Set default empty string for optional middle_name
+        $lastName = $_POST['last_name'];
+        $email = $_POST['email'];
+        $houseNumber = $_POST['house_number'] ?? ''; 
+        $street = $_POST['street'] ?? ''; 
+        $barangay = $_POST['barangay'] ?? ''; 
+        $district = $_POST['district'] ?? ''; 
+        $city = $_POST['city'] ?? ''; 
+        $region = $_POST['region'] ?? ''; 
+        $postalCode = $_POST['postal_code'] ?? ''; 
         $courseId = (int)$_POST['course_id']; // Ensure course_id is an integer
         
         // Handle file upload
@@ -102,23 +102,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
+        // Bind parameters correctly
         $stmt->bind_param("ssssssssssssisi", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
 
         if ($stmt->execute()) {
-            echo "Your application has been submitted successfully!";
+            echo json_encode(['success' => true, 'message' => 'Your application has been submitted successfully!']);
         } else {
-            echo "Error: " . $stmt->error;
+            echo json_encode(['success' => false, 'error_code' => 3, 'message' => 'Error: ' . $stmt->error]);
             error_log("Database insert error: " . $stmt->error);
         }
 
         $stmt->close();
         $conn->close();
     } else {
-        echo "Please fill in all required fields.";
+        echo json_encode(['success' => false, 'error_code' => 4, 'message' => 'Please fill in all required fields.']);
         error_log("Required fields missing in the form.");
     }
 } else {
-    echo "Invalid request method.";
+    echo json_encode(['success' => false, 'error_code' => 5, 'message' => 'Invalid request method.']);
     error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
 }
 ?>
