@@ -88,7 +88,7 @@ if (!$workResult) {
     </div>
 </div>
 
-<div class="main-content container">
+<div class="main-content">
     <div class="row">
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
@@ -97,7 +97,7 @@ if (!$workResult) {
                         <img src="../admin_dashboard/uploads/<?php echo htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h5>
-                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>"> View Details</button>
+                            <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>"> View Details</button>
                         </div>
                     </div>
                 </div>
