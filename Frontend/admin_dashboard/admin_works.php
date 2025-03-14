@@ -37,7 +37,12 @@ $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name'])
 
 if (isset($_POST['add_work'])) {
     // Get the form data
-    $workTitle = $_POST['title'];
+    if (isset($_POST['title'])) {
+        $workTitle = $_POST['title'];
+    } else {
+        echo "Title is required.";
+        exit;
+    }
     $workDescription = $_POST['description'];
     $workDatetime = $_POST['work_datetime'];
     $workLocation = $_POST['location'];
@@ -58,7 +63,8 @@ if (isset($_POST['add_work'])) {
         // Validate file extension
         if (in_array($imageExt, $allowedExts)) {
             // Move the image to the uploads directory
-            $uploadDir = 'uploads/';
+            $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
+
             $newImageName = uniqid('', true) . '.' . $imageExt;
             $uploadPath = $uploadDir . $newImageName;
 
@@ -91,7 +97,12 @@ if (isset($_POST['add_work'])) {
 if (isset($_POST['edit_work'])) {
     // Get the form data
     $workId = $_POST['id'];
-    $workTitle = $_POST['title'];
+    if (isset($_POST['title'])) {
+        $workTitle = $_POST['title'];
+    } else {
+        echo "Title is required.";
+        exit;
+    }
     $workDescription = $_POST['description'];
     $workDatetime = $_POST['work_datetime'];
     $workLocation = $_POST['location'];
@@ -112,7 +123,8 @@ if (isset($_POST['edit_work'])) {
         // Validate file extension
         if (in_array($imageExt, $allowedExts)) {
             // Move file to the desired directory
-            $uploadDir = 'uploads/';
+            $uploadDir = '/opt/bitnami/apache/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/';
+
             $newImageName = uniqid('', true) . '.' . $imageExt;
             $uploadPath = $uploadDir . $newImageName;
 
@@ -281,7 +293,8 @@ if (isset($_GET['id'])) {
 <div class="modal fade" id="addWorkModal" tabindex="-1" aria-labelledby="addWorkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white" style="border-radius: 15px; border: 1px solid #444;">
-            <form method="POST" enctype="multipart/form-data">
+        <form action="admin_works.php" method="POST" enctype="multipart/form-data">
+
                 <div class="modal-header border-bottom border-secondary">
                     <h5 class="modal-title" id="addWorkModalLabel">Add Work</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
