@@ -113,19 +113,21 @@ $categorizedCourses = categorizeCourses($courseResult);
                 $clickableClass = $isFull ? "unclickable" : "";
             ?>
             <div class="course-card <?php echo $availabilityClass . ' ' . $clickableClass; ?>" <?php echo $isFull ? '' : 'onclick="showCourseDetails(' . $course['id'] . ')"'; ?>>
-            <img src="uploads/courses/<?php echo htmlspecialchars(string: $card['image']); ?>" class="course-image" alt="Course Image">
-            <div class="course-details">
+                <!-- Ensure the correct image path is used -->
+                <img src="uploads/courses/<?php echo htmlspecialchars($course['image']); ?>" class="course-image" alt="Course Image">
+                <div class="course-details">
                     <h3 class="course-title"><?php echo htmlspecialchars($course['name']); ?></h3>
                     <p class="course-status <?php echo $availabilityClass; ?>"><?php echo $availabilityText; ?></p>
                     <?php if (!$isFull): ?>
                         <button class="btn btn-outline-light view-details-button" data-course-id="<?php echo $course['id']; ?>">View Details</button>
-                        <?php endif; ?>
+                    <?php endif; ?>
                 </div>
             </div>
             <?php endforeach; ?>
         <?php endforeach; ?>
     </div>
 </div>
+
 
 <!-- Combined Course Details and Application Modal -->
 <div class="modal fade" id="courseApplicationModal" tabindex="-1" aria-labelledby="courseApplicationModalLabel" aria-hidden="true">
