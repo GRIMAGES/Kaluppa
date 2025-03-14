@@ -37,6 +37,21 @@ if (!$user) {
 
 $user_id = $user['id']; // Get the logged-in user ID
 
+// Generate custom application ID (APP-00001 format)
+$query = "SELECT id FROM applications ORDER BY id DESC LIMIT 1";
+$result = $conn->query($query);
+$row = $result->fetch_assoc();
+
+if ($row) {
+    $lastId = $row['id'];
+    $num = (int)substr($lastId, 4); // Extract numeric part
+    $newId = 'APP-' . str_pad($num + 1, 5, '0', STR_PAD_LEFT);
+} else {
+    $newId = 'APP-00001'; // First entry
+}
+
+error_log("Generated new ID: " . $newId); // Debugging statement
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Check if required fields are present in the form
     if (isset($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['course_id'])) {
@@ -78,9 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $documentPaths = '';
         }
+
         // Prepare the query for inserting the application into the database
-        $stmt = $conn->prepare("INSERT INTO applications (first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssssssssis", $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
+        $stmt = $conn->prepare("INSERT INTO applications (id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssssssssis", $newId, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
         
         if ($stmt->execute()) {
             // Success, redirect or display success message
@@ -100,4 +116,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo "Invalid request method.";
 }
 ?>
-
