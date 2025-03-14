@@ -113,7 +113,7 @@ $categorizedCourses = categorizeCourses($courseResult);
                 $clickableClass = $isFull ? "unclickable" : "";
             ?>
             <div class="course-card <?php echo $availabilityClass . ' ' . $clickableClass; ?>" <?php echo $isFull ? '' : 'onclick="showCourseDetails(' . $course['id'] . ')"'; ?>>
-            <img src="../../Kaluppa/Frontend/admin_dashboard/uploads/courses/<?php echo htmlspecialchars($course['image']); ?>" class="course-image" alt="Course Image">
+            <img src="uploads/courses/<?php echo htmlspecialchars(string: $card['image']); ?>" class="course-image" alt="Course Image">
             <div class="course-details">
                     <h3 class="course-title"><?php echo htmlspecialchars($course['name']); ?></h3>
                     <p class="course-status <?php echo $availabilityClass; ?>"><?php echo $availabilityText; ?></p>
