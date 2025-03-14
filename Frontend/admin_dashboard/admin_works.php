@@ -3,8 +3,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include('../../Backend/connection.php'); // Ensure the connection is included
-
 session_start();
+
+
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
 
