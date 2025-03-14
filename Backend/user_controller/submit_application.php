@@ -150,4 +150,6 @@ if ($stmt->execute()) {
     echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Error submitting application']);
     error_log("Error executing query: " . $stmt->error);
 }
+
+
 ?>
