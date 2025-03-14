@@ -39,10 +39,10 @@ $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name'])
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_work'])) {
     // Get work details from the form
     $title = $_POST['workTitle'];
-    $description = $_POST['workDescription'];
-    $work_datetime = $_POST['workDatetime'];
-    $location = $_POST['workLocation'];
-    $requirements = $_POST['workRequirements'];
+    $description = $_POST['description'];
+    $datetime = $_POST['work_datetime'];
+    $location = $_POST['location'];
+    $requirements = $_POST['requirements'];
 
     // Handle image upload
     $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/"; // Path to your image folder
@@ -83,12 +83,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_work'])) {
 
 // Handle work updates (editing work with or without image change)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_work'])) {
-    $id = $_POST['id']; // Work ID to update
-    $title = $_POST['workTitle'];
-    $description = $_POST['workDescription'];
-    $work_datetime = $_POST['workDatetime'];
-    $location = $_POST['workLocation'];
-    $requirements = $_POST['workRequirements'];
+    $id = $_POST['id'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $datetime = $_POST['work_datetime'];
+    $location = $_POST['location'];
+    $requirements = $_POST['requirements'];
 
     // Check if an image is uploaded
     if (!empty($_FILES["workImage"]["name"])) {
@@ -259,19 +259,19 @@ if (isset($_GET['edit_work'])) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white" style="border-radius: 15px; border: 1px solid #444;">
             <form method="POST" enctype="multipart/form-data">
-                <div class="modal-header border-bottom border-secondary">
+                <div class="modal-he'ader border-bottom border-secondary">
                     <h5 class="modal-title" id="addWorkModalLabel">Add Work</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
 
                     <div class="form-floating mb-3">
-                        <input type="text" name="title" class="form-control bg-dark text-white border-secondary" id="title" placeholder="Enter title" required>
+                        <input type="text" name="workTitle" class="form-control bg-dark text-white border-secondary" id="title" placeholder="Enter title" required>
                         <label for="title" class="text-light">Title</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <textarea name="description" class="form-control bg-dark text-white border-secondary" id="description" placeholder="Enter description" style="height: 100px;" required></textarea>
+                        <input type="textarea" name="description" class="form-control bg-dark text-white border-secondary" id="description" placeholder="Enter description" style="height: 100px;" required></inputtextarea>
                         <label for="description" class="text-light">Description</label>
                     </div>
 
