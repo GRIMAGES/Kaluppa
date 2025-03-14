@@ -207,7 +207,8 @@
             <h4 class="mb-3 text-center">Profile Picture</h4>
             <div class="text-center">
             <?php if (!empty($profile_picture)) : ?>
-    <img src="/Kaluppa/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture); ?>" class="img-thumbnail" width="150" height="150" alt="Profile Picture">
+                <img src="/Kaluppa/Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture); ?>" class="img-thumbnail" width="150" height="150" alt="Profile Picture">
+
 <?php else : ?>
     <img src="/Kaluppa/assets/default-avatar.png" class="img-thumbnail" width="150" height="150" alt="Default Avatar">
 <?php endif; ?>
