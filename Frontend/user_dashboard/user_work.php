@@ -94,12 +94,13 @@ if (!$workResult) {
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
                 <div class="work-card">
-                <img src="uploads/<?php echo htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
+    <img src="../admin_dashboard/uploads/<?php echo htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
+    <div class="work-details">
+        <h3 class="work-title"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h3>
+        <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>">View Details</button>
+    </div>
+</div>
 
-                    <div class="work-details">
-                        <h3 class="work-title"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h3>
-                        <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>">View Details</button>
-                    </div>
                 </div>
                 <!-- Modal for work details -->
                 <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel" aria-hidden="true">
