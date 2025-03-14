@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-include('../../Backend/connection.php');include('connection.php');  // Ensure the connection is included
+include('../../Backend/connection.php'); // Ensure the connection is included
 
 session_start();
 // Set session timeout duration (in seconds)
