@@ -73,9 +73,12 @@ if (isset($_POST['add_work'])) {
                 // Save just the image name
                 $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements, image) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imageName);
-
                 if ($stmt->execute()) {
-                    echo '<div class="alert alert-success">✅ Work added successfully.</div>';
+                    $_SESSION['toast_success'] = "✅ Work added successfully!";
+                    header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_works.php");
+                    exit;
+                }
+                
                 } else {
                     echo '<div class="alert alert-danger">❌ Error adding work: ' . $stmt->error . '</div>';
                 }
@@ -90,7 +93,7 @@ if (isset($_POST['add_work'])) {
     } else {
         echo '<div class="alert alert-danger">❌ Please upload an image.</div>';
     }
-}
+
 // ----------------------------
 // Edit Work (Update Section)
 // ----------------------------
@@ -138,12 +141,16 @@ if (isset($_POST['edit_work'])) {
     $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
 
     if ($stmt->execute()) {
-        echo '<div class="alert alert-success">✅ Work updated successfully.</div>';
+        $_SESSION['toast_success'] = "✅ Work updated successfully!";
+        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_works.php");
+        exit;
+    }
+    
     } else {
         echo '<div class="alert alert-danger">❌ Error updating work: ' . $stmt->error . '</div>';
     }
     $stmt->close();
-}
+
 
 // Delete Work
 if (isset($_GET['delete_work_id'])) {
@@ -154,12 +161,15 @@ if (isset($_GET['delete_work_id'])) {
     $stmt = $conn->prepare($sql); // ✅ FIXED
     $stmt->bind_param("i", $workId);
 
-    if ($stmt->execute()) {
-        echo "Work deleted successfully.";
+    if ($deleteSuccess) {
+        $_SESSION['toast_success'] = "✅ Work deleted successfully!";
+        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_works.php");
+    }
+    
     } else {
         echo "Error deleting the work.";
     }
-}
+
 
 
 
@@ -254,7 +264,7 @@ if (isset($_GET['id'])) {
     <?php while ($row = mysqli_fetch_assoc($works)): ?>
     <div class="col-md-4 mb-4">
         <div class="card">
-        <img src="uploads/<?php echo htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
+        <img src="<?php echo '../uploads/' . htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
 
 
             <div class="card-body">
@@ -374,6 +384,15 @@ if (isset($_GET['id'])) {
         </div>
     </div>
 
+<!-- Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+  <div id="toastNotification" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMessage">Success message here</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -408,6 +427,22 @@ const editButtons = document.querySelectorAll('[data-bs-target="#editWorkModal"]
             document.getElementById('edit-work_datetime').value = button.getAttribute('data-datetime');
         });
     });
+
+    function showToast(message) {
+    const toastEl = document.getElementById('toastNotification');
+    const toastMessage = document.getElementById('toastMessage');
+    toastMessage.textContent = message;
+
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  }
+
+  <?php if (isset($_SESSION['toast_success'])): ?>
+    showToast("<?php echo $_SESSION['toast_success']; ?>");
+    <?php unset($_SESSION['toast_success']); ?>
+  <?php endif; ?>
+
+
 </script>
 </body>
 </html>
