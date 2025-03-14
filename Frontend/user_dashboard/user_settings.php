@@ -29,8 +29,8 @@
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload_picture'])) {
         if (isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["error"] === UPLOAD_ERR_OK) {
-            
-            $upload_dir = "https://kaluppa.online/Kaluppa/Frontend/admin dashboard/uploads/profile_pics/";
+    
+            $upload_dir = __DIR__ . "/../../admin_dashboard/uploads/profile_pics/";
             $file_tmp = $_FILES["profile_picture"]["tmp_name"];
             $file_name = basename($_FILES["profile_picture"]["name"]);
             $target_file = $upload_dir . $file_name;
@@ -38,20 +38,18 @@
             // Validate file
             $check = getimagesize($file_tmp);
             if ($check === false) {
-                echo "Error: File is not an image.";
-                exit;
-            }
-    
-            // Move file
-            if (move_uploaded_file($file_tmp, $target_file)) {
-                // Update database with new file name
-                $query = "UPDATE user SET profile_picture = ? WHERE id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->bind_param('si', $file_name, $user_id);
-                $stmt->execute();
-                $message = "Profile picture updated successfully.";
+                $message = "Error: File is not an image.";
             } else {
-                $message = "Error: Failed to move uploaded file.";
+                if (move_uploaded_file($file_tmp, $target_file)) {
+                    // Update DB
+                    $query = "UPDATE user SET profile_picture = ? WHERE id = ?";
+                    $stmt = $conn->prepare($query);
+                    $stmt->bind_param('si', $file_name, $user_id);
+                    $stmt->execute();
+                    $message = "Profile picture updated successfully.";
+                } else {
+                    $message = "Error: Failed to move uploaded file.";
+                }
             }
         } else {
             $message = "Error: No file uploaded or temporary file missing.";
