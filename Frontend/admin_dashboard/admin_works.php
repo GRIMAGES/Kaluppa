@@ -9,7 +9,7 @@ include('../../Backend/connection.php'); // Ensure the connection is included
 session_start();
 
 // Test connection
-if ($conn->connect_error) { // Use $conn if that is what is defined in connection.php
+if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } else {
     echo "Connected successfully to the database.";
@@ -82,7 +82,7 @@ if (isset($_POST['add_work'])) {
 
                 // Insert data into the database
                 $sql = "INSERT INTO works (title, description, work_datetime, image_path, location, requirements) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt = $mysqli->prepare($sql);
+                $stmt = $conn->prepare($sql);
                 $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $imagePath, $workLocation, $workRequirements);
 
                 if ($stmt->execute()) {
@@ -152,7 +152,7 @@ if (isset($_POST['edit_work'])) {
 
     // Prepare the SQL query for updating the work record
     $sql = "UPDATE works SET title = ?, description = ?, work_datetime = ?, location = ?, requirements = ?, image_path = ? WHERE id = ?";
-    $stmt = $mysqli->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
 
     if ($stmt->execute()) {
