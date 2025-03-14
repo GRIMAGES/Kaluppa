@@ -279,16 +279,8 @@ $categorizedCourses = categorizeCourses($courseResult);
     </div>
 </div>
 
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
-  <div id="toastMessage" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body" id="toastContent">
-        <!-- Error Message Goes Here -->
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-</div>
+<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
@@ -353,24 +345,39 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
 });
 
 // Simple Toast Function
-function showToast(message, type) {
+function showToast(message, isSuccess = true) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.style.position = 'fixed';
+        container.style.top = '20px';
+        container.style.right = '20px';
+        container.style.zIndex = '9999';
+        document.body.appendChild(container);
+    }
+
     const toast = document.createElement('div');
-    toast.className = `toast align-items-center text-white bg-${type} border-0 show`;
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-    toast.setAttribute('aria-atomic', 'true');
-    toast.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">${message}</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    `;
-    document.getElementById('toastContainer').appendChild(toast);
+    toast.textContent = message;
+    toast.style.backgroundColor = isSuccess ? '#28a745' : '#dc3545';
+    toast.style.color = '#fff';
+    toast.style.padding = '10px 20px';
+    toast.style.marginBottom = '10px';
+    toast.style.borderRadius = '5px';
+    toast.style.boxShadow = '0 2px 6px rgba(0,0,0,0.2)';
+    toast.style.opacity = '1';
+    toast.style.transition = 'opacity 0.5s ease';
+
+    container.appendChild(toast);
 
     setTimeout(() => {
-        toast.remove();
-    }, 5000);
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            toast.remove();
+        }, 500);
+    }, 3000);
 }
+
 // Reset form when application modal is closed
 document.getElementById("courseApplicationModal").addEventListener("hidden.bs.modal", function () {
     // Get the modal instance
