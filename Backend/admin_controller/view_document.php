@@ -4,7 +4,7 @@ require_once '../connection.php';
 
 // Check if user is authenticated
 if (!isset($_SESSION['email'])) {
-    header("Location: ../../Frontend/multiuserlogin.php");
+    header("Location: ../../Frontend/index.php");
     exit();
 }
 
@@ -26,7 +26,7 @@ $file = basename($file);
 $action = $_GET['action'];
 
 // Define the correct file directory
-$file_dir = realpath(__DIR__ . '/../Documents/Scholarship') . DIRECTORY_SEPARATOR;
+$file_dir = realpath(__DIR__ . '/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/') . DIRECTORY_SEPARATOR;
 $file_path = $file_dir . $file;
 
 // Debugging: Check the file path
@@ -40,7 +40,7 @@ if (strpos(realpath($file_path), $file_dir) !== 0) {
 }
 
 // Generate a public URL for viewing (Modify this for your server setup)
-$base_url = "http://yourwebsite.com/Documents/Scholarship/";
+$base_url = "https://www.kaluppa.online/Kaluppa/Backend/Documents/Scholarship";
 $file_url = $base_url . urlencode($file);
 
 // Serve file based on action
