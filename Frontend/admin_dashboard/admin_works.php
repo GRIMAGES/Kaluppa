@@ -274,7 +274,7 @@ if (isset($_GET['id'])) {
     data-title="<?php echo htmlspecialchars($row['title']); ?>" 
     data-description="<?php echo htmlspecialchars($row['description']); ?>" 
     data-datetime="<?php echo $row['work_datetime']; ?>" 
-    data-image="<?php echo $row['image_path']; ?>">
+    data-image="<?php echo $row['image']; ?>">
     <i class="fas fa-edit"></i> Edit
 </button>
 
