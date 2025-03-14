@@ -56,7 +56,7 @@ $navLinks = [
 
 <div class="sidebar">
     <div class="profile-section text-center">
-        <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile" class="profile-pic mb-2" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+        <img src="/Kaluppa/Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture); ?>" alt="Profile" class="profile-pic mb-2" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
         <p class="profile-name font-bold"><?php echo htmlspecialchars($fullName ?: 'John Doe'); ?></p>
     </div>
     <nav class="nav-menu mt-4">
