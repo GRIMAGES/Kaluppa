@@ -192,7 +192,7 @@ $works = mysqli_query($conn, "SELECT * FROM works");
 if (isset($_GET['id'])) {
     $workId = $_GET['id'];
     $sql = "SELECT * FROM works WHERE id = ?";
-    $stmt = $conn->prepare($sql); // ✅ FIXED
+    $stmt = $conn->prepare($sql); 
     $stmt->bind_param("i", $workId);
     $stmt->execute();
     $result = $stmt->get_result();
