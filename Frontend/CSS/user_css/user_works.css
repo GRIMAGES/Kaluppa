@@ -85,7 +85,7 @@ body {
 .work-card {
     width: 550px; /* Increased width for even longer rectangular shape */
     height: 300px; /* Slightly adjusted height */
-    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update work card color */
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update course card color */
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -94,7 +94,6 @@ body {
     align-items: center;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
 }
 
 .work-card img {
