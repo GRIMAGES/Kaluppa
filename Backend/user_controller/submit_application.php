@@ -19,6 +19,11 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 $query = "SELECT id FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);
+if ($stmt === false) {
+    error_log("Error preparing query: " . $conn->error);
+    echo json_encode(['success' => false, 'error_code' => 2, 'message' => 'Database query preparation failed']);
+    exit();
+}
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -56,6 +61,11 @@ if (empty($first_name) || empty($last_name) || empty($email) || empty($house_num
 // Check if the course exists
 $course_check_query = "SELECT id FROM courses WHERE id = ?";
 $stmt = $conn->prepare($course_check_query);
+if ($stmt === false) {
+    error_log("Error preparing query for course check: " . $conn->error);
+    echo json_encode(['success' => false, 'error_code' => 3, 'message' => 'Database query preparation failed']);
+    exit();
+}
 $stmt->bind_param("i", $course_id);
 $stmt->execute();
 $course_check_result = $stmt->get_result();
@@ -69,6 +79,11 @@ if (mysqli_num_rows($course_check_result) === 0) {
 // Check if the user already applied for the course
 $check_existing_application_query = "SELECT * FROM applications WHERE user_id = ? AND course_id = ?";
 $stmt = $conn->prepare($check_existing_application_query);
+if ($stmt === false) {
+    error_log("Error preparing query for existing application check: " . $conn->error);
+    echo json_encode(['success' => false, 'error_code' => 4, 'message' => 'Database query preparation failed']);
+    exit();
+}
 $stmt->bind_param("ii", $user_id, $course_id);
 $stmt->execute();
 $check_existing_result = $stmt->get_result();
@@ -142,6 +157,12 @@ $document = implode(',', $document_paths);
 // Insert application with custom ID
 $application_query = "INSERT INTO applications (id, user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($application_query);
+if ($stmt === false) {
+    error_log("Error preparing insert query: " . $conn->error);
+    echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Database query preparation failed']);
+    exit();
+}
+
 $stmt->bind_param("siissssssssssss", $newId, $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document);
 
 // Log query execution for debugging
