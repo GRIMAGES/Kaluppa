@@ -20,7 +20,7 @@
     $stmt->fetch();
     $stmt->close();
 
-    $target_dir = __DIR__ . "/../../admin_dashboard/uploads/profile_pics/";
+    $upload_dir = __DIR__ . "/../admin_dashboard/uploads/profile_pics/";
 
     // Ensure directory exists
     if (!is_dir($target_dir)) {
@@ -206,9 +206,11 @@
         <div class="card shadow p-3">
             <h4 class="mb-3 text-center">Profile Picture</h4>
             <div class="text-center">
-            <img src="/Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture); ?>" 
-     alt="Profile Picture" class="rounded-circle img-fluid" 
-     style="max-width: 200px;">
+            <?php if (!empty($profile_picture)) : ?>
+    <img src="/Kaluppa/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture); ?>" class="img-thumbnail" width="150" height="150" alt="Profile Picture">
+<?php else : ?>
+    <img src="/Kaluppa/assets/default-avatar.png" class="img-thumbnail" width="150" height="150" alt="Default Avatar">
+<?php endif; ?>
 
             </div>
             <form method="POST" enctype="multipart/form-data" class="mt-3">
