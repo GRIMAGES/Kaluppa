@@ -38,10 +38,9 @@ $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name'])
 if (isset($_POST['add_work'])) {
     // Get the form data
     if (isset($_POST['title'])) {
-        $workTitle = $_POST['title'];
+        echo "Title: " . $_POST['title'];
     } else {
-        echo "Title is required.";
-        exit;
+        echo "Title is not set!";
     }
     $workDescription = $_POST['description'];
     $workDatetime = $_POST['work_datetime'];
