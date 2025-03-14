@@ -428,34 +428,34 @@ document.getElementById("courseModal").addEventListener("hidden.bs.modal", funct
     toast.show();
   }
 
-  const documentsInput = document.getElementById('documents');
-    const fileList = document.getElementById('file-list');
+  document.addEventListener('DOMContentLoaded', function () {
+        const documentsInput = document.getElementById('documents');
+        const fileList = document.getElementById('file-list');
 
-    documentsInput.addEventListener('change', function () {
-        fileList.innerHTML = ''; // Clear old list
+        documentsInput.addEventListener('change', function () {
+            fileList.innerHTML = ''; // Clear old list
 
-        if (this.files.length > 0) {
-            const ul = document.createElement('ul');
-            ul.classList.add('list-group', 'mt-2');
+            if (this.files.length > 0) {
+                const ul = document.createElement('ul');
+                ul.classList.add('list-group', 'mt-2');
 
-            Array.from(this.files).forEach(file => {
-                const li = document.createElement('li');
-                li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                Array.from(this.files).forEach(file => {
+                    const li = document.createElement('li');
+                    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
 
-                li.innerHTML = `
-                    <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${file.name}</span>
-                    <span class="badge bg-secondary">${(file.size / 1024).toFixed(1)} KB</span>
-                `;
-                ul.appendChild(li);
-            });
+                    li.innerHTML = `
+                        <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${file.name}</span>
+                        <span class="badge bg-secondary">${(file.size / 1024).toFixed(1)} KB</span>
+                    `;
+                    ul.appendChild(li);
+                });
 
-            fileList.appendChild(ul);
-        } else {
-            fileList.innerHTML = `<div class="text-muted">No files selected.</div>`;
-        }
+                fileList.appendChild(ul);
+            } else {
+                fileList.innerHTML = `<div class="text-muted">No files selected.</div>`;
+            }
+        });
     });
-
-
 </script>
 </body>
 </html>
