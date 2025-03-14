@@ -30,7 +30,7 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload_picture'])) {
         if (isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["error"] === UPLOAD_ERR_OK) {
     
-            $upload_dir = __DIR__ . "/../../admin_dashboard/uploads/profile_pics/";
+            $upload_dir = __DIR__ . "/../admin_dashboard/uploads/profile_pics/";
             $file_tmp = $_FILES["profile_picture"]["tmp_name"];
             $file_name = basename($_FILES["profile_picture"]["name"]);
             $target_file = $upload_dir . $file_name;
