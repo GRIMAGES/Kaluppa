@@ -88,33 +88,31 @@ if (!$workResult) {
     </div>
 </div>
 
-<div class="main-content container">
-    <div class="row">
+<!-- Main Content -->   
+<div class="main-content">
+    <div class="work-container">
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow">
-                        <img src="../admin_dashboard/uploads/<?php echo htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h5>
-                            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <div class="work-card">
+    <img src="../admin_dashboard/uploads/<?php echo htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
+    <div class="work-details">
+        <h3 class="work-title"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h3>
+        <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>">View Details</button>
+    </div>
+</div>
 
-                <!-- ✅ Modal for work details (MUST BE INSIDE THE LOOP) -->
-                <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel<?php echo $work['id']; ?>" aria-hidden="true">
+                </div>
+                <!-- Modal for work details -->
+                <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
-                                <h5 class="modal-title" id="workModalLabel<?php echo $work['id']; ?>"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h5>
+                            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">    
+                                <h5 class="modal-title" id="workModalLabel"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
-                                    <!-- Left Column -->
+                                    <!-- Left Column: Work Details -->
                                     <div class="col-md-6 border-end">
                                         <h4 class="mb-3"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h4>
                                         <div class="mb-2">
@@ -140,65 +138,66 @@ if (!$workResult) {
                                         <form id="applicationForm<?php echo $work['id']; ?>" method="POST" enctype="multipart/form-data">
                                             <input type="hidden" name="work_id" value="<?php echo $work['id']; ?>">
                                             <div class="mb-3">
-                                                <label class="form-label">First Name</label>
-                                                <input type="text" class="form-control" name="first_name" value="<?php echo htmlspecialchars($firstName ?? ''); ?>" required>
+                                                <label for="first_name" class="form-label">First Name</label>
+                                                <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Middle Name</label>
-                                                <input type="text" class="form-control" name="middle_name" value="<?php echo htmlspecialchars($middleName ?? ''); ?>">
+                                                <label for="middle_name" class="form-label">Middle Name</label>
+                                                <input type="text" class="form-control" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($middleName ?? ''); ?>">
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Last Name</label>
-                                                <input type="text" class="form-control" name="last_name" value="<?php echo htmlspecialchars($lastName ?? ''); ?>" required>
+                                                <label for="last_name" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Email</label>
-                                                <input type="email" class="form-control" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required readonly>
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email ?? ''); ?>" required readonly>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Phone Number</label>
-                                                <input type="tel" class="form-control" name="phone" required>
+                                                <label for="phone" class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-control" id="phone" name="phone" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">House Number</label>
-                                                <input type="text" class="form-control" name="house_number" value="<?php echo htmlspecialchars($houseNumber ?? ''); ?>" required>
+                                                <label for="house_number" class="form-label">House Number</label>
+                                                <input type="text" class="form-control" id="house_number" name="house_number" value="<?php echo htmlspecialchars($houseNumber ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Street</label>
-                                                <input type="text" class="form-control" name="street" value="<?php echo htmlspecialchars($street ?? ''); ?>" required>
+                                                <label for="street" class="form-label">Street</label>
+                                                <input type="text" class="form-control" id="street" name="street" value="<?php echo htmlspecialchars($street ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Barangay</label>
-                                                <input type="text" class="form-control" name="barangay" value="<?php echo htmlspecialchars($barangay ?? ''); ?>" required>
+                                                <label for="barangay" class="form-label">Barangay</label>
+                                                <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">District</label>
-                                                <input type="text" class="form-control" name="district" value="<?php echo htmlspecialchars($district ?? ''); ?>" required>
+                                                <label for="district" class="form-label">District</label>
+                                                <input type="text" class="form-control" id="district" name="district" value="<?php echo htmlspecialchars($district ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">City</label>
-                                                <input type="text" class="form-control" name="city" value="<?php echo htmlspecialchars($city ?? ''); ?>" required>
+                                                <label for="city" class="form-label">City</label>
+                                                <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($city ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Region</label>
-                                                <input type="text" class="form-control" name="region" value="<?php echo htmlspecialchars($region ?? ''); ?>" required>
+                                                <label for="region" class="form-label">Region</label>
+                                                <input type="text" class="form-control" id="region" name="region" value="<?php echo htmlspecialchars($region ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Postal Code</label>
-                                                <input type="text" class="form-control" name="postal_code" value="<?php echo htmlspecialchars($postalCode ?? ''); ?>" required>
-                                            </div>
+                                                <label for="postal_code" class="form-label">Postal Code</label>
+                                                <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode ?? ''); ?>" required>
+                                            </div> <!-- Close the div tag -->
                                             <div class="mb-3">
-                                                <label class="form-label">Upload Resume</label>
-                                                <input type="file" class="form-control" name="resume" accept=".pdf, .doc, .docx" required>
+                                                <label for="resume" class="form-label">Upload Resume</label>
+                                                <input type="file" class="form-control" id="resume" name="resume" accept=".pdf, .doc, .docx" required>
                                             </div>
                                             <button type="submit" class="btn btn-primary w-100">Submit Application</button>
                                         </form>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <!-- End of modal -->
+                </div>
             <?php endwhile; ?>
         <?php else: ?>
             <p>No volunteer works available at the moment.</p>
