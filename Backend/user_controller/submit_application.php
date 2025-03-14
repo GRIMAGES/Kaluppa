@@ -71,59 +71,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $courseId = (int)$_POST['course_id']; // Ensure course_id is an integer
         
         // Handle file upload
-        if (isset($_FILES['documents']) && $_FILES['documents']['error'][0] == 0) {
-            $fileNames = []; // To store the uploaded file paths
-        
+        $fileNames = [];
+        if (isset($_FILES['documents']) && !empty($_FILES['documents']['name'][0])) {
             foreach ($_FILES['documents']['name'] as $key => $name) {
-                error_log("Processing file: " . $name); // Log the file name for debugging
-        
-                // Define the target directory where the file should be uploaded
+                error_log("Processing file: $name");
+
+                // Define the target directory
                 $targetDir = "/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/";
                 $targetFile = $targetDir . basename($name);
-        
-                // Check for upload errors
+
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
-                    // Try moving the uploaded file to the target directory
                     if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
-                        $fileNames[] = $targetFile; // Add the file path to the array
-                        error_log("File uploaded successfully: " . $targetFile); // Log success
+                        $fileNames[] = $targetFile;
+                        error_log("File uploaded successfully: $targetFile");
                     } else {
-                        error_log("Error moving file: " . $name); // Log error when moving file
+                        error_log("Failed to move file: $name");
                     }
                 } else {
-                    // Log any file upload errors
                     error_log("File upload error for $name: " . $_FILES['documents']['error'][$key]);
                 }
             }
-        
-            // Join the file paths into a single string for database insertion
-            $documentPaths = implode(',', $fileNames);
-            error_log("Document paths to be stored in the database: " . $documentPaths); // Log the paths
-        
         } else {
-            $documentPaths = ''; // No files uploaded or an error occurred
-            error_log("No files uploaded or an error occurred during file upload.");
+            error_log("No files uploaded or error during file upload.");
         }
-        
-        // Continue with database insertion
+
+        $documentPaths = implode(',', $fileNames);
+        error_log("Document paths: " . $documentPaths);
+
+        // Insert data into the database
         $stmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
-        // Ensure we bind the correct number of parameters (15)
         $stmt->bind_param("ssssssssssssisi", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
-        
-        // Execute the statement
+
         if ($stmt->execute()) {
             echo "Your application has been submitted successfully!";
         } else {
             echo "Error: " . $stmt->error;
             error_log("Database insert error: " . $stmt->error);
         }
-        
-        // Close the statement and connection
+
         $stmt->close();
         $conn->close();
-    } else {    
+    } else {
         echo "Please fill in all required fields.";
         error_log("Required fields missing in the form.");
     }
