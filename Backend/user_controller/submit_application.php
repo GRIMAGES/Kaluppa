@@ -82,16 +82,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // Move the uploaded file to the target directory
                     if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
                         $fileNames[] = $targetFile; // Store the file path in the array
+                        error_log("File uploaded: " . $targetFile); // Debugging statement
                     } else {
                         echo "Error moving the file: " . $name;
+                        error_log("Error moving the file: " . $name);
                     }
                 } else {
                     echo "File upload error: " . $_FILES['documents']['error'][$key];
+                    error_log("File upload error for $name: " . $_FILES['documents']['error'][$key]);
                 }
             }
             $documentPaths = implode(',', $fileNames); // Store the uploaded file paths in the database
+            error_log("Document paths: " . $documentPaths); // Debugging statement
         } else {
             $documentPaths = '';
+            error_log("No files uploaded or upload error occurred.");
         }
 
         // Prepare the query for inserting the application into the database, including user_id
@@ -107,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             // Error handling
             echo "Error: " . $stmt->error;
+            error_log("Database insert error: " . $stmt->error);
         }
         
         // Close the statement and connection
@@ -114,8 +120,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conn->close();
     } else {
         echo "Please fill in all required fields.";
+        error_log("Required fields missing in the form.");
     }
 } else {
     echo "Invalid request method.";
+    error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
 }
 ?>
