@@ -329,17 +329,16 @@ function showCourseDetails(courseId) {
         });
 }
 
-// Handle application form submission
 document.getElementById('applicationForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // prevent default form submission
+    e.preventDefault();
 
     const formData = new FormData(this);
 
-    fetch('submit_application.php', {
+    fetch('../../Backend/user_controller/submit_application.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())  // assuming your PHP returns plain success or error text
+    .then(response => response.text())
     .then(data => {
         if (data.includes("success")) {
             showToast("Application submitted successfully!", "success");
@@ -351,6 +350,7 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
         showToast("Submission failed: " + error.message, "danger");
     });
 });
+
 
 // Simple Toast Function
 function showToast(message, type) {
