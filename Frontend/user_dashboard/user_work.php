@@ -102,7 +102,7 @@ if (!$workResult) {
                     </div>
                 </div>
 
-                <!-- ✅ Modal for this specific work item -->
+                <!-- ✅ MODAL (inside the loop) -->
                 <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel<?php echo $work['id']; ?>" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -110,40 +110,27 @@ if (!$workResult) {
                                 <h5 class="modal-title" id="workModalLabel<?php echo $work['id']; ?>"><?php echo htmlspecialchars($work['title']); ?></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <p><?php echo htmlspecialchars($work['description'] ?? 'No description available.'); ?></p>
-                                <!-- Add more modal content here if needed -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- END MODAL -->
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p>No volunteer works available at the moment.</p>
-        <?php endif; ?>
-    </div>
-</div>
+
                             <div class="modal-body">
                                 <div class="row">
-                                    <!-- Left Column -->
+                                    <!-- Left Column: Work Info -->
                                     <div class="col-md-6 border-end">
-                                        <h4 class="mb-3"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h4>
+                                        <h4 class="mb-3"><?php echo htmlspecialchars($work['title']); ?></h4>
                                         <div class="mb-2">
                                             <strong>Location:</strong>
-                                            <p><?php echo htmlspecialchars($work['location'] ?? ''); ?></p>
+                                            <p><?php echo htmlspecialchars($work['location']); ?></p>
                                         </div>
                                         <div class="mb-2">
                                             <strong>Date:</strong>
-                                            <p><?php echo htmlspecialchars($work['work_datetime'] ?? ''); ?></p>
+                                            <p><?php echo htmlspecialchars($work['work_datetime']); ?></p>
                                         </div>
                                         <div class="mb-2">
                                             <strong>Requirements:</strong>
-                                            <p><?php echo htmlspecialchars($work['requirements'] ?? ''); ?></p>
+                                            <p><?php echo htmlspecialchars($work['requirements']); ?></p>
                                         </div>
                                         <div class="mb-2">
                                             <strong>Description:</strong>
-                                            <p><?php echo htmlspecialchars($work['description'] ?? ''); ?></p>
+                                            <p><?php echo htmlspecialchars($work['description']); ?></p>
                                         </div>
                                     </div>
 
@@ -151,6 +138,7 @@ if (!$workResult) {
                                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
                                         <form id="applicationForm<?php echo $work['id']; ?>" method="POST" enctype="multipart/form-data">
                                             <input type="hidden" name="work_id" value="<?php echo $work['id']; ?>">
+
                                             <div class="mb-3">
                                                 <label class="form-label">First Name</label>
                                                 <input type="text" class="form-control" name="first_name" value="<?php echo htmlspecialchars($firstName ?? ''); ?>" required>
@@ -206,14 +194,19 @@ if (!$workResult) {
                                             <button type="submit" class="btn btn-primary w-100">Submit Application</button>
                                         </form>
                                     </div>
-                                </div>
-                            </div>
+                                </div> <!-- /.row -->
+                            </div> <!-- /.modal-body -->
                         </div>
                     </div>
-                </div> <!-- End of modal -->
-
+                </div>
+                <!-- END MODAL -->
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No volunteer works available at the moment.</p>
+        <?php endif; ?>
     </div>
 </div>
+
 
 
 <!-- Right Sidebar -->
