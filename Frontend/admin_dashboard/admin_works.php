@@ -2,10 +2,18 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// Include the connection file
 include('../../Backend/connection.php'); // Ensure the connection is included
+
 session_start();
 
-
+// Test connection
+if ($conn->connect_error) { // Use $conn if that is what is defined in connection.php
+    die("Connection failed: " . $conn->connect_error);
+} else {
+    echo "Connected successfully to the database.";
+}
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
 
