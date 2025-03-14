@@ -73,7 +73,6 @@ if (isset($_POST['add_work'])) {
 
                 // Insert data into the database
                 $sql = "INSERT INTO works (title, description, work_datetime, image_path, location, requirements) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt = $mysqli->prepare($sql);
                 $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $imagePath, $workLocation, $workRequirements);
 
                 if ($stmt->execute()) {
