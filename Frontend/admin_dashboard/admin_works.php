@@ -276,7 +276,8 @@ if (isset($_GET['edit_work'])) {
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" id="work_datetime" required>
+                    <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" id="work_datetime" required>
+
                         <label for="work_datetime" class="text-light">Work Date & Time</label>
                     </div>
 
@@ -329,7 +330,8 @@ if (isset($_GET['edit_work'])) {
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" id="edit-datetime" required>
+                    <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" id="edit_datetime" required>
+
                         <label for="edit-datetime" class="text-light">Work Date & Time</label>
                     </div>
 
