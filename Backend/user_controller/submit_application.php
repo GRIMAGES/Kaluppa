@@ -112,6 +112,39 @@ error_log("Generated new ID: " . $newId); // Debugging statement
 // Handle file upload (optional)
 $document_paths = []; // Array to store paths of uploaded files
 
+$base_url = "https://www.kaluppa.online/";
+
+// Assuming the connection.php file is included and session is started
+
+// Set the absolute path for the "Scholarship" directory
+$baseDirectory = realpath(__DIR__ . '/../../Documents/Scholarship');  // Use a relative path from the current file location
+$absoluteBaseDirectory = '/var/www/html/kaluppa/Backend/Documents/Scholarship';  // Update this with the absolute path of the "Scholarship" directory on your server
+
+if ($baseDirectory === false) {
+    error_log("Base directory not found: $absoluteBaseDirectory");
+    echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Server error: Document directory not found.']);
+    exit();
+}
+
+// Ensure the directory exists
+if (!is_dir($absoluteBaseDirectory)) {
+    if (!mkdir($absoluteBaseDirectory, 0777, true)) {
+        error_log("Failed to create directory: $absoluteBaseDirectory");
+        echo json_encode(['success' => false, 'error_code' => 11, 'message' => 'Server error: Unable to create document directory.']);
+        exit();
+    }
+}
+
+// Ensure the directory is writable
+if (!is_writable($absoluteBaseDirectory)) {
+    error_log("Directory is not writable: $absoluteBaseDirectory");
+    echo json_encode(['success' => false, 'error_code' => 12, 'message' => 'Server error: Document directory not writable.']);
+    exit();
+}
+
+// File upload process
+$document_paths = []; // Array to store paths of uploaded files
+
 if (isset($_FILES['documents'])) {
     foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
         if ($_FILES['documents']['error'][$key] == 0) {
@@ -119,27 +152,8 @@ if (isset($_FILES['documents'])) {
             $document_name = time() . "_" . preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", basename($document['name'][$key]));
             $document_tmp_name = $document['tmp_name'][$key];
 
-            $baseDirectory = realpath(__DIR__ . '/../Documents/Scholarship/');
-
-            if ($baseDirectory === false) {
-                error_log("Base directory not found: /../Documents/Scholarship/");
-                echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Server error: Document directory not found.']);
-                exit();
-            }
-
-            if (!is_dir($baseDirectory) && !mkdir($baseDirectory, 0777, true)) {
-                error_log("Failed to create base directory: $baseDirectory");
-                echo json_encode(['success' => false, 'error_code' => 11, 'message' => 'Server error: Unable to create document directory.']);
-                exit();
-            }
-
-            if (!is_writable($baseDirectory)) {
-                error_log("Base directory is not writable: $baseDirectory");
-                echo json_encode(['success' => false, 'error_code' => 12, 'message' => 'Server error: Document directory not writable.']);
-                exit();
-            }
-
-            $document_path = $baseDirectory . DIRECTORY_SEPARATOR . $document_name;
+            // Construct the document path using the absolute path
+            $document_path = $absoluteBaseDirectory . DIRECTORY_SEPARATOR . $document_name;
 
             if (!move_uploaded_file($document_tmp_name, $document_path)) {
                 error_log("Error uploading document to $document_path");
@@ -147,11 +161,16 @@ if (isset($_FILES['documents'])) {
                 exit();
             }
 
-            $document_paths[] = str_replace('\\', '/', str_replace(realpath(__DIR__ . '/../../'), '', $document_path));
+            // Construct the URL for the document (relative to the web root)
+            $document_url = $base_url . 'Backend/Documents/Scholarship/' . $document_name;
+
+            // Store the document URL for database or display purposes
+            $document_paths[] = $document_url;
         }
     }
 }
 
+// Combine all document URLs into a single string for saving in the database
 $document = implode(',', $document_paths);
 
 // Insert application with custom ID
