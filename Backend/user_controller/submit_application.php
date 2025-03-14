@@ -94,9 +94,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $documentPaths = '';
         }
 
-        // Prepare the query for inserting the application into the database
-        $stmt = $conn->prepare("INSERT INTO applications (id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssssssssis", $newId, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
+        // Prepare the query for inserting the application into the database, including user_id
+        $stmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssssssssisis", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
         
         if ($stmt->execute()) {
             // Success, redirect or display success message
