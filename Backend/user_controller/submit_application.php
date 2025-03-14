@@ -72,45 +72,50 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Handle file upload
         if (isset($_FILES['documents']) && $_FILES['documents']['error'][0] == 0) {
-            $fileNames = [];
+            $fileNames = []; // To store the uploaded file paths
+        
             foreach ($_FILES['documents']['name'] as $key => $name) {
+                error_log("Processing file: " . $name); // Log the file name for debugging
+        
+                // Define the target directory where the file should be uploaded
                 $targetDir = "/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/";
                 $targetFile = $targetDir . basename($name);
-
-                // Check if the file upload was successful
+        
+                // Check for upload errors
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
-                    // Move the uploaded file to the target directory
+                    // Try moving the uploaded file to the target directory
                     if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
-                        $fileNames[] = $targetFile; // Store the file path in the array
-                        error_log("File uploaded: " . $targetFile); // Debugging statement
+                        $fileNames[] = $targetFile; // Add the file path to the array
+                        error_log("File uploaded successfully: " . $targetFile); // Log success
                     } else {
-                        echo "Error moving the file: " . $name;
-                        error_log("Error moving the file: " . $name);
+                        error_log("Error moving file: " . $name); // Log error when moving file
                     }
                 } else {
-                    echo "File upload error: " . $_FILES['documents']['error'][$key];
+                    // Log any file upload errors
                     error_log("File upload error for $name: " . $_FILES['documents']['error'][$key]);
                 }
             }
-            $documentPaths = implode(',', $fileNames); // Store the uploaded file paths in the database
-            error_log("Document paths: " . $documentPaths); // Debugging statement
+        
+            // Join the file paths into a single string for database insertion
+            $documentPaths = implode(',', $fileNames);
+            error_log("Document paths to be stored in the database: " . $documentPaths); // Log the paths
+        
         } else {
-            $documentPaths = '';
-            error_log("No files uploaded or upload error occurred.");
+            $documentPaths = ''; // No files uploaded or an error occurred
+            error_log("No files uploaded or an error occurred during file upload.");
         }
-
-        // Prepare the query for inserting the application into the database, including user_id
+        
+        // Continue with database insertion
         $stmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
+        
         // Ensure we bind the correct number of parameters (15)
         $stmt->bind_param("ssssssssssssisi", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
         
+        // Execute the statement
         if ($stmt->execute()) {
-            // Success, redirect or display success message
             echo "Your application has been submitted successfully!";
         } else {
-            // Error handling
             echo "Error: " . $stmt->error;
             error_log("Database insert error: " . $stmt->error);
         }
@@ -118,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Close the statement and connection
         $stmt->close();
         $conn->close();
-    } else {
+    } else {    
         echo "Please fill in all required fields.";
         error_log("Required fields missing in the form.");
     }
