@@ -1,6 +1,10 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
+
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
 
@@ -9,19 +13,9 @@ if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
     exit();
 }
-$adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
-// Fetch the admin's full name from the user table
-$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name FROM user WHERE email = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param('s', $adminEmail);
-$stmt->execute();
-$result = $stmt->get_result();
-$admin = $result->fetch_assoc();
-$adminName = $admin['admin_name'] ?? ''; // Handle undefined array key
-$stmt->close();
+
 // Check if the user has timed out due to inactivity
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {
-    // Last activity was more than 30 minutes ago
     session_unset();     // unset $_SESSION variable for the run-time
     session_destroy();   // destroy session data
     header("Location: /Frontend/index.php");
@@ -30,12 +24,6 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
 
 // Update last activity time stamp
 $_SESSION['LAST_ACTIVITY'] = time();
-// Logout logic
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("Location: /Frontend/index.php");
-    exit();
-}
 
 // Logout logic
 if (isset($_POST['logout'])) {
@@ -43,65 +31,110 @@ if (isset($_POST['logout'])) {
     header("Location: /Frontend/index.php");
     exit();
 }
-// add work
-if (isset($_POST['add_work'])) {
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $work_datetime = $_POST['work_datetime'];
-    $location = $_POST['location']; // New field
-    $requirements = $_POST['requirements']; // New field
-    $image = $_FILES['image']['name'];
-    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
-    $target_file = $target_dir . basename($image);
 
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-        $query = "INSERT INTO works (title, description, image_path, work_datetime, location, requirements) 
-                  VALUES ('$title', '$description', '$target_file', '$work_datetime', '$location', '$requirements')";
-        mysqli_query($conn, $query);
-        $_SESSION['toast_success'] = "Work added successfully!";
-        header("Location: ".$_SERVER['PHP_SELF']);
-        exit();
-    }
-}
+// Initialize user name for display
+$name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest';
 
-// edit work
-if (isset($_POST['edit_work'])) {
-    $id = $_POST['id'];
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $work_datetime = $_POST['work_datetime'];
-    $location = $_POST['location']; // New field
-    $requirements = $_POST['requirements']; // New field
-    $image = $_FILES['image']['name'];
-    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
-    $target_file = $target_dir . basename($image);
+// Handle form submissions for adding new work applications
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_work'])) {
+    // Get work details from the form
+    $title = $_POST['workTitle'];
+    $description = $_POST['workDescription'];
+    $work_datetime = $_POST['workDatetime'];
+    $location = $_POST['workLocation'];
+    $requirements = $_POST['workRequirements'];
 
-    if ($image) {
-        move_uploaded_file($_FILES['image']['tmp_name'], $target_file);
-        $query = "UPDATE works 
-                  SET title = '$title', description = '$description', image_path = '$target_file', work_datetime = '$work_datetime', location = '$location', requirements = '$requirements' 
-                  WHERE id = $id";
+    // Handle image upload
+    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/"; // Path to your image folder
+    $imageName = basename($_FILES["workImage"]["name"]);
+    $target_file = $target_dir . $imageName;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+    // Initialize message variable
+    $message = "";
+
+    // Check if the file is a valid image
+    if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+        // Try to upload the file
+        if (move_uploaded_file($_FILES["workImage"]["tmp_name"], $target_file)) {
+            // Proceed with database insertion
+            $stmt = $conn->prepare("INSERT INTO works (title, description, image, work_datetime, location, requirements) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssss", $title, $imageName, $description, $work_datetime, $location, $requirements);
+
+            // Execute the query
+            if ($stmt->execute()) {
+                $message = "Work application added successfully!";
+                echo "<script>$('#successModal').modal('show');</script>";
+            } else {
+                $message = "Error adding work application: " . $stmt->error;
+                echo "<script>$('#errorModal').modal('show');</script>";
+            }
+            $stmt->close();
+        } else {
+            $message = "Error uploading the image.";
+            echo "<script>$('#errorModal').modal('show');</script>";
+        }
     } else {
-        $query = "UPDATE works 
-                  SET title = '$title', description = '$description', work_datetime = '$work_datetime', location = '$location', requirements = '$requirements' 
-                  WHERE id = $id";
+        $message = "Invalid image format. Only JPG, JPEG, PNG, or GIF allowed.";
+        echo "<script>$('#errorModal').modal('show');</script>";
     }
-
-    mysqli_query($conn, $query);
-    $_SESSION['toast_success'] = "Work updated successfully!";
-    header("Location: ".$_SERVER['PHP_SELF']);
-    exit();
+    echo $message;
 }
 
+// Handle work updates (editing work with or without image change)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_work'])) {
+    $id = $_POST['id']; // Work ID to update
+    $title = $_POST['workTitle'];
+    $description = $_POST['workDescription'];
+    $work_datetime = $_POST['workDatetime'];
+    $location = $_POST['workLocation'];
+    $requirements = $_POST['workRequirements'];
 
-// Handle Delete Work
+    // Check if an image is uploaded
+    if (!empty($_FILES["workImage"]["name"])) {
+        // Image upload logic (if new image uploaded)
+        $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
+        $imageName = basename($_FILES["workImage"]["name"]);
+        $target_file = $target_dir . $imageName;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        // Check file type
+        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+            // Move the uploaded file to the target directory
+            if (move_uploaded_file($_FILES["workImage"]["tmp_name"], $target_file)) {
+                // Update the work record with the new image
+                $stmt = $conn->prepare("UPDATE works SET title = ?, image = ?, description = ?, work_datetime = ?, location = ?, requirements = ? WHERE id = ?");
+                $stmt->bind_param("sssssssi", $title, $imageName, $description, $work_datetime, $location, $requirements, $id);
+            } else {
+                echo "Error uploading image.";
+            }
+        } else {
+            echo "Invalid image type.";
+        }
+    } else {
+        // If no new image, update work without changing the image
+        $stmt = $conn->prepare("UPDATE works SET title = ?, description = ?, work_datetime = ?, location = ?, requirements = ? WHERE id = ?");
+        $stmt->bind_param("sssssi", $title, $description, $work_datetime, $location, $requirements, $id);
+    }
+
+    if ($stmt->execute()) {
+        echo "<script>$('#successModal').modal('show');</script>";
+    } else {
+        echo "<script>$('#errorModal').modal('show');</script>";
+    }
+}
+
+// Handle work deletion
 if (isset($_POST['delete_work'])) {
-    $id = $_POST['work_id'];
-    $query = "DELETE FROM works WHERE id = $id";
-    mysqli_query($conn, $query);
-    $_SESSION['toast_success'] = "Work deleted successfully!";
-    header("Location: ".$_SERVER['PHP_SELF']);
-    exit();
+    $workId = $_POST['work_id'];
+    $deleteQuery = "DELETE FROM works WHERE id = ?";
+    $stmt = $conn->prepare($deleteQuery);
+    $stmt->bind_param("i", $workId);
+    if ($stmt->execute()) {
+        echo "<script>$('#deleteSuccessModal').modal('show');</script>";
+    } else {
+        echo "<script>$('#deleteErrorModal').modal('show');</script>";
+    }
 }
 
 // Fetch works for display (no pre-fetching)
