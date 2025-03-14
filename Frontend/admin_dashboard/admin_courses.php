@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 // Set session timeout duration (in seconds)
@@ -42,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     $status = $_POST['courseStatus'];
 
     // Handle image upload
-    $targetDir = "../images/"; // Directory to store images
+    $targetDir = "Frontend/images/"; // Directory to store images
     $imageName = basename($_FILES["courseImage"]["name"]); // Get image name
     $targetFilePath = $targetDir . $imageName; // Path to store image
     $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION)); // File extension
