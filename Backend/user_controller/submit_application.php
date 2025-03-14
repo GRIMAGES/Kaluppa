@@ -72,44 +72,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Handle File Upload with AES-256 Encryption
-        $fileNames = [];
+        $encryptedDocuments = [];
+
         if (isset($_FILES['documents']) && is_array($_FILES['documents']['name'])) {
-            $targetDir = '/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/';
             foreach ($_FILES['documents']['name'] as $key => $name) {
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
-                    $tmpName = $_FILES['documents']['tmp_name'][$key];
-                    $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
-                    $baseFileName = pathinfo($name, PATHINFO_FILENAME);
-                    $uniqueFileName = $baseFileName . "_" . $newId . "." . $fileExtension;
-                    $targetPath = $targetDir . $uniqueFileName;
-
                     $originalContent = file_get_contents($_FILES['documents']['tmp_name'][$key]);
-
-$encryptedData = openssl_encrypt(
-    $originalContent,
-    'AES-256-CBC',
-    AES_KEY,
-    OPENSSL_RAW_DATA,
-    AES_IV
-);
-
-// Encode if storing in a text-based medium like a database or plain file
-$encryptedData = base64_encode($encryptedData);
-
-if (file_put_contents($targetPath, $encryptedData)) {
-    $fileNames[] = $uniqueFileName;
-}
+        
+                    // Encrypt the file content
+                    $encryptedData = openssl_encrypt(
+                        $originalContent,
+                        'AES-256-CBC',
+                        AES_KEY,
+                        OPENSSL_RAW_DATA,
+                        AES_IV
+                    );
+        
+                    // Base64 encode it for safe storage in TEXT column
+                    $encodedData = base64_encode($encryptedData);
+        
+                    // Optional: store file name and encoded content as key-value pair
+                    $encryptedDocuments[] = [
+                        'file_name' => $name,
+                        'file_data' => $encodedData
+                    ];
                 }
             }
         }
+        
+        // Serialize the encrypted documents array for storage in DB
+        $documentData = json_encode($encryptedDocuments);  // Store as JSON string
 
-        $documentPaths = implode(",", $fileNames);
-
-        // Insert data into applications table
         $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-        $insertStmt->bind_param(
+        
+        if (!$insertStmt) {
+            error_log("Database Prepare Error: " . $conn->error);
+            echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Failed to prepare SQL statement.']);
+            exit();
+        }
+        
+        if (!$insertStmt->bind_param(
             "sisssssssssssis",
             $newId,
             $user_id,
@@ -125,9 +128,13 @@ if (file_put_contents($targetPath, $encryptedData)) {
             $region,
             $postalCode,
             $courseId,
-            $documentPaths
-        );
-
+            $documentData
+        )) {
+            error_log("Bind Param Error: " . $insertStmt->error);
+            echo json_encode(['success' => false, 'error_code' => 9, 'message' => 'Failed to bind parameters.']);
+            exit();
+        }
+        
         if ($insertStmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
         } else {
