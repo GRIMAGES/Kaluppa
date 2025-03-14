@@ -266,7 +266,8 @@ if (isset($_GET['id'])) {
     <?php while ($row = mysqli_fetch_assoc($works)): ?>
     <div class="col-md-4 mb-4">
         <div class="card">
-            <img src="<?php echo '../Images/' . htmlspecialchars($work['image_path']); ?>" class="card-img-top" alt="Work Image">
+        <img src="<?php echo htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
+
             <div class="card-body">
                 <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                 <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
