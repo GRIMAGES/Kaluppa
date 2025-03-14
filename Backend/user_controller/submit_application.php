@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Collect form data
         $firstName = $_POST['first_name'];
-        $middleName = $_POST['middle_name'] ?? ''; // Set default empty string for optional middle_name
+        $middleName = $_POST['middle_name'] ?? '';
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
         $houseNumber = $_POST['house_number'] ?? ''; 
@@ -68,8 +68,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $city = $_POST['city'] ?? ''; 
         $region = $_POST['region'] ?? ''; 
         $postalCode = $_POST['postal_code'] ?? ''; 
-        $courseId = (int)$_POST['course_id']; // Ensure course_id is an integer
-        
+        $courseId = (int)$_POST['course_id'];
+
+        // Check if user already submitted for the same course
+        $checkStmt = $conn->prepare("SELECT COUNT(*) AS total FROM applications WHERE user_id = ? AND course_id = ?");
+        $checkStmt->bind_param("ii", $user_id, $courseId);
+        $checkStmt->execute();
+        $checkResult = $checkStmt->get_result()->fetch_assoc();
+        $checkStmt->close();
+
+        if ($checkResult['total'] > 0) {
+            echo json_encode(['success' => false, 'error_code' => 6, 'message' => 'You have already submitted an application for this course.']);
+            error_log("Duplicate application prevented for user ID $user_id and course ID $courseId");
+            exit();
+        }
+
         // Handle file upload
         $fileNames = [];
         if (isset($_FILES['documents']) && !empty($_FILES['documents']['name'][0])) {
@@ -78,11 +91,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Define the target directory
                 $targetDir = "/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/";
-                $targetFile = $targetDir . basename($name);
+
+                // Create unique file name using application ID
+                $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
+                $baseFileName = pathinfo($name, PATHINFO_FILENAME);
+                $uniqueFileName = $baseFileName . "_" . $newId . "." . $fileExtension;
+                $targetFile = $targetDir . $uniqueFileName;
 
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
                     if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
-                        $fileNames[] = $targetFile;
+                        $fileNames[] = $uniqueFileName;
                         error_log("File uploaded successfully: $targetFile");
                     } else {
                         error_log("Failed to move file: $name");
@@ -102,7 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
-        // Bind parameters correctly
         $stmt->bind_param("sisssssssssssis", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
 
         if ($stmt->execute()) {
