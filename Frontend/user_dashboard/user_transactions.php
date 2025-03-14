@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+
+// Log errors to a file inside the Backend/logs folder
+ini_set("log_errors", 1);
 require_once '../../Backend/connection.php';
 session_start();
 if (!isset($_SESSION['email'])) {
