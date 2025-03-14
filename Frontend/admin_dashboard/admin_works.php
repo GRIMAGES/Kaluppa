@@ -143,7 +143,6 @@ if (isset($_POST['edit_work'])) {
 
     // Prepare the SQL query for updating the work record
     $sql = "UPDATE works SET title = ?, description = ?, work_datetime = ?, location = ?, requirements = ?, image_path = ? WHERE id = ?";
-    $stmt = $mysqli->prepare($sql);
     $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
 
     if ($stmt->execute()) {
