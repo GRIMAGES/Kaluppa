@@ -8,12 +8,9 @@ include('../../Backend/connection.php'); // Ensure the connection is included
 
 session_start();
 
-// Test connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} else {
-    echo "Connected successfully to the database.";
-}
+
+
+
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
 
@@ -44,137 +41,123 @@ if (isset($_POST['logout'])) {
 // Initialize user name for display
 $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest';
 
+// ADD WORK
 if (isset($_POST['add_work'])) {
-    $workTitle = $_POST['title'];
-    $workDescription = $_POST['description'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
     $workDatetime = $_POST['work_datetime'];
-    $workLocation = $_POST['location'];
-    $workRequirements = $_POST['requirements'];
+    $location = $_POST['location'];
+    $requirements = $_POST['requirements'];
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $image = $_FILES['image'];
         $imageName = basename($image['name']);
-        $imageTmpName = $image['tmp_name'];
+        $imageTmp = $image['tmp_name'];
+        $uploadPath = 'uploads/' . $imageName;
 
-        $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+        $ext = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
 
-        if (in_array($imageExt, $allowedExts)) {
-            $uploadDir = 'uploads/';
-            $uploadPath = $uploadDir . $imageName;
-
-            // Optional: check if file exists and rename to avoid overwrite
-            if (file_exists($uploadPath)) {
-                $imageName = time() . '_' . $imageName; // add timestamp prefix
-                $uploadPath = $uploadDir . $imageName;
-            }
-
-            if (move_uploaded_file($imageTmpName, $uploadPath)) {
-                // Save just the image name
+        if (in_array($ext, $allowed)) {
+            if (move_uploaded_file($imageTmp, $uploadPath)) {
                 $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements, image) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imageName);
+                $stmt->bind_param("ssssss", $title, $description, $workDatetime, $location, $requirements, $imageName);
                 if ($stmt->execute()) {
                     $_SESSION['toast_success'] = "✅ Work added successfully!";
-                    header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_works.php");
-                    exit;
-                }
-                
                 } else {
-                    echo '<div class="alert alert-danger">❌ Error adding work: ' . $stmt->error . '</div>';
+                    $_SESSION['toast_success'] = "❌ Failed to add work: " . $stmt->error;
                 }
-
                 $stmt->close();
             } else {
-                echo '<div class="alert alert-danger">❌ Error uploading image.</div>';
+                $_SESSION['toast_success'] = "❌ Failed to upload image.";
             }
         } else {
-            echo '<div class="alert alert-danger">❌ Invalid image format.</div>';
+            $_SESSION['toast_success'] = "❌ Invalid image file type.";
         }
     } else {
-        echo '<div class="alert alert-danger">❌ Please upload an image.</div>';
-    }
-
-// ----------------------------
-// Edit Work (Update Section)
-// ----------------------------
-if (isset($_POST['edit_work'])) {
-    $workId = $_POST['id'];
-    $workTitle = $_POST['title'];
-    $workDescription = $_POST['description'];
-    $workDatetime = $_POST['work_datetime'];
-    $workLocation = $_POST['location'];
-    $workRequirements = $_POST['requirements'];
-
-    // Initialize $imagePath
-    $imagePath = $_POST['existing_image']; // fallback to existing image
-
-    // Check if a new image is uploaded
-    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-        $image = $_FILES['image'];
-        $imageName = basename($image['name']);
-        $imageTmpName = $image['tmp_name'];
-
-        $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
-        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
-
-        if (in_array($imageExt, $allowedExts)) {
-            $uploadDir = 'uploads/'; // relative path for storage and DB
-            $newImageName = $imageName; // <-- KEEP original image name
-            $uploadPath = $uploadDir . $newImageName;
-
-            // Move image
-            if (move_uploaded_file($imageTmpName, $uploadPath)) {
-                $imagePath = $newImageName; // only store filename in DB
-            } else {
-                $_SESSION['toast_success'] = "❌ Failed to upload the new image.";
-                header("Location: admin_works.php");
-                exit;
-            }
-        } else {
-            $_SESSION['toast_success'] = "❌ Invalid image format.";
-            header("Location: admin_works.php");
-            exit;
-        }
-    }
-
-    // Prepare and execute update
-    $stmt = $conn->prepare("UPDATE works SET title=?, description=?, work_datetime=?, location=?, requirements=?, image=? WHERE id=?");
-
-    if ($stmt) {
-        $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
-        if ($stmt->execute()) {
-            $_SESSION['toast_success'] = "✅ Work updated successfully!";
-        } else {
-            $_SESSION['toast_success'] = "❌ Error updating the work: " . $stmt->error;
-        }
-        $stmt->close();
-    } else {
-        $_SESSION['toast_success'] = "❌ Failed to prepare the update query.";
+        $_SESSION['toast_success'] = "❌ Please upload an image.";
     }
 
     header("Location: admin_works.php");
     exit;
 }
 
-// Delete Work
-if (isset($_GET['delete_work_id'])) {
-    $workId = $_GET['delete_work_id'];
+// EDIT WORK
+if (isset($_POST['edit_work'])) {
+    $id = $_POST['id'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $workDatetime = $_POST['work_datetime'];
+    $location = $_POST['location'];
+    $requirements = $_POST['requirements'];
+    $existingImage = $_POST['existing_image']; // hidden input from form
+    $imagePath = $existingImage;
 
-    // Delete the work record from the database
-    $sql = "DELETE FROM works WHERE id = ?";
-    $stmt = $conn->prepare($sql); // ✅ FIXED
-    $stmt->bind_param("i", $workId);
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image = $_FILES['image'];
+        $imageName = basename($image['name']);
+        $imageTmp = $image['tmp_name'];
+        $uploadPath = 'uploads/' . $imageName;
 
-    if ($deleteSuccess) {
-        $_SESSION['toast_success'] = "✅ Work deleted successfully!";
-        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_works.php");
+        $ext = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (in_array($ext, $allowed)) {
+            if (move_uploaded_file($imageTmp, $uploadPath)) {
+                $imagePath = $imageName;
+            } else {
+                $_SESSION['toast_success'] = "❌ Failed to upload new image.";
+                header("Location: admin_works.php");
+                exit;
+            }
+        } else {
+            $_SESSION['toast_success'] = "❌ Invalid image file type.";
+            header("Location: admin_works.php");
+            exit;
+        }
     }
-    
+
+    $stmt = $conn->prepare("UPDATE works SET title=?, description=?, work_datetime=?, location=?, requirements=?, image=? WHERE id=?");
+    if ($stmt) {
+        $stmt->bind_param("ssssssi", $title, $description, $workDatetime, $location, $requirements, $imagePath, $id);
+        if ($stmt->execute()) {
+            $_SESSION['toast_success'] = "✅ Work updated successfully!";
+        } else {
+            $_SESSION['toast_success'] = "❌ Error updating work: " . $stmt->error;
+        }
+        $stmt->close();
     } else {
-        echo "Error deleting the work.";
+        $_SESSION['toast_success'] = "❌ Failed to prepare update statement.";
     }
 
+    header("Location: admin_works.php");
+    exit;
+}
 
+// DELETE WORK
+if (isset($_GET['delete'])) {
+    $id = $_GET['delete'];
+
+    // Optional: Get image name first to delete it from folder
+    $res = $conn->query("SELECT image FROM works WHERE id=$id");
+    $row = $res->fetch_assoc();
+    $imageName = $row['image'];
+    if (file_exists("uploads/" . $imageName)) {
+        unlink("uploads/" . $imageName);
+    }
+
+    $stmt = $conn->prepare("DELETE FROM works WHERE id=?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        $_SESSION['toast_success'] = "✅ Work deleted successfully!";
+    } else {
+        $_SESSION['toast_success'] = "❌ Error deleting the work.";
+    }
+    $stmt->close();
+
+    header("Location: admin_works.php");
+    exit;
+}
 
 
 // Fetch works for display (no pre-fetching)
@@ -221,6 +204,24 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
+<?php if (isset($_SESSION['toast_success'])): ?>
+    <div id="toastMessage" class="alert alert-success text-center position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow rounded" role="alert" style="z-index: 9999;">
+        <?php 
+            echo htmlspecialchars($_SESSION['toast_success']); 
+            unset($_SESSION['toast_success']); 
+        ?>
+    </div>
+    <script>
+        setTimeout(function() {
+            const toast = document.getElementById('toastMessage');
+            if (toast) {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }
+        }, 3000);
+    </script>
+<?php endif; ?>
+
 <?php include 'admin_sidebar.php'; ?>
 
 
@@ -426,12 +427,6 @@ const editButtons = document.querySelectorAll('[data-bs-target="#editWorkModal"]
     const toast = new bootstrap.Toast(toastEl);
     toast.show();
   }
-
-  <?php if (isset($_SESSION['toast_success'])): ?>
-    showToast("<?php echo $_SESSION['toast_success']; ?>");
-    <?php unset($_SESSION['toast_success']); ?>
-  <?php endif; ?>
-
 
 </script>
 </body>
