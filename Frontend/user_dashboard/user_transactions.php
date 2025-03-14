@@ -135,7 +135,7 @@ unset($_SESSION['success_message']);
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editDocumentForm" method="POST" enctype="multipart/form-data" action="/opt/bitnami/apache/htdocs/Kaluppa/Backend/user_controller/update_application.php">
+                <form id="editDocumentForm" method="POST" enctype="multipart/form-data" action="/Kaluppa/Backend/user_controller/update_document.php">
                     <input type="hidden" name="application_id" id="applicationId">
                     <div class="mb-3">
                         <label for="document" class="form-label">Upload New Document</label>

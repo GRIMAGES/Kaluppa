@@ -10,8 +10,8 @@ if (!isset($_SESSION['email'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $application_id = $_POST['application_id'];
 
-    if (isset($_FILES['document']) && $_FILES['document']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = __DIR__ . "/../../Backend/documents/Scholarship/";
+    if (isset($_FILES['documents']) && $_FILES['documents']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = __DIR__ . "/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/";
         $file_tmp = $_FILES['document']['tmp_name'];
         $file_name = basename($_FILES['document']['name']);
         $target_file = $upload_dir . $file_name;
