@@ -89,18 +89,25 @@ if (!$workResult) {
 </div>
 
 <div class="main-content">
-    <div class="row">
+    <div class="work-container">
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
-                <div class="col-md-6 mb-4">
-                    <div class="work-card">
-                        <img src="../admin_dashboard/uploads/<?php echo htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
-                        <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h5>
-                            <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>"> View Details</button>
-                        </div>
+                <div class="work-card" onclick="showWorkDetails(<?php echo $work['id']; ?>)">
+                    <img src="<?php echo '../admin_dashboard/uploads/' . htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
+                    <div class="work-details">
+                        <h3 class="work-title"><?php echo htmlspecialchars($work['title']); ?></h3>
+                        <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>">
+                            View Details
+                        </button>
                     </div>
                 </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No volunteer works available at the moment.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
 
                 <!-- ✅ Modal for work details (MUST BE INSIDE THE LOOP) -->
                 <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel<?php echo $work['id']; ?>" aria-hidden="true">
@@ -197,10 +204,6 @@ if (!$workResult) {
                         </div>
                     </div>
                 </div> <!-- End of modal -->
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p>No volunteer works available at the moment.</p>
-        <?php endif; ?>
     </div>
 </div>
 
