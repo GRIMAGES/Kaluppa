@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         // Bind parameters correctly
-        $stmt->bind_param("ssssssssssssisi", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
+        $stmt->bind_param("sisssssssssssis", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
 
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Your application has been submitted successfully!']);

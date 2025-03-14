@@ -77,68 +77,102 @@ if (isset($_GET['delete_course'])) {
     }
 }
 
-// Handle form submissions for adding, updating, or deleting courses
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['addCourse'])) {
-        // Add course logic
-        // ...
-        $_SESSION['success_message'] = 'Course added successfully!';
-    } elseif (isset($_POST['editCourse'])) {
-        // Edit course logic
-        $id = $_POST['id']; // The course ID
-        $name = $_POST['courseName'];
-        $duration = $_POST['courseDuration'];
-        $instructor = $_POST['courseInstructor'];
-        $capacity = $_POST['courseCapacity'];
-        $requisites = $_POST['courseRequisites'];
-        $description = $_POST['courseDescription'];
-        $status = $_POST['courseStatus'];
+// Handling the form submission for adding new courses
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
+    // Get course details from the form
+    $name = $_POST['courseName'];
+    $duration = $_POST['courseDuration'];
+    $instructor = $_POST['courseInstructor'];
+    $capacity = $_POST['courseCapacity'];
+    $requisites = $_POST['courseRequisites'];
+    $description = $_POST['courseDescription'];
+    $status = $_POST['courseStatus'];
 
-        // Initialize the image path to preserve existing image if no new image is uploaded
-        $imageName = $_POST['existingImage'] ?? '';  // Use existing image if no new one is uploaded
+    // Image upload handling
+    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/"; // Path to your image folder
+    $imageName = basename($_FILES["courseImage"]["name"]);
+    $target_file = $target_dir . $imageName;
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        // Image upload handling (optional)
-        if (!empty($_FILES["courseImage"]["name"])) {
-            // Only process image upload if a new image is selected
-            $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/";
-            $imageName = basename($_FILES["courseImage"]["name"]); // Get the image name
-            $target_file = $target_dir . $imageName; // Correct path for the uploaded file
-            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION)); // Get the file extension
+    // Initialize message variable
+    $message = "";
 
-            // Check if the uploaded file is an allowed image type
-            if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-                // Attempt to move the uploaded file to the target directory
-                if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
-                    // Image upload success, update the course record with the new image
-                    $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
-                    $stmt->bind_param("ssssssssi", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
-                } else {
-                    $_SESSION['error_message'] = 'Error uploading image.';
-                    header("Location: /path/to/error/page"); // Redirect to error page if image upload fails
-                    exit();
-                }
+    // Check if the file is a valid image
+    if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+        // Try to upload the file
+        if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
+            // Prepare the SQL statement to insert course data with the image
+            $stmt = $conn->prepare("INSERT INTO courses (name, image, duration, instructor, capacity, requisites, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssss", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status);
+            
+            // Execute the query
+            if ($stmt->execute()) {
+                $message = "Course added successfully!";
+                echo "<script>$('#successModal').modal('show');</script>";
             } else {
-                $_SESSION['error_message'] = 'Invalid file type for image.';
-                header("Location: /path/to/error/page"); // Redirect to error page if invalid file type
-                exit();
+                $message = "Error adding course: " . $stmt->error;
+                echo "<script>$('#errorModal').modal('show');</script>";
+            }
+            $stmt->close();
+        } else {
+            $message = "Error uploading the image.";
+            echo "<script>$('#errorModal').modal('show');</script>";
+        }
+    } else {
+        $message = "Invalid image format. Only JPG, JPEG, PNG, or GIF allowed.";
+        echo "<script>$('#errorModal').modal('show');</script>";
+    }
+    echo $message;
+}
+
+// Handling course updates (editing course with or without image change)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
+    $id = $_POST['id']; // Course ID to update
+    $name = $_POST['courseName'];
+    $duration = $_POST['courseDuration'];
+    $instructor = $_POST['courseInstructor'];
+    $capacity = $_POST['courseCapacity'];
+    $requisites = $_POST['courseRequisites'];
+    $description = $_POST['courseDescription'];
+    $status = $_POST['courseStatus'];
+
+    // Check if an image is uploaded
+    if (!empty($_FILES["courseImage"]["name"])) {
+        // Image upload logic (if new image uploaded)
+        $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/";
+        $imageName = basename($_FILES["courseImage"]["name"]);
+        $target_file = $target_dir . $imageName;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        // Check file type
+        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+            // Move the uploaded file to the target directory
+            if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
+                // Update the course record with the new image
+                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
+                $stmt->bind_param("ssssssssi", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
+            } else {
+                echo "Error uploading image.";
             }
         } else {
-            // If no new image, just update the course details without changing the image
-            $stmt = $conn->prepare("UPDATE courses SET name = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
-            $stmt->bind_param("sssssssi", $name, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
+            echo "Invalid image type.";
         }
+    } else {
+        // If no new image, update course without changing the image
+        $stmt = $conn->prepare("UPDATE courses SET name = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
+        $stmt->bind_param("sssssssi", $name, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
+    }
 
-        if ($stmt->execute()) {
-            $_SESSION['success_message'] = 'Course updated successfully!';
-        } else {
-            $_SESSION['error_message'] = 'Error updating course!';
-        }
+    if ($stmt->execute()) {
+        echo "<script>$('#successModal').modal('show');</script>";
+    } else {
+        echo "<script>$('#errorModal').modal('show');</script>";
+}
     } elseif (isset($_POST['deleteCourse'])) {
         // Delete course logic
         // ...
         $_SESSION['success_message'] = 'Course deleted successfully!';
     }
-}
 $adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
 // Fetch the admin's full name from the user table
 $query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name FROM user WHERE email = ?";
