@@ -1,29 +1,23 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/aes_key.php'; // AES_KEY and AES_IV defined here
 session_start();
+
+// Error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', '../../Backend/logs/application_form_errors.log');
 
-// Log errors to a file inside the Backend/logs folder
-ini_set("log_errors", 1);
-ini_set("error_log", "../../Backend/logs/application_form_errors.log");
-
-// Check if the user is logged in
+// Check if user is logged in
 if (!isset($_SESSION['email'])) {
     echo json_encode(['success' => false, 'error_code' => 1, 'message' => 'User not logged in']);
-    error_log("User not logged in. Session email is not set.");
     exit();
 }
 
-// Fetch logged-in user's data
+// Get logged-in user info
 $email = $_SESSION['email'];
-$query = "SELECT id FROM user WHERE email = ?";
-$stmt = $conn->prepare($query);
-if ($stmt === false) {
-    error_log("Error preparing query: " . $conn->error);
-    echo json_encode(['success' => false, 'error_code' => 2, 'message' => 'Database query preparation failed']);
-    exit();
-}
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -31,112 +25,122 @@ $user = $result->fetch_assoc();
 
 if (!$user) {
     echo json_encode(['success' => false, 'error_code' => 2, 'message' => 'User not found']);
-    error_log("User not found with email: $email");
     exit();
 }
+$user_id = $user['id'];
 
-$user_id = $user['id']; // Get the logged-in user ID
-
-// Generate custom application ID (APP-00001 format)
-$query = "SELECT id FROM applications ORDER BY id DESC LIMIT 1";
-$result = $conn->query($query);
-$row = $result->fetch_assoc();
-
-if ($row) {
-    $lastId = $row['id'];
-    $num = (int)substr($lastId, 4); // Extract numeric part
-    $newId = 'APP-' . str_pad($num + 1, 5, '0', STR_PAD_LEFT);
+// Generate Application ID
+$res = $conn->query("SELECT id FROM applications ORDER BY id DESC LIMIT 1");
+$row = $res->fetch_assoc();
+if ($row && isset($row['id'])) {
+    $lastNumericId = (int)substr($row['id'], 4);
+    $newNumericId = $lastNumericId + 1;
+    $newId = 'APP-' . str_pad($newNumericId, 5, '0', STR_PAD_LEFT);
 } else {
-    $newId = 'APP-00001'; // First entry
+    $newId = 'APP-00001';
 }
 
-error_log("Generated new ID: " . $newId); // Debugging statement
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Check if required fields are present in the form
-    if (isset($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['course_id'])) {
-        
-        // Collect form data
+// Handle POST request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate required fields
+    if (
+        isset($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['course_id'])
+    ) {
+        // Collect data
         $firstName = $_POST['first_name'];
         $middleName = $_POST['middle_name'] ?? '';
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
-        $houseNumber = $_POST['house_number'] ?? ''; 
-        $street = $_POST['street'] ?? ''; 
-        $barangay = $_POST['barangay'] ?? ''; 
-        $district = $_POST['district'] ?? ''; 
-        $city = $_POST['city'] ?? ''; 
-        $region = $_POST['region'] ?? ''; 
-        $postalCode = $_POST['postal_code'] ?? ''; 
-        $courseId = (int)$_POST['course_id'];
+        $houseNumber = $_POST['house_number'] ?? '';
+        $street = $_POST['street'] ?? '';
+        $barangay = $_POST['barangay'] ?? '';
+        $district = $_POST['district'] ?? '';
+        $city = $_POST['city'] ?? '';
+        $region = $_POST['region'] ?? '';
+        $postalCode = $_POST['postal_code'] ?? '';
+        $courseId = intval($_POST['course_id']);
 
-        // Check if user already submitted for the same course
-        $checkStmt = $conn->prepare("SELECT COUNT(*) AS total FROM applications WHERE user_id = ? AND course_id = ?");
+        // Check for duplicate application
+        $checkStmt = $conn->prepare("SELECT COUNT(*) as total FROM applications WHERE user_id = ? AND course_id = ?");
         $checkStmt->bind_param("ii", $user_id, $courseId);
         $checkStmt->execute();
         $checkResult = $checkStmt->get_result()->fetch_assoc();
-        $checkStmt->close();
 
         if ($checkResult['total'] > 0) {
-            echo json_encode(['success' => false, 'error_code' => 6, 'message' => 'You have already submitted an application for this course.']);
-            error_log("Duplicate application prevented for user ID $user_id and course ID $courseId");
+            echo json_encode(['success' => false, 'error_code' => 6, 'message' => 'You have already applied for this course.']);
             exit();
         }
 
-        // Handle file upload
+        // Handle File Upload with AES-256 Encryption
         $fileNames = [];
-        if (isset($_FILES['documents']) && !empty($_FILES['documents']['name'][0])) {
+        if (isset($_FILES['documents']) && is_array($_FILES['documents']['name'])) {
+            $targetDir = '/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/';
             foreach ($_FILES['documents']['name'] as $key => $name) {
-                error_log("Processing file: $name");
-
-                // Define the target directory
-                $targetDir = "/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/";
-
-                // Create unique file name using application ID
-                $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
-                $baseFileName = pathinfo($name, PATHINFO_FILENAME);
-                $uniqueFileName = $baseFileName . "_" . $newId . "." . $fileExtension;
-                $targetFile = $targetDir . $uniqueFileName;
-
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
-                    if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
-                        $fileNames[] = $uniqueFileName;
-                        error_log("File uploaded successfully: $targetFile");
-                    } else {
-                        error_log("Failed to move file: $name");
-                    }
-                } else {
-                    error_log("File upload error for $name: " . $_FILES['documents']['error'][$key]);
+                    $tmpName = $_FILES['documents']['tmp_name'][$key];
+                    $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
+                    $baseFileName = pathinfo($name, PATHINFO_FILENAME);
+                    $uniqueFileName = $baseFileName . "_" . $newId . "." . $fileExtension;
+                    $targetPath = $targetDir . $uniqueFileName;
+
+                    $originalContent = file_get_contents($_FILES['documents']['tmp_name'][$key]);
+
+$encryptedData = openssl_encrypt(
+    $originalContent,
+    'AES-256-CBC',
+    AES_KEY,
+    OPENSSL_RAW_DATA,
+    AES_IV
+);
+
+// Encode if storing in a text-based medium like a database or plain file
+$encryptedData = base64_encode($encryptedData);
+
+if (file_put_contents($targetPath, $encryptedData)) {
+    $fileNames[] = $uniqueFileName;
+}
                 }
             }
-        } else {
-            error_log("No files uploaded or error during file upload.");
         }
 
-        $documentPaths = implode(',', $fileNames);
-        error_log("Document paths: " . $documentPaths);
+        $documentPaths = implode(",", $fileNames);
 
-        // Insert data into the database
-        $stmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) 
+        // Insert data into applications table
+        $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        
-        $stmt->bind_param("sisssssssssssis", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
 
-        if ($stmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Your application has been submitted successfully!']);
+        $insertStmt->bind_param(
+            "sisssssssssssis",
+            $newId,
+            $user_id,
+            $firstName,
+            $middleName,
+            $lastName,
+            $email,
+            $houseNumber,
+            $street,
+            $barangay,
+            $district,
+            $city,
+            $region,
+            $postalCode,
+            $courseId,
+            $documentPaths
+        );
+
+        if ($insertStmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
         } else {
-            echo json_encode(['success' => false, 'error_code' => 3, 'message' => 'Error: ' . $stmt->error]);
-            error_log("Database insert error: " . $stmt->error);
+            error_log("Database Insert Error: " . $insertStmt->error);
+            echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Failed to submit application.']);
         }
 
-        $stmt->close();
+        $insertStmt->close();
         $conn->close();
     } else {
-        echo json_encode(['success' => false, 'error_code' => 4, 'message' => 'Please fill in all required fields.']);
-        error_log("Required fields missing in the form.");
+        echo json_encode(['success' => false, 'error_code' => 4, 'message' => 'Missing required fields.']);
     }
 } else {
     echo json_encode(['success' => false, 'error_code' => 5, 'message' => 'Invalid request method.']);
-    error_log("Invalid request method: " . $_SERVER['REQUEST_METHOD']);
 }
 ?>
