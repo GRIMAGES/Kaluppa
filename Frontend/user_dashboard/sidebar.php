@@ -43,7 +43,7 @@ $navLinks = [
     ['href' => 'user_work.php', 'icon' => 'fas fa-hands-helping', 'text' => 'Volunteer Work'],
     ['href' => 'user_events.php', 'icon' => 'fas fa-calendar-alt', 'text' => 'Events'],
     ['href' => 'user_settings.php', 'icon' => 'fas fa-cogs', 'text' => 'Settings'],
-    ['href' => 'user_transactions.php', 'icon' => 'fas fa-exchange-alt', 'text' => 'Transactions'],
+    ['href' => 'user_transactions.php', 'icon' => 'fas fa-exchange-alt', 'text' => 'Applications'],
     ['href' => 'user_calendar.php', 'icon' => 'fas fa-calendar', 'text' => 'Calendar'],
     ['href' => 'user_notifications.php', 'icon' => 'fas fa-bell', 'text' => 'Notifications'],
 ];

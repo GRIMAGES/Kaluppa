@@ -4,6 +4,7 @@ ini_set('display_errors', 1);
 // Log errors to a file inside the Backend/logs folder
 ini_set("log_errors", 1);
 require_once '../../Backend/connection.php';
+require_once '../../Backend/aes_key.php';
 session_start();
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -86,7 +87,7 @@ unset($_SESSION['success_message']);
         </div>
     <?php endif; ?>
     <div class="table-container p-4 bg-light rounded shadow-sm">
-        <h2 class="mb-4">Your Applications</h2>
+        <h2 class="mb-4">Applications</h2>
         <div class="table-responsive">
             <table id="applicationsTable" class="display table table-bordered">
                 <thead style="background-color: #f2f2f2; color: black;">
