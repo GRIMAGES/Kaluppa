@@ -174,7 +174,7 @@ if (isset($_GET['delete_work_id'])) {
 
     // Delete the work record from the database
     $sql = "DELETE FROM works WHERE id = ?";
-    $stmt = $mysqli->prepare($sql);
+    $stmt = $conn->prepare($sql); // ✅ FIXED
     $stmt->bind_param("i", $workId);
 
     if ($stmt->execute()) {
@@ -185,13 +185,14 @@ if (isset($_GET['delete_work_id'])) {
 }
 
 
+
 // Fetch works for display (no pre-fetching)
 $works = mysqli_query($conn, "SELECT * FROM works");
 
 if (isset($_GET['id'])) {
     $workId = $_GET['id'];
     $sql = "SELECT * FROM works WHERE id = ?";
-    $stmt = $mysqli->prepare($sql);
+    $stmt = $conn->prepare($sql); // ✅ FIXED
     $stmt->bind_param("i", $workId);
     $stmt->execute();
     $result = $stmt->get_result();
