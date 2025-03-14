@@ -251,39 +251,39 @@ if (isset($_GET['id'])) {
     <i class="fas fa-plus"></i> Add Work
 </button>
 
-    <div class="row">
+<div class="row">
     <?php while ($row = mysqli_fetch_assoc($works)): ?>
     <div class="col-md-4 mb-4">
         <div class="card">
-        <img src="<?php echo '../uploads/' . htmlspecialchars($work['image']); ?>" class="card-img-top" alt="Work Image">
-
+            <img src="<?php echo '../uploads/' . htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Work Image">
 
             <div class="card-body">
                 <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                 <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
                 
                 <!-- Edit Button -->
-<button class="btn btn-custom-edit mb-1" data-bs-toggle="modal" data-bs-target="#editWorkModal" 
-    data-id="<?php echo $row['id']; ?>" 
-    data-title="<?php echo htmlspecialchars($row['title']); ?>" 
-    data-description="<?php echo htmlspecialchars($row['description']); ?>" 
-    data-datetime="<?php echo $row['work_datetime']; ?>" 
-    data-image="<?php echo $row['image']; ?>">
-    <i class="fas fa-edit"></i> Edit
-</button>
+                <button class="btn btn-custom-edit mb-1" data-bs-toggle="modal" data-bs-target="#editWorkModal" 
+                    data-id="<?php echo $row['id']; ?>" 
+                    data-title="<?php echo htmlspecialchars($row['title']); ?>" 
+                    data-description="<?php echo htmlspecialchars($row['description']); ?>" 
+                    data-datetime="<?php echo $row['work_datetime']; ?>" 
+                    data-image="<?php echo $row['image']; ?>">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
 
-<!-- Delete Button -->
-<form method="POST" class="d-inline">
-    <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
-    <button type="submit" name="delete_work" class="btn btn-custom-delete">
-        <i class="fas fa-trash-alt"></i> Delete
-    </button>
-</form>
-
+                <!-- Delete Button -->
+                <form method="POST" class="d-inline">
+                    <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
+                    <button type="submit" name="delete_work" class="btn btn-custom-delete">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </form>
             </div>
         </div>
     </div>
-<?php endwhile; ?>
+    <?php endwhile; ?>
+</div>
+
 <!-- Add Work Modal -->
 <div class="modal fade" id="addWorkModal" tabindex="-1" aria-labelledby="addWorkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
