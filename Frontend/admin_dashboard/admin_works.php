@@ -35,121 +35,169 @@ if (isset($_POST['logout'])) {
 // Initialize user name for display
 $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest';
 
-// Handle form submissions for adding new work applications
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_work'])) {
-    // Get work details from the form
-    $title = $_POST['workTitle'];
-    $description = $_POST['description'];
-    $datetime = $_POST['work_datetime'];
-    $location = $_POST['location'];
-    $requirements = $_POST['requirements'];
+if (isset($_POST['add_work'])) {
+    // Get the form data
+    $workTitle = $_POST['title'];
+    $workDescription = $_POST['description'];
+    $workDatetime = $_POST['work_datetime'];
+    $workLocation = $_POST['location'];
+    $workRequirements = $_POST['requirements'];
 
-    // Handle image upload
-    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/"; // Path to your image folder
-    $imageName = basename($_FILES["workImage"]["name"]);
-    $target_file = $target_dir . $imageName;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    // Image handling
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image = $_FILES['image'];
+        $imageName = basename($image['name']);
+        $imageTmpName = $image['tmp_name'];
+        $imageSize = $image['size'];
+        $imageError = $image['error'];
 
-    // Initialize message variable
-    $message = "";
+        // Get file extension
+        $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
 
-    // Check if the file is a valid image
-    if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-        // Try to upload the file
-        if (move_uploaded_file($_FILES["workImage"]["tmp_name"], $target_file)) {
-            // Proceed with database insertion
-            $stmt = $conn->prepare("INSERT INTO works (title, description, image, work_datetime, location, requirements) VALUES (?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssss", $title, $imageName, $description, $work_datetime, $location, $requirements);
+        // Validate file extension
+        if (in_array($imageExt, $allowedExts)) {
+            // Move the image to the uploads directory
+            $uploadDir = 'uploads/';
+            $newImageName = uniqid('', true) . '.' . $imageExt;
+            $uploadPath = $uploadDir . $newImageName;
 
-            // Execute the query
-            if ($stmt->execute()) {
-                $message = "Work application added successfully!";
-                echo "<script>$('#successModal').modal('show');</script>";
-            } else {
-                $message = "Error adding work application: " . $stmt->error;
-                echo "<script>$('#errorModal').modal('show');</script>";
-            }
-            $stmt->close();
-        } else {
-            $message = "Error uploading the image.";
-            echo "<script>$('#errorModal').modal('show');</script>";
-        }
-    } else {
-        $message = "Invalid image format. Only JPG, JPEG, PNG, or GIF allowed.";
-        echo "<script>$('#errorModal').modal('show');</script>";
-    }
-    echo $message;
-}
+            if (move_uploaded_file($imageTmpName, $uploadPath)) {
+                // Image uploaded successfully, now insert data into the database
+                $imagePath = $uploadPath;
 
-// Handle work updates (editing work with or without image change)
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_work'])) {
-    $id = $_POST['id'];
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $datetime = $_POST['work_datetime'];
-    $location = $_POST['location'];
-    $requirements = $_POST['requirements'];
+                // Insert data into the database
+                $sql = "INSERT INTO works (title, description, work_datetime, image_path, location, requirements) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $imagePath, $workLocation, $workRequirements);
 
-    // Check if an image is uploaded
-    if (!empty($_FILES["workImage"]["name"])) {
-        // Image upload logic (if new image uploaded)
-        $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
-        $imageName = basename($_FILES["workImage"]["name"]);
-        $target_file = $target_dir . $imageName;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-        // Check file type
-        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-            // Move the uploaded file to the target directory
-            if (move_uploaded_file($_FILES["workImage"]["tmp_name"], $target_file)) {
-                // Update the work record with the new image
-                $stmt = $conn->prepare("UPDATE works SET title = ?, image = ?, description = ?, work_datetime = ?, location = ?, requirements = ? WHERE id = ?");
-                $stmt->bind_param("sssssssi", $title, $imageName, $description, $work_datetime, $location, $requirements, $id);
+                if ($stmt->execute()) {
+                    echo "Work added successfully.";
+                } else {
+                    echo "Error adding work: " . $stmt->error;
+                }
             } else {
                 echo "Error uploading image.";
             }
         } else {
-            echo "Invalid image type.";
+            echo "Invalid image format. Only JPG, JPEG, PNG, or GIF allowed.";
         }
     } else {
-        // If no new image, update work without changing the image
-        $stmt = $conn->prepare("UPDATE works SET title = ?, description = ?, work_datetime = ?, location = ?, requirements = ? WHERE id = ?");
-        $stmt->bind_param("sssssi", $title, $description, $work_datetime, $location, $requirements, $id);
-    }
-
-    if ($stmt->execute()) {
-        echo "<script>$('#successModal').modal('show');</script>";
-    } else {
-        echo "<script>$('#errorModal').modal('show');</script>";
+        echo "Please upload an image.";
     }
 }
 
-// Handle work deletion
-if (isset($_POST['delete_work'])) {
-    $workId = $_POST['work_id'];
-    $deleteQuery = "DELETE FROM works WHERE id = ?";
-    $stmt = $conn->prepare($deleteQuery);
-    $stmt->bind_param("i", $workId);
-    if ($stmt->execute()) {
-        echo "<script>$('#deleteSuccessModal').modal('show');</script>";
+// Edit Work (Update)
+if (isset($_POST['edit_work'])) {
+    // Get the form data
+    $workId = $_POST['id'];
+    $workTitle = $_POST['title'];
+    $workDescription = $_POST['description'];
+    $workDatetime = $_POST['work_datetime'];
+    $workLocation = $_POST['location'];
+    $workRequirements = $_POST['requirements'];
+
+    // Check if a new image is uploaded
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image = $_FILES['image'];
+        $imageName = basename($image['name']);
+        $imageTmpName = $image['tmp_name'];
+        $imageSize = $image['size'];
+        $imageError = $image['error'];
+
+        // Get file extension
+        $imageExt = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
+        $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
+
+        // Validate file extension
+        if (in_array($imageExt, $allowedExts)) {
+            // Move file to the desired directory
+            $uploadDir = 'uploads/';
+            $newImageName = uniqid('', true) . '.' . $imageExt;
+            $uploadPath = $uploadDir . $newImageName;
+
+            if (move_uploaded_file($imageTmpName, $uploadPath)) {
+                // Image uploaded successfully
+                $imagePath = $uploadPath;
+            } else {
+                echo "Error uploading the image.";
+            }
+        } else {
+            echo "Invalid image format.";
+        }
     } else {
-        echo "<script>$('#deleteErrorModal').modal('show');</script>";
+        // If no new image is uploaded, retain the current image path
+        $imagePath = $_POST['existing_image']; // Assuming you passed the existing image path
     }
+
+    // Prepare the SQL query for updating the work record
+    $sql = "UPDATE works SET title = ?, description = ?, work_datetime = ?, location = ?, requirements = ?, image_path = ? WHERE id = ?";
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
+
+    if ($stmt->execute()) {
+        echo "Work updated successfully.";
+    } else {
+        echo "Error updating the work.";
+    }
+}
+
+// Delete Work
+if (isset($_GET['delete_work_id'])) {
+    $workId = $_GET['delete_work_id'];
+
+    // Delete the work record from the database
+    $sql = "DELETE FROM works WHERE id = ?";
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param("i", $workId);
+
+    if ($stmt->execute()) {
+        echo "Work deleted successfully.";
+    } else {
+        echo "Error deleting the work.";
+    }
+}
+
+$sql = "SELECT * FROM works";
+$result = $mysqli->query($sql);
+
+if ($result->num_rows > 0) {
+    echo "<table>";
+    echo "<tr><th>Title</th><th>Description</th><th>Work Date & Time</th><th>Location</th><th>Actions</th></tr>";
+
+    while ($row = $result->fetch_assoc()) {
+        echo "<tr>";
+        echo "<td>" . $row['title'] . "</td>";
+        echo "<td>" . $row['description'] . "</td>";
+        echo "<td>" . $row['work_datetime'] . "</td>";
+        echo "<td>" . $row['location'] . "</td>";
+        echo "<td>
+                <a href='edit_work.php?id=" . $row['id'] . "'>Edit</a> | 
+                <a href='?delete_work_id=" . $row['id'] . "'>Delete</a>
+              </td>";
+        echo "</tr>";
+    }
+
+    echo "</table>";
+} else {
+    echo "No works found.";
 }
 
 // Fetch works for display (no pre-fetching)
 $works = mysqli_query($conn, "SELECT * FROM works");
 
-// Fetch specific work details when editing
-if (isset($_GET['edit_work'])) {
-    $workId = $_GET['edit_work'];
-    $workQuery = "SELECT * FROM works WHERE id = ?";
-    $stmt = $conn->prepare($workQuery);
+if (isset($_GET['id'])) {
+    $workId = $_GET['id'];
+    $sql = "SELECT * FROM works WHERE id = ?";
+    $stmt = $mysqli->prepare($sql);
     $stmt->bind_param("i", $workId);
     $stmt->execute();
-    $workResult = $stmt->get_result();
-    $workData = $workResult->fetch_assoc();
-    $stmt->close();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $existingImage = $row['image_path'];  // Use this in case no new image is uploaded
+    }
 }
 ?>
 
@@ -254,111 +302,77 @@ if (isset($_GET['edit_work'])) {
     </div>
 <?php endwhile; ?>
 
-<!-- Add Work Modal -->
-<div class="modal fade" id="addWorkModal" tabindex="-1" aria-labelledby="addWorkModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white" style="border-radius: 15px; border: 1px solid #444;">
-            <form method="POST" enctype="multipart/form-data">
-                <div class="modal-he'ader border-bottom border-secondary">
-                    <h5 class="modal-title" id="addWorkModalLabel">Add Work</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <div class="form-floating mb-3">
-                        <input type="text" name="workTitle" class="form-control bg-dark text-white border-secondary" id="title" placeholder="Enter title" required>
-                        <label for="title" class="text-light">Title</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="textarea" name="description" class="form-control bg-dark text-white border-secondary" id="description" placeholder="Enter description" style="height: 100px;" required></inputtextarea>
-                        <label for="description" class="text-light">Description</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                    <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" id="work_datetime" required>
-
-                        <label for="work_datetime" class="text-light">Work Date & Time</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="text" name="location" class="form-control bg-dark text-white border-secondary" id="location" placeholder="Location" required>
-                        <label for="location" class="text-light">Location</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <textarea name="requirements" class="form-control bg-dark text-white border-secondary" id="requirements" placeholder="Enter requirements" style="height: 100px;" required></textarea>
-                        <label for="requirements" class="text-light">Requirements</label>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="image" class="form-label text-light">Upload Image</label>
-                        <input type="file" name="image" id="image" class="form-control bg-dark text-white border-secondary">
-                    </div>
-
-                </div>
-                <div class="modal-footer border-top border-secondary">
-                    <button type="submit" name="add_work" class="btn btn-outline-light px-4">Add Work</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form>
-        </div>
+<form method="POST" enctype="multipart/form-data">
+    <div class="form-floating mb-3">
+        <input type="text" name="title" class="form-control bg-dark text-white border-secondary" placeholder="Enter title" required>
+        <label for="title" class="text-light">Title</label>
     </div>
-</div>
 
-<!-- Edit Work Modal -->
-<div class="modal fade" id="editWorkModal" tabindex="-1" aria-labelledby="editWorkModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white" style="border-radius: 15px; border: 1px solid #444;">
-            <form method="POST" enctype="multipart/form-data">
-                <div class="modal-header border-bottom border-secondary">
-                    <h5 class="modal-title" id="editWorkModalLabel">Edit Work</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-                    <input type="hidden" name="id" id="edit-id">
-
-                    <div class="form-floating mb-3">
-                        <input type="text" name="title" class="form-control bg-dark text-white border-secondary" id="edit-title" placeholder="Enter title" required>
-                        <label for="edit-title" class="text-light">Title</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <textarea name="description" class="form-control bg-dark text-white border-secondary" id="edit-description" placeholder="Enter description" style="height: 100px;" required></textarea>
-                        <label for="edit-description" class="text-light">Description</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                    <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" id="edit_datetime" required>
-
-                        <label for="edit-datetime" class="text-light">Work Date & Time</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input type="text" name="location" class="form-control bg-dark text-white border-secondary" id="edit-location" placeholder="Location" required>
-                        <label for="edit-location" class="text-light">Location</label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <textarea name="requirements" class="form-control bg-dark text-white border-secondary" id="edit-requirements" placeholder="Enter requirements" style="height: 100px;" required></textarea>
-                        <label for="edit-requirements" class="text-light">Requirements</label>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="edit-image" class="form-label">Change Image</label>
-                        <input type="file" name="image" id="edit-image" class="form-control bg-dark text-white border-secondary">
-                    </div>
-
-                </div>
-                <div class="modal-footer border-top border-secondary">
-                    <button type="submit" name="edit_work" class="btn btn-outline-light px-4">Save Changes</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </form>
-        </div>
+    <div class="form-floating mb-3">
+        <textarea name="description" class="form-control bg-dark text-white border-secondary" placeholder="Enter description" required></textarea>
+        <label for="description" class="text-light">Description</label>
     </div>
-</div>
+
+    <div class="form-floating mb-3">
+        <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" required>
+        <label for="work_datetime" class="text-light">Work Date & Time</label>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input type="text" name="location" class="form-control bg-dark text-white border-secondary" placeholder="Enter location" required>
+        <label for="location" class="text-light">Location</label>
+    </div>
+
+    <div class="form-floating mb-3">
+        <textarea name="requirements" class="form-control bg-dark text-white border-secondary" placeholder="Enter requirements" required></textarea>
+        <label for="requirements" class="text-light">Requirements</label>
+    </div>
+
+    <div class="mb-3">
+        <label for="image" class="form-label text-light">Upload Image</label>
+        <input type="file" name="image" id="image" class="form-control bg-dark text-white border-secondary" required>
+    </div>
+
+    <button type="submit" name="add_work" class="btn btn-outline-light px-4">Add Work</button>
+</form>
+
+
+<form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+    <input type="hidden" name="existing_image" value="<?php echo $existingImage; ?>">
+
+    <div class="form-floating mb-3">
+        <input type="text" name="title" class="form-control bg-dark text-white border-secondary" value="<?php echo $row['title']; ?>" required>
+        <label for="title" class="text-light">Title</label>
+    </div>
+
+    <div class="form-floating mb-3">
+        <textarea name="description" class="form-control bg-dark text-white border-secondary" required><?php echo $row['description']; ?></textarea>
+        <label for="description" class="text-light">Description</label>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input type="datetime-local" name="work_datetime" class="form-control bg-dark text-white border-secondary" value="<?php echo date('Y-m-d\TH:i', strtotime($row['work_datetime'])); ?>" required>
+        <label for="work_datetime" class="text-light">Work Date & Time</label>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input type="text" name="location" class="form-control bg-dark text-white border-secondary" value="<?php echo $row['location']; ?>" required>
+        <label for="location" class="text-light">Location</label>
+    </div>
+
+    <div class="form-floating mb-3">
+        <textarea name="requirements" class="form-control bg-dark text-white border-secondary" required><?php echo $row['requirements']; ?></textarea>
+        <label for="requirements" class="text-light">Requirements</label>
+    </div>
+
+    <div class="mb-3">
+        <label for="image" class="form-label text-light">Change Image</label>
+        <input type="file" name="image" id="image" class="form-control bg-dark text-white border-secondary">
+    </div>
+
+    <button type="submit" name="edit_work" class="btn btn-outline-light px-4">Save Changes</button>
+</form>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
