@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             foreach ($_FILES['documents']['name'] as $key => $name) {
                 $targetDir = "/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/";
                 $targetFile = $targetDir . basename($name);
-        
+
                 // Check if the file upload was successful
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
                     // Move the uploaded file to the target directory
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Prepare the query for inserting the application into the database, including user_id
         $stmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        
+
         // Ensure we bind the correct number of parameters (15)
         $stmt->bind_param("ssssssssssssisi", $newId, $user_id, $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
         
