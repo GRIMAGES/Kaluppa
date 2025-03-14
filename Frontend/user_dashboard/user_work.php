@@ -88,8 +88,7 @@ if (!$workResult) {
     </div>
 </div>
 
-<!-- Main Content -->   
-<div class="main-content">
+<div class="main-content container">
     <div class="row">
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
