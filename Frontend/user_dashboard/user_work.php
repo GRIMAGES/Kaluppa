@@ -101,23 +101,29 @@ if (!$workResult) {
                         </button>
                     </div>
                 </div>
+
+                <!-- ✅ Modal for this specific work item -->
+                <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel<?php echo $work['id']; ?>" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
+                                <h5 class="modal-title" id="workModalLabel<?php echo $work['id']; ?>"><?php echo htmlspecialchars($work['title']); ?></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><?php echo htmlspecialchars($work['description'] ?? 'No description available.'); ?></p>
+                                <!-- Add more modal content here if needed -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END MODAL -->
             <?php endwhile; ?>
         <?php else: ?>
             <p>No volunteer works available at the moment.</p>
         <?php endif; ?>
     </div>
 </div>
-
-
-
-                <!-- ✅ Modal for work details (MUST BE INSIDE THE LOOP) -->
-                <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel<?php echo $work['id']; ?>" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
-                                <h5 class="modal-title" id="workModalLabel<?php echo $work['id']; ?>"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
                             <div class="modal-body">
                                 <div class="row">
                                     <!-- Left Column -->
