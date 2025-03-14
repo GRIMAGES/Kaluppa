@@ -59,18 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (isset($_FILES['documents']) && $_FILES['documents']['error'][0] == 0) {
             $fileNames = [];
             foreach ($_FILES['documents']['name'] as $key => $name) {
-                $targetDir = "uploads/";
+                $targetDir = "/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/";
                 $targetFile = $targetDir . basename($name);
-                
-                if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
-                    $fileNames[] = $targetFile;
+        
+                // Check if the file upload was successful
+                if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
+                    // Move the uploaded file to the target directory
+                    if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
+                        $fileNames[] = $targetFile; // Store the file path in the array
+                    } else {
+                        echo "Error moving the file: " . $name;
+                    }
+                } else {
+                    echo "File upload error: " . $_FILES['documents']['error'][$key];
                 }
             }
             $documentPaths = implode(',', $fileNames); // Store the uploaded file paths in the database
         } else {
             $documentPaths = '';
         }
-
         // Prepare the query for inserting the application into the database
         $stmt = $conn->prepare("INSERT INTO applications (first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssssssssis", $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
