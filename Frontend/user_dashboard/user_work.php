@@ -94,7 +94,7 @@ if (!$workResult) {
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
                 <div class="work-card">
-                <img src="<?php echo '../Images/' . htmlspecialchars($work['image'] ?? 'default.jpg'); ?>" class="work-image" alt="<?php echo htmlspecialchars($work['title'] ?? ''); ?>">
+                <img src="<?php echo '../Images/' . htmlspecialchars($work['image'] ?? 'default.jpg'); ?>" class="work-image" alt="Work Image">
 
                     <div class="work-details">
                         <h3 class="work-title"><?php echo htmlspecialchars($work['title'] ?? ''); ?></h3>
