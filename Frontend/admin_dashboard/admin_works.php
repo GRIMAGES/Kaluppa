@@ -134,9 +134,9 @@ if (isset($_POST['edit_work'])) {
     exit;
 }
 
-// DELETE WORK
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
+// DELETE WORK (using POST method)
+if (isset($_POST['delete_work'])) {
+    $id = $_POST['work_id'];
 
     // Optional: Get image name first to delete it from folder
     $res = $conn->query("SELECT image FROM works WHERE id=$id");
@@ -158,7 +158,6 @@ if (isset($_GET['delete'])) {
     header("Location: admin_works.php");
     exit;
 }
-
 
 // Fetch works for display (no pre-fetching)
 $works = mysqli_query($conn, "SELECT * FROM works");
@@ -271,12 +270,14 @@ if (isset($_GET['id'])) {
                     </button>
 
                     <!-- Delete Button -->
-                    <form method="POST" class="d-inline">
-                        <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
-                        <button type="submit" name="delete_work" class="btn btn-custom-delete">
-                            <i class="fas fa-trash-alt"></i> Delete
-                        </button>
-                    </form>
+                    <<form method="POST" class="d-inline">
+    <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
+    <button type="submit" name="delete_work" class="btn btn-custom-delete" onclick="return confirm('Are you sure you want to delete this work?');">
+
+        <i class="fas fa-trash-alt"></i> Delete
+    </button>
+</form>
+
                 </div>
             </div>
         </div>
