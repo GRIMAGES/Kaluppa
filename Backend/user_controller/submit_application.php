@@ -144,12 +144,11 @@ $application_query = "INSERT INTO applications (id, user_id, course_id, first_na
 $stmt = $conn->prepare($application_query);
 $stmt->bind_param("siissssssssssss", $newId, $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document);
 
-if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Application submitted successfully']);
-} else {
+// Log query execution for debugging
+if (!$stmt->execute()) {
+    error_log("Error executing query: " . $stmt->error); // Log error if any
     echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Error submitting application']);
-    error_log("Error executing query: " . $stmt->error);
+} else {
+    echo json_encode(['success' => true, 'message' => 'Application submitted successfully']);
 }
-
-
 ?>
