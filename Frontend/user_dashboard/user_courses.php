@@ -160,7 +160,8 @@ $categorizedCourses = categorizeCourses($courseResult);
 
                     <!-- Right Column: Application Form -->
                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
-                    <form action="submit_application.php" method="POST" enctype="multipart/form-data">
+                    <form id="applicationForm" method="POST" enctype="multipart/form-data">
+
                     <div class="mb-3">
                                 <label for="first_name" class="form-label">First Name</label>
                                 <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
