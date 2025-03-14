@@ -77,9 +77,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES['documents']) && is_array($_FILES['documents']['name'])) {
             foreach ($_FILES['documents']['name'] as $key => $name) {
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
+                    $fileType = mime_content_type($_FILES['documents']['tmp_name'][$key]);
+                    $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
+        
+                    // ✅ Check for PDF only
+                    if ($fileType !== 'application/pdf' || strtolower($fileExtension) !== 'pdf') {
+                        echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Only PDF documents are allowed.']);
+                        exit();
+                    }
+        
+                    // 🔒 Proceed with AES encryption
                     $originalContent = file_get_contents($_FILES['documents']['tmp_name'][$key]);
         
-                    // Encrypt the file content
                     $encryptedData = openssl_encrypt(
                         $originalContent,
                         'AES-256-CBC',
@@ -88,10 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         AES_IV
                     );
         
-                    // Base64 encode it for safe storage in TEXT column
                     $encodedData = base64_encode($encryptedData);
         
-                    // Optional: store file name and encoded content as key-value pair
                     $encryptedDocuments[] = [
                         'file_name' => $name,
                         'file_data' => $encodedData
