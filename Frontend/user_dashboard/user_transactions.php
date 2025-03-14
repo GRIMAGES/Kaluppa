@@ -109,7 +109,7 @@ unset($_SESSION['success_message']);
                                     <a href="/Backend/admin_controller/view_document.php?file=<?php echo urlencode($application['document']); ?>&action=view" target="_blank">View</a>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editDocumentModal" data-application-id="<?php echo $application['id']; ?>" data-document="<?php echo htmlspecialchars($application['document']); ?>">
+                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editDocumentModal" data-application-id="<?php echo $application['id']; ?>" data-document="<?php echo htmlspecialchars($application['documents']); ?>">
                                         Edit Document
                                     </button>
                                 </td>
