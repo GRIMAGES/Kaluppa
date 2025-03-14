@@ -13,7 +13,7 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // Fetch all applications for the logged-in user
-$query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.document 
+$query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
           FROM applications 
           JOIN courses ON applications.course_id = courses.id 
           WHERE applications.email = ? 
