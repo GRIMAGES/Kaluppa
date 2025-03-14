@@ -211,14 +211,19 @@ $categorizedCourses = categorizeCourses($courseResult);
         <label for="postal_code" class="form-label">Postal Code</label>
         <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
     </div>
-    <div class="mb-3">
-    <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>
-    <input type="file" class="form-control" id="documents" name="documents[]" multiple accept=".pdf" required>
-    <div id="file-list" class="mt-2"></div>
-</div>
+    <ddiv class="mb-3">
+        <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>
+        <input type="file" class="form-control" id="documents" name="documents[]" multiple accept=".pdf" required>
+    </div>
 
-<input type="hidden" id="course_id" name="course_id">
-<button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
+    <!-- File Preview List (This will be updated with file names) -->
+    <div id="file-list" class="mb-3"></div>
+
+    <!-- Hidden field -->
+    <input type="hidden" id="course_id" name="course_id">
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
 </form>
 
                     </div>
@@ -429,30 +434,31 @@ document.getElementById("courseModal").addEventListener("hidden.bs.modal", funct
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-        const documentsInput = document.getElementById('documents');
-        const fileList = document.getElementById('file-list');
+        const fileInput = document.getElementById('documents');
+        const fileListDiv = document.getElementById('file-list');
 
-        documentsInput.addEventListener('change', function () {
-            fileList.innerHTML = ''; // Clear old list
+        fileInput.addEventListener('change', function () {
+            fileListDiv.innerHTML = ''; // Clear previous list
 
             if (this.files.length > 0) {
-                const ul = document.createElement('ul');
-                ul.classList.add('list-group', 'mt-2');
+                const listGroup = document.createElement('ul');
+                listGroup.className = 'list-group';
 
-                Array.from(this.files).forEach(file => {
-                    const li = document.createElement('li');
-                    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                Array.from(this.files).forEach((file, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
 
-                    li.innerHTML = `
+                    listItem.innerHTML = `
                         <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${file.name}</span>
-                        <span class="badge bg-secondary">${(file.size / 1024).toFixed(1)} KB</span>
+                        <span class="badge bg-primary">${(file.size / 1024).toFixed(1)} KB</span>
                     `;
-                    ul.appendChild(li);
+
+                    listGroup.appendChild(listItem);
                 });
 
-                fileList.appendChild(ul);
+                fileListDiv.appendChild(listGroup);
             } else {
-                fileList.innerHTML = `<div class="text-muted">No files selected.</div>`;
+                fileListDiv.innerHTML = `<div class="text-muted">No files selected.</div>`;
             }
         });
     });
