@@ -81,8 +81,11 @@ if (isset($_POST['add_work'])) {
                 $imagePath = $uploadPath;
 
                 // Insert data into the database
-                $sql = "INSERT INTO works (title, description, work_datetime, image_path, location, requirements) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt = $conn->prepare($sql);
+                $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements) VALUES (?, ?, ?, ?, ?)");
+                if ($stmt === false) {
+                    die('MySQL prepare error: ' . $conn->error);
+                }
+                
                 $stmt->bind_param("ssssss", $workTitle, $workDescription, $workDatetime, $imagePath, $workLocation, $workRequirements);
 
                 if ($stmt->execute()) {
@@ -151,8 +154,11 @@ if (isset($_POST['edit_work'])) {
     }
 
     // Prepare the SQL query for updating the work record
-    $sql = "UPDATE works SET title = ?, description = ?, work_datetime = ?, location = ?, requirements = ?, image_path = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
+    $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements) VALUES (?, ?, ?, ?, ?)");
+    if ($stmt === false) {
+        die('MySQL prepare error: ' . $conn->error);
+    }
+    
     $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
 
     if ($stmt->execute()) {
