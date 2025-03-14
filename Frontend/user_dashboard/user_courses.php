@@ -79,6 +79,7 @@ $categorizedCourses = categorizeCourses($courseResult);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_courses.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     
 </head>
 
@@ -211,11 +212,13 @@ $categorizedCourses = categorizeCourses($courseResult);
         <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
     </div>
     <div class="mb-3">
-        <label for="documents" class="form-label">Upload Documents</label>
-        <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
-    </div>
-    <input type="hidden" id="course_id" name="course_id">
-    <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
+    <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>
+    <input type="file" class="form-control" id="documents" name="documents[]" multiple accept=".pdf" required>
+    <div id="file-list" class="mt-2"></div>
+</div>
+
+<input type="hidden" id="course_id" name="course_id">
+<button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
 </form>
 
                     </div>
@@ -425,7 +428,32 @@ document.getElementById("courseModal").addEventListener("hidden.bs.modal", funct
     toast.show();
   }
 
+  const documentsInput = document.getElementById('documents');
+    const fileList = document.getElementById('file-list');
 
+    documentsInput.addEventListener('change', function () {
+        fileList.innerHTML = ''; // Clear old list
+
+        if (this.files.length > 0) {
+            const ul = document.createElement('ul');
+            ul.classList.add('list-group', 'mt-2');
+
+            Array.from(this.files).forEach(file => {
+                const li = document.createElement('li');
+                li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+
+                li.innerHTML = `
+                    <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${file.name}</span>
+                    <span class="badge bg-secondary">${(file.size / 1024).toFixed(1)} KB</span>
+                `;
+                ul.appendChild(li);
+            });
+
+            fileList.appendChild(ul);
+        } else {
+            fileList.innerHTML = `<div class="text-muted">No files selected.</div>`;
+        }
+    });
 
 
 </script>
