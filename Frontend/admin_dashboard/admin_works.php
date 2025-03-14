@@ -158,30 +158,6 @@ if (isset($_GET['delete_work_id'])) {
     }
 }
 
-$sql = "SELECT * FROM works";
-$result = $mysqli->query($sql);
-
-if ($result->num_rows > 0) {
-    echo "<table>";
-    echo "<tr><th>Title</th><th>Description</th><th>Work Date & Time</th><th>Location</th><th>Actions</th></tr>";
-
-    while ($row = $result->fetch_assoc()) {
-        echo "<tr>";
-        echo "<td>" . $row['title'] . "</td>";
-        echo "<td>" . $row['description'] . "</td>";
-        echo "<td>" . $row['work_datetime'] . "</td>";
-        echo "<td>" . $row['location'] . "</td>";
-        echo "<td>
-                <a href='edit_work.php?id=" . $row['id'] . "'>Edit</a> | 
-                <a href='?delete_work_id=" . $row['id'] . "'>Delete</a>
-              </td>";
-        echo "</tr>";
-    }
-
-    echo "</table>";
-} else {
-    echo "No works found.";
-}
 
 // Fetch works for display (no pre-fetching)
 $works = mysqli_query($conn, "SELECT * FROM works");
