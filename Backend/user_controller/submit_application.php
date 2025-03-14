@@ -37,158 +37,60 @@ if (!$user) {
 
 $user_id = $user['id']; // Get the logged-in user ID
 
-// Get form data
-$first_name = isset($_POST['first_name']) ? mysqli_real_escape_string($conn, $_POST['first_name']) : '';
-$middle_name = isset($_POST['middle_name']) ? mysqli_real_escape_string($conn, $_POST['middle_name']) : '';
-$last_name = isset($_POST['last_name']) ? mysqli_real_escape_string($conn, $_POST['last_name']) : '';
-$email = isset($_POST['email']) ? mysqli_real_escape_string($conn, $_POST['email']) : '';
-$house_number = isset($_POST['house_number']) ? mysqli_real_escape_string($conn, $_POST['house_number']) : '';
-$street = isset($_POST['street']) ? mysqli_real_escape_string($conn, $_POST['street']) : '';
-$barangay = isset($_POST['barangay']) ? mysqli_real_escape_string($conn, $_POST['barangay']) : '';
-$district = isset($_POST['district']) ? mysqli_real_escape_string($conn, $_POST['district']) : '';
-$city = isset($_POST['city']) ? mysqli_real_escape_string($conn, $_POST['city']) : '';
-$region = isset($_POST['region']) ? mysqli_real_escape_string($conn, $_POST['region']) : '';
-$postal_code = isset($_POST['postal_code']) ? mysqli_real_escape_string($conn, $_POST['postal_code']) : '';
-$course_id = isset($_POST['course_id']) ? mysqli_real_escape_string($conn, $_POST['course_id']) : '';
-
-// Validate form data
-if (empty($first_name) || empty($last_name) || empty($email) || empty($house_number) || empty($street) || empty($barangay) || empty($district) || empty($city) || empty($region) || empty($postal_code) || empty($course_id)) {
-    echo json_encode(['success' => false, 'error_code' => 9, 'message' => 'All fields are required']);
-    error_log("Missing required fields in form data.");
-    exit();
-}
-
-// Check if the course exists
-$course_check_query = "SELECT id FROM courses WHERE id = ?";
-$stmt = $conn->prepare($course_check_query);
-if ($stmt === false) {
-    error_log("Error preparing query for course check: " . $conn->error);
-    echo json_encode(['success' => false, 'error_code' => 3, 'message' => 'Database query preparation failed']);
-    exit();
-}
-$stmt->bind_param("i", $course_id);
-$stmt->execute();
-$course_check_result = $stmt->get_result();
-
-if (mysqli_num_rows($course_check_result) === 0) {
-    echo json_encode(['success' => false, 'error_code' => 3, 'message' => 'Invalid course ID']);
-    error_log("Invalid course ID: $course_id");
-    exit();
-}
-
-// Check if the user already applied for the course
-$check_existing_application_query = "SELECT * FROM applications WHERE user_id = ? AND course_id = ?";
-$stmt = $conn->prepare($check_existing_application_query);
-if ($stmt === false) {
-    error_log("Error preparing query for existing application check: " . $conn->error);
-    echo json_encode(['success' => false, 'error_code' => 4, 'message' => 'Database query preparation failed']);
-    exit();
-}
-$stmt->bind_param("ii", $user_id, $course_id);
-$stmt->execute();
-$check_existing_result = $stmt->get_result();
-
-if (mysqli_num_rows($check_existing_result) > 0) {
-    echo json_encode(['success' => false, 'error_code' => 4, 'message' => 'You have already applied for this course']);
-    error_log("User with ID $user_id already applied for course ID $course_id");
-    exit();
-}
-
-// Generate custom application ID (APP-00001 format)
-$query = "SELECT id FROM applications ORDER BY id DESC LIMIT 1";
-$result = $conn->query($query);
-$row = $result->fetch_assoc();
-
-if ($row) {
-    $lastId = $row['id'];
-    $num = (int)substr($lastId, 4); // Extract numeric part
-    $newId = 'APP-' . str_pad($num + 1, 5, '0', STR_PAD_LEFT);
-} else {
-    $newId = 'APP-00001'; // First entry
-}
-
-error_log("Generated new ID: " . $newId); // Debugging statement
-
-// Handle file upload (optional)
-$document_paths = []; // Array to store paths of uploaded files
-
-$base_url = "https://www.kaluppa.online/";
-
-// Assuming the connection.php file is included and session is started
-
-// Set the absolute path for the "Scholarship" directory
-$baseDirectory = realpath(__DIR__ . '/../../Documents/Scholarship');  // Use a relative path from the current file location
-$absoluteBaseDirectory = '/var/www/html/kaluppa/Backend/Documents/Scholarship';  // Update this with the absolute path of the "Scholarship" directory on your server
-
-if ($baseDirectory === false) {
-    error_log("Base directory not found: $absoluteBaseDirectory");
-    echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Server error: Document directory not found.']);
-    exit();
-}
-
-// Ensure the directory exists
-if (!is_dir($absoluteBaseDirectory)) {
-    if (!mkdir($absoluteBaseDirectory, 0777, true)) {
-        error_log("Failed to create directory: $absoluteBaseDirectory");
-        echo json_encode(['success' => false, 'error_code' => 11, 'message' => 'Server error: Unable to create document directory.']);
-        exit();
-    }
-}
-
-// Ensure the directory is writable
-if (!is_writable($absoluteBaseDirectory)) {
-    error_log("Directory is not writable: $absoluteBaseDirectory");
-    echo json_encode(['success' => false, 'error_code' => 12, 'message' => 'Server error: Document directory not writable.']);
-    exit();
-}
-
-// File upload process
-$document_paths = []; // Array to store paths of uploaded files
-
-if (isset($_FILES['documents'])) {
-    foreach ($_FILES['documents']['tmp_name'] as $key => $tmp_name) {
-        if ($_FILES['documents']['error'][$key] == 0) {
-            $document = $_FILES['documents'];
-            $document_name = time() . "_" . preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", basename($document['name'][$key]));
-            $document_tmp_name = $document['tmp_name'][$key];
-
-            // Construct the document path using the absolute path
-            $document_path = $absoluteBaseDirectory . DIRECTORY_SEPARATOR . $document_name;
-
-            if (!move_uploaded_file($document_tmp_name, $document_path)) {
-                error_log("Error uploading document to $document_path");
-                echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Error uploading document']);
-                exit();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Check if required fields are present in the form
+    if (isset($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['course_id'])) {
+        
+        // Collect form data
+        $firstName = mysqli_real_escape_string($conn, $_POST['first_name']);
+        $middleName = mysqli_real_escape_string($conn, $_POST['middle_name']);
+        $lastName = mysqli_real_escape_string($conn, $_POST['last_name']);
+        $email = mysqli_real_escape_string($conn, $_POST['email']);
+        $houseNumber = mysqli_real_escape_string($conn, $_POST['house_number']);
+        $street = mysqli_real_escape_string($conn, $_POST['street']);
+        $barangay = mysqli_real_escape_string($conn, $_POST['barangay']);
+        $district = mysqli_real_escape_string($conn, $_POST['district']);
+        $city = mysqli_real_escape_string($conn, $_POST['city']);
+        $region = mysqli_real_escape_string($conn, $_POST['region']);
+        $postalCode = mysqli_real_escape_string($conn, $_POST['postal_code']);
+        $courseId = (int)$_POST['course_id']; // Ensure course_id is an integer
+        
+        // Handle file upload
+        if (isset($_FILES['documents']) && $_FILES['documents']['error'][0] == 0) {
+            $fileNames = [];
+            foreach ($_FILES['documents']['name'] as $key => $name) {
+                $targetDir = "uploads/";
+                $targetFile = $targetDir . basename($name);
+                
+                if (move_uploaded_file($_FILES['documents']['tmp_name'][$key], $targetFile)) {
+                    $fileNames[] = $targetFile;
+                }
             }
-
-            // Construct the URL for the document (relative to the web root)
-            $document_url = $base_url . 'Backend/Documents/Scholarship/' . $document_name;
-
-            // Store the document URL for database or display purposes
-            $document_paths[] = $document_url;
+            $documentPaths = implode(',', $fileNames); // Store the uploaded file paths in the database
+        } else {
+            $documentPaths = '';
         }
+
+        // Prepare the query for inserting the application into the database
+        $stmt = $conn->prepare("INSERT INTO applications (first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssssssssis", $firstName, $middleName, $lastName, $email, $houseNumber, $street, $barangay, $district, $city, $region, $postalCode, $courseId, $documentPaths);
+        
+        if ($stmt->execute()) {
+            // Success, redirect or display success message
+            echo "Your application has been submitted successfully!";
+        } else {
+            // Error handling
+            echo "Error: " . $stmt->error;
+        }
+        
+        // Close the statement and connection
+        $stmt->close();
+        $conn->close();
+    } else {
+        echo "Please fill in all required fields.";
     }
-}
-
-// Combine all document URLs into a single string for saving in the database
-$document = implode(',', $document_paths);
-
-// Insert application with custom ID
-$application_query = "INSERT INTO applications (id, user_id, course_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, document) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-$stmt = $conn->prepare($application_query);
-if ($stmt === false) {
-    error_log("Error preparing insert query: " . $conn->error);
-    echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Database query preparation failed']);
-    exit();
-}
-
-$stmt->bind_param("siissssssssssss", $newId, $user_id, $course_id, $first_name, $middle_name, $last_name, $email, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $document);
-
-// Log query execution for debugging
-if (!$stmt->execute()) {
-    error_log("Error executing query: " . $stmt->error); // Log error if any
-    echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Error submitting application']);
 } else {
-    echo json_encode(['success' => true, 'message' => 'Application submitted successfully']);
+    echo "Invalid request method.";
 }
 ?>
+

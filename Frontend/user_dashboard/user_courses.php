@@ -161,58 +161,58 @@ $categorizedCourses = categorizeCourses($courseResult);
                     <!-- Right Column: Application Form -->
                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
                     <form id="applicationForm" action="https://www.kaluppa.online/Kaluppa/Backend/user_controller/submit_application.php" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="first_name" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="middle_name" class="form-label">Middle Name</label>
+        <input type="text" class="form-control" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($middleName); ?>">
+    </div>
+    <div class="mb-3">
+        <label for="last_name" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="house_number" class="form-label">House Number</label>
+        <input type="text" class="form-control" id="house_number" name="house_number" value="<?php echo htmlspecialchars($houseNumber); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="street" class="form-label">Street</label>
+        <input type="text" class="form-control" id="street" name="street" value="<?php echo htmlspecialchars($street); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="barangay" class="form-label">Barangay</label>
+        <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="district" class="form-label">District</label>
+        <input type="text" class="form-control" id="district" name="district" value="<?php echo htmlspecialchars($district); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="city" class="form-label">City</label>
+        <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($city); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="region" class="form-label">Region</label>
+        <input type="text" class="form-control" id="region" name="region" value="<?php echo htmlspecialchars($region); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="postal_code" class="form-label">Postal Code</label>
+        <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
+    </div>
+    <div class="mb-3">
+        <label for="documents" class="form-label">Upload Documents</label>
+        <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
+    </div>
+    <input type="hidden" id="course_id" name="course_id">
+    <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
+</form>
 
-                    <div class="mb-3">
-                                <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="middle_name" class="form-label">Middle Name</label>
-                                <input type="text" class="form-control" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($middleName); ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="house_number" class="form-label">House Number</label>
-                                <input type="text" class="form-control" id="house_number" name="house_number" value="<?php echo htmlspecialchars($houseNumber); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="street" class="form-label">Street</label>
-                                <input type="text" class="form-control" id="street" name="street" value="<?php echo htmlspecialchars($street); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="barangay" class="form-label">Barangay</label>
-                                <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="district" class="form-label">District</label>
-                                <input type="text" class="form-control" id="district" name="district" value="<?php echo htmlspecialchars($district); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="city" class="form-label">City</label>
-                                <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($city); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="region" class="form-label">Region</label>
-                                <input type="text" class="form-control" id="region" name="region" value="<?php echo htmlspecialchars($region); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="postal_code" class="form-label">Postal Code</label>
-                                <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="documents" class="form-label">Upload Documents</label>
-                                <input type="file" class="form-control" id="documents" name="documents[]" multiple required>
-                            </div>
-                            <input type="hidden" id="course_id" name="course_id">
-                            <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
-                            </form>
                     </div>
                 </div>
             </div>
