@@ -105,6 +105,10 @@ if (isset($_POST['edit_work'])) {
     $workLocation = $_POST['location'];
     $workRequirements = $_POST['requirements'];
 
+    // Initialize $imagePath
+    $imagePath = $_POST['existing_image']; // fallback to existing image
+
+    // Check if a new image is uploaded
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $image = $_FILES['image'];
         $imageName = basename($image['name']);
@@ -114,43 +118,43 @@ if (isset($_POST['edit_work'])) {
         $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
 
         if (in_array($imageExt, $allowedExts)) {
-            $uploadDir = 'uploads/';
-            $uploadPath = $uploadDir . $imageName;
+            $uploadDir = 'uploads/'; // relative path for storage and DB
+            $newImageName = $imageName; // <-- KEEP original image name
+            $uploadPath = $uploadDir . $newImageName;
 
-            // Optional: prevent overwrite
-            if (file_exists($uploadPath)) {
-                $imageName = time() . '_' . $imageName;
-                $uploadPath = $uploadDir . $imageName;
-            }
-
+            // Move image
             if (move_uploaded_file($imageTmpName, $uploadPath)) {
-                $imagePath = $imageName;
+                $imagePath = $newImageName; // only store filename in DB
             } else {
-                echo '<div class="alert alert-danger">❌ Error uploading the image.</div>';
+                $_SESSION['toast_success'] = "❌ Failed to upload the new image.";
+                header("Location: admin_works.php");
                 exit;
             }
         } else {
-            echo '<div class="alert alert-danger">❌ Invalid image format.</div>';
+            $_SESSION['toast_success'] = "❌ Invalid image format.";
+            header("Location: admin_works.php");
             exit;
         }
-    } else {
-        $imagePath = $_POST['existing_image']; // From hidden input in form
     }
 
+    // Prepare and execute update
     $stmt = $conn->prepare("UPDATE works SET title=?, description=?, work_datetime=?, location=?, requirements=?, image=? WHERE id=?");
-    $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
 
-    if ($stmt->execute()) {
-        $_SESSION['toast_success'] = "✅ Work updated successfully!";
-        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_works.php");
-        exit;
-    }
-    
+    if ($stmt) {
+        $stmt->bind_param("ssssssi", $workTitle, $workDescription, $workDatetime, $workLocation, $workRequirements, $imagePath, $workId);
+        if ($stmt->execute()) {
+            $_SESSION['toast_success'] = "✅ Work updated successfully!";
+        } else {
+            $_SESSION['toast_success'] = "❌ Error updating the work: " . $stmt->error;
+        }
+        $stmt->close();
     } else {
-        echo '<div class="alert alert-danger">❌ Error updating work: ' . $stmt->error . '</div>';
+        $_SESSION['toast_success'] = "❌ Failed to prepare the update query.";
     }
-    $stmt->close();
 
+    header("Location: admin_works.php");
+    exit;
+}
 
 // Delete Work
 if (isset($_GET['delete_work_id'])) {
