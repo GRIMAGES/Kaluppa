@@ -288,7 +288,7 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="modal-body">
                     <div class="form-floating mb-3">
-                        <input type="text" name="workTitle" class="form-control bg-dark text-white border-secondary" id="title" placeholder="Enter title" required>
+                        <input type="text" name="title" class="form-control bg-dark text-white border-secondary" id="title" placeholder="Enter title" required>
                         <label for="title" class="text-light">Title</label>
                     </div>
                     <div class="form-floating mb-3">
