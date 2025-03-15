@@ -171,7 +171,9 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
                         $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
                         $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
-                        $documents = json_decode($row['documents'], true); // Assuming 'documents' is a JSON encoded array of documents
+
+                        // Check if 'documents' exists and is not empty before decoding
+                        $documents = isset($row['documents']) && !empty($row['documents']) ? json_decode($row['documents'], true) : [];
 
                         echo '<tr>
                         <td>' . htmlspecialchars($id) . '</td>
@@ -227,6 +229,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
         </div>
     </div>
 </div>
+
 
     <!-- Application Details Modal -->
     <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
