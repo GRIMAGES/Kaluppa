@@ -24,16 +24,15 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-$adminEmail = $_SESSION['email'] ?? '';
-
-// Fetch admin info
-$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, house_number, region, street, barangay, district, phone, profile_picture FROM user WHERE email = ?";
+$adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
+// Fetch the admin's full name from the user table
+$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $adminEmail);
 $stmt->execute();
 $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
-$adminName = $admin['admin_name'] ?? '';
+$adminName = $admin['admin_name'] ?? ''; // Handle undefined array key
 $stmt->close();
 
 // Update Profile Info

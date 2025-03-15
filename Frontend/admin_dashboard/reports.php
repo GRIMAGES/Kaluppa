@@ -15,7 +15,6 @@ if (isset($_POST['logout'])) {
 }
 
 $adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
-
 // Fetch the admin's full name from the user table
 $query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);

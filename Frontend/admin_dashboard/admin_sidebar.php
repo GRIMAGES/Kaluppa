@@ -7,15 +7,15 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-$email = $_SESSION['email'];
-
-// Fetch admin details from the user table
-$query = "SELECT first_name, middle_name, last_name, profile_picture, role FROM user WHERE email = ?";
+$adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
+// Fetch the admin's full name from the user table
+$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);
-$stmt->bind_param('s', $email);
+$stmt->bind_param('s', $adminEmail);
 $stmt->execute();
-$stmt->bind_result($first_name, $middle_name, $last_name, $profile_picture, $role);
-$stmt->fetch();
+$result = $stmt->get_result();
+$admin = $result->fetch_assoc();
+$adminName = $admin['admin_name'] ?? ''; // Handle undefined array key
 $stmt->close();
 
 // Construct full name
