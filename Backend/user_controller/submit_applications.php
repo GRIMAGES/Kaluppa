@@ -1,24 +1,24 @@
 <?php
+// Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require_once '../../Backend/connection.php';
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
-// Error logging
+// Log errors to a file
 ini_set("log_errors", 1);
 ini_set("error_log", "../../Backend/logs/application_form_errors.log");
 
-// Check session
+require_once '../../Backend/connection.php';
+session_start();
+
+// Check if user is logged in
 if (!isset($_SESSION['email'])) {
-    error_log("User not logged in. Session email is not set.");
+    error_log("User not logged in.");
     header("Location: /Frontend/index.php");
     exit();
 }
 
-// Fetch user details
+// Fetch user info
 $userQuery = "SELECT id, first_name, middle_name, last_name, email FROM user WHERE email = ?";
 $stmt = $conn->prepare($userQuery);
 if (!$stmt) {
@@ -37,13 +37,14 @@ if (!$user) {
     exit();
 }
 
+// Assign user data
 $user_id = $user['id'];
 $first_name = $user['first_name'];
 $middle_name = $user['middle_name'];
 $last_name = $user['last_name'];
 $email = $user['email'];
 
-// POST data
+// Get POST data
 $phone = $_POST['phone'] ?? '';
 $house_number = $_POST['house_number'] ?? '';
 $street = $_POST['street'] ?? '';
@@ -52,7 +53,7 @@ $district = $_POST['district'] ?? '';
 $city = $_POST['city'] ?? '';
 $region = $_POST['region'] ?? '';
 $postal_code = $_POST['postal_code'] ?? '';
-$work_id = $_POST['work_id'] ?? 0;
+$work_id = $_POST['work_id'] ?? '';
 
 // File upload
 $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
@@ -69,28 +70,28 @@ if (!file_exists($uploadDir)) {
 $resumeName = basename($_FILES['resume']['name']);
 $uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $resumeName;
 
+// Move file
 if (!move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFile)) {
-    error_log("File upload failed: " . $_FILES['resume']['error']);
+    error_log("File upload failed. Error Code: " . $_FILES['resume']['error']);
     echo json_encode(['success' => false, 'message' => 'File upload failed.']);
     exit();
 }
 
-// Generate custom ID: VOL-00001 format
+// Generate custom ID: VOL-00001
 $idQuery = "SELECT id FROM volunteer_application ORDER BY id DESC LIMIT 1";
 $idResult = $conn->query($idQuery);
 
 if ($idResult && $idResult->num_rows > 0) {
     $lastIdRow = $idResult->fetch_assoc();
     $lastId = $lastIdRow['id'];
-    $lastNum = (int)substr($lastId, 4); // Extract number after "VOL-"
+    $lastNum = (int)substr($lastId, 4);
     $newId = 'VOL-' . str_pad($lastNum + 1, 5, '0', STR_PAD_LEFT);
 } else {
     $newId = 'VOL-00001';
 }
-
 error_log("Generated new application ID: $newId");
 
-// Prepare INSERT query
+// Insert query
 $insertQuery = "INSERT INTO volunteer_application (
     id, work_id, user_id, first_name, middle_name, last_name, email,
     phone, house_number, street, barangay, district, city, region, postal_code, resume_path
@@ -103,9 +104,9 @@ if (!$stmt) {
     exit();
 }
 
-// Bind parameters
+// Corrected parameter types: All strings now
 $stmt->bind_param(
-    'siisssssssssssss',
+    'ssssssssssssssss',
     $newId,
     $work_id,
     $user_id,
@@ -124,7 +125,7 @@ $stmt->bind_param(
     $uploadFile
 );
 
-// Execute
+// Execute insert
 if ($stmt->execute()) {
     error_log("Application successfully inserted with ID: $newId");
     echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
