@@ -190,7 +190,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                             // Add button to open modal for document selection
                             if (!empty($documents)) {
                                 echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
-                                    data-documents=\'' . json_encode($documents) . '\'
+                                    data-documents=\'' . htmlspecialchars(json_encode($documents), ENT_QUOTES, 'UTF-8') . '\'
                                     data-application-id="' . htmlspecialchars($id) . '">Download</button>';
                             }
 
@@ -348,6 +348,7 @@ $(document).ready(function() {
 downloadModal.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget;
     const encodedDocuments = button.getAttribute('data-documents');
+    const applicationId = button.getAttribute('data-application-id');
     const documentList = document.getElementById('documentList');
     documentList.innerHTML = '';
 
@@ -355,24 +356,18 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
         let documentsArray = JSON.parse(encodedDocuments);
 
         if (Array.isArray(documentsArray) && documentsArray.length > 0) {
-            documentsArray.forEach(doc => {
+            documentsArray.forEach((doc, index) => {
                 const li = document.createElement('li');
-                if (typeof doc === 'string') {
-                    // If doc is a string, it's likely just the filename
-                    const a = document.createElement('a');
-                    a.textContent = doc;
-                    a.href = `../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(doc)}&action=download`;
-                    a.download = doc;
-                    li.appendChild(a);
-                } else if (doc && typeof doc === 'object' && doc.name) {
-                    const a = document.createElement('a');
-                    a.textContent = doc.name;
-                    a.href = doc.url || `../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(doc.name)}&action=download`;
-                    a.download = doc.name;
-                    li.appendChild(a);
-                } else {
-                    li.textContent = 'Unnamed Document';
-                }
+                const a = document.createElement('a');
+                
+                // Use the index + 1 as the document name if no name is provided
+                const docName = doc.trim() || `Document ${index + 1}`;
+                
+                a.textContent = docName;
+                a.href = `../../Backend/admin_controller/view_document.php?application_id=${encodeURIComponent(applicationId)}&file=${encodeURIComponent(doc)}&action=download`;
+                a.download = docName;
+                
+                li.appendChild(a);
                 documentList.appendChild(li);
             });
         } else {
