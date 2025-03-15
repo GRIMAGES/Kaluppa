@@ -188,3 +188,8 @@ table.table-dark-custom td {
     margin-right: 6px;
     font-size: 14px;
 }
+.form-floating > label {
+    background-color: #212529;
+    padding: 0 .5rem;
+    z-index: 2;
+  }
