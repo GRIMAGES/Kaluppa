@@ -137,10 +137,9 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
-<!-- Main Content -->
 <div class="content" style="margin-left: 250px; padding: 20px;">
     <div class="container mt-5">
-        <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>
+        <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
         <div class="table-responsive">
             <table id="scholarshipTable" class="display" style="color: black;">
                 <thead style="background-color: #f2f2f2; color: black;">
@@ -186,12 +185,20 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         <td>' . htmlspecialchars($applied_at) . '</td>
                         <td>
                             <div class="d-inline-flex gap-2">';
-
-                            // Add button to open modal for document selection
+                            
+                            // Loop through the documents to generate download buttons
                             if (!empty($documents)) {
-                                echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
-                                    data-documents=\'' . htmlspecialchars(json_encode($documents), ENT_QUOTES, 'UTF-8') . '\'
-                                    data-application-id="' . htmlspecialchars($id) . '">Download</button>';
+                                foreach ($documents as $document) {
+                                    $fileName = $document['file_name'] ?? ''; // Extract the file name
+                                    $encodedFileName = urlencode($fileName);
+
+                                    // Only show download button if the file name exists
+                                    if ($fileName) {
+                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i> Download
+                                        </a>';
+                                    }
+                                }
                             }
 
                             echo '</div>
@@ -344,44 +351,7 @@ $(document).ready(function() {
     });
 });
 
-// Show modal on document click
-downloadModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget;
-    const encodedDocuments = button.getAttribute('data-documents');
-    const applicationId = button.getAttribute('data-application-id');
-    const documentList = document.getElementById('documentList');
-    documentList.innerHTML = '';
 
-    try {
-        let documentsArray = JSON.parse(encodedDocuments);
-
-        if (Array.isArray(documentsArray) && documentsArray.length > 0) {
-            documentsArray.forEach((doc, index) => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                
-                // Use the index + 1 as the document name if no name is provided
-                const docName = doc.trim() || `Document ${index + 1}`;
-                
-                a.textContent = docName;
-                a.href = `../../Backend/admin_controller/view_document.php?application_id=${encodeURIComponent(applicationId)}&file=${encodeURIComponent(doc)}&action=download`;
-                a.download = docName;
-                
-                li.appendChild(a);
-                documentList.appendChild(li);
-            });
-        } else {
-            const li = document.createElement('li');
-            li.textContent = "No documents available.";
-            documentList.appendChild(li);
-        }
-    } catch (error) {
-        console.error("Error processing documents:", error);
-        const li = document.createElement('li');
-        li.textContent = "Error loading documents.";
-        documentList.appendChild(li);
-    }
-});
 
 </script>
 </body>
