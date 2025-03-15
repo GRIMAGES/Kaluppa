@@ -187,19 +187,11 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         <td>
                             <div class="d-inline-flex gap-2">';
                             
-                            // Loop through the documents to generate download buttons
+                            // Add button to open modal for document selection
                             if (!empty($documents)) {
-                                foreach ($documents as $document) {
-                                    $fileName = $document['file_name'] ?? ''; // Extract the file name
-                                    $encodedFileName = urlencode($fileName);
-
-                                    // Only show download button if the file name exists
-                                    if ($fileName) {
-                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download"></i> Download
-                                        </a>';
-                                    }
-                                }
+                                echo '<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#downloadModal" data-documents=\'' . json_encode($documents) . '\' data-application-id="' . $id . '">
+                                        <i class="fas fa-download"></i> Download
+                                      </button>';
                             }
 
                             echo '</div>
@@ -231,6 +223,23 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
+<!-- Modal for Downloading Documents -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="downloadModalLabel">Select Document to Download</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="documentList"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Application Details Modal -->
     <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
@@ -335,7 +344,28 @@ $(document).ready(function() {
         });
     });
 
+ // Handle the modal opening and populating document list
+ const downloadModal = document.getElementById('downloadModal');
+    downloadModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // Button that triggered the modal
+        const documents = JSON.parse(button.getAttribute('data-documents')); // Get the documents JSON
+        const applicationId = button.getAttribute('data-application-id'); // Get the application ID
+        const documentList = document.getElementById('documentList');
+        
+        // Clear existing list
+        documentList.innerHTML = '';
 
+        // Populate document list in the modal
+        documents.forEach((document, index) => {
+            const listItem = document.createElement('li');
+            const downloadLink = document.createElement('a');
+            downloadLink.href = `../../Backend/admin_controller/view_document.php?application_id=${applicationId}&download=${encodeURIComponent(document.file_name)}`;
+            downloadLink.textContent = `Document ${index + 1}: ${document.file_name}`;
+            downloadLink.classList.add('btn', 'btn-link');
+            listItem.appendChild(downloadLink);
+            documentList.appendChild(listItem);
+        });
+    });
     </script>
 </body>
 </html>
