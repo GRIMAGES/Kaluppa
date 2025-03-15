@@ -4,6 +4,10 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+$successMessage = $_SESSION['success'] ?? '';
+$errorMessage = $_SESSION['error'] ?? '';
+unset($_SESSION['success'], $_SESSION['error']);
+
 // Log errors to a file
 ini_set("log_errors", 1);
 ini_set("error_log", "../../Backend/logs/application_form_errors.log");
@@ -274,6 +278,30 @@ if (!$workResult) {
     </div>
 </div>
 
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <?php if (!empty($successMessage)): ?>
+        <div id="successToast" class="toast align-items-center text-white bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <?php echo htmlspecialchars($successMessage); ?>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($errorMessage)): ?>
+        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <?php echo htmlspecialchars($errorMessage); ?>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
+
 <script>
     function showWorkDetails(workId) {
         var workModal = new bootstrap.Modal(document.getElementById('workModal' + workId));
@@ -355,6 +383,18 @@ if (!$workResult) {
 
             xhr.send(formData);
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var successToast = document.getElementById('successToast');
+        var errorToast = document.getElementById('errorToast');
+
+        if (successToast) {
+            new bootstrap.Toast(successToast, { delay: 4000 }).show();
+        }
+        if (errorToast) {
+            new bootstrap.Toast(errorToast, { delay: 4000 }).show();
+        }
     });
 </script>
 </body>
