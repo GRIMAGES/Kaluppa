@@ -1,46 +1,42 @@
 <?php
 require_once '../../Backend/connection.php';
 session_start();
-// Set session timeout duration (in seconds)
-$timeout_duration = 1000; // 30 minutes
 
-// Redirect to login page if not logged in
+// Session timeout
+$timeout_duration = 1000;
+
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
     exit();
 }
 
-// Check if the user has timed out due to inactivity
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {
-    // Last activity was more than 30 minutes ago
-    session_unset();     // unset $_SESSION variable for the run-time
-    session_destroy();   // destroy session data
+    session_unset();
+    session_destroy();
     header("Location: /Frontend/index.php");
     exit();
 }
-
-// Update last activity time stamp
 $_SESSION['LAST_ACTIVITY'] = time();
-// Logout logic
+
 if (isset($_POST['logout'])) {
     session_destroy();
     header("Location: /Frontend/index.php");
     exit();
 }
 
+$adminEmail = $_SESSION['email'] ?? '';
 
-$adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
-// Fetch the admin's full name from the user table
-$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, house_number, region, street, barangay, district, phone AS phone, profile_picture FROM user WHERE email = ?";
+// Fetch admin info
+$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, house_number, region, street, barangay, district, phone, profile_picture FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $adminEmail);
 $stmt->execute();
 $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
-$adminName = $admin['admin_name'] ?? ''; // Handle undefined array key
+$adminName = $admin['admin_name'] ?? '';
 $stmt->close();
 
-// Handle profile update
+// Update Profile Info
 if (isset($_POST['update_profile'])) {
     $firstName = $_POST['first_name'];
     $middleName = $_POST['middle_name'];
@@ -53,33 +49,35 @@ if (isset($_POST['update_profile'])) {
     $stmt->execute();
     $stmt->close();
 
-    // Refresh the page to reflect changes
-    header("Location: admin_settings.php");
+    header("Location: admin_settings.php?update=success");
     exit();
 }
 
-// Handle profile picture update
+// Update Profile Picture
 if (isset($_POST['update_profile_picture'])) {
-    // Handle profile picture upload
     if (!empty($_FILES['profile_picture']['name'])) {
         $targetDir = "../../Frontend/admin_dashboard/uploads/profile_pics/";
-        $targetFile = $targetDir . basename($_FILES['profile_picture']['name']);
-        move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile);
+        if (!is_dir($targetDir)) {
+            mkdir($targetDir, 0777, true);
+        }
         $profilePicture = basename($_FILES['profile_picture']['name']);
+        $targetFile = $targetDir . $profilePicture;
 
-        $query = "UPDATE user SET profile_picture = ? WHERE email = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('ss', $profilePicture, $adminEmail);
-        $stmt->execute();
-        $stmt->close();
+        // Move uploaded file
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile)) {
+            $query = "UPDATE user SET profile_picture = ? WHERE email = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('ss', $profilePicture, $adminEmail);
+            $stmt->execute();
+            $stmt->close();
+        }
 
-        // Refresh the page to reflect changes
-        header("Location: admin_settings.php");
+        header("Location: admin_settings.php?upload=success");
         exit();
     }
 }
 
-// Handle address update
+// Update Address
 if (isset($_POST['update_address'])) {
     $houseNumber = $_POST['house_number'];
     $region = $_POST['region'];
@@ -93,43 +91,35 @@ if (isset($_POST['update_address'])) {
     $stmt->execute();
     $stmt->close();
 
-    // Refresh the page to reflect changes
-    header("Location: admin_settings.php");
+    header("Location: admin_settings.php?address=success");
     exit();
 }
 
-// Handle password change
+// Change Password
 if (isset($_POST['change_password'])) {
     $currentPassword = $_POST['current_password'];
     $newPassword = $_POST['new_password'];
     $confirmPassword = $_POST['confirm_password'];
 
-    // Fetch the current password from the database
     $query = "SELECT password FROM user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $adminEmail);
     $stmt->execute();
     $result = $stmt->get_result();
-    $admin = $result->fetch_assoc();
+    $adminPass = $result->fetch_assoc();
     $stmt->close();
 
-    // Verify current password
-    if (password_verify($currentPassword, $admin['password'])) {
-        // Check if new password and confirm password match
+    if (password_verify($currentPassword, $adminPass['password'])) {
         if ($newPassword === $confirmPassword) {
-            // Hash the new password
             $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-
-            // Update the password in the database
             $query = "UPDATE user SET password = ? WHERE email = ?";
             $stmt = $conn->prepare($query);
             $stmt->bind_param('ss', $hashedPassword, $adminEmail);
             $stmt->execute();
             $stmt->close();
 
-            // Redirect to login page after password change
             session_destroy();
-            header("Location: /Frontend/multiuserlogin.php");
+            header("Location: /Frontend/multiuserlogin.php?password=changed");
             exit();
         } else {
             $error = "New password and confirm password do not match.";
@@ -144,14 +134,14 @@ if (isset($_POST['change_password'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Settings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="../CSS/admin_css/admin_settings.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+
 <?php include 'admin_sidebar.php'; ?>
+
 
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -165,141 +155,122 @@ if (isset($_POST['change_password'])) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <<a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
 
             </div>
         </div>
     </div>
 </div>
+
 
 <div class="container mt-5">
     <div class="row">
+        <!-- Profile Picture Update -->
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <h2>Update Profile Picture</h2>
-                </div>
+                <div class="card-header"><h4>Update Profile Picture</h4></div>
                 <div class="card-body">
                     <form method="POST" action="admin_settings.php" enctype="multipart/form-data">
                         <div class="mb-3 text-center">
-                            <img src="KALUPPA/Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile Picture" class="rounded-circle" style="width: 100px; height: 100px;">
+                            <img src="../../Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" class="rounded-circle" width="120" height="120" alt="Profile Picture">
                         </div>
                         <div class="mb-3">
-                            <label for="profile_picture" class="form-label">Profile Picture</label>
-                            <input type="file" class="form-control" id="profile_picture" name="profile_picture">
+                            <input type="file" class="form-control" name="profile_picture" required>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100" name="update_profile_picture">Update Profile Picture</button>
+                        <button type="submit" class="btn btn-primary w-100" name="update_profile_picture">Update Picture</button>
                     </form>
                 </div>
             </div>
         </div>
+
+        <!-- Profile Info Update -->
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <h2>Update Profile</h2>
-                </div>
+                <div class="card-header"><h4>Update Profile Info</h4></div>
                 <div class="card-body">
                     <form method="POST" action="admin_settings.php">
                         <div class="mb-3">
-                            <label for="first_name" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($admin['first_name']); ?>" required>
+                            <label>First Name</label>
+                            <input type="text" class="form-control" name="first_name" value="<?php echo htmlspecialchars($admin['first_name']); ?>" required>
                         </div>
                         <div class="mb-3">
-                            <label for="middle_name" class="form-label">Middle Name</label>
-                            <input type="text" class="form-control" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($admin['middle_name']); ?>">
+                            <label>Middle Name</label>
+                            <input type="text" class="form-control" name="middle_name" value="<?php echo htmlspecialchars($admin['middle_name']); ?>">
                         </div>
                         <div class="mb-3">
-                            <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($admin['last_name']); ?>" required>
+                            <label>Last Name</label>
+                            <input type="text" class="form-control" name="last_name" value="<?php echo htmlspecialchars($admin['last_name']); ?>" required>
                         </div>
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="<?php echo htmlspecialchars($admin['phone']); ?>" required>
+                            <label>Phone</label>
+                            <input type="text" class="form-control" name="phone" value="<?php echo htmlspecialchars($admin['phone']); ?>" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($adminEmail); ?>" readonly>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100" name="update_profile">Update Profile</button>
+                        <button type="submit" class="btn btn-success w-100" name="update_profile">Update Profile</button>
                     </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mt-4">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Update Address</h2>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="admin_settings.php">
-                        <div class="mb-3">
-                            <label for="house_number" class="form-label">House Number</label>
-                            <input type="text" class="form-control" id="house_number" name="house_number" value="<?php echo htmlspecialchars($admin['house_number']); ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="region" class="form-label">Region</label>
-                            <input type="text" class="form-control" id="region" name="region" value="<?php echo htmlspecialchars($admin['region']); ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="street" class="form-label">Street</label>
-                            <input type="text" class="form-control" id="street" name="street" value="<?php echo htmlspecialchars($admin['street']); ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="barangay" class="form-label">Barangay</label>
-                            <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($admin['barangay']); ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="district" class="form-label">District</label>
-                            <input type="text" class="form-control" id="district" name="district" value="<?php echo htmlspecialchars($admin['district']); ?>" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100" name="update_address">Update Address</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mt-4">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Change Password</h2>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="admin_settings.php">
-                        <div class="mb-3">
-                            <label for="current_password" class="form-label">Current Password</label>
-                            <input type="password" class="form-control" id="current_password" name="current_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_password" class="form-label">New Password</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirm_password" class="form-label">Confirm New Password</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100" name="change_password">Change Password</button>
-                    </form>
-                    <?php if (isset($error)): ?>
-                        <div class="alert alert-danger mt-3"><?php echo $error; ?></div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Address Update -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"><h4>Update Address</h4></div>
+                <div class="card-body">
+                    <form method="POST" action="admin_settings.php">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label>House Number</label>
+                                <input type="text" class="form-control" name="house_number" value="<?php echo htmlspecialchars($admin['house_number']); ?>">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Street</label>
+                                <input type="text" class="form-control" name="street" value="<?php echo htmlspecialchars($admin['street']); ?>">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Barangay</label>
+                                <input type="text" class="form-control" name="barangay" value="<?php echo htmlspecialchars($admin['barangay']); ?>">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>District</label>
+                                <input type="text" class="form-control" name="district" value="<?php echo htmlspecialchars($admin['district']); ?>">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Region</label>
+                                <input type="text" class="form-control" name="region" value="<?php echo htmlspecialchars($admin['region']); ?>">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100" name="update_address">Update Address</button>
+                    </form>
+                </div>
             </div>
-            <div class="modal-body" style="color:black;">
-                Are you sure you want to log out?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Frontend/logout.php" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header"><h4>Change Password</h4></div>
+                <div class="card-body">
+                    <form method="POST" action="admin_settings.php">
+                        <div class="mb-3">
+                            <label>Current Password</label>
+                            <input type="password" class="form-control" name="current_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>New Password</label>
+                            <input type="password" class="form-control" name="new_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Confirm Password</label>
+                            <input type="password" class="form-control" name="confirm_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100" name="change_password">Change Password</button>
+                        <?php if (isset($error)) echo "<div class='text-danger mt-2'>$error</div>"; ?>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -307,4 +278,3 @@ if (isset($_POST['change_password'])) {
 
 </body>
 </html>
-
