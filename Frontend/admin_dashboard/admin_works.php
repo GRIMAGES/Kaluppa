@@ -345,7 +345,8 @@ if (isset($_GET['id'])) {
 
                     <div class="form-floating mb-3">
                         <input type="text" name="title" class="form-control bg-dark text-white border-secondary" id="edit-title" placeholder="Enter title" required>
-                        <label for="edit-title" class="text-light">Title</label>
+                        <label for="edit-title" class="text-light" style="background-color: #212529;">Title</label>
+
                     </div>
                     <div class="form-floating mb-3">
                         <textarea name="description" class="form-control bg-dark text-white border-secondary" id="edit-description" placeholder="Enter description" style="height: 100px;" required></textarea>
