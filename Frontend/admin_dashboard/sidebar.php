@@ -23,7 +23,7 @@ $stmt->close();
 $adminName = trim("$first_name $middle_name $last_name");
 
 // Set profile picture path
-$profilePic = (!empty($profile_picture) && file_exists($_SERVER['DOCUMENT_ROOT'] . "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture))
+$profilePic = (!empty($profile_picture) && file_exists($_SERVER['DOCUMENT_ROOT'] . "../../Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture))
     ? "../../Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture
     : "/Frontend/assets/default-profile.png";
 
