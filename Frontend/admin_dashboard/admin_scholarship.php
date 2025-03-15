@@ -346,43 +346,41 @@ $(document).ready(function() {
 
 // Show modal on document click
 const downloadModal = document.getElementById('downloadModal');
+
 downloadModal.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget; // Button that triggered the modal
-    const documents = button.getAttribute('data-documents'); // Get documents as a string
-    const applicationId = button.getAttribute('data-application-id'); 
-
-    console.log("Documents passed to modal:", documents); // Check the value here
-
+    const encodedDocuments = button.getAttribute('data-documents'); // Get encrypted or encoded documents
     const documentList = document.getElementById('documentList');
     documentList.innerHTML = ''; // Clear any existing list items
 
     try {
         let documentsArray = [];
 
-        // Check if documents is a string and parse it if necessary
-        if (typeof documents === 'string') {
-            try {
-                documentsArray = JSON.parse(documents); // Parse JSON string to array
-                console.log("Parsed Documents Array:", documentsArray); // Verify parsed documents
-            } catch (error) {
-                console.error("Error parsing documents JSON:", error);
-            }
-        } else if (Array.isArray(documents)) {
-            documentsArray = documents; // If it's already an array, use it directly
-        } else {
-            console.error("Invalid documents format:", documents);
+        // Attempt to decode and parse the documents
+        try {
+            const decodedDocuments = atob(encodedDocuments); // Decode Base64 string (update this if using another method)
+            console.log("Decoded Documents String:", decodedDocuments);
+
+            documentsArray = JSON.parse(decodedDocuments); // Parse JSON string into an array
+            console.log("Parsed Documents Array:", documentsArray);
+        } catch (error) {
+            console.error("Error decoding or parsing documents:", error);
         }
 
-        // Add the document names to the list
+        // Iterate over the documents array and create list items
         documentsArray.forEach(doc => {
             const li = document.createElement('li');
-            li.textContent = doc; // Display document name
-            documentList.appendChild(li); // Add to the list
+
+            // Handle objects or plain strings in the array
+            li.textContent = typeof doc === 'object' ? doc.name || 'Unnamed Document' : doc;
+
+            documentList.appendChild(li); // Add list item to the modal
         });
     } catch (error) {
         console.error("Error processing documents:", error);
     }
 });
+
 
 </script>
 </body>
