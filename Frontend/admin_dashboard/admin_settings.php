@@ -24,6 +24,17 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
+$adminEmail = $_SESSION['email'] ?? '';
+
+// Fetch admin info
+$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, house_number, region, street, barangay, district, phone, profile_picture FROM user WHERE email = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('s', $adminEmail);
+$stmt->execute();
+$result = $stmt->get_result();
+$admin = $result->fetch_assoc();
+$adminName = $admin['admin_name'] ?? '';
+$stmt->close();
 
 // Update Profile Info
 if (isset($_POST['update_profile'])) {
@@ -126,32 +137,10 @@ if (isset($_POST['change_password'])) {
     <title>Admin Settings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/admin_css/admin_settings.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 
-<?php include 'sidebar.php'; ?>
-
-
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="color:black;">
-                Are you sure you want to log out?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
-
-            </div>
-        </div>
-    </div>
-</div>
-
+<?php include 'admin_sidebar.php'; ?>
 
 <div class="container mt-5">
     <div class="row">
