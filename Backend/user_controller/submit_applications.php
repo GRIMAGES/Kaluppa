@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         $_SESSION['error'] = "Something went wrong.";
     }
 
-    header("Location: /Kaluppa/Frontend/user_dashboard/user_works.php");
     exit();
 }
 ?>
+ 
