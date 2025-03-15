@@ -299,7 +299,8 @@ function showApplicationDetails(id, firstName, middleName, lastName, courseName,
     document.getElementById('applicationDetails').innerHTML = detailsHtml;
 
     var documentLinksHtml = '';
-    var documentArray = documents.split(',');
+    // Check if documents is a string that needs to be split
+    var documentArray = Array.isArray(documents) ? documents : documents.split(',');
 
     if (documents.trim() === '' || documentArray.length === 0 || (documentArray.length === 1 && documentArray[0].trim() === '')) {
         documentLinksHtml = `<p class="text-danger">No uploaded documents available.</p>`;
@@ -356,7 +357,14 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
     documentList.innerHTML = ''; // Clear any existing list items
 
     try {
-        const documentsArray = JSON.parse(documents);
+        // Parse documents if they are not already an array
+        let documentsArray = [];
+        if (typeof documents === 'string') {
+            documentsArray = JSON.parse(documents); // Parse stringified JSON
+        } else if (Array.isArray(documents)) {
+            documentsArray = documents; // Already an array
+        }
+
         documentsArray.forEach(doc => {
             const li = document.createElement('li');
             li.textContent = doc;
@@ -366,6 +374,7 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
         console.error("Error parsing documents JSON:", error);
     }
 });
+
 </script>
 </body>
 </html>
