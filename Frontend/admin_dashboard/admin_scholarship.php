@@ -140,7 +140,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 <!-- Main Content -->
 <div class="content" style="margin-left: 250px; padding: 20px;">
     <div class="container mt-5">
-        <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>
+        <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
         <div class="table-responsive">
             <table id="scholarshipTable" class="display" style="color: black;">
                 <thead style="background-color: #f2f2f2; color: black;">
