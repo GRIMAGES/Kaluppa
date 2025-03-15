@@ -72,16 +72,26 @@ if (!$workResult) {
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
- <!-- ✅ Success/Error Messages Block -->
- <?php if (isset($_SESSION['success'])): ?>
-        <div class="alert alert-success"><?= $_SESSION['success']; ?></div>
-        <?php unset($_SESSION['success']); ?>
-    <?php endif; ?>
-
-    <?php if (isset($_SESSION['error'])): ?>
-        <div class="alert alert-danger"><?= $_SESSION['error']; ?></div>
-        <?php unset($_SESSION['error']); ?>
-    <?php endif; ?>
+<?php if (isset($_SESSION['success']) || isset($_SESSION['error'])): ?>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="feedbackToast" class="toast align-items-center text-white <?= isset($_SESSION['success']) ? 'bg-success' : 'bg-danger' ?>" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <?= $_SESSION['success'] ?? $_SESSION['error']; ?>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const toastEl = document.getElementById('feedbackToast');
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        });
+    </script>
+    <?php unset($_SESSION['success'], $_SESSION['error']); ?>
+<?php endif; ?>
 
 <!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">

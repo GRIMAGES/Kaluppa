@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         echo json_encode(['success' => false, 'message' => 'Database error.']);
         exit();
     }
+
     $stmt->bind_param('s', $_SESSION['email']);
     $stmt->execute();
     $userResult = $stmt->get_result();
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     $region = $_POST['region'] ?? '';
     $postal_code = $_POST['postal_code'] ?? '';
 
-    // ✅ Fixed: Correct upload directory handling
+    // Upload Directory
     $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
     if (!$uploadDir || !is_dir($uploadDir)) {
         $uploadDir = __DIR__ . '/../../Backend/Documents/Volunteer/';
@@ -61,14 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         }
     }
 
-    // ✅ File validation
+    // File Validation
     if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
         error_log("Resume upload error. Code: " . ($_FILES['resume']['error'] ?? 'Not set'));
         echo "<script>var errorToast = new bootstrap.Toast(document.getElementById('errorToast')); errorToast.show();</script>";
         exit();
     }
 
-    // ✅ Allow only PDFs
     $allowedMime = ['application/pdf'];
     $allowedExt = ['pdf'];
     $fileTmpPath = $_FILES['resume']['tmp_name'];
@@ -82,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         exit();
     }
 
-    // ✅ Final upload path
     $uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
     $resumePathToSave = 'Backend/Documents/Volunteer/' . $fileName;
 
@@ -92,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         exit();
     }
 
-    // ✅ Custom ID format: VOL-00001
+    // Generate Volunteer ID
     $idQuery = "SELECT id FROM volunteer_application ORDER BY id DESC LIMIT 1";
     $idResult = $conn->query($idQuery);
     if ($idResult && $idResult->num_rows > 0) {
@@ -104,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         $newId = 'VOL-00001';
     }
 
-    // ✅ Insert into DB
+    // Insert into DB
     $insertQuery = "INSERT INTO volunteer_application (
         id, work_id, user_id, first_name, middle_name, last_name, email,
         phone, house_number, street, barangay, district, city, region, postal_code, resume
@@ -137,22 +136,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         $resumePathToSave
     );
 
+    // Execute and check success
     if ($stmt->execute()) {
-        error_log("Application submitted successfully with ID: $newId");
-    
         $_SESSION['success'] = "Your application has been submitted!";
-        $_SESSION['last_modal_id'] = 'workModal' . $_POST['work_id'];
-    
-        header("Location: /Kaluppa/Frontend/user_dashboard/user_work.php");
-        exit();
     } else {
-        error_log("Insert failed: " . $stmt->error);
-    
+        error_log("Insert execution failed: " . $stmt->error);
         $_SESSION['error'] = "Something went wrong.";
-        $_SESSION['last_modal_id'] = 'workModal' . $_POST['work_id'];
-    
-        header("Location: /Kaluppa/Frontend/user_dashboard/user_work.php");
-        exit();
     }
+
+    header("Location: /Kaluppa/Frontend/user_dashboard/user_works.php");
+    exit();
 }
 ?>
