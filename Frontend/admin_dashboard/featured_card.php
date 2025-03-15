@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_card'])) {
 </head>
 <body>
 
-<?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

@@ -99,7 +99,7 @@ if ($workApplicantsResult) {
     
 </head>
 <body>
-<?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 
 </body>
 </html>

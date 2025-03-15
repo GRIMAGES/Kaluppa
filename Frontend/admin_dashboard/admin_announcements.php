@@ -170,7 +170,7 @@ $announcements = getAnnouncements();
     
 </head>
 <body>
-<?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 
 
 <!-- Toast Notification Container -->

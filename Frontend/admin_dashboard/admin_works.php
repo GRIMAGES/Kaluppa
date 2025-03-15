@@ -222,7 +222,7 @@ if (isset($_GET['id'])) {
     </script>
 <?php endif; ?>
 
-<?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 
 
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">

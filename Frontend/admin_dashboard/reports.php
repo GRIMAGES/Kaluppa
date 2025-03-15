@@ -86,7 +86,7 @@ $stmt->close();
     </style>
 </head> 
 <body>
-<?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 
 <!-- Toast Success Message -->
 <div class="toast" id="successToast" style="display: none;">

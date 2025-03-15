@@ -40,7 +40,7 @@ if (isset($_POST['logout'])) {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
 </head>
 <body>
-<?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

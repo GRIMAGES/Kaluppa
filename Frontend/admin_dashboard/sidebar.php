@@ -7,9 +7,22 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+$email = $_SESSION['email'];
+
+// Fetch admin details from the user table
+$query = "SELECT first_name, middle_name, last_name, profile_picture, role FROM user WHERE email = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$stmt->bind_result($first_name, $middle_name, $last_name, $profile_picture, $role);
+$stmt->fetch();
+$stmt->close();
 
 // Construct full name
 $adminName = trim("$first_name $middle_name $last_name");
+
+// Set profile picture path (use a default if empty)
+$profilePic = !empty($profile_picture) ? "/KALUPPA/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture : "/Frontend/assets/default-profile.png";
 
 // Get the current page filename
 $current_page = basename($_SERVER['PHP_SELF']);
@@ -45,7 +58,7 @@ $navLinks = [
 
 <div class="sidebar p-3 d-flex flex-column">
     <div class="text-center mb-3">
-    <img src="../../Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture ?? 'default.png', ENT_QUOTES, 'UTF-8'); ?>" alt="Profile" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
+        <img src="../../Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
         <h5><?php echo htmlspecialchars($adminName); ?></h5>
     </div>
     <ul class="nav flex-column flex-grow-1">
