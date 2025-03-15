@@ -300,7 +300,6 @@ if (!$workResult) {
 </div>
 
 <script>
- <script>
     function showWorkDetails(workId) {
         var workModal = new bootstrap.Modal(document.getElementById('workModal' + workId));
         workModal.show();
@@ -341,7 +340,6 @@ if (!$workResult) {
             });
     }
 
-    // ✅ DOMContentLoaded ensures this script runs after DOM is ready
     document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll('.application-form').forEach(form => {
             form.addEventListener('submit', function (e) {
@@ -386,7 +384,6 @@ if (!$workResult) {
             });
         });
     });
-</script>
 
    
 </script>
