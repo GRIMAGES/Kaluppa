@@ -270,7 +270,8 @@ if ($scholarship_result->num_rows > 0) {
                     <div class="card-body">
                         <img src="<?php echo '../Images/' . htmlspecialchars($course['image']); ?>" alt="Course Image" class="img-fluid" />
                         <p><strong>Instructor:</strong> <?php echo htmlspecialchars($course['instructor']); ?></p>
-                        <p><strong>Duration:</strong> <?php echo htmlspecialchars($course['duration']); ?></p>
+                        <p><strong>Start Date:</strong> <?php echo htmlspecialchars($course['start_date']); ?></p>
+                        <p><strong>End Date:</strong> <?php echo htmlspecialchars($course['end_date']); ?></p>
                         <p><strong>Capacity:</strong> <?php echo htmlspecialchars($course['capacity']); ?></p>
                         <p><strong>Enrolled Students:</strong> <?php echo htmlspecialchars($course['enrolled_students']); ?></p>
                         <p><strong>Requisites:</strong> <?php echo htmlspecialchars($course['requisites']); ?></p>
