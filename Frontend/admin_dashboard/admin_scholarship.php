@@ -258,7 +258,6 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
-
 <!-- Success Toast Notification -->
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
     <div id="statusToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -284,7 +283,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <!-- JavaScript for Handling Modal -->
     <script>
- function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
+function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
     console.log("Application details function called");
     console.log("Raw documents string:", documents);
 
@@ -327,48 +326,61 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 
     console.log("Modal shown with ID:", id);
 }
-$(document).ready(function() {
-        $('#scholarshipTable').DataTable({
-            "paging": true,        // Enable pagination
-            "searching": true,     // Enable search bar
-            "ordering": true,      // Enable column sorting
-            "info": true,          // Show table info (e.g., "Showing 1 to 10 of 50 entries")
-            "lengthChange": true,  // Allow users to change the number of rows per page
-            "pageLength": 10,      // Set default page length
-            "language": {
-                "search": "Search:",  // Custom label for the search bar
-                "lengthMenu": "Show _MENU_ entries", // Custom label for the length menu
-                "info": "Showing _START_ to _END_ of _TOTAL_ entries" // Custom label for info
-            }
-        });
-    });
 
-    const downloadModal = document.getElementById('downloadModal');
+$(document).ready(function() {
+    $('#scholarshipTable').DataTable({
+        "paging": true,        
+        "searching": true,     
+        "ordering": true,      
+        "info": true,          
+        "lengthChange": true,  
+        "pageLength": 10,      
+        "language": {
+            "search": "Search:",  
+            "lengthMenu": "Show _MENU_ entries", 
+            "info": "Showing _START_ to _END_ of _TOTAL_ entries" 
+        }
+    });
+});
+
+// Show modal on document click
+const downloadModal = document.getElementById('downloadModal');
 downloadModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget; // Button that triggered the modal
-    const documents = button.getAttribute('data-documents'); // Get the documents JSON string
-    const applicationId = button.getAttribute('data-application-id'); // Get the application ID
+    const button = event.relatedTarget; 
+    const documents = button.getAttribute('data-documents'); 
+    const applicationId = button.getAttribute('data-application-id'); 
+
+    console.log("Documents data received:", documents);
 
     // Parse the documents JSON string to an array
     const documentList = document.getElementById('documentList');
-    documentList.innerHTML = ''; // Clear any existing list items
+    documentList.innerHTML = ''; 
 
     if (documents) {
-        const documentsArray = JSON.parse(documents); // Parse the JSON string into an array
-        if (documentsArray.length > 0) {
-            documentsArray.forEach((document, index) => {
-                const listItem = document.createElement('li');
-                const downloadLink = document.createElement('a');
-                downloadLink.href = `../../Backend/admin_controller/view_document.php?application_id=${applicationId}&download=${encodeURIComponent(document.file_name)}`;
-                downloadLink.textContent = `Document ${index + 1}: ${document.file_name}`;
-                downloadLink.classList.add('btn', 'btn-link');
-                listItem.appendChild(downloadLink);
-                documentList.appendChild(listItem);
-            });
-        } else {
-            const noDocuments = document.createElement('p');
-            noDocuments.textContent = "No documents available to download.";
-            documentList.appendChild(noDocuments);
+        try {
+            const documentsArray = JSON.parse(documents); 
+            console.log("Parsed documents array:", documentsArray);
+
+            if (documentsArray.length > 0) {
+                documentsArray.forEach((document, index) => {
+                    const listItem = document.createElement('li');
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = `../../Backend/admin_controller/view_document.php?application_id=${applicationId}&download=${encodeURIComponent(document.file_name)}`;
+                    downloadLink.textContent = `Document ${index + 1}: ${document.file_name}`;
+                    downloadLink.classList.add('btn', 'btn-link');
+                    listItem.appendChild(downloadLink);
+                    documentList.appendChild(listItem);
+                });
+            } else {
+                const noDocuments = document.createElement('p');
+                noDocuments.textContent = "No documents available to download.";
+                documentList.appendChild(noDocuments);
+            }
+        } catch (error) {
+            console.error("Error parsing documents:", error);
+            const errorMessage = document.createElement('p');
+            errorMessage.textContent = "Error loading documents.";
+            documentList.appendChild(errorMessage);
         }
     } else {
         const noDocuments = document.createElement('p');
