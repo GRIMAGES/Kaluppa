@@ -206,7 +206,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         </td>
                         <td>
                             <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
-                                <input type="hidden" name="id" value="' . htmlspecialchars($id) . '">
+                                <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
                                 <div class="input-group">
                                     <select name="status" class="form-select form-select-sm">
                                         <option value="Pending"' . ($status === 'Pending' ? ' selected' : '') . '>Pending</option>
@@ -301,9 +301,9 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                 documentLinksHtml += `
                     <div>
                         <!-- View Document Link -->
-                        <a href="../../Backend/admin_controller/view_document.php?id=${encodeURIComponent(id)}&file=${encodeURIComponent(trimmedDoc)}&action=view" target="_blank" class="btn btn-primary w-100 mb-2">View Document ${index + 1}</a>
+                        <a href="../../Backend/admin_controller/view_document.php?application_id=${encodeURIComponent(id)}&file=${encodeURIComponent(trimmedDoc)}&action=view" target="_blank" class="btn btn-primary w-100 mb-2">View Document ${index + 1}</a>
                         <!-- Download Document Link -->
-                        <a href="../../Backend/admin_controller/view_document.php?id=${encodeURIComponent(id)}&file=${encodeURIComponent(trimmedDoc)}&action=download" class="btn btn-success w-100">Download Document ${index + 1}</a>
+                        <a href="../../Backend/admin_controller/view_document.php?application_id=${encodeURIComponent(id)}&file=${encodeURIComponent(trimmedDoc)}&action=download" class="btn btn-success w-100">Download Document ${index + 1}</a>
                     </div>
                 `;
             }
