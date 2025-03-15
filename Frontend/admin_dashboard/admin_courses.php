@@ -33,37 +33,7 @@ if (isset($_POST['logout'])) {
 // Initialize user name for display
 $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest';
 
-/// Handle form submissions for adding new courses
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
-    // Get course details from the form
-    $name = $_POST['courseName'];
-    $duration = $_POST['courseDuration'];
-    $instructor = $_POST['courseInstructor'];
-    $capacity = $_POST['courseCapacity'];
-    $requisites = $_POST['courseRequisites'];
-    $description = $_POST['courseDescription'];
-    $status = $_POST['courseStatus'];
 
-    // Handle image upload
-    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/images/";
-    $imageName = basename($_FILES["courseImage"]["name"]);
-    $target_file = $target_dir . $imageName; // Use $imageName instead of hardcoding file name
-    
-    // Validate file type
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    
-    // Handle file upload
-    if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-        if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
-            // Proceed with database insertion
-        } else {
-            echo "Error uploading file.";
-        }
-    }
-
-    // Output the message
-    echo $message;
-}
 // Delete Course
 if (isset($_GET['delete_course'])) {
     $courseId = $_GET['delete_course'];
