@@ -30,12 +30,12 @@ if (!$user) {
 $user_id = $user['id'];
 
 // Get Application ID from GET request
-if (!isset($_GET['application_id'])) {
+if (!isset($_GET['id'])) {
     echo json_encode(['success' => false, 'error_code' => 3, 'message' => 'Application ID is required']);
     exit();
 }
 
-$application_id = $_GET['application_id'];
+$application_id = $_GET['id'];
 
 // Fetch encrypted documents from database
 $query = "SELECT documents FROM applications WHERE id = ?";
