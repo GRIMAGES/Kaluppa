@@ -191,7 +191,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                             if (!empty($documents)) {
                                 echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
                                     data-documents=\'' . json_encode($documents) . '\'
-                                    data-application-id="' . htmlspecialchars($id) . '">Download Documents</button>';
+                                    data-application-id="' . htmlspecialchars($id) . '">Download</button>';
                             }
 
                             echo '</div>
@@ -344,27 +344,33 @@ $(document).ready(function() {
         });
     });
 
- // Handle the modal opening and populating document list
- const downloadModal = document.getElementById('downloadModal');
+    const downloadModal = document.getElementById('downloadModal');
 downloadModal.addEventListener('show.bs.modal', function (event) {
     const button = event.relatedTarget; // Button that triggered the modal
-    const documents = JSON.parse(button.getAttribute('data-documents')); // Get the documents JSON
+    const documents = button.getAttribute('data-documents'); // Get the documents JSON string
     const applicationId = button.getAttribute('data-application-id'); // Get the application ID
-    const documentList = document.getElementById('documentList');
     
-    // Clear existing list
-    documentList.innerHTML = '';
+    // Parse the documents JSON string to an array
+    const documentList = document.getElementById('documentList');
+    documentList.innerHTML = ''; // Clear any existing list items
 
-    if (documents && documents.length > 0) {
-        documents.forEach((document, index) => {
-            const listItem = document.createElement('li');
-            const downloadLink = document.createElement('a');
-            downloadLink.href = `../../Backend/admin_controller/view_document.php?application_id=${applicationId}&download=${encodeURIComponent(document.file_name)}`;
-            downloadLink.textContent = `Document ${index + 1}: ${document.file_name}`;
-            downloadLink.classList.add('btn', 'btn-link');
-            listItem.appendChild(downloadLink);
-            documentList.appendChild(listItem);
-        });
+    if (documents) {
+        const documentsArray = JSON.parse(documents); // Parse the JSON string into an array
+        if (documentsArray.length > 0) {
+            documentsArray.forEach((document, index) => {
+                const listItem = document.createElement('li');
+                const downloadLink = document.createElement('a');
+                downloadLink.href = `../../Backend/admin_controller/view_document.php?application_id=${applicationId}&download=${encodeURIComponent(document.file_name)}`;
+                downloadLink.textContent = `Document ${index + 1}: ${document.file_name}`;
+                downloadLink.classList.add('btn', 'btn-link');
+                listItem.appendChild(downloadLink);
+                documentList.appendChild(listItem);
+            });
+        } else {
+            const noDocuments = document.createElement('p');
+            noDocuments.textContent = "No documents available to download.";
+            documentList.appendChild(noDocuments);
+        }
     } else {
         const noDocuments = document.createElement('p');
         noDocuments.textContent = "No documents available to download.";
