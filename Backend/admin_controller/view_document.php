@@ -38,6 +38,11 @@ if (!file_exists($file_path)) {
     die("❌ File not found: " . htmlspecialchars($file_path));
 }
 
+// Ensure the file is a valid file and not a directory
+if (!is_file($file_path)) {
+    die("❌ The path is not a valid file: " . htmlspecialchars($file_path));
+}
+
 // Ensure the file is within the allowed directory
 if (strpos(realpath($file_path), $file_dir) !== 0) {
     die("🚫 Access denied.");
