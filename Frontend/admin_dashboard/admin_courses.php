@@ -305,7 +305,7 @@ if ($scholarship_result->num_rows > 0) {
 
 <!-- Add Course Modal -->
 <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addCourseModalLabel" style="color:black;">Add New Course</h5>
@@ -314,32 +314,31 @@ if ($scholarship_result->num_rows > 0) {
             <div class="modal-body">
                 <form action="admin_courses.php" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
-                        <label for="course_name" class="form-label"  style="color:black;">Course Name</label>
+                        <label for="course_name" class="form-label" style="color:black;">Course Name</label>
                         <input type="text" class="form-control" id="course_name" name="courseName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="course_description" class="form-label"  style="color:black;">Description</label>
+                        <label for="course_description" class="form-label" style="color:black;">Description</label>
                         <textarea class="form-control" id="course_description" name="courseDescription" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-    <label for="courseStartDate" class="form-label" style="color:black;">Start Date</label>
-    <input type="date" class="form-control" id="courseStartDate" name="courseStartDate" required>
-</div>
-<div class="mb-3">
-    <label for="courseEndDate" class="form-label" style="color:black;">End Date</label>
-    <input type="date" class="form-control" id="courseEndDate" name="courseEndDate" required>
-</div>
-
+                        <label for="courseStartDate" class="form-label" style="color:black;">Start Date</label>
+                        <input type="date" class="form-control" id="courseStartDate" name="courseStartDate" required>
+                    </div>
                     <div class="mb-3">
-                        <label for="course_capacity" class="form-label"  style="color:black;">Capacity</label>
+                        <label for="courseEndDate" class="form-label" style="color:black;">End Date</label>
+                        <input type="date" class="form-control" id="courseEndDate" name="courseEndDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="course_capacity" class="form-label" style="color:black;">Capacity</label>
                         <input type="number" class="form-control" id="course_capacity" name="courseCapacity" required>
                     </div>
                     <div class="mb-3">
-                        <label for="course_instructor" class="form-label"  style="color:black;">Instructor</label>
+                        <label for="course_instructor" class="form-label" style="color:black;">Instructor</label>
                         <input type="text" class="form-control" id="course_instructor" name="courseInstructor" required>
                     </div>
                     <div class="mb-3">
-                        <label for="course_requisites" class="form-label"  style="color:black;">Requisites</label>
+                        <label for="course_requisites" class="form-label" style="color:black;">Requisites</label>
                         <input type="text" class="form-control" id="course_requisites" name="courseRequisites" required>
                     </div>
                     <div class="mb-3">
@@ -351,7 +350,7 @@ if ($scholarship_result->num_rows > 0) {
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="course_image" class="form-label"  style="color:black;">Course Image</label>
+                        <label for="course_image" class="form-label" style="color:black;">Course Image</label>
                         <input type="file" class="form-control" id="course_image" name="courseImage" required>
                     </div>
                     <button type="submit" name="addCourse" class="btn btn-primary">Add Course</button>
@@ -363,41 +362,41 @@ if ($scholarship_result->num_rows > 0) {
 
 <!-- Edit Course Modal -->
 <div class="modal fade" id="editCourseModal" tabindex="-1" aria-labelledby="editCourseModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editCourseModalLabel"  style="color:black;">Edit Course</h5>
+                <h5 class="modal-title" id="editCourseModalLabel" style="color:black;">Edit Course</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="admin_courses.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" id="edit_course_id" name="id">
                     <div class="mb-3">
-                        <label for="edit_course_name" class="form-label"  style="color:black;">Course Name</label>
+                        <label for="edit_course_name" class="form-label" style="color:black;">Course Name</label>
                         <input type="text" class="form-control" id="edit_course_name" name="courseName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_course_description" class="form-label"  style="color:black;">Description</label>
+                        <label for="edit_course_description" class="form-label" style="color:black;">Description</label>
                         <textarea class="form-control" id="edit_course_description" name="courseDescription" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-    <label for="editCourseStartDate" class="form-label" style="color:black;">Start Date</label>
-    <input type="date" class="form-control" id="editCourseStartDate" name="editCourseStartDate" required>
-</div>
-<div class="mb-3">
-    <label for="editCourseEndDate" class="form-label" style="color:black;">End Date</label>
-    <input type="date" class="form-control" id="editCourseEndDate" name="editCourseEndDate" required>
-</div>
+                        <label for="editCourseStartDate" class="form-label" style="color:black;">Start Date</label>
+                        <input type="date" class="form-control" id="editCourseStartDate" name="editCourseStartDate" required>
+                    </div>
                     <div class="mb-3">
-                        <label for="edit_course_capacity" class="form-label"  style="color:black;">Capacity</label>
+                        <label for="editCourseEndDate" class="form-label" style="color:black;">End Date</label>
+                        <input type="date" class="form-control" id="editCourseEndDate" name="editCourseEndDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_course_capacity" class="form-label" style="color:black;">Capacity</label>
                         <input type="number" class="form-control" id="edit_course_capacity" name="courseCapacity" required>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_course_instructor" class="form-label"  style="color:black;">Instructor</label>
+                        <label for="edit_course_instructor" class="form-label" style="color:black;">Instructor</label>
                         <input type="text" class="form-control" id="edit_course_instructor" name="courseInstructor" required>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_course_requisites" class="form-label"  style="color:black;">Requisites</label>
+                        <label for="edit_course_requisites" class="form-label" style="color:black;">Requisites</label>
                         <input type="text" class="form-control" id="edit_course_requisites" name="courseRequisites" required>
                     </div>
                     <div class="mb-3">
@@ -409,7 +408,7 @@ if ($scholarship_result->num_rows > 0) {
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_course_image" class="form-label"  style="color:black;">Course Image</label>
+                        <label for="edit_course_image" class="form-label" style="color:black;">Course Image</label>
                         <input type="file" class="form-control" id="edit_course_image" name="courseImage">
                     </div>
                     <button type="submit" name="editCourse" class="btn btn-primary">Update Course</button>
@@ -418,7 +417,6 @@ if ($scholarship_result->num_rows > 0) {
         </div>
     </div>
 </div>
-
 <!-- Approved Users Modal -->
 <div class="modal fade" id="approvedUsersModal" tabindex="-1" aria-labelledby="approvedUsersModalLabel" aria-hidden="true">
     <div class="modal-dialog">

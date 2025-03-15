@@ -171,3 +171,7 @@
     border: none;
     color: #fff;
 }   
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
