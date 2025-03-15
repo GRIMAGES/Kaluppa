@@ -139,7 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
 
     if ($stmt->execute()) {
         error_log("Application submitted successfully with ID: $newId");
-        echo "<script>var successToast = new bootstrap.Toast(document.getElementById('successToast')); successToast.show();</script>";
+         // REDIRECT TO user_work.php
+    header("Location: /Kaluppa/Frontend/user/user_work.php");
+    exit(); // always call exit after header redirect
+    
     } else {
         error_log("Insert failed: " . $stmt->error);
         echo "<script>var errorToast = new bootstrap.Toast(document.getElementById('errorToast')); errorToast.show();</script>";

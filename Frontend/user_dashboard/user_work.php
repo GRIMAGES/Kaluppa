@@ -72,6 +72,19 @@ if (!$workResult) {
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
+<?php if (!empty($successMessage) || !empty($errorMessage)): ?>
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+    <div class="toast align-items-center text-white <?php echo $successMessage ? 'bg-success' : 'bg-danger'; ?> border-0 show" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">
+                <?php echo $successMessage ?: $errorMessage; ?>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -256,53 +269,7 @@ if (!$workResult) {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<!-- Success Toast -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; min-height: 100px;">
-        <div class="d-flex">
-            <div class="toast-body">
-                Your application has been submitted successfully!
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
 
-<!-- Error Toast -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="errorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 300px; min-height: 100px;">
-        <div class="d-flex">
-            <div class="toast-body">
-                Error submitting application. Please try again later.
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
-
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-    <?php if (!empty($successMessage)): ?>
-        <div id="successToast" class="toast align-items-center text-white bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <?php echo htmlspecialchars($successMessage); ?>
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <?php if (!empty($errorMessage)): ?>
-        <div id="errorToast" class="toast align-items-center text-white bg-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <?php echo htmlspecialchars($errorMessage); ?>
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    <?php endif; ?>
-</div>
 
 <script>
     function showWorkDetails(workId) {
