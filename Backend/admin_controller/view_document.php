@@ -54,7 +54,7 @@ var_dump($file_dir); // Check if the directory is correct
 $file_path = $file_dir . $decryptedFileName;
 
 // Check the file path
- var_dump($file_path); // Check if the path looks correct
+var_dump($file_path); // Check if the path looks correct
 
 // Check if the file exists
 if (!file_exists($file_path)) {
