@@ -95,7 +95,7 @@ if ($result->num_rows > 0) {
                 echo '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>';
                 echo '</div>';
                 echo '<div class="modal-body text-center">';
-                echo '<img src="../images/' . (empty($event['image']) ? 'default-event-image.jpg' : htmlspecialchars($event['image'])) . '" alt="Event Image" class="img-fluid mb-3 rounded shadow" style="width: 100%; height: 250px; object-fit: cover;">'; // Consistent image size
+                echo '<img src="../Images/' . (empty($event['image']) ? 'default-event-image.jpg' : htmlspecialchars($event['image'])) . '" alt="Event Image" class="img-fluid mb-3 rounded shadow" style="width: 100%; height: 250px; object-fit: cover;">'; // Consistent image size
                 echo '<p><strong>Event Time:</strong> ' . htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))) . '</p>';
                 echo '<p><strong>Organizer:</strong> ' . htmlspecialchars($event['organizer']) . '</p>';
                 echo '<p><strong>Description:</strong> ' . htmlspecialchars($event['description']) . '</p>';
