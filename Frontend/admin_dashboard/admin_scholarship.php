@@ -346,45 +346,33 @@ $(document).ready(function() {
 
 // Show modal on document click
 downloadModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget; // Button that triggered the modal
-    const encodedDocuments = button.getAttribute('data-documents'); // Get encoded documents
+    const button = event.relatedTarget;
+    const encodedDocuments = button.getAttribute('data-documents');
     const documentList = document.getElementById('documentList');
-    documentList.innerHTML = ''; // Clear any existing list items
+    documentList.innerHTML = '';
 
     try {
-        let documentsArray = [];
+        let documentsArray = JSON.parse(encodedDocuments);
 
-        if (encodedDocuments) {
-            try {
-                const decodedDocuments = atob(encodedDocuments); // Decode Base64
-                console.log("Decoded Documents String:", decodedDocuments);
-                documentsArray = JSON.parse(decodedDocuments); // Parse JSON
-            } catch (decodeError) {
-                console.warn("Base64 decoding failed. Attempting direct JSON parsing.", decodeError);
-                documentsArray = JSON.parse(encodedDocuments); // Direct JSON parsing
-            }
-        } else {
-            console.error("No documents provided.");
-        }
-
-        // Populate the modal with the documents
-        if (documentsArray.length > 0) {
+        if (Array.isArray(documentsArray) && documentsArray.length > 0) {
             documentsArray.forEach(doc => {
                 const li = document.createElement('li');
-
-                // Ensure the document has both 'name' and 'url' properties before proceeding
-                if (doc && typeof doc === 'object' && doc.name && doc.url) {
+                if (typeof doc === 'string') {
+                    // If doc is a string, it's likely just the filename
                     const a = document.createElement('a');
-                    a.textContent = doc.name; // Display document name
-                    a.href = doc.url; // Set the URL for downloading
-                    a.download = doc.name; // Optional: Suggest a filename for download
-                    a.target = '_blank'; // Open in a new tab (optional)
-                    li.appendChild(a); // Append the link to the list item
+                    a.textContent = doc;
+                    a.href = `../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(doc)}&action=download`;
+                    a.download = doc;
+                    li.appendChild(a);
+                } else if (doc && typeof doc === 'object' && doc.name) {
+                    const a = document.createElement('a');
+                    a.textContent = doc.name;
+                    a.href = doc.url || `../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(doc.name)}&action=download`;
+                    a.download = doc.name;
+                    li.appendChild(a);
                 } else {
-                    // If 'name' or 'url' is missing, display a fallback message
-                    li.textContent = doc && doc.name ? `${doc.name} (Missing URL)` : 'Unnamed Document or Missing URL';
+                    li.textContent = 'Unnamed Document';
                 }
-
                 documentList.appendChild(li);
             });
         } else {
@@ -394,6 +382,9 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
         }
     } catch (error) {
         console.error("Error processing documents:", error);
+        const li = document.createElement('li');
+        li.textContent = "Error loading documents.";
+        documentList.appendChild(li);
     }
 });
 
