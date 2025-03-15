@@ -189,8 +189,9 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 
                             // Add button to open modal for document selection
                             if (!empty($documents)) {
+                                // Ensure that documents is an array or object that can be encoded as JSON
                                 echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
-                                    data-documents=\'' . json_encode($documents) . '\'
+                                    data-documents=\'' . htmlspecialchars(json_encode($documents)) . '\'
                                     data-application-id="' . htmlspecialchars($id) . '">Download</button>';
                             }
 
@@ -351,33 +352,39 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
     const documents = button.getAttribute('data-documents'); // Get documents as a string
     const applicationId = button.getAttribute('data-application-id'); 
 
-    console.log("Documents passed to modal:", documents); // This should now log a JSON string
+    console.log("Documents passed to modal:", documents); // Check the value here
 
     const documentList = document.getElementById('documentList');
     documentList.innerHTML = ''; // Clear any existing list items
 
     try {
-        // Check if documents are a string that needs parsing
         let documentsArray = [];
+
+        // Check if documents is a string and parse it if necessary
         if (typeof documents === 'string') {
-            // If it's a JSON string, parse it into an array
-            documentsArray = JSON.parse(documents);
+            try {
+                documentsArray = JSON.parse(documents); // Parse JSON string to array
+                console.log("Parsed Documents Array:", documentsArray); // Verify parsed documents
+            } catch (error) {
+                console.error("Error parsing documents JSON:", error);
+            }
         } else if (Array.isArray(documents)) {
-            documentsArray = documents; // Already an array
+            documentsArray = documents; // If it's already an array, use it directly
+        } else {
+            console.error("Invalid documents format:", documents);
         }
 
-        console.log("Parsed Documents Array:", documentsArray); // Check parsed array
-
-        // Iterate through the array and append document links
+        // Add the document names to the list
         documentsArray.forEach(doc => {
             const li = document.createElement('li');
             li.textContent = doc; // Display document name
             documentList.appendChild(li); // Add to the list
         });
     } catch (error) {
-        console.error("Error parsing documents JSON:", error);
+        console.error("Error processing documents:", error);
     }
 });
+
 </script>
 </body>
 </html>
