@@ -52,22 +52,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     $region = $_POST['region'] ?? '';
     $postal_code = $_POST['postal_code'] ?? '';
 
-    $uploadDir = __DIR__ . 'Kaluppa/Backend/Documents/Volunteer/';
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
+    // ✅ Fixed: Correct upload directory handling
+    $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
+    if (!$uploadDir || !is_dir($uploadDir)) {
+        $uploadDir = __DIR__ . '/../../Backend/Documents/Volunteer/';
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
     }
 
+    // ✅ File validation
     if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
         error_log("Resume upload error. Code: " . ($_FILES['resume']['error'] ?? 'Not set'));
         echo "<script>var errorToast = new bootstrap.Toast(document.getElementById('errorToast')); errorToast.show();</script>";
         exit();
     }
 
-    // Only allow PDF
+    // ✅ Allow only PDFs
     $allowedMime = ['application/pdf'];
     $allowedExt = ['pdf'];
     $fileTmpPath = $_FILES['resume']['tmp_name'];
-    $fileName = basename($_FILES['resume']['name']); // original name only
+    $fileName = basename($_FILES['resume']['name']);
     $fileMime = mime_content_type($fileTmpPath);
     $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
@@ -77,16 +82,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         exit();
     }
 
+    // ✅ Final upload path
     $uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
     $resumePathToSave = 'Backend/Documents/Volunteer/' . $fileName;
 
     if (!move_uploaded_file($fileTmpPath, $uploadFilePath)) {
-        error_log("File move failed.");
+        error_log("File move failed to: $uploadFilePath");
         echo "<script>var errorToast = new bootstrap.Toast(document.getElementById('errorToast')); errorToast.show();</script>";
         exit();
     }
 
-    // Custom ID format VOL-00001
+    // ✅ Custom ID format: VOL-00001
     $idQuery = "SELECT id FROM volunteer_application ORDER BY id DESC LIMIT 1";
     $idResult = $conn->query($idQuery);
     if ($idResult && $idResult->num_rows > 0) {
@@ -98,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         $newId = 'VOL-00001';
     }
 
-    // Insert to DB
+    // ✅ Insert into DB
     $insertQuery = "INSERT INTO volunteer_application (
         id, work_id, user_id, first_name, middle_name, last_name, email,
         phone, house_number, street, barangay, district, city, region, postal_code, resume
