@@ -186,20 +186,12 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         <td>' . htmlspecialchars($applied_at) . '</td>
                         <td>
                             <div class="d-inline-flex gap-2">';
-                            
-                            // Loop through the documents to generate download buttons
-                            if (!empty($documents)) {
-                                foreach ($documents as $document) {
-                                    $fileName = $document['file_name'] ?? ''; // Extract the file name
-                                    $encodedFileName = urlencode($fileName);
 
-                                    // Only show download button if the file name exists
-                                    if ($fileName) {
-                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download"></i> Download
-                                        </a>';
-                                    }
-                                }
+                            // Add button to open modal for document selection
+                            if (!empty($documents)) {
+                                echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
+                                    data-documents=\'' . json_encode($documents) . '\'
+                                    data-application-id="' . htmlspecialchars($id) . '">Download</button>';
                             }
 
                             echo '</div>
@@ -231,26 +223,42 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
-
-    <!-- Application Details Modal -->
-    <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
-
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewApplicationModalLabel">Application Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="applicationDetails"></div>
-                    <hr>
-                    <div id="documentLinks"></div>
-                </div>
+<!-- Modal for Downloading Documents -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="downloadModalLabel">Select Document to Download</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="documentList"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Success Toast Notification -->
+<!-- Application Details Modal -->
+<div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewApplicationModalLabel">Application Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="applicationDetails"></div>
+                <hr>
+                <div id="documentLinks"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Toast Notification -->
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
     <div id="statusToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -262,21 +270,20 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
-
-    <!-- Bootstrap JS and Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<!-- Bootstrap JS and Dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-    <!-- Include Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <!-- Include DataTables JS -->
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <!-- Include jQuery UI JS for sortable functionality -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <!-- JavaScript for Handling Modal -->
-    <script>
- function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
+<!-- Include Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<!-- Include DataTables JS -->
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<!-- Include jQuery UI JS for sortable functionality -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<!-- JavaScript for Handling Modal -->
+<script>
+function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
     console.log("Application details function called");
     console.log("Raw documents string:", documents);
 
@@ -292,7 +299,8 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     document.getElementById('applicationDetails').innerHTML = detailsHtml;
 
     var documentLinksHtml = '';
-    var documentArray = documents.split(',');
+    // Check if documents is a string that needs to be split
+    var documentArray = Array.isArray(documents) ? documents : documents.split(',');
 
     if (documents.trim() === '' || documentArray.length === 0 || (documentArray.length === 1 && documentArray[0].trim() === '')) {
         documentLinksHtml = `<p class="text-danger">No uploaded documents available.</p>`;
@@ -319,23 +327,63 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 
     console.log("Modal shown with ID:", id);
 }
+
 $(document).ready(function() {
-        $('#scholarshipTable').DataTable({
-            "paging": true,        // Enable pagination
-            "searching": true,     // Enable search bar
-            "ordering": true,      // Enable column sorting
-            "info": true,          // Show table info (e.g., "Showing 1 to 10 of 50 entries")
-            "lengthChange": true,  // Allow users to change the number of rows per page
-            "pageLength": 10,      // Set default page length
-            "language": {
-                "search": "Search:",  // Custom label for the search bar
-                "lengthMenu": "Show _MENU_ entries", // Custom label for the length menu
-                "info": "Showing _START_ to _END_ of _TOTAL_ entries" // Custom label for info
-            }
-        });
+    $('#scholarshipTable').DataTable({
+        "paging": true,        
+        "searching": true,     
+        "ordering": true,      
+        "info": true,          
+        "lengthChange": true,  
+        "pageLength": 10,      
+        "language": {
+            "search": "Search:",  
+            "lengthMenu": "Show _MENU_ entries", 
+            "info": "Showing _START_ to _END_ of _TOTAL_ entries" 
+        }
     });
+});
 
+// Show modal on document click
+const downloadModal = document.getElementById('downloadModal');
+downloadModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; // Button that triggered the modal
+    const documents = button.getAttribute('data-documents'); // Get documents as a string
+    const applicationId = button.getAttribute('data-application-id'); 
 
-    </script>
+    console.log("Documents passed to modal:", documents); // Check the value here
+
+    const documentList = document.getElementById('documentList');
+    documentList.innerHTML = ''; // Clear any existing list items
+
+    try {
+        let documentsArray = [];
+
+        // Check if documents is a string and parse it if necessary
+        if (typeof documents === 'string') {
+            try {
+                documentsArray = JSON.parse(documents); // Parse JSON string to array
+                console.log("Parsed Documents Array:", documentsArray); // Verify parsed documents
+            } catch (error) {
+                console.error("Error parsing documents JSON:", error);
+            }
+        } else if (Array.isArray(documents)) {
+            documentsArray = documents; // If it's already an array, use it directly
+        } else {
+            console.error("Invalid documents format:", documents);
+        }
+
+        // Add the document names to the list
+        documentsArray.forEach(doc => {
+            const li = document.createElement('li');
+            li.textContent = doc; // Display document name
+            documentList.appendChild(li); // Add to the list
+        });
+    } catch (error) {
+        console.error("Error processing documents:", error);
+    }
+});
+
+</script>
 </body>
 </html>
