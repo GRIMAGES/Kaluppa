@@ -77,11 +77,11 @@ if (isset($_GET['delete_course'])) {
     }
 }
 
-// Handling the form submission for adding new courses
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     // Get course details from the form
     $name = $_POST['courseName'];
-    $duration = $_POST['courseDuration'];
+    $start_date = $_POST['courseStartDate'];
+    $end_date = $_POST['courseEndDate'];
     $instructor = $_POST['courseInstructor'];
     $capacity = $_POST['courseCapacity'];
     $requisites = $_POST['courseRequisites'];
@@ -89,68 +89,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     $status = $_POST['courseStatus'];
 
     // Image upload handling
-    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/"; // Path to your image folder
+    $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
     $imageName = basename($_FILES["courseImage"]["name"]);
     $target_file = $target_dir . $imageName;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    // Initialize message variable
-    $message = "";
-
-    // Check if the file is a valid image
     if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-        // Try to upload the file
         if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
-            // Prepare the SQL statement to insert course data with the image
-            $stmt = $conn->prepare("INSERT INTO courses (name, image, duration, instructor, capacity, requisites, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssssss", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status);
-            
-            // Execute the query
+            $stmt = $conn->prepare("INSERT INTO courses (name, image, start_date, end_date, instructor, capacity, requisites, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssssssss", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $description, $status);
+
             if ($stmt->execute()) {
-                $message = "Course added successfully!";
                 echo "<script>$('#successModal').modal('show');</script>";
             } else {
-                $message = "Error adding course: " . $stmt->error;
                 echo "<script>$('#errorModal').modal('show');</script>";
             }
             $stmt->close();
         } else {
-            $message = "Error uploading the image.";
             echo "<script>$('#errorModal').modal('show');</script>";
         }
     } else {
-        $message = "Invalid image format. Only JPG, JPEG, PNG, or GIF allowed.";
         echo "<script>$('#errorModal').modal('show');</script>";
     }
-    echo $message;
 }
 
-// Handling course updates (editing course with or without image change)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
-    $id = $_POST['id']; // Course ID to update
+    $id = $_POST['id'];
     $name = $_POST['courseName'];
-    $duration = $_POST['courseDuration'];
+    $start_date = $_POST['courseStartDate'];
+    $end_date = $_POST['courseEndDate'];
     $instructor = $_POST['courseInstructor'];
     $capacity = $_POST['courseCapacity'];
     $requisites = $_POST['courseRequisites'];
     $description = $_POST['courseDescription'];
     $status = $_POST['courseStatus'];
 
-    // Check if an image is uploaded
     if (!empty($_FILES["courseImage"]["name"])) {
-        // Image upload logic (if new image uploaded)
         $target_dir = "/opt/bitnami/apache/htdocs/Kaluppa/Frontend/Images/";
         $imageName = basename($_FILES["courseImage"]["name"]);
         $target_file = $target_dir . $imageName;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        // Check file type
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-            // Move the uploaded file to the target directory
             if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
-                // Update the course record with the new image
-                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
-                $stmt->bind_param("ssssssssi", $name, $imageName, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
+                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, start_date = ?, end_date = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
+                $stmt->bind_param("sssssssssi", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $description, $status, $id);
             } else {
                 echo "Error uploading image.";
             }
@@ -158,16 +141,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
             echo "Invalid image type.";
         }
     } else {
-        // If no new image, update course without changing the image
-        $stmt = $conn->prepare("UPDATE courses SET name = ?, duration = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
-        $stmt->bind_param("sssssssi", $name, $duration, $instructor, $capacity, $requisites, $description, $status, $id);
+        $stmt = $conn->prepare("UPDATE courses SET name = ?, start_date = ?, end_date = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
+        $stmt->bind_param("ssssssssi", $name, $start_date, $end_date, $instructor, $capacity, $requisites, $description, $status, $id);
     }
 
     if ($stmt->execute()) {
         echo "<script>$('#successModal').modal('show');</script>";
     } else {
         echo "<script>$('#errorModal').modal('show');</script>";
-}
+    }
+
+
     } elseif (isset($_POST['deleteCourse'])) {
         // Delete course logic
         // ...
@@ -336,9 +320,14 @@ if ($scholarship_result->num_rows > 0) {
                         <textarea class="form-control" id="course_description" name="courseDescription" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="course_duration" class="form-label"  style="color:black;">Duration</label>
-                        <input type="text" class="form-control" id="course_duration" name="courseDuration" required>
-                    </div>
+    <label for="courseStartDate" class="form-label" style="color:black;">Start Date</label>
+    <input type="date" class="form-control" id="courseStartDate" name="courseStartDate" required>
+</div>
+<div class="mb-3">
+    <label for="courseEndDate" class="form-label" style="color:black;">End Date</label>
+    <input type="date" class="form-control" id="courseEndDate" name="courseEndDate" required>
+</div>
+
                     <div class="mb-3">
                         <label for="course_capacity" class="form-label"  style="color:black;">Capacity</label>
                         <input type="number" class="form-control" id="course_capacity" name="courseCapacity" required>
