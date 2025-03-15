@@ -300,6 +300,7 @@ if (!$workResult) {
 </div>
 
 <script>
+ <script>
     function showWorkDetails(workId) {
         var workModal = new bootstrap.Modal(document.getElementById('workModal' + workId));
         workModal.show();
@@ -314,15 +315,11 @@ if (!$workResult) {
                 } else {
                     let imagePath = data.image || '';
 
-                    // Remove any redundant "Frontend/uploads/" or "uploads/uploads/"
+                    // Clean image path
                     imagePath = imagePath.replace(/(Frontend\/uploads\/)+/, "Frontend/uploads/").replace(/(uploads\/)+/, "uploads/");
-
-                    // Ensure final path is correct
                     let finalImagePath = imagePath.includes("Frontend/admin_dashboard/uploads/")
                         ? "../../" + imagePath
                         : "../../Frontend/admin_dashboard/uploads/" + imagePath.replace("Frontend/uploads/", "");
-
-                    console.log("Final Image Path:", finalImagePath); // Debugging
 
                     var detailsHtml = `
                         <div class="card">
@@ -344,41 +341,53 @@ if (!$workResult) {
             });
     }
 
-    document.querySelectorAll('.application-form').forEach(form => {
-    form.addEventListener('submit', function (e) {
-        e.preventDefault(); // prevent default form submission
-        const formData = new FormData(this);
-        
-        fetch('/Kaluppa/Backend/user_controller/submit_applications.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text()) // or `.json()` if your PHP returns JSON
-        .then(data => {
-            // Show toast success message
-            const toastEl = document.getElementById('ajaxToast');
-            const toastBody = document.getElementById('ajaxToastMessage');
-            toastBody.textContent = "Application submitted successfully!";
-            const toast = new bootstrap.Toast(toastEl);
-            toast.show();
+    // ✅ DOMContentLoaded ensures this script runs after DOM is ready
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('.application-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
 
-            // Optionally: Reset form or close modal
-            this.reset();
-            const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
-            modal.hide();
-        })
-        .catch(error => {
-            console.error('Submission error:', error);
-            const toastEl = document.getElementById('ajaxToast');
-            const toastBody = document.getElementById('ajaxToastMessage');
-            toastEl.classList.remove('bg-success');
-            toastEl.classList.add('bg-danger');
-            toastBody.textContent = "Failed to submit application. Please try again.";
-            const toast = new bootstrap.Toast(toastEl);
-            toast.show();
+                fetch('/Kaluppa/Backend/user_controller/submit_applications.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    // Show toast
+                    const toastEl = document.getElementById('ajaxToast');
+                    const toastBody = document.getElementById('ajaxToastMessage');
+                    toastEl.classList.remove('bg-danger');
+                    toastEl.classList.add('bg-success');
+                    toastBody.textContent = "Application submitted successfully!";
+                    const toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+
+                    // Reset form and close modal
+                    this.reset();
+                    const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
+                    modal.hide();
+
+                    // Remove backdrop manually (optional cleanup)
+                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                })
+                .catch(error => {
+                    console.error('Submission error:', error);
+                    const toastEl = document.getElementById('ajaxToast');
+                    const toastBody = document.getElementById('ajaxToastMessage');
+                    toastEl.classList.remove('bg-success');
+                    toastEl.classList.add('bg-danger');
+                    toastBody.textContent = "Failed to submit application. Please try again.";
+                    const toast = new bootstrap.Toast(toastEl);
+                    toast.show();
+                });
+            });
         });
     });
-});
+</script>
+
    
 </script>
 </body>
