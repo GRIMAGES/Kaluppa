@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../Backend/connection.php';
 
 // Redirect if not logged in
@@ -21,21 +22,12 @@ $stmt->close();
 // Construct full name
 $adminName = trim("$first_name $middle_name $last_name");
 
-$profilePic = !empty($profile_picture) 
-    ? "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture 
+// Set profile picture path
+$profilePic = (!empty($profile_picture) && file_exists($_SERVER['DOCUMENT_ROOT'] . "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture))
+    ? "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture
     : "/Frontend/assets/default-profile.png";
 
-// Debugging: Log profile picture file existence
-$fullPath = $_SERVER['DOCUMENT_ROOT'] . $profilePic;
-if (!file_exists($fullPath)) {
-    error_log("Profile picture not found at: " . $fullPath);
-    $profilePic = "/Frontend/assets/default-profile.png";
-} else {
-    error_log("Profile picture found: " . $fullPath);
-}
-
-
-// Get the current page filename
+// Get current page filename
 $current_page = basename($_SERVER['PHP_SELF']);
 
 // Navigation links
@@ -67,14 +59,14 @@ $navLinks = [
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<!-- Burger Menu for Small Screens -->
+<!-- Burger Menu Button (Mobile) -->
 <button class="burger-button d-block d-md-none" onclick="toggleSidebar()">☰</button>
 
 <!-- Sidebar Container -->
 <div class="sidebar p-3 d-flex flex-column">
     <div class="text-center mb-3">
-        <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
-        <h5><?php echo htmlspecialchars($adminName); ?></h5>
+        <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="mb-2 rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+        <h5 class="mb-0"><?php echo htmlspecialchars($adminName); ?></h5>
     </div>
 
     <ul class="nav flex-column flex-grow-1">
@@ -112,7 +104,7 @@ $navLinks = [
     <button class="btn btn-danger mt-auto w-100" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
 </div>
 
-<!-- Scripts -->
+<!-- JavaScript for Sidebar and Collapse -->
 <script>
     function toggleSidebar() {
         document.querySelector('.sidebar').classList.toggle('open');
