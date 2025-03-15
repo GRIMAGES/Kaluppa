@@ -229,7 +229,7 @@ if (isset($_GET['delete_event'])) {
                 <div class="col-md-6 col-lg-4">
                     <div class="card event-card h-100 border-0">
                         <div class="card-img-top-wrapper">
-                            <img src="../images/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Event Image">
+                            <img src="../Images/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Event Image">
                         </div>
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
