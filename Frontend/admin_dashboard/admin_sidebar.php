@@ -57,7 +57,7 @@ $navLinks = [
 
 <div class="sidebar p-3 d-flex flex-column">
     <div class="text-center mb-3">
-        <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
+        <img src="../../Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
         <h5><?php echo htmlspecialchars($adminName); ?></h5>
     </div>
     <ul class="nav flex-column flex-grow-1">
