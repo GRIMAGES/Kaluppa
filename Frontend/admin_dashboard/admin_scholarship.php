@@ -346,15 +346,23 @@ $(document).ready(function() {
 
  // Handle the modal opening and populating document list
  const downloadModal = document.getElementById('downloadModal');
-    downloadModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget; // Button that triggered the modal
-        const documents = JSON.parse(button.getAttribute('data-documents')); // Get the documents JSON
-        const applicationId = button.getAttribute('data-application-id'); // Get the application ID
-        const documentList = document.getElementById('documentList');
-        
-        // Clear existing list
-        documentList.innerHTML = '';
+downloadModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; // Button that triggered the modal
+    const documents = JSON.parse(button.getAttribute('data-documents')); // Get the documents JSON
+    const applicationId = button.getAttribute('data-application-id'); // Get the application ID
+    const documentList = document.getElementById('documentList');
+    
+    // Log the documents to check if they are being passed correctly
+    console.log(documents);
 
+    // Clear existing list
+    documentList.innerHTML = '';
+
+    if (documents.length === 0) {
+        const noDocumentsMessage = document.createElement('li');
+        noDocumentsMessage.textContent = 'No documents available to download.';
+        documentList.appendChild(noDocumentsMessage);
+    } else {
         // Populate document list in the modal
         documents.forEach((document, index) => {
             const listItem = document.createElement('li');
@@ -365,7 +373,8 @@ $(document).ready(function() {
             listItem.appendChild(downloadLink);
             documentList.appendChild(listItem);
         });
-    });
+    }
+});
     </script>
 </body>
 </html>

@@ -75,28 +75,32 @@ foreach ($encryptedDocuments as $document) {
 }
 
 // Handle download
-if (isset($_GET['download'])) {
-    $fileName = $_GET['download'];
+if (isset($_GET['download']) && isset($_GET['application_id'])) {
+    $fileName = urldecode($_GET['download']);
+    $applicationId = $_GET['application_id'];
 
-    // Search for the requested file in the decrypted documents
-    foreach ($documents as $document) {
-        if ($document['file_name'] === $fileName) {
-            header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment; filename="' . $fileName . '"');
-            echo $document['file_data'];
+    // Fetch the document from the database (adjust this query based on your needs)
+    $sql = "SELECT * FROM documents WHERE application_id = ? AND file_name = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $applicationId, $fileName);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $filePath = $row['file_path']; // The path where the file is stored
+
+        // Force download of the file
+        if (file_exists($filePath)) {
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+            readfile($filePath);
             exit();
+        } else {
+            echo "File not found.";
         }
+    } else {
+        echo "Document not found.";
     }
-
-    echo json_encode(['success' => false, 'error_code' => 6, 'message' => 'Document not found']);
-    exit();
 }
-
-// Return documents information if not downloading
-echo json_encode([
-    'success' => true,
-    'documents' => array_map(function ($document) {
-        return $document['file_name'];
-    }, $documents)
-]);
 ?>
