@@ -161,7 +161,8 @@ if (!$workResult) {
 
                                     <!-- Right Column: Application Form -->
                                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
-                                    <form method="POST" action="/Kaluppa/Backend/user_controller/submit_applications.php" enctype="multipart/form-data">
+                                    <form id="applicationForm<?php echo $work['id']; ?>" class="application-form" enctype="multipart/form-data">
+
 
 
                                             <input type="hidden" name="work_id" value="<?php echo $work['id']; ?>">
@@ -255,7 +256,14 @@ if (!$workResult) {
         <p>No announcements available.</p>
     <?php endif; ?>
 </div>
-
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+    <div id="ajaxToast" class="toast text-white bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="ajaxToastMessage">Application submitted successfully!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
 <!-- Announcement Details Modal -->
 <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -336,44 +344,41 @@ if (!$workResult) {
             });
     }
 
-    // JavaScript for form submission
-    document.querySelectorAll('form[id^="applicationForm"]').forEach(function(form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
+    document.querySelectorAll('.application-form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // prevent default form submission
+        const formData = new FormData(this);
+        
+        fetch('/Kaluppa/Backend/user_controller/submit_applications.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text()) // or `.json()` if your PHP returns JSON
+        .then(data => {
+            // Show toast success message
+            const toastEl = document.getElementById('ajaxToast');
+            const toastBody = document.getElementById('ajaxToastMessage');
+            toastBody.textContent = "Application submitted successfully!";
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
 
-            var formData = new FormData(this);
-
-            // Send AJAX request to submit the form
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '../../Backend/user_controller/submit_applications.php', true);
-
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    // Show success toast
-                    var successToast = new bootstrap.Toast(document.getElementById('successToast'));
-                    successToast.show();
-                    form.reset(); // Reset form fields
-
-                    // Close the modal
-                    var modal = bootstrap.Modal.getInstance(form.closest('.modal'));
-                    modal.hide();
-
-                    // Remove the backdrop manually
-                    const backdrop = document.querySelector('.modal-backdrop');
-                    if (backdrop) {
-                        backdrop.remove();
-                    }
-                } else {
-                    // Show error toast
-                    var errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
-                    errorToast.show();
-                }
-            };
-
-            xhr.send(formData);
+            // Optionally: Reset form or close modal
+            this.reset();
+            const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
+            modal.hide();
+        })
+        .catch(error => {
+            console.error('Submission error:', error);
+            const toastEl = document.getElementById('ajaxToast');
+            const toastBody = document.getElementById('ajaxToastMessage');
+            toastEl.classList.remove('bg-success');
+            toastEl.classList.add('bg-danger');
+            toastBody.textContent = "Failed to submit application. Please try again.";
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
         });
     });
-
+});
     document.addEventListener("DOMContentLoaded", function () {
         var successToast = document.getElementById('successToast');
         var errorToast = document.getElementById('errorToast');
