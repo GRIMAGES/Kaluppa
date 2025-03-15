@@ -347,34 +347,37 @@ $(document).ready(function() {
 // Show modal on document click
 const downloadModal = document.getElementById('downloadModal');
 downloadModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget;
-    const documents = button.getAttribute('data-documents');
-    const applicationId = button.getAttribute('data-application-id');
+    const button = event.relatedTarget; // Button that triggered the modal
+    const documents = button.getAttribute('data-documents'); // Get documents as a string
+    const applicationId = button.getAttribute('data-application-id'); 
 
-    console.log("Documents JSON:", documents); // Check the value here
+    console.log("Documents passed to modal:", documents); // This should now log a JSON string
 
     const documentList = document.getElementById('documentList');
     documentList.innerHTML = ''; // Clear any existing list items
 
     try {
-        // Parse documents if they are not already an array
+        // Check if documents are a string that needs parsing
         let documentsArray = [];
         if (typeof documents === 'string') {
-            documentsArray = JSON.parse(documents); // Parse stringified JSON
+            // If it's a JSON string, parse it into an array
+            documentsArray = JSON.parse(documents);
         } else if (Array.isArray(documents)) {
             documentsArray = documents; // Already an array
         }
 
+        console.log("Parsed Documents Array:", documentsArray); // Check parsed array
+
+        // Iterate through the array and append document links
         documentsArray.forEach(doc => {
             const li = document.createElement('li');
-            li.textContent = doc;
-            documentList.appendChild(li);
+            li.textContent = doc; // Display document name
+            documentList.appendChild(li); // Add to the list
         });
     } catch (error) {
         console.error("Error parsing documents JSON:", error);
     }
 });
-
 </script>
 </body>
 </html>
