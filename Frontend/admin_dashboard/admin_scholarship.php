@@ -140,7 +140,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 <!-- Main Content -->
 <div class="content" style="margin-left: 250px; padding: 20px;">
     <div class="container mt-5">
-        <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
+        <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>
         <div class="table-responsive">
             <table id="scholarshipTable" class="display" style="color: black;">
                 <thead style="background-color: #f2f2f2; color: black;">
@@ -186,20 +186,12 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         <td>' . htmlspecialchars($applied_at) . '</td>
                         <td>
                             <div class="d-inline-flex gap-2">';
-                            
-                            // Loop through the documents to generate download buttons
-                            if (!empty($documents)) {
-                                foreach ($documents as $document) {
-                                    $fileName = $document['file_name'] ?? ''; // Extract the file name
-                                    $encodedFileName = urlencode($fileName);
 
-                                    // Only show download button if the file name exists
-                                    if ($fileName) {
-                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download"></i> Download
-                                        </a>';
-                                    }
-                                }
+                            // Add button to open modal for document selection
+                            if (!empty($documents)) {
+                                echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
+                                    data-documents=\'' . json_encode($documents) . '\'
+                                    data-application-id="' . htmlspecialchars($id) . '">Download</button>';
                             }
 
                             echo '</div>
@@ -231,26 +223,43 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
-
-    <!-- Application Details Modal -->
-    <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
-
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewApplicationModalLabel">Application Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="applicationDetails"></div>
-                    <hr>
-                    <div id="documentLinks"></div>
-                </div>
+<!-- Modal for Downloading Documents -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="downloadModalLabel">Select Document to Download</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="documentList"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Success Toast Notification -->
+<!-- Application Details Modal -->
+<div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewApplicationModalLabel">Application Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="applicationDetails"></div>
+                <hr>
+                <div id="documentLinks"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Success Toast Notification -->
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
     <div id="statusToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -261,7 +270,6 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
         </div>
     </div>
 </div>
-
 
     <!-- Bootstrap JS and Dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -335,7 +343,39 @@ $(document).ready(function() {
         });
     });
 
+    const downloadModal = document.getElementById('downloadModal');
+downloadModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget; // Button that triggered the modal
+    const documents = button.getAttribute('data-documents'); // Get the documents JSON string
+    const applicationId = button.getAttribute('data-application-id'); // Get the application ID
 
+    // Parse the documents JSON string to an array
+    const documentList = document.getElementById('documentList');
+    documentList.innerHTML = ''; // Clear any existing list items
+
+    if (documents) {
+        const documentsArray = JSON.parse(documents); // Parse the JSON string into an array
+        if (documentsArray.length > 0) {
+            documentsArray.forEach((document, index) => {
+                const listItem = document.createElement('li');
+                const downloadLink = document.createElement('a');
+                downloadLink.href = `../../Backend/admin_controller/view_document.php?application_id=${applicationId}&download=${encodeURIComponent(document.file_name)}`;
+                downloadLink.textContent = `Document ${index + 1}: ${document.file_name}`;
+                downloadLink.classList.add('btn', 'btn-link');
+                listItem.appendChild(downloadLink);
+                documentList.appendChild(listItem);
+            });
+        } else {
+            const noDocuments = document.createElement('p');
+            noDocuments.textContent = "No documents available to download.";
+            documentList.appendChild(noDocuments);
+        }
+    } else {
+        const noDocuments = document.createElement('p');
+        noDocuments.textContent = "No documents available to download.";
+        documentList.appendChild(noDocuments);
+    }
+});
     </script>
 </body>
 </html>
