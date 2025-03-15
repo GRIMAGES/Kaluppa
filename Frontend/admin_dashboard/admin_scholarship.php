@@ -296,20 +296,23 @@ if ($result->num_rows > 0) {
     var documentArray = documents.split(',');
 
     if (documents.trim() === '' || documentArray.length === 0 || (documentArray.length === 1 && documentArray[0].trim() === '')) {
-        documentLinksHtml = `<p class="text-danger">No uploaded documents available.</p>`;
-    } else {
-        documentArray.forEach(function(document, index) {
-            const trimmedDoc = document.trim();
-            if (trimmedDoc !== '') {
-                documentLinksHtml += `
-                    <div>
-                        <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(trimmedDoc)}&action=view" target="_blank" class="btn btn-primary w-100 mb-2">View Document ${index + 1}</a>
-                        <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(trimmedDoc)}&action=download" class="btn btn-success w-100">Download Document ${index + 1}</a>
-                    </div>
-                `;
-            }
-        });
-    }
+    documentLinksHtml = `<p class="text-danger">No uploaded documents available.</p>`;
+} else {
+    documentArray.forEach(function(document, index) {
+        const trimmedDoc = document.trim();
+        if (trimmedDoc !== '') {
+            documentLinksHtml += `
+                <div>
+                    <!-- View Document Link -->
+                    <a href="../../Backend/admin_controller/view_document.php?application_id=${encodeURIComponent(applicationId)}&file=${encodeURIComponent(trimmedDoc)}&action=view" target="_blank" class="btn btn-primary w-100 mb-2">View Document ${index + 1}</a>
+                    <!-- Download Document Link -->
+                    <a href="../../Backend/admin_controller/view_document.php?application_id=${encodeURIComponent(applicationId)}&file=${encodeURIComponent(trimmedDoc)}&action=download" class="btn btn-success w-100">Download Document ${index + 1}</a>
+                </div>
+            `;
+        }
+    });
+}
+
 
     document.getElementById('documentLinks').innerHTML = documentLinksHtml;
 
