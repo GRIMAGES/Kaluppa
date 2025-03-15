@@ -379,34 +379,7 @@ if (!$workResult) {
         });
     });
 });
-    document.addEventListener("DOMContentLoaded", function () {
-        var successToast = document.getElementById('successToast');
-        var errorToast = document.getElementById('errorToast');
-
-        if (successToast) {
-            new bootstrap.Toast(successToast, { delay: 4000 }).show();
-        }
-        if (errorToast) {
-            new bootstrap.Toast(errorToast, { delay: 4000 }).show();
-        }
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-            // Force remove all modal backdrops if any still exist
-            const backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(b => b.remove());
-
-            // Hide any open modals
-            const modals = document.querySelectorAll('.modal.show');
-            modals.forEach(modal => {
-                const bsModal = bootstrap.Modal.getInstance(modal);
-                if (bsModal) bsModal.hide();
-            });
-
-            // Optionally remove 'modal-open' class from body
-            document.body.classList.remove('modal-open');
-            document.body.style = ''; // Reset any overflow: hidden styles
-        });
+   
 </script>
 </body>
 </html>
