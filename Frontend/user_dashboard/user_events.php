@@ -74,7 +74,7 @@ if ($result->num_rows > 0) {
                 echo '<div class="col-md-4">';
                 echo '<div class="card event-card shadow-lg border-0" data-bs-toggle="modal" data-bs-target="#' . $modalId . '">';
                 if (!empty($event['image'])) {
-                    echo '<img src="../images/' . htmlspecialchars($event['image']) . '" alt="Event Image" class="card-img-top event-img">';
+                    echo '<img src="../Images/' . htmlspecialchars($event['image']) . '" alt="Event Image" class="card-img-top event-img">';
                 } else {
                     echo '<img src="default-event-image.jpg" alt="Default Event Image" class="card-img-top event-img">';
                 }
