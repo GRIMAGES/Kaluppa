@@ -352,14 +352,14 @@ if ($scholarship_result->num_rows > 0) {
                         <label for="edit_course_description" class="form-label" style="color:black;">Description</label>
                         <textarea class="form-control" id="edit_course_description" name="courseDescription" rows="3" required></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="editCourseStartDate" class="form-label" style="color:black;">Start Date</label>
-                        <input type="date" class="form-control" id="editCourseStartDate" name="editCourseStartDate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editCourseEndDate" class="form-label" style="color:black;">End Date</label>
-                        <input type="date" class="form-control" id="editCourseEndDate" name="editCourseEndDate" required>
-                    </div>
+                        <div class="mb-3">
+                            <label for="editCourseStartDate" class="form-label" style="color:black;">Start Date</label>
+                            <input type="date" class="form-control" id="editCourseStartDate" name="courseStartDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCourseEndDate" class="form-label" style="color:black;">End Date</label>
+                            <input type="date" class="form-control" id="editCourseEndDate" name="courseEndDate" required>
+                        </div>
                     <div class="mb-3">
                         <label for="edit_course_capacity" class="form-label" style="color:black;">Capacity</label>
                         <input type="number" class="form-control" id="edit_course_capacity" name="courseCapacity" required>
