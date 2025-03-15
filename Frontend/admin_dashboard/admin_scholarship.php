@@ -270,19 +270,19 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
-    <!-- Bootstrap JS and Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<!-- Bootstrap JS and Dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 
-    <!-- Include Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <!-- Include DataTables JS -->
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <!-- Include jQuery UI JS for sortable functionality -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <!-- JavaScript for Handling Modal -->
-    <script>
+<!-- Include Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<!-- Include DataTables JS -->
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<!-- Include jQuery UI JS for sortable functionality -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<!-- JavaScript for Handling Modal -->
+<script>
 function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
     console.log("Application details function called");
     console.log("Raw documents string:", documents);
@@ -355,37 +355,17 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
     const documentList = document.getElementById('documentList');
     documentList.innerHTML = ''; // Clear any existing list items
 
-    if (documents) {
-        try {
-            const documentsArray = JSON.parse(documents);
-            console.log("Parsed documents array:", documentsArray); // Check if parsing works
-            if (documentsArray.length > 0) {
-                documentsArray.forEach((document, index) => {
-                    const listItem = document.createElement('li');
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = `../../Backend/admin_controller/view_document.php?application_id=${applicationId}&download=${encodeURIComponent(document.file_name)}`;
-                    downloadLink.textContent = `Document ${index + 1}: ${document.file_name}`;
-                    downloadLink.classList.add('btn', 'btn-link');
-                    listItem.appendChild(downloadLink);
-                    documentList.appendChild(listItem);
-                });
-            } else {
-                const noDocuments = document.createElement('p');
-                noDocuments.textContent = "No documents available to download.";
-                documentList.appendChild(noDocuments);
-            }
-        } catch (error) {
-            console.error("Error parsing documents JSON:", error);
-            const errorMessage = document.createElement('p');
-            errorMessage.textContent = "Error loading documents.";
-            documentList.appendChild(errorMessage);
-        }
-    } else {
-        const noDocuments = document.createElement('p');
-        noDocuments.textContent = "No documents available to download.";
-        documentList.appendChild(noDocuments);
+    try {
+        const documentsArray = JSON.parse(documents);
+        documentsArray.forEach(doc => {
+            const li = document.createElement('li');
+            li.textContent = doc;
+            documentList.appendChild(li);
+        });
+    } catch (error) {
+        console.error("Error parsing documents JSON:", error);
     }
 });
-    </script>
+</script>
 </body>
 </html>
