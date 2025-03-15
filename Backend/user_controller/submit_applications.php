@@ -42,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     $middle_name = $_POST['middle_name'] ?? $user['middle_name'];
     $last_name = $_POST['last_name'] ?? $user['last_name'];
     $email = $_POST['email'] ?? $user['email'];
-
     $work_id = $_POST['work_id'];
     $phone = $_POST['phone'] ?? '';
     $house_number = $_POST['house_number'] ?? '';
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     $region = $_POST['region'] ?? '';
     $postal_code = $_POST['postal_code'] ?? '';
 
-    $uploadDir = __DIR__ . '/../../Backend/Documents/Volunteer/';
+    $uploadDir = __DIR__ . 'Kaluppa/Backend/Documents/Volunteer/';
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
