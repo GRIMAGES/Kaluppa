@@ -372,7 +372,8 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
             documentsArray.forEach(doc => {
                 const li = document.createElement('li');
 
-                if (typeof doc === 'object' && doc.name && doc.url) {
+                // Ensure the document has both 'name' and 'url' properties before proceeding
+                if (doc && typeof doc === 'object' && doc.name && doc.url) {
                     const a = document.createElement('a');
                     a.textContent = doc.name; // Display document name
                     a.href = doc.url; // Set the URL for downloading
@@ -380,7 +381,8 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
                     a.target = '_blank'; // Open in a new tab (optional)
                     li.appendChild(a); // Append the link to the list item
                 } else {
-                    li.textContent = 'Unnamed Document or Missing URL';
+                    // If 'name' or 'url' is missing, display a fallback message
+                    li.textContent = doc && doc.name ? `${doc.name} (Missing URL)` : 'Unnamed Document or Missing URL';
                 }
 
                 documentList.appendChild(li);
