@@ -355,7 +355,6 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
         let documentsArray = [];
 
         if (encodedDocuments) {
-            // Attempt to decode Base64 or parse JSON directly
             try {
                 const decodedDocuments = atob(encodedDocuments); // Decode Base64
                 console.log("Decoded Documents String:", decodedDocuments);
@@ -368,13 +367,22 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
             console.error("No documents provided.");
         }
 
-        console.log("Parsed Documents Array:", documentsArray);
-
         // Populate the modal with the documents
         if (documentsArray.length > 0) {
             documentsArray.forEach(doc => {
                 const li = document.createElement('li');
-                li.textContent = typeof doc === 'object' ? doc.name || 'Unnamed Document' : doc;
+
+                if (typeof doc === 'object' && doc.name && doc.url) {
+                    const a = document.createElement('a');
+                    a.textContent = doc.name; // Display document name
+                    a.href = doc.url; // Set the URL for downloading
+                    a.download = doc.name; // Optional: Suggest a filename for download
+                    a.target = '_blank'; // Open in a new tab (optional)
+                    li.appendChild(a); // Append the link to the list item
+                } else {
+                    li.textContent = 'Unnamed Document or Missing URL';
+                }
+
                 documentList.appendChild(li);
             });
         } else {
@@ -386,6 +394,7 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
         console.error("Error processing documents:", error);
     }
 });
+
 </script>
 </body>
 </html>
