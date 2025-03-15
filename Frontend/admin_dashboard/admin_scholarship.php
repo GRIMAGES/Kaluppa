@@ -137,7 +137,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
     </div>
 </div>
 
- <!-- Main Content -->
+<!-- Main Content -->
 <div class="content" style="margin-left: 250px; padding: 20px;">
     <div class="container mt-5">
         <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
@@ -171,8 +171,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
                         $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
                         $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
-                        $documents = htmlspecialchars($row['documents'] ?? '', ENT_QUOTES);
-                        $encodedDocument = urlencode($row['documents'] ?? '');
+                        $documents = json_decode($row['documents'], true); // Assuming 'documents' is a JSON encoded array of documents
 
                         echo '<tr>
                         <td>' . htmlspecialchars($id) . '</td>
@@ -184,25 +183,23 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         <td>' . htmlspecialchars($status) . '</td>
                         <td>' . htmlspecialchars($applied_at) . '</td>
                         <td>
-                            <div class="d-inline-flex gap-2">
-                                <button type="button" class="btn btn-sm btn-outline-success"
-                                    onclick="showApplicationDetails(
-                                        \'' . addslashes($id) . '\',
-                                        \'' . addslashes($first_name) . '\',
-                                        \'' . addslashes($middle_name) . '\',
-                                        \'' . addslashes($last_name) . '\',
-                                        \'' . addslashes($work_name) . '\',
-                                        \'' . addslashes($email) . '\',
-                                        \'' . addslashes($applied_at) . '\',
-                                        \'' . addslashes($status) . '\',
-                                        \'' . addslashes($documents) . '\'
-                                    )">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                                <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($encodedDocument) . '&action=download" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-download"></i> Download
-                                </a>
-                            </div>
+                            <div class="d-inline-flex gap-2">';
+                            
+                            // Loop through the documents to generate download buttons
+                            if (!empty($documents)) {
+                                foreach ($documents as $document) {
+                                    $fileName = $document['file_name'] ?? ''; // Extract the file name
+                                    $encodedFileName = urlencode($fileName);
+
+                                    // Only show download button if the file name exists
+                                    if ($fileName) {
+                                        echo '<a href="view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i> Download ' . htmlspecialchars($fileName) . '
+                                        </a>';
+                                    }
+                                }
+                            }
+                            echo '</div>
                         </td>
                         <td>
                             <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
@@ -230,6 +227,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
         </div>
     </div>
 </div>
+
     <!-- Application Details Modal -->
     <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
 
