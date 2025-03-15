@@ -1,6 +1,5 @@
 <?php
 require_once '../../Backend/connection.php';
-session_start(); // Ensure session is started
 
 // Redirect if not logged in
 if (!isset($_SESSION['email'])) {
@@ -22,8 +21,19 @@ $stmt->close();
 // Construct full name
 $adminName = trim("$first_name $middle_name $last_name");
 
-// Set profile picture path (use a default if empty)
-$profilePic = !empty($profile_picture) ? "/KALUPPA/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture : "/Frontend/assets/default-profile.png";
+$profilePic = !empty($profile_picture) 
+    ? "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture 
+    : "/Frontend/assets/default-profile.png";
+
+// Debugging: Log profile picture file existence
+$fullPath = $_SERVER['DOCUMENT_ROOT'] . $profilePic;
+if (!file_exists($fullPath)) {
+    error_log("Profile picture not found at: " . $fullPath);
+    $profilePic = "/Frontend/assets/default-profile.png";
+} else {
+    error_log("Profile picture found: " . $fullPath);
+}
+
 
 // Get the current page filename
 $current_page = basename($_SERVER['PHP_SELF']);

@@ -189,7 +189,7 @@ if ($scholarship_result->num_rows > 0) {
 </head>
 <body>
 
-
+<?php include 'sidebar.php'; ?>
 
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
