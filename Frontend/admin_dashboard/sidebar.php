@@ -22,10 +22,14 @@ $stmt->close();
 // Construct full name
 $adminName = trim("$first_name $middle_name $last_name");
 
-// Set profile picture path
-$profilePic = (!empty($profile_picture) && file_exists($_SERVER['DOCUMENT_ROOT'] . "../../Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture))
-    ? "../../Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture
-    : "/Frontend/assets/default-profile.png";
+// Build correct file path for checking and displaying profile picture
+$uploadDirRelative = '../../Frontend/admin_dashboard/uploads/profile_pics/';
+$uploadDirAbsolute = realpath($uploadDirRelative);
+$profilePicFilePath = $uploadDirAbsolute . DIRECTORY_SEPARATOR . $profile_picture;
+
+$profilePic = (!empty($profile_picture) && file_exists($profilePicFilePath))
+    ? $uploadDirRelative . $profile_picture
+    : '/Frontend/assets/default-profile.png';
 
 // Get current page filename
 $current_page = basename($_SERVER['PHP_SELF']);
@@ -129,7 +133,6 @@ $navLinks = [
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
-<!-- Extra Styling -->
 <style>
     .nav-text {
         font-size: 0.875rem;
