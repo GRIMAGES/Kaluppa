@@ -62,7 +62,7 @@ if (isset($_POST['update_profile'])) {
 if (isset($_POST['update_profile_picture'])) {
     // Handle profile picture upload
     if (!empty($_FILES['profile_picture']['name'])) {
-        $targetDir = "../../Frontend/admin dashboard/uploads/profile_pics/";
+        $targetDir = "../../Frontend/admin_dashboard/uploads/profile_pics/";
         $targetFile = $targetDir . basename($_FILES['profile_picture']['name']);
         move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetFile);
         $profilePicture = basename($_FILES['profile_picture']['name']);
