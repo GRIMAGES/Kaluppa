@@ -307,7 +307,7 @@ if ($scholarship_result->num_rows > 0) {
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addCourseModalLabel" style="color:black;">Add New Course</h5>
+                <h5 class="modal-title" id="addCourseModalLabel" style="color:white;">Add New Course</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -364,7 +364,7 @@ if ($scholarship_result->num_rows > 0) {
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editCourseModalLabel" style="color:black;">Edit Course</h5>
+                <h5 class="modal-title" id="editCourseModalLabel" style="color:white;">Edit Course</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
