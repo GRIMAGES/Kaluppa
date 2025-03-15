@@ -73,7 +73,7 @@ if (isset($_POST['update_status'])) {
     }
 }
 // Define the SQL query with JOIN to get course name from courses table
-$sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.document 
+$sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents 
         FROM applications 
         JOIN courses ON applications.course_id = courses.id";
 ?>

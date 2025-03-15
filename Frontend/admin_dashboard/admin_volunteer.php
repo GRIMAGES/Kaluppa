@@ -79,7 +79,7 @@ $sql = "
         a.email, 
         a.status, 
         a.application_date AS applied_at, 
-        a.resume_path AS document 
+        a.resume AS document 
     FROM volunteer_application a
 ";
 $result = mysqli_query($conn, $sql);
