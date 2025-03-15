@@ -72,6 +72,16 @@ if (isset($_POST['update_status'])) {
         die("SQL error during execution: " . $stmt->error);
     }
 }
+
+$first_name = isset($row['first_name']) ? addslashes($row['first_name']) : '';
+$middle_name = isset($row['middle_name']) ? addslashes($row['middle_name']) : '';
+$last_name = isset($row['last_name']) ? addslashes($row['last_name']) : '';
+$work_name = isset($row['name']) ? addslashes($row['name']) : '';
+$email = isset($row['email']) ? addslashes($row['email']) : '';
+$applied_at = isset($row['applied_at']) ? addslashes($row['applied_at']) : '';
+$status = isset($row['status']) ? addslashes($row['status']) : '';
+$documents = isset($row['documents']) ? addslashes($row['documents']) : '';
+$encodedDocument = isset($row['documents']) ? urlencode($row['documents']) : '';
 // Define the SQL query with JOIN to get course name from courses table
 $sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents 
         FROM applications 
