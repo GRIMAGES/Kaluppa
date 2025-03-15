@@ -7,16 +7,6 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-$adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
-// Fetch the admin's full name from the user table
-$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name FROM user WHERE email = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param('s', $adminEmail);
-$stmt->execute();
-$result = $stmt->get_result();
-$admin = $result->fetch_assoc();
-$adminName = $admin['admin_name'] ?? ''; // Handle undefined array key
-$stmt->close();
 
 // Construct full name
 $adminName = trim("$first_name $middle_name $last_name");
@@ -56,7 +46,6 @@ $navLinks = [
 <div class="sidebar p-3 d-flex flex-column">
     <div class="text-center mb-3">
     <img src="../../Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($profile_picture ?? 'default.png', ENT_QUOTES, 'UTF-8'); ?>" alt="Profile" class="mb-2 rounded-circle" style="width: 60px; height: 60px;">
-    >
         <h5><?php echo htmlspecialchars($adminName); ?></h5>
     </div>
     <ul class="nav flex-column flex-grow-1">
