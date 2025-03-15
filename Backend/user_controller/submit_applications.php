@@ -1,140 +1,149 @@
 <?php
-// Enable error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-// Log errors to a file
-ini_set("log_errors", 1);
-ini_set("error_log", "../../Backend/logs/application_form_errors.log");
-
-require_once '../../Backend/connection.php';
 session_start();
+require_once '../connection.php';
+require_once '../aes_key.php'; // contains AES_KEY and AES_IV
 
-// Check if user is logged in
+// Check if user is authenticated
 if (!isset($_SESSION['email'])) {
-    error_log("User not logged in.");
-    header("Location: /Frontend/index.php");
+    header("Location: ../../Frontend/index.php");
     exit();
 }
 
-// Fetch user info
-$userQuery = "SELECT id, first_name, middle_name, last_name, email FROM user WHERE email = ?";
-$stmt = $conn->prepare($userQuery);
-if (!$stmt) {
-    error_log("User fetch prepare failed: " . $conn->error);
-    echo json_encode(['success' => false, 'message' => 'Database error.']);
-    exit();
-}
-$stmt->bind_param('s', $_SESSION['email']);
-$stmt->execute();
-$userResult = $stmt->get_result();
-$user = $userResult->fetch_assoc();
-
-if (!$user) {
-    error_log("User not found with email: " . $_SESSION['email']);
-    echo json_encode(['success' => false, 'message' => 'User not found']);
-    exit();
+// Validate input parameters
+if (!isset($_GET['file']) || !isset($_GET['action'])) {
+    die("Invalid request.");
 }
 
-// Assign user data
-$user_id = $user['id'];
-$first_name = $user['first_name'];
-$middle_name = $user['middle_name'];
-$last_name = $user['last_name'];
-$email = $user['email'];
-
-// Get POST data
-$phone = $_POST['phone'] ?? '';
-$house_number = $_POST['house_number'] ?? '';
-$street = $_POST['street'] ?? '';
-$barangay = $_POST['barangay'] ?? '';
-$district = $_POST['district'] ?? '';
-$city = $_POST['city'] ?? '';
-$region = $_POST['region'] ?? '';
-$postal_code = $_POST['postal_code'] ?? '';
-$work_id = $_POST['work_id'] ?? '';
-
-// File upload path
-$uploadDir = __DIR__ . '/../../Backend/Documents/Volunteer/';
-
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+// Extract and decrypt the encrypted filename if it's in an array
+$file = $_GET['file'];
+if (is_array($file)) {
+    $file = reset($file);
 }
 
-// Check for upload error before moving file
-if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
-    error_log("Resume file upload error. Error Code: " . ($_FILES['resume']['error'] ?? 'Not set'));
-    echo json_encode(['success' => false, 'message' => 'Resume upload error.']);
-    exit();
-}
+// Sanitize the encrypted file name
+$file = trim(urldecode($file));
 
-// Prepare file path and move the file
-$resumeName = basename($_FILES['resume']['name']);
-$uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $resumeName;
-$resumePathToSave = 'Backend/Documents/Volunteer/' . $resumeName; // relative path for DB
-
-if (!move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFilePath)) {
-    error_log("File move failed. Error Code: " . $_FILES['resume']['error']);
-    echo json_encode(['success' => false, 'message' => 'Failed to upload resume file.']);
-    exit();
-}
-
-// Generate custom ID: VOL-00001, VOL-00002, ...
-$idQuery = "SELECT id FROM volunteer_application ORDER BY id DESC LIMIT 1";
-$idResult = $conn->query($idQuery);
-
-if ($idResult && $idResult->num_rows > 0) {
-    $lastIdRow = $idResult->fetch_assoc();
-    $lastId = $lastIdRow['id'];
-    $lastNum = (int)substr($lastId, 4); // get number after 'VOL-'
-    $newId = 'VOL-' . str_pad($lastNum + 1, 5, '0', STR_PAD_LEFT);
-} else {
-    $newId = 'VOL-00001';
-}
-error_log("Generated new application ID: $newId");
-
-// Insert application into DB
-$insertQuery = "INSERT INTO volunteer_application (
-    id, work_id, user_id, first_name, middle_name, last_name, email,
-    phone, house_number, street, barangay, district, city, region, postal_code, resume
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-$stmt = $conn->prepare($insertQuery);
-if (!$stmt) {
-    error_log("Insert prepare failed: " . $conn->error);
-    echo json_encode(['success' => false, 'message' => 'Insert prepare failed.']);
-    exit();
-}
-
-$stmt->bind_param(
-    'siisssssssssssss',
-    $newId,
-    $work_id,
-    $user_id,
-    $first_name,
-    $middle_name,
-    $last_name,
-    $email,
-    $phone,
-    $house_number,
-    $street,
-    $barangay,
-    $district,
-    $city,
-    $region,
-    $postal_code,
-    $resumePathToSave
+// Decrypt the encrypted filename
+$decryptedFileName = openssl_decrypt(
+    base64_decode($file), // Assuming the filename was base64-encoded before encryption
+    'AES-256-CBC',        // Encryption method
+    AES_KEY,              // Your AES key
+    OPENSSL_RAW_DATA,     // OpenSSL option
+    AES_IV                // Your AES initialization vector
 );
 
-if ($stmt->execute()) {
-    error_log("Application successfully inserted with ID: $newId");
-    echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
-} else {
-    error_log("Application insert failed: " . $stmt->error);
-    echo json_encode(['success' => false, 'message' => 'Insert failed.']);
+// Debugging: Check if decryption was successful
+if ($decryptedFileName === false) {
+    die("❌ Failed to decrypt the filename. Please check your AES key and IV.");
 }
 
-$stmt->close();
-$conn->close();
+// Debugging: Check the decrypted filename
+var_dump($decryptedFileName);
+
+$action = $_GET['action'];
+
+// Define the correct file directory
+$file_dir = realpath(__DIR__ . '/../Documents/Scholarship') . DIRECTORY_SEPARATOR;
+$file_path = $file_dir . $decryptedFileName;
+
+// Debugging: Check the file path
+var_dump($file_path);
+
+// Check if the file exists
+if (!file_exists($file_path)) {
+    die("❌ File not found: " . htmlspecialchars($file_path));
+}
+
+// Ensure the file is a valid file and not a directory
+if (!is_file($file_path)) {
+    die("❌ The path is not a valid file: " . htmlspecialchars($file_path));
+}
+
+// Ensure the file is within the allowed directory
+if (strpos(realpath($file_path), $file_dir) !== 0) {
+    die("🚫 Access denied.");
+}
+
+// Generate a public URL for viewing (Modify this for your server setup)
+$base_url = "https://www.kaluppa.online/Kaluppa/Backend/Documents/Scholarship";
+$file_url = $base_url . '/' . urlencode($decryptedFileName);
+
+// Serve file based on action
+if ($action === 'view') {
+    // Read and decrypt file content
+    $encryptedContent = file_get_contents($file_path);
+    $decryptedContent = openssl_decrypt(
+        base64_decode($encryptedContent),
+        'AES-256-CBC',
+        AES_KEY,
+        OPENSSL_RAW_DATA,
+        AES_IV
+    );
+
+    // Check decryption success
+    if ($decryptedContent === false) {
+        die("❌ Failed to decrypt the file. Please check your AES key and IV.");
+    }
+
+    // Detect MIME type manually (optional, but safer)
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime_type = $finfo->buffer($decryptedContent);
+
+    $inline_types = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'text/plain'];
+
+    if (in_array($mime_type, $inline_types)) {
+        header('Content-Type: ' . $mime_type);
+        header('Content-Disposition: inline; filename="' . basename($file_path) . '"');
+        header('Content-Length: ' . strlen($decryptedContent));
+        echo $decryptedContent;
+        exit();
+    } else {
+        // Save temporarily if not inline-viewable (e.g., for Word Docs)
+        $tempFile = tempnam(sys_get_temp_dir(), 'dec_');
+        file_put_contents($tempFile, $decryptedContent);
+
+        // Serve via Google Docs Viewer
+        $tempUrl = $base_url . '/' . basename($tempFile); // Adjust this if you're not exposing /tmp
+        $google_viewer = "https://docs.google.com/gview?url=$tempUrl&embedded=true";
+        header("Location: $google_viewer");
+        exit();
+    }
+} elseif ($action === 'download') {
+    // 🔥 NEW: Secure file download function
+    $encryptedContent = file_get_contents($file_path);
+    $decryptedContent = openssl_decrypt(
+        base64_decode($encryptedContent),
+        'AES-256-CBC',
+        AES_KEY,
+        OPENSSL_RAW_DATA,
+        AES_IV
+    );
+
+    // Ensure decryption is successful
+    if ($decryptedContent === false) {
+        die("❌ Failed to decrypt the file.");
+    }
+
+    // Determine file MIME type
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime_type = $finfo->buffer($decryptedContent);
+
+    // Set headers for secure file download
+    header('Content-Description: File Transfer');
+    header('Content-Type: ' . $mime_type);
+    header('Content-Disposition: attachment; filename="' . basename($decryptedFileName) . '"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . strlen($decryptedContent));
+
+    // Output decrypted file
+    echo $decryptedContent;
+    exit();
+}
+
+die("❌ Invalid action.");
 ?>
