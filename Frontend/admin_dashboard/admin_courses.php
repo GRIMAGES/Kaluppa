@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     $instructor = $_POST['courseInstructor'];
     $capacity = $_POST['courseCapacity'];
     $requisites = $_POST['courseRequisites'];
+    $requirements = $_POST['courseRequirements'];
     $description = $_POST['courseDescription'];
     $status = $_POST['courseStatus'];
 
@@ -66,8 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
 
     if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
         if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
-            $stmt = $conn->prepare("INSERT INTO courses (name, image, start_date, end_date, instructor, capacity, requisites, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssss", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $description, $status);
+            $stmt = $conn->prepare("INSERT INTO courses (name, image, start_date, end_date, instructor, capacity, requisites, requirements, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssssss", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $requirements, $description, $status);
+            
 
             if ($stmt->execute()) {
                 echo "<script>$('#successModal').modal('show');</script>";
@@ -91,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
     $instructor = $_POST['courseInstructor'];
     $capacity = $_POST['courseCapacity'];
     $requisites = $_POST['courseRequisites'];
+    $requirements = $_POST['courseRequirements']; // <-- NEW LINE
     $description = $_POST['courseDescription'];
     $status = $_POST['courseStatus'];
 
@@ -102,8 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
 
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
             if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
-                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, start_date = ?, end_date = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
-                $stmt->bind_param("sssssssssi", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $description, $status, $id);
+                $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, start_date = ?, end_date = ?, instructor = ?, capacity = ?, requisites = ?, requirements = ?, description = ?, status = ? WHERE id = ?");
+$stmt->bind_param("ssssssssssi", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $requirements, $description, $status, $id);
+
             } else {
                 echo "Error uploading image.";
             }
@@ -245,6 +249,7 @@ if ($scholarship_result->num_rows > 0) {
                         <p><strong>Capacity:</strong> <?php echo htmlspecialchars($course['capacity']); ?></p>
                         <p><strong>Enrolled Students:</strong> <?php echo htmlspecialchars($course['enrolled_students']); ?></p>
                         <p><strong>Requisites:</strong> <?php echo htmlspecialchars($course['requisites']); ?></p>
+                        <p><strong>Requirements:</strong> <?php echo htmlspecialchars($course['requirements']); ?></p>
                         <p><strong>Status:</strong> <?php echo htmlspecialchars($course['status']); ?></p>
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#approvedUsersModal" onclick="showApprovedUsers(<?php echo $course['id']; ?>)">
                             View Enrolled Users
@@ -263,7 +268,9 @@ if ($scholarship_result->num_rows > 0) {
         data-requisites="<?= $course['requisites'] ?>"
         data-status="<?= $course['status'] ?>"
         data-startdate="<?= $course['start_date'] ?>"
-        data-enddate="<?= $course['end_date'] ?>">
+        data-enddate="<?= $course['end_date'] ?>"
+        data-requirements="<?= $course['requirements'] ?>">
+    </button>
     <i class="fas fa-edit"></i>
 </button>
                     </div>
@@ -309,6 +316,10 @@ if ($scholarship_result->num_rows > 0) {
                     <div class="mb-3">
                         <label for="course_instructor" class="form-label" style="color:black;">Instructor</label>
                         <input type="text" class="form-control" id="course_instructor" name="courseInstructor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="courseRequirements" class="form-label" style="color:black;">Requirements</label>
+                        <input type="text" class="form-control" id="courseRequirements" name="courseRequirements" required>
                     </div>
                     <div class="mb-3">
                         <label for="course_requisites" class="form-label" style="color:black;">Requisites</label>
@@ -369,6 +380,10 @@ if ($scholarship_result->num_rows > 0) {
                         <input type="text" class="form-control" id="edit_course_instructor" name="courseInstructor" required>
                     </div>
                     <div class="mb-3">
+                        <label for="editcourseRequirements" class="form-label" style="color:black;">Requirements</label>
+                        <input type="text" class="form-control" id="editcourseRequirements" name="ceditcourseRequirements" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="edit_course_requisites" class="form-label" style="color:black;">Requisites</label>
                         <input type="text" class="form-control" id="edit_course_requisites" name="courseRequisites" required>
                     </div>
@@ -425,6 +440,7 @@ editButtons.forEach(button => {
         const status = this.getAttribute('data-status');
         const startDate = this.getAttribute('data-startdate');
         const endDate = this.getAttribute('data-enddate');
+        const requirements= this.getAttribute('data-requirements');
 
         document.getElementById('edit_course_id').value = id;
         document.getElementById('edit_course_name').value = name;
@@ -438,6 +454,7 @@ editButtons.forEach(button => {
         // Set start and end dates
         document.getElementById('editCourseStartDate').value = startDate;
         document.getElementById('editCourseEndDate').value = endDate;
+        document.getElementById('editcourseRequirements').value = requirements;
 
         modal.show();
     });
