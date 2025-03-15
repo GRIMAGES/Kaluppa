@@ -158,52 +158,64 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                             <th>Update</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            while ($row = $result->fetch_assoc()) {
-                                echo '<tr>
-                                        <td>' . htmlspecialchars($row['id']) . '</td>
-                                        <td>' . htmlspecialchars($row['first_name']) . '</td>
-                                        <td>' . htmlspecialchars($row['middle_name']) . '</td>
-                                        <td>' . htmlspecialchars($row['last_name']) . '</td>
-                                        <td>' . htmlspecialchars($row['name']) . '</td>
-                                        <td>' . htmlspecialchars($row['email']) . '</td>
-                                        <td>' . htmlspecialchars($row['status']) . '</td>
-                                        <td>' . htmlspecialchars($row['applied_at']) . '</td>
-                                        <td>
-                                            <div class="d-inline-flex gap-2">
-                                                <button type="button" class="btn btn-sm btn-outline-success" 
-                                                    onclick="showApplicationDetails(' . $row['id'] . ', \'' . addslashes($row['first_name']) . '\', \'' . addslashes($row['middle_name']) . '\', \'' . addslashes($row['last_name']) . '\', \'' . addslashes($row['name']) . '\', \'' . addslashes($row['email']) . '\', \'' . addslashes($row['applied_at']) . '\', \'' . addslashes($row['status']) . '\', \'' . addslashes($row['documents']) . '\')">
-                                                    <i class="fas fa-eye"></i> View
-                                                </button>
-                                                <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($row['documents']) . '&action=download" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-download"></i> Download
-                                                </a>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
-                                                <input type="hidden" name="application_id" value="' . $row['id'] . '">
-                                                <div class="input-group">
-                                                    <select name="status" class="form-select form-select-sm">
-                                                        <option value="Pending" ' . ($row['status'] === 'Pending' ? 'selected' : '') . '>Pending</option>
-                                                        <option value="Approved" ' . ($row['status'] === 'Approved' ? 'selected' : '') . '>Approved</option>
-                                                        <option value="Rejected" ' . ($row['status'] === 'Rejected' ? 'selected' : '') . '>Rejected</option>
-                                                        <option value="Under Review" ' . ($row['status'] === 'Under Review' ? 'selected' : '') . '>Under Review</option>
-                                                        <option value="Enrolled" ' . ($row['status'] === 'Enrolled' ? 'selected' : '') . '>Enrolled</option>
-                                                    </select>
-                                                </div>
-                                        </td>
-                                        <td>
-                                            <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
-                                            </form>
-                                        </td>
-                                    </tr>';
-                            }
-                        }
-                        ?>
+                    <>
+<?php
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Safe escaping
+        $id = htmlspecialchars($row['id'] ?? '', ENT_QUOTES);
+        $first_name = htmlspecialchars($row['first_name'] ?? '', ENT_QUOTES);
+        $middle_name = htmlspecialchars($row['middle_name'] ?? '', ENT_QUOTES);
+        $last_name = htmlspecialchars($row['last_name'] ?? '', ENT_QUOTES);
+        $work_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES);
+        $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
+        $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
+        $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
+        $documents = htmlspecialchars($row['documents'] ?? '', ENT_QUOTES);
+        $encodedDocument = urlencode($row['documents'] ?? '');
+
+        echo '<tr>
+            <td>' . $id . '</td>
+            <td>' . $first_name . '</td>
+            <td>' . $middle_name . '</td>
+            <td>' . $last_name . '</td>
+            <td>' . $work_name . '</td>
+            <td>' . $email . '</td>
+            <td>' . $status . '</td>
+            <td>' . $applied_at . '</td>
+            <td>
+                <div class="d-inline-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-success"
+                        onclick="showApplicationDetails(\'' . $id . '\', \'' . $first_name . '\', \'' . $middle_name . '\', \'' . $last_name . '\', \'' . $work_name . '\', \'' . $email . '\', \'' . $applied_at . '\', \'' . $status . '\', \'' . $documents . '\')">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    <a href=\"../../Backend/admin_controller/view_document.php?file=' . $encodedDocument . '&action=download\" class=\"btn btn-sm btn-outline-primary\">
+                        <i class=\"fas fa-download\"></i> Download
+                    </a>
+                </div>
+            </td>
+            <td>
+                <form action=\"../../Backend/admin_controller/update_application_status.php\" method=\"POST\">
+                    <input type=\"hidden\" name=\"application_id\" value=\"' . $id . '\">
+                    <div class=\"input-group\">
+                        <select name=\"status\" class=\"form-select form-select-sm\">
+                            <option value=\"Pending\"' . ($row['status'] === 'Pending' ? ' selected' : '') . '>Pending</option>
+                            <option value=\"Approved\"' . ($row['status'] === 'Approved' ? ' selected' : '') . '>Approved</option>
+                            <option value=\"Rejected\"' . ($row['status'] === 'Rejected' ? ' selected' : '') . '>Rejected</option>
+                            <option value=\"Under Review\"' . ($row['status'] === 'Under Review' ? ' selected' : '') . '>Under Review</option>
+                            <option value=\"Enrolled\"' . ($row['status'] === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
+                        </select>
+                    </div>
+            </td>
+            <td>
+                <button type=\"submit\" name=\"update_status\" class=\"btn btn-sm btn-primary\">Update</button>
+                </form>
+            </td>
+        </tr>';
+    }
+}
+?>
                     </tbody>
                 </table>
             </div>
