@@ -135,102 +135,97 @@ $categorizedCourses = categorizeCourses($courseResult);
 
 <!-- Combined Course Details and Application Modal -->
 <div class="modal fade" id="courseApplicationModal" tabindex="-1" aria-labelledby="courseApplicationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content shadow-lg rounded-4 custom-modal">
-            <div class="modal-header">
-                <h5 class="modal-title" id="courseApplicationModalLabel">Course Details and Application</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content shadow-lg rounded-4 custom-modal">
+      <div class="modal-header">
+        <h5 class="modal-title" id="courseApplicationModalLabel">Course Details and Application</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- Left Column: Course Details -->
+          <div class="col-md-6 border-end">
+            <h4 class="mb-3" id="courseName"></h4>
+            <div class="mb-2">
+              <strong>Duration:</strong> <span id="courseDuration"></span> hours
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <!-- Left Column: Course Details -->
-                    <div class="col-md-6 border-end">
-                        <h4 class="mb-3" id="courseName"></h4>
-                        <div class="mb-2">
-                            <strong>Duration:</strong>
-                            <span id="courseDuration"></span> hours
-                        </div>
-                        <div class="mb-2">
-                            <strong>Description:</strong>
-                            <p id="courseDescription" class="mb-0"></p>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Prerequisites:</strong>
-                            <p id="coursePrerequisites" class="mb-0"></p>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Instructor:</strong>
-                            <span id="courseInstructor"></span>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Application Form -->
-                    <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
-                    <form id="applicationForm" action="https://www.kaluppa.online/Kaluppa/Backend/user_controller/submit_application.php" method="POST" enctype="multipart/form-data">
-    <div class="mb-3">
-        <label for="first_name" class="form-label">First Name</label>
-        <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="middle_name" class="form-label">Middle Name</label>
-        <input type="text" class="form-control" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($middleName); ?>">
-    </div>
-    <div class="mb-3">
-        <label for="last_name" class="form-label">Last Name</label>
-        <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="house_number" class="form-label">House Number</label>
-        <input type="text" class="form-control" id="house_number" name="house_number" value="<?php echo htmlspecialchars($houseNumber); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="street" class="form-label">Street</label>
-        <input type="text" class="form-control" id="street" name="street" value="<?php echo htmlspecialchars($street); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="barangay" class="form-label">Barangay</label>
-        <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="district" class="form-label">District</label>
-        <input type="text" class="form-control" id="district" name="district" value="<?php echo htmlspecialchars($district); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="city" class="form-label">City</label>
-        <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($city); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="region" class="form-label">Region</label>
-        <input type="text" class="form-control" id="region" name="region" value="<?php echo htmlspecialchars($region); ?>" required>
-    </div>
-    <div class="mb-3">
-        <label for="postal_code" class="form-label">Postal Code</label>
-        <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
-    </div>
-    <ddiv class="mb-3">
-        <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>
-        <input type="file" class="form-control" id="documents" name="documents[]" multiple accept=".pdf" required>
-    </div>
-
-    <!-- File Preview List (This will be updated with file names) -->
-    <div id="file-list" class="mb-3"></div>
-
-    <!-- Hidden field -->
-    <input type="hidden" id="course_id" name="course_id">
-
-    <!-- Submit Button -->
-    <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
-</form>
-
-                    </div>
-                </div>
+            <div class="mb-2">
+              <strong>Description:</strong>
+              <p id="courseDescription" class="mb-0"></p>
             </div>
+            <div class="mb-2">
+              <strong>Prerequisites:</strong>
+              <p id="coursePrerequisites" class="mb-0"></p>
+            </div>
+            <div class="mb-2">
+              <strong>Instructor:</strong> <span id="courseInstructor"></span>
+            </div>
+          </div>
+
+          <!-- Right Column: Application Form -->
+          <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
+            <form id="applicationForm" action="https://www.kaluppa.online/Kaluppa/Backend/user_controller/submit_application.php" method="POST" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="middle_name" class="form-label">Middle Name</label>
+                <input type="text" class="form-control" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($middleName); ?>">
+              </div>
+              <div class="mb-3">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="house_number" class="form-label">House Number</label>
+                <input type="text" class="form-control" id="house_number" name="house_number" value="<?php echo htmlspecialchars($houseNumber); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="street" class="form-label">Street</label>
+                <input type="text" class="form-control" id="street" name="street" value="<?php echo htmlspecialchars($street); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="barangay" class="form-label">Barangay</label>
+                <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="district" class="form-label">District</label>
+                <input type="text" class="form-control" id="district" name="district" value="<?php echo htmlspecialchars($district); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($city); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="region" class="form-label">Region</label>
+                <input type="text" class="form-control" id="region" name="region" value="<?php echo htmlspecialchars($region); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="postal_code" class="form-label">Postal Code</label>
+                <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>
+                <input type="file" class="form-control" id="documents" name="documents[]" multiple accept=".pdf" required>
+              </div>
+
+              <!-- ✅ File preview list -->
+              <div id="file-list" class="mb-3"></div>
+
+              <input type="hidden" id="course_id" name="course_id">
+
+              <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
+            </form>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 
@@ -433,35 +428,34 @@ document.getElementById("courseModal").addEventListener("hidden.bs.modal", funct
     toast.show();
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-        const fileInput = document.getElementById('documents');
-        const fileListDiv = document.getElementById('file-list');
+  document.addEventListener("DOMContentLoaded", function () {
+    const fileInput = document.getElementById('documents');
+    const fileList = document.getElementById('file-list');
 
-        fileInput.addEventListener('change', function () {
-            fileListDiv.innerHTML = ''; // Clear previous list
+    fileInput.addEventListener('change', function () {
+      fileList.innerHTML = '';
 
-            if (this.files.length > 0) {
-                const listGroup = document.createElement('ul');
-                listGroup.className = 'list-group';
+      if (fileInput.files.length > 0) {
+        const ul = document.createElement('ul');
+        ul.className = 'list-group';
 
-                Array.from(this.files).forEach((file, index) => {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+        Array.from(fileInput.files).forEach(file => {
+          const li = document.createElement('li');
+          li.className = 'list-group-item d-flex justify-content-between align-items-center';
 
-                    listItem.innerHTML = `
-                        <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${file.name}</span>
-                        <span class="badge bg-primary">${(file.size / 1024).toFixed(1)} KB</span>
-                    `;
-
-                    listGroup.appendChild(listItem);
-                });
-
-                fileListDiv.appendChild(listGroup);
-            } else {
-                fileListDiv.innerHTML = `<div class="text-muted">No files selected.</div>`;
-            }
+          li.innerHTML = `
+            <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${file.name}</span>
+            <span class="badge bg-secondary">${(file.size / 1024).toFixed(1)} KB</span>
+          `;
+          ul.appendChild(li);
         });
+
+        fileList.appendChild(ul);
+      } else {
+        fileList.innerHTML = '<small class="text-muted">No file selected</small>';
+      }
     });
+  });
 </script>
 </body>
 </html>
