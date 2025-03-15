@@ -346,21 +346,19 @@ $(document).ready(function() {
 // Show modal on document click
 const downloadModal = document.getElementById('downloadModal');
 downloadModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget; 
-    const documents = button.getAttribute('data-documents'); 
-    const applicationId = button.getAttribute('data-application-id'); 
+    const button = event.relatedTarget;
+    const documents = button.getAttribute('data-documents');
+    const applicationId = button.getAttribute('data-application-id');
 
-    console.log("Documents data received:", documents);
+    console.log("Documents JSON:", documents); // Check the value here
 
-    // Parse the documents JSON string to an array
     const documentList = document.getElementById('documentList');
-    documentList.innerHTML = ''; 
+    documentList.innerHTML = ''; // Clear any existing list items
 
     if (documents) {
         try {
-            const documentsArray = JSON.parse(documents); 
-            console.log("Parsed documents array:", documentsArray);
-
+            const documentsArray = JSON.parse(documents);
+            console.log("Parsed documents array:", documentsArray); // Check if parsing works
             if (documentsArray.length > 0) {
                 documentsArray.forEach((document, index) => {
                     const listItem = document.createElement('li');
@@ -377,7 +375,7 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
                 documentList.appendChild(noDocuments);
             }
         } catch (error) {
-            console.error("Error parsing documents:", error);
+            console.error("Error parsing documents JSON:", error);
             const errorMessage = document.createElement('p');
             errorMessage.textContent = "Error loading documents.";
             documentList.appendChild(errorMessage);
