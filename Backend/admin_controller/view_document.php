@@ -17,23 +17,46 @@ if (!isset($_GET['file']) || !isset($_GET['action'])) {
     die("Invalid request.");
 }
 
-// Extract the filename if it's in an array
+// Extract and decrypt the encrypted filename if it's in an array
 $file = $_GET['file'];
 if (is_array($file)) {
     $file = reset($file);
 }
 
-// Sanitize the file name
+// Sanitize the encrypted file name
 $file = trim(urldecode($file));
-$file = basename($file);
+
+// Decrypt the encrypted filename
+$decryptedFileName = openssl_decrypt(
+    base64_decode($file), // Assuming the filename was base64-encoded before encryption
+    'AES-256-CBC',        // Encryption method
+    AES_KEY,              // Your AES key
+    OPENSSL_RAW_DATA,     // OpenSSL option
+    AES_IV                // Your AES initialization vector
+);
+
+// Debugging: Check if decryption was successful
+if ($decryptedFileName === false) {
+    die("❌ Failed to decrypt the filename. Please check your AES key and IV.");
+}
+
+// Debugging: Check the decrypted filename
+var_dump($decryptedFileName); // Check if filename is what you expect
 
 $action = $_GET['action'];
 
 // Define the correct file directory
-$file_dir = realpath(__DIR__ . '/opt/bitnami/apache/htdocs/Kaluppa/Backend/Documents/Scholarship/') . DIRECTORY_SEPARATOR;
-$file_path = $file_dir . $file;
+$file_dir = realpath(__DIR__ . '/../Documents/Scholarship') . DIRECTORY_SEPARATOR;
+
+// Debugging: Check the directory path
+var_dump($file_dir); // Check if the directory is correct
+
+$file_path = $file_dir . $decryptedFileName;
 
 // Debugging: Check the file path
+var_dump($file_path); // Check if the path looks correct
+
+// Check if the file exists
 if (!file_exists($file_path)) {
     die("❌ File not found: " . htmlspecialchars($file_path));
 }
@@ -50,7 +73,7 @@ if (strpos(realpath($file_path), $file_dir) !== 0) {
 
 // Generate a public URL for viewing (Modify this for your server setup)
 $base_url = "https://www.kaluppa.online/Kaluppa/Backend/Documents/Scholarship";
-$file_url = $base_url . '/' . urlencode($file);
+$file_url = $base_url . '/' . urlencode($decryptedFileName);
 
 // Serve file based on action
 if ($action === 'view') {
@@ -115,7 +138,7 @@ if ($action === 'view') {
     // Set headers for secure file download
     header('Content-Description: File Transfer');
     header('Content-Type: ' . $mime_type);
-    header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+    header('Content-Disposition: attachment; filename="' . basename($decryptedFileName) . '"');
     header('Expires: 0');
     header('Cache-Control: must-revalidate');
     header('Pragma: public');
