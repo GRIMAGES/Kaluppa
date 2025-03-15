@@ -282,18 +282,20 @@ if ($scholarship_result->num_rows > 0) {
                     </div>
                     <div class="actions">
                         <a href="admin_courses.php?delete_course=<?= $course['id'] ?>" class="btn btn-danger btn-icon"><i class="fas fa-trash-alt"></i></a>
-                        <button class="btn btn-warning btn-icon" data-bs-toggle="modal" data-bs-target="#editCourseModal"
-                                data-id="<?= $course['id'] ?>"
-                                data-name="<?= $course['name'] ?>"
-                                data-description="<?= $course['description'] ?>"
-                                data-capacity="<?= $course['capacity'] ?>"
-                                data-instructor="<?= $course['instructor'] ?>"
-                                data-requisites="<?= $course['requisites'] ?>"
-                                data-status="<?= $course['status'] ?>">
-                                data-startdate="<?= $course['start_date']; ?>"
-                                data-enddate="<?= $course['end_date']; ?>"
-                                <i class="fas fa-edit"></i>
-                        </button>
+                        <button class="btn btn-warning btn-icon"
+        data-bs-toggle="modal"
+        data-bs-target="#editCourseModal"
+        data-id="<?= $course['id'] ?>"
+        data-name="<?= $course['name'] ?>"
+        data-description="<?= $course['description'] ?>"
+        data-capacity="<?= $course['capacity'] ?>"
+        data-instructor="<?= $course['instructor'] ?>"
+        data-requisites="<?= $course['requisites'] ?>"
+        data-status="<?= $course['status'] ?>"
+        data-startdate="<?= $course['start_date'] ?>"
+        data-enddate="<?= $course['end_date'] ?>">
+    <i class="fas fa-edit"></i>
+</button>
                     </div>
                 </div>
             </div>
@@ -322,13 +324,14 @@ if ($scholarship_result->num_rows > 0) {
                         <textarea class="form-control" id="course_description" name="courseDescription" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="courseStartDate" class="form-label" style="color:black;">Start Date</label>
-                        <input type="date" class="form-control" id="courseStartDate" name="courseStartDate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="courseEndDate" class="form-label" style="color:black;">End Date</label>
-                        <input type="date" class="form-control" id="courseEndDate" name="courseEndDate" required>
-                    </div>
+  <label for="courseStartDate" class="form-label">Start Date</label>
+  <input type="date" class="form-control" id="courseStartDate" name="courseStartDate" required>
+</div>
+
+<div class="mb-3">
+  <label for="courseEndDate" class="form-label">End Date</label>
+  <input type="date" class="form-control" id="courseEndDate" name="courseEndDate" required>
+</div>
                     <div class="mb-3">
                         <label for="course_capacity" class="form-label" style="color:black;">Capacity</label>
                         <input type="number" class="form-control" id="course_capacity" name="courseCapacity" required>
