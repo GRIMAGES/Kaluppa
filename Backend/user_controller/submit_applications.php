@@ -14,7 +14,7 @@ session_start();
 // Check if user is logged in
 if (!isset($_SESSION['email'])) {
     error_log("User not logged in.");
-    header("Location: /Frontend/index.php");
+    echo json_encode(['success' => false, 'message' => 'User not logged in.']);
     exit();
 }
 
@@ -57,7 +57,6 @@ $work_id = $_POST['work_id'] ?? '';
 
 // File upload path
 $uploadDir = __DIR__ . '/../../Backend/Documents/Volunteer/';
-
 if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
