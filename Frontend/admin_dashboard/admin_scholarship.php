@@ -186,12 +186,12 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                         <td>' . htmlspecialchars($applied_at) . '</td>
                         <td>
                             <div class="d-inline-flex gap-2">';
-                            
+
                             // Add button to open modal for document selection
                             if (!empty($documents)) {
-                                echo '<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#downloadModal" data-documents=\'' . json_encode($documents) . '\' data-application-id="' . $id . '">
-                                        <i class="fas fa-download"></i> Download
-                                      </button>';
+                                echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
+                                    data-documents=\'' . json_encode($documents) . '\'
+                                    data-application-id="' . htmlspecialchars($id) . '">Download Documents</button>';
                             }
 
                             echo '</div>
