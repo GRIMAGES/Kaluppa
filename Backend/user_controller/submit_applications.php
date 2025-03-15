@@ -1,23 +1,28 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Log errors to a file
+// Error logging
 ini_set("log_errors", 1);
 ini_set("error_log", "../../Backend/logs/application_form_errors.log");
 
+// Check session
 if (!isset($_SESSION['email'])) {
     error_log("User not logged in. Session email is not set.");
     header("Location: /Frontend/index.php");
     exit();
 }
 
+// Fetch user details
 $userQuery = "SELECT id, first_name, middle_name, last_name, email FROM user WHERE email = ?";
 $stmt = $conn->prepare($userQuery);
 if (!$stmt) {
-    error_log("Prepare failed: " . $conn->error);
+    error_log("User fetch prepare failed: " . $conn->error);
     echo json_encode(['success' => false, 'message' => 'Database error.']);
     exit();
 }
@@ -28,7 +33,7 @@ $user = $userResult->fetch_assoc();
 
 if (!$user) {
     error_log("User not found with email: " . $_SESSION['email']);
-    echo json_encode(['success' => false, 'error_code' => 2, 'message' => 'User not found']);
+    echo json_encode(['success' => false, 'message' => 'User not found']);
     exit();
 }
 
@@ -37,77 +42,96 @@ $first_name = $user['first_name'];
 $middle_name = $user['middle_name'];
 $last_name = $user['last_name'];
 $email = $user['email'];
-$phone = $_POST['phone']; // Get phone number from form
-$house_number = $_POST['house_number'];
-$street = $_POST['street'];
-$barangay = $_POST['barangay'];
-$district = $_POST['district'];
-$city = $_POST['city'];
-$region = $_POST['region'];
-$postal_code = $_POST['postal_code'];
 
-$uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
-error_log("Resolved path: " . var_export($uploadDir, true));
-if ($uploadDir === false) {
-    error_log("Invalid base directory path.");
-    echo json_encode(['success' => false, 'message' => 'Invalid base directory path.']);
-    exit();
-}
-$uploadFile = $uploadDir . DIRECTORY_SEPARATOR . basename($_FILES['resume']['name']);
-
-if (!file_exists($uploadDir)) {
-    if (!mkdir($uploadDir, 0777, true)) {
-        error_log("Failed to create directory: " . $uploadDir);
-        echo json_encode(['success' => false, 'message' => 'Failed to create directory.']);
-        exit();
-    }
-}
-
-if (move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFile)) {
-    error_log("File uploaded successfully to: " . $uploadFile);
-} else {
-    error_log("File upload error: " . $_FILES['resume']['error']);
-    echo json_encode(['success' => false, 'message' => 'File upload error.']);
-    exit();
-}
-
-// Fetch 'work_id' from POST or set a default value
+// POST data
+$phone = $_POST['phone'] ?? '';
+$house_number = $_POST['house_number'] ?? '';
+$street = $_POST['street'] ?? '';
+$barangay = $_POST['barangay'] ?? '';
+$district = $_POST['district'] ?? '';
+$city = $_POST['city'] ?? '';
+$region = $_POST['region'] ?? '';
+$postal_code = $_POST['postal_code'] ?? '';
 $work_id = $_POST['work_id'] ?? 0;
 
-// Generate custom application ID (VOL-00001 format)
-$query = "SELECT id FROM volunteer_application ORDER BY id DESC LIMIT 1";
-$result = $conn->query($query);
-$row = $result->fetch_assoc();
-
-if ($row) {
-    $lastId = $row['id'];
-    $num = (int)substr($lastId, 4); // Extract numeric part
-    $newId = 'VOL-' . str_pad($num + 1, 5, '0', STR_PAD_LEFT);
-} else {
-    $newId = 'VOL-00001'; // First entry
-}
-
-error_log("Generated new ID: " . $newId); // Debugging statement
-
-// Insert data into the 'volunteer_application' table
-$stmt = $conn->prepare("INSERT INTO volunteer_application (id, work_id, user_id, first_name, middle_name, last_name, email, phone, house_number, street, barangay, district, city, region, postal_code, resume_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-if (!$stmt) {
-    error_log("Prepare failed: " . $conn->error);
-    echo json_encode(['success' => false, 'message' => 'Database error.']);
+// File upload
+$uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
+if ($uploadDir === false) {
+    error_log("Invalid upload path.");
+    echo json_encode(['success' => false, 'message' => 'Invalid upload path.']);
     exit();
 }
-$stmt->bind_param('siisssssssssssss', $newId, $work_id, $user_id, $first_name, $middle_name, $last_name, $email, $phone, $house_number, $street, $barangay, $district, $city, $region, $postal_code, $uploadFile);
 
-if ($stmt->execute()) {
-    error_log("Application submitted successfully for user ID: " . $user_id);
-    echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
-} else {
-    error_log("Error submitting application: " . $stmt->error);
-    echo json_encode(['success' => false, 'message' => 'Failed to submit application.']);
+if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
 }
 
-// Log the query for debugging
-error_log("Executed query: " . $stmt->error);
+$resumeName = basename($_FILES['resume']['name']);
+$uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $resumeName;
+
+if (!move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFile)) {
+    error_log("File upload failed: " . $_FILES['resume']['error']);
+    echo json_encode(['success' => false, 'message' => 'File upload failed.']);
+    exit();
+}
+
+// Generate custom ID: VOL-00001 format
+$idQuery = "SELECT id FROM volunteer_application ORDER BY id DESC LIMIT 1";
+$idResult = $conn->query($idQuery);
+
+if ($idResult && $idResult->num_rows > 0) {
+    $lastIdRow = $idResult->fetch_assoc();
+    $lastId = $lastIdRow['id'];
+    $lastNum = (int)substr($lastId, 4); // Extract number after "VOL-"
+    $newId = 'VOL-' . str_pad($lastNum + 1, 5, '0', STR_PAD_LEFT);
+} else {
+    $newId = 'VOL-00001';
+}
+
+error_log("Generated new application ID: $newId");
+
+// Prepare INSERT query
+$insertQuery = "INSERT INTO volunteer_application (
+    id, work_id, user_id, first_name, middle_name, last_name, email,
+    phone, house_number, street, barangay, district, city, region, postal_code, resume_path
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+$stmt = $conn->prepare($insertQuery);
+if (!$stmt) {
+    error_log("Insert prepare failed: " . $conn->error);
+    echo json_encode(['success' => false, 'message' => 'Insert prepare failed.']);
+    exit();
+}
+
+// Bind parameters
+$stmt->bind_param(
+    'siisssssssssssss',
+    $newId,
+    $work_id,
+    $user_id,
+    $first_name,
+    $middle_name,
+    $last_name,
+    $email,
+    $phone,
+    $house_number,
+    $street,
+    $barangay,
+    $district,
+    $city,
+    $region,
+    $postal_code,
+    $uploadFile
+);
+
+// Execute
+if ($stmt->execute()) {
+    error_log("Application successfully inserted with ID: $newId");
+    echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
+} else {
+    error_log("Application insert failed: " . $stmt->error);
+    echo json_encode(['success' => false, 'message' => 'Insert failed.']);
+}
 
 $stmt->close();
 $conn->close();
