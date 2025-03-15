@@ -139,16 +139,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
 
     if ($stmt->execute()) {
         error_log("Application submitted successfully with ID: $newId");
-         // REDIRECT TO user_work.php
-    header("Location: /Kaluppa/Frontend/user_dashboard/user_work.php");
-    exit(); // always call exit after header redirect
-
+    
+        $_SESSION['success'] = "Your application has been submitted!";
+        $_SESSION['last_modal_id'] = 'workModal' . $_POST['work_id'];
+    
+        header("Location: /Kaluppa/Frontend/user_dashboard/user_work.php");
+        exit();
     } else {
         error_log("Insert failed: " . $stmt->error);
-        echo "<script>var errorToast = new bootstrap.Toast(document.getElementById('errorToast')); errorToast.show();</script>";
+    
+        $_SESSION['error'] = "Something went wrong.";
+        $_SESSION['last_modal_id'] = 'workModal' . $_POST['work_id'];
+    
+        header("Location: /Kaluppa/Frontend/user_dashboard/user_work.php");
+        exit();
     }
-
-    $stmt->close();
-    $conn->close();
 }
 ?>

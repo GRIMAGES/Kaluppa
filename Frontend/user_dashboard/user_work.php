@@ -72,18 +72,16 @@ if (!$workResult) {
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
-<?php if (!empty($successMessage) || !empty($errorMessage)): ?>
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
-    <div class="toast align-items-center text-white <?php echo $successMessage ? 'bg-success' : 'bg-danger'; ?> border-0 show" role="alert">
-        <div class="d-flex">
-            <div class="toast-body">
-                <?php echo $successMessage ?: $errorMessage; ?>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
+ <!-- ✅ Success/Error Messages Block -->
+ <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success"><?= $_SESSION['success']; ?></div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger"><?= $_SESSION['error']; ?></div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
 
 <!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
