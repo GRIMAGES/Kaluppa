@@ -204,6 +204,7 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
+
 <?php if (isset($_SESSION['toast_success'])): ?>
     <div id="toastMessage" class="alert alert-success text-center position-fixed top-0 start-50 translate-middle-x mt-3 w-50 shadow rounded" role="alert" style="z-index: 9999;">
         <?php 
@@ -222,7 +223,6 @@ if (isset($_GET['id'])) {
     </script>
 <?php endif; ?>
 
-<?php include 'sidebar.php'; ?>
 
 
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
