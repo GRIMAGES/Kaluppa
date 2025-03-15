@@ -138,100 +138,98 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 </div>
 
  <!-- Main Content -->
- <div class="content" style="margin-left: 250px; padding: 20px;">
-        <div class="container mt-5">
-            <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
-            <div class="table-responsive">
-                <table id="scholarshipTable" class="display" style="color: black;">
-                    <thead style="background-color: #f2f2f2; color: black;">
-                        <tr>
-                            <th>ID</th>
-                            <th>First Name</th>
-                            <th>Middle Name</th>
-                            <th>Last Name</th>
-                            <th>Course Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Applied At</th>
-                            <th>Actions</th>
-                            <th>Update Status</th>
-                            <th>Update</th>
-                        </tr>
-                    </thead>
-                    <>
-<?php
-$result = $conn->query($sql);
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        // Safe escaping
-        $id = htmlspecialchars($row['id'] ?? '', ENT_QUOTES);
-        $first_name = htmlspecialchars($row['first_name'] ?? '', ENT_QUOTES);
-        $middle_name = htmlspecialchars($row['middle_name'] ?? '', ENT_QUOTES);
-        $last_name = htmlspecialchars($row['last_name'] ?? '', ENT_QUOTES);
-        $work_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES);
-        $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
-        $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
-        $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
-        $documents = htmlspecialchars($row['documents'] ?? '', ENT_QUOTES);
-        $encodedDocument = urlencode($row['documents'] ?? '');
+<div class="content" style="margin-left: 250px; padding: 20px;">
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
+        <div class="table-responsive">
+            <table id="scholarshipTable" class="display" style="color: black;">
+                <thead style="background-color: #f2f2f2; color: black;">
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Last Name</th>
+                        <th>Course Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Applied At</th>
+                        <th>Actions</th>
+                        <th>Update Status</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $id = htmlspecialchars($row['id'] ?? '', ENT_QUOTES);
+                        $first_name = htmlspecialchars($row['first_name'] ?? '', ENT_QUOTES);
+                        $middle_name = htmlspecialchars($row['middle_name'] ?? '', ENT_QUOTES);
+                        $last_name = htmlspecialchars($row['last_name'] ?? '', ENT_QUOTES);
+                        $work_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES);
+                        $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
+                        $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
+                        $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
+                        $documents = htmlspecialchars($row['documents'] ?? '', ENT_QUOTES);
+                        $encodedDocument = urlencode($row['documents'] ?? '');
 
-        echo '<tr>
-        <td>' . htmlspecialchars($id) . '</td>
-        <td>' . htmlspecialchars($first_name) . '</td>
-        <td>' . htmlspecialchars($middle_name) . '</td>
-        <td>' . htmlspecialchars($last_name) . '</td>
-        <td>' . htmlspecialchars($work_name) . '</td>
-        <td>' . htmlspecialchars($email) . '</td>
-        <td>' . htmlspecialchars($status) . '</td>
-        <td>' . htmlspecialchars($applied_at) . '</td>
-        <td>
-            <div class="d-inline-flex gap-2">
-                <button type="button" class="btn btn-sm btn-outline-success"
-                    onclick="showApplicationDetails(
-                        \'' . addslashes($id) . '\',
-                        \'' . addslashes($first_name) . '\',
-                        \'' . addslashes($middle_name) . '\',
-                        \'' . addslashes($last_name) . '\',
-                        \'' . addslashes($work_name) . '\',
-                        \'' . addslashes($email) . '\',
-                        \'' . addslashes($applied_at) . '\',
-                        \'' . addslashes($status) . '\',
-                        \'' . addslashes($documents) . '\'
-                    )">
-                    <i class="fas fa-eye"></i> View
-                </button>
-                <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($encodedDocument) . '&action=download" class="btn btn-sm btn-outline-primary">
-                    <i class="fas fa-download"></i> Download
-                </a>
-            </div>
-        </td>
-        <td>
-            <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
-                <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
-                <div class="input-group">
-                    <select name="status" class="form-select form-select-sm">
-                        <option value="Pending"' . ($status === 'Pending' ? ' selected' : '') . '>Pending</option>
-                        <option value="Approved"' . ($status === 'Approved' ? ' selected' : '') . '>Approved</option>
-                        <option value="Rejected"' . ($status === 'Rejected' ? ' selected' : '') . '>Rejected</option>
-                        <option value="Under Review"' . ($status === 'Under Review' ? ' selected' : '') . '>Under Review</option>
-                        <option value="Enrolled"' . ($status === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
-                    </select>
-                </div>
-        </td>
-        <td>
-            <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
-            </form>
-        </td>
-    </tr>';
-
-    }
-}
-?>
-                    </tbody>
-                </table>
-            </div>
+                        echo '<tr>
+                        <td>' . htmlspecialchars($id) . '</td>
+                        <td>' . htmlspecialchars($first_name) . '</td>
+                        <td>' . htmlspecialchars($middle_name) . '</td>
+                        <td>' . htmlspecialchars($last_name) . '</td>
+                        <td>' . htmlspecialchars($work_name) . '</td>
+                        <td>' . htmlspecialchars($email) . '</td>
+                        <td>' . htmlspecialchars($status) . '</td>
+                        <td>' . htmlspecialchars($applied_at) . '</td>
+                        <td>
+                            <div class="d-inline-flex gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-success"
+                                    onclick="showApplicationDetails(
+                                        \'' . addslashes($id) . '\',
+                                        \'' . addslashes($first_name) . '\',
+                                        \'' . addslashes($middle_name) . '\',
+                                        \'' . addslashes($last_name) . '\',
+                                        \'' . addslashes($work_name) . '\',
+                                        \'' . addslashes($email) . '\',
+                                        \'' . addslashes($applied_at) . '\',
+                                        \'' . addslashes($status) . '\',
+                                        \'' . addslashes($documents) . '\'
+                                    )">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($encodedDocument) . '&action=download" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
+                                <input type="hidden" name="id" value="' . htmlspecialchars($id) . '">
+                                <div class="input-group">
+                                    <select name="status" class="form-select form-select-sm">
+                                        <option value="Pending"' . ($status === 'Pending' ? ' selected' : '') . '>Pending</option>
+                                        <option value="Approved"' . ($status === 'Approved' ? ' selected' : '') . '>Approved</option>
+                                        <option value="Rejected"' . ($status === 'Rejected' ? ' selected' : '') . '>Rejected</option>
+                                        <option value="Under Review"' . ($status === 'Under Review' ? ' selected' : '') . '>Under Review</option>
+                                        <option value="Enrolled"' . ($status === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
+                                    </select>
+                                </div>
+                        </td>
+                        <td>
+                            <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
+                            </form>
+                        </td>
+                    </tr>';
+                    }
+                }
+                ?>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
     <!-- Application Details Modal -->
     <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
 
@@ -264,11 +262,10 @@ if ($result->num_rows > 0) {
 
 
     <!-- Bootstrap JS and Dependencies -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
     <!-- Include Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <!-- Include DataTables JS -->
@@ -320,7 +317,21 @@ if ($result->num_rows > 0) {
 
     console.log("Modal shown with ID:", id);
 }
-
+$(document).ready(function() {
+        $('#scholarshipTable').DataTable({
+            "paging": true,        // Enable pagination
+            "searching": true,     // Enable search bar
+            "ordering": true,      // Enable column sorting
+            "info": true,          // Show table info (e.g., "Showing 1 to 10 of 50 entries")
+            "lengthChange": true,  // Allow users to change the number of rows per page
+            "pageLength": 10,      // Set default page length
+            "language": {
+                "search": "Search:",  // Custom label for the search bar
+                "lengthMenu": "Show _MENU_ entries", // Custom label for the length menu
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries" // Custom label for info
+            }
+        });
+    });
 
 
     </script>
