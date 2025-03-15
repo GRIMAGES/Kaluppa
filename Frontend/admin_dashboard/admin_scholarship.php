@@ -140,7 +140,7 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 <!-- Main Content -->
 <div class="content" style="margin-left: 250px; padding: 20px;">
     <div class="container mt-5">
-        <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
+        <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>
         <div class="table-responsive">
             <table id="scholarshipTable" class="display" style="color: black;">
                 <thead style="background-color: #f2f2f2; color: black;">
@@ -195,12 +195,13 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 
                                     // Only show download button if the file name exists
                                     if ($fileName) {
-                                        echo '<a href="view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download"></i> Download ' . htmlspecialchars($fileName) . '
+                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-download"></i> Download
                                         </a>';
                                     }
                                 }
                             }
+
                             echo '</div>
                         </td>
                         <td>
