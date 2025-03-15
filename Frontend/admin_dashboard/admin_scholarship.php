@@ -352,18 +352,10 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
     const applicationId = button.getAttribute('data-application-id'); // Get the application ID
     const documentList = document.getElementById('documentList');
     
-    // Log the documents to check if they are being passed correctly
-    console.log(documents);
-
     // Clear existing list
     documentList.innerHTML = '';
 
-    if (documents.length === 0) {
-        const noDocumentsMessage = document.createElement('li');
-        noDocumentsMessage.textContent = 'No documents available to download.';
-        documentList.appendChild(noDocumentsMessage);
-    } else {
-        // Populate document list in the modal
+    if (documents && documents.length > 0) {
         documents.forEach((document, index) => {
             const listItem = document.createElement('li');
             const downloadLink = document.createElement('a');
@@ -373,8 +365,13 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
             listItem.appendChild(downloadLink);
             documentList.appendChild(listItem);
         });
+    } else {
+        const noDocuments = document.createElement('p');
+        noDocuments.textContent = "No documents available to download.";
+        documentList.appendChild(noDocuments);
     }
 });
+
     </script>
 </body>
 </html>
