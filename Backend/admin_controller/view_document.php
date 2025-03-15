@@ -35,26 +35,26 @@ $decryptedFileName = openssl_decrypt(
     AES_IV                // Your AES initialization vector
 );
 
-// Debugging: Check if decryption was successful
+// Check if decryption was successful
 if ($decryptedFileName === false) {
     die("❌ Failed to decrypt the filename. Please check your AES key and IV.");
 }
 
 // Debugging: Check the decrypted filename
-var_dump($decryptedFileName); // Check if filename is what you expect
+// var_dump($decryptedFileName); // Check if filename is what you expect
 
 $action = $_GET['action'];
 
 // Define the correct file directory
 $file_dir = realpath(__DIR__ . '/../Documents/Scholarship') . DIRECTORY_SEPARATOR;
 
-// Debugging: Check the directory path
-var_dump($file_dir); // Check if the directory is correct
+// Check the directory path
+// var_dump($file_dir); // Check if the directory is correct
 
 $file_path = $file_dir . $decryptedFileName;
 
-// Debugging: Check the file path
-var_dump($file_path); // Check if the path looks correct
+// Check the file path
+// var_dump($file_path); // Check if the path looks correct
 
 // Check if the file exists
 if (!file_exists($file_path)) {
