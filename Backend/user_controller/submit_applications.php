@@ -6,21 +6,8 @@ error_reporting(E_ALL);
 
 // Log errors to a file
 ini_set("log_errors", 1);
-$logFilePath = __DIR__ . "/../../Backend/logs/application_form_errors.log";
-ini_set("error_log", $logFilePath);
+ini_set("error_log", "../../Backend/logs/application_form_errors.log");
 
-// Make sure logs directory and file are writable
-$logDir = dirname($logFilePath);
-if (!file_exists($logDir)) {
-    mkdir($logDir, 0777, true);
-}
-if (!is_writable($logFilePath)) {
-    @touch($logFilePath);
-    @chmod($logFilePath, 0666); // Allow read/write for all users
-}
-error_log("Error log is writable and initialized.");
-
-// Load DB connection and start session
 require_once '../../Backend/connection.php';
 session_start();
 
@@ -74,21 +61,33 @@ if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
 
-// Check for upload error before moving file
+// Check for upload error
 if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
     error_log("Resume file upload error. Error Code: " . ($_FILES['resume']['error'] ?? 'Not set'));
     echo json_encode(['success' => false, 'message' => 'Resume upload error.']);
     exit();
 }
 
-// Prepare and sanitize file name
-$resumeNameRaw = basename($_FILES['resume']['name']);
-$resumeName = preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", $resumeNameRaw); // clean filename
-$uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $resumeName;
-$resumePathToSave = 'Backend/Documents/Volunteer/' . $resumeName; // relative path for DB
+// Allow only PDF files
+$allowedMime = ['application/pdf'];
+$allowedExt = ['pdf'];
 
-// Move uploaded file
-if (!move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFilePath)) {
+$fileTmpPath = $_FILES['resume']['tmp_name'];
+$fileName = $_FILES['resume']['name'];
+$fileMime = mime_content_type($fileTmpPath);
+$fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+if (!in_array($fileMime, $allowedMime) || !in_array($fileExt, $allowedExt)) {
+    error_log("Invalid file type uploaded: $fileMime.$fileExt");
+    echo json_encode(['success' => false, 'message' => 'Only PDF files are allowed.']);
+    exit();
+}
+
+// Prepare file path using original file name
+$uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
+$resumePathToSave = 'Backend/Documents/Volunteer/' . $fileName;
+
+if (!move_uploaded_file($fileTmpPath, $uploadFilePath)) {
     error_log("File move failed. Error Code: " . $_FILES['resume']['error']);
     echo json_encode(['success' => false, 'message' => 'Failed to upload resume file.']);
     exit();
@@ -101,7 +100,7 @@ $idResult = $conn->query($idQuery);
 if ($idResult && $idResult->num_rows > 0) {
     $lastIdRow = $idResult->fetch_assoc();
     $lastId = $lastIdRow['id'];
-    $lastNum = (int)substr($lastId, 4);
+    $lastNum = (int)substr($lastId, 4); // get number after 'VOL-'
     $newId = 'VOL-' . str_pad($lastNum + 1, 5, '0', STR_PAD_LEFT);
 } else {
     $newId = 'VOL-00001';
