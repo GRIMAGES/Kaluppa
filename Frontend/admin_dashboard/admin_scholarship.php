@@ -176,43 +176,54 @@ if ($result->num_rows > 0) {
         $encodedDocument = urlencode($row['documents'] ?? '');
 
         echo '<tr>
-            <td>' . $id . '</td>
-            <td>' . $first_name . '</td>
-            <td>' . $middle_name . '</td>
-            <td>' . $last_name . '</td>
-            <td>' . $work_name . '</td>
-            <td>' . $email . '</td>
-            <td>' . $status . '</td>
-            <td>' . $applied_at . '</td>
-            <td>
-                <div class="d-inline-flex gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-success"
-                        onclick="showApplicationDetails(\'' . $id . '\', \'' . $first_name . '\', \'' . $middle_name . '\', \'' . $last_name . '\', \'' . $work_name . '\', \'' . $email . '\', \'' . $applied_at . '\', \'' . $status . '\', \'' . $documents . '\')">
-                        <i class="fas fa-eye"></i> View
-                    </button>
-                    <a href=\"../../Backend/admin_controller/view_document.php?file=' . $encodedDocument . '&action=download\" class=\"btn btn-sm btn-outline-primary\">
-                        <i class=\"fas fa-download\"></i> Download
-                    </a>
+        <td>' . htmlspecialchars($id) . '</td>
+        <td>' . htmlspecialchars($first_name) . '</td>
+        <td>' . htmlspecialchars($middle_name) . '</td>
+        <td>' . htmlspecialchars($last_name) . '</td>
+        <td>' . htmlspecialchars($work_name) . '</td>
+        <td>' . htmlspecialchars($email) . '</td>
+        <td>' . htmlspecialchars($status) . '</td>
+        <td>' . htmlspecialchars($applied_at) . '</td>
+        <td>
+            <div class="d-inline-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-success"
+                    onclick="showApplicationDetails(
+                        \'' . addslashes($id) . '\',
+                        \'' . addslashes($first_name) . '\',
+                        \'' . addslashes($middle_name) . '\',
+                        \'' . addslashes($last_name) . '\',
+                        \'' . addslashes($work_name) . '\',
+                        \'' . addslashes($email) . '\',
+                        \'' . addslashes($applied_at) . '\',
+                        \'' . addslashes($status) . '\',
+                        \'' . addslashes($documents) . '\'
+                    )">
+                    <i class="fas fa-eye"></i> View
+                </button>
+                <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($encodedDocument) . '&action=download" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-download"></i> Download
+                </a>
+            </div>
+        </td>
+        <td>
+            <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
+                <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
+                <div class="input-group">
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="Pending"' . ($status === 'Pending' ? ' selected' : '') . '>Pending</option>
+                        <option value="Approved"' . ($status === 'Approved' ? ' selected' : '') . '>Approved</option>
+                        <option value="Rejected"' . ($status === 'Rejected' ? ' selected' : '') . '>Rejected</option>
+                        <option value="Under Review"' . ($status === 'Under Review' ? ' selected' : '') . '>Under Review</option>
+                        <option value="Enrolled"' . ($status === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
+                    </select>
                 </div>
-            </td>
-            <td>
-                <form action=\"../../Backend/admin_controller/update_application_status.php\" method=\"POST\">
-                    <input type=\"hidden\" name=\"application_id\" value=\"' . $id . '\">
-                    <div class=\"input-group\">
-                        <select name=\"status\" class=\"form-select form-select-sm\">
-                            <option value=\"Pending\"' . ($row['status'] === 'Pending' ? ' selected' : '') . '>Pending</option>
-                            <option value=\"Approved\"' . ($row['status'] === 'Approved' ? ' selected' : '') . '>Approved</option>
-                            <option value=\"Rejected\"' . ($row['status'] === 'Rejected' ? ' selected' : '') . '>Rejected</option>
-                            <option value=\"Under Review\"' . ($row['status'] === 'Under Review' ? ' selected' : '') . '>Under Review</option>
-                            <option value=\"Enrolled\"' . ($row['status'] === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
-                        </select>
-                    </div>
-            </td>
-            <td>
-                <button type=\"submit\" name=\"update_status\" class=\"btn btn-sm btn-primary\">Update</button>
-                </form>
-            </td>
-        </tr>';
+        </td>
+        <td>
+            <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
+            </form>
+        </td>
+    </tr>';
+
     }
 }
 ?>
