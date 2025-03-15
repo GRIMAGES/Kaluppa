@@ -55,46 +55,49 @@ $region = $_POST['region'] ?? '';
 $postal_code = $_POST['postal_code'] ?? '';
 $work_id = $_POST['work_id'] ?? '';
 
-// File upload
-$uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
-if ($uploadDir === false) {
-    error_log("Invalid upload path.");
-    echo json_encode(['success' => false, 'message' => 'Invalid upload path.']);
-    exit();
-}
+// File upload path
+$uploadDir = __DIR__ . '/../../Backend/Documents/Volunteer/';
 
 if (!file_exists($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
 
-$resumeName = basename($_FILES['resume']['name']);
-$uploadFile = $uploadDir . DIRECTORY_SEPARATOR . $resumeName;
-
-// Move file
-if (!move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFile)) {
-    error_log("File upload failed. Error Code: " . $_FILES['resume']['error']);
-    echo json_encode(['success' => false, 'message' => 'File upload failed.']);
+// Check for upload error before moving file
+if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
+    error_log("Resume file upload error. Error Code: " . ($_FILES['resume']['error'] ?? 'Not set'));
+    echo json_encode(['success' => false, 'message' => 'Resume upload error.']);
     exit();
 }
 
-// Generate custom ID: VOL-00001
+// Prepare file path and move the file
+$resumeName = basename($_FILES['resume']['name']);
+$uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $resumeName;
+$resumePathToSave = 'Backend/Documents/Volunteer/' . $resumeName; // relative path for DB
+
+if (!move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFilePath)) {
+    error_log("File move failed. Error Code: " . $_FILES['resume']['error']);
+    echo json_encode(['success' => false, 'message' => 'Failed to upload resume file.']);
+    exit();
+}
+
+// Generate custom ID: VOL-00001, VOL-00002, ...
 $idQuery = "SELECT id FROM volunteer_application ORDER BY id DESC LIMIT 1";
 $idResult = $conn->query($idQuery);
 
 if ($idResult && $idResult->num_rows > 0) {
     $lastIdRow = $idResult->fetch_assoc();
     $lastId = $lastIdRow['id'];
-    $lastNum = (int)substr($lastId, 4);
+    $lastNum = (int)substr($lastId, 4); // get number after 'VOL-'
     $newId = 'VOL-' . str_pad($lastNum + 1, 5, '0', STR_PAD_LEFT);
 } else {
     $newId = 'VOL-00001';
 }
 error_log("Generated new application ID: $newId");
 
-// Insert query
+// Insert application into DB
 $insertQuery = "INSERT INTO volunteer_application (
     id, work_id, user_id, first_name, middle_name, last_name, email,
-    phone, house_number, street, barangay, district, city, region, postal_code, resume_path
+    phone, house_number, street, barangay, district, city, region, postal_code, resume
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($insertQuery);
@@ -104,9 +107,8 @@ if (!$stmt) {
     exit();
 }
 
-// Corrected parameter types: All strings now
 $stmt->bind_param(
-    'ssssssssssssssss',
+    'siisssssssssssss',
     $newId,
     $work_id,
     $user_id,
@@ -122,10 +124,9 @@ $stmt->bind_param(
     $city,
     $region,
     $postal_code,
-    $uploadFile
+    $resumePathToSave
 );
 
-// Execute insert
 if ($stmt->execute()) {
     error_log("Application successfully inserted with ID: $newId");
     echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
