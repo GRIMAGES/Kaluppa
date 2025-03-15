@@ -140,7 +140,8 @@ if (!$workResult) {
 
                                     <!-- Right Column: Application Form -->
                                     <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
-                                    <form action="submit_application.php" method="POST" enctype="multipart/form-data">
+                                    <form method="POST" action="/Kaluppa/Backend/user_controller/submit_application.php" enctype="multipart/form-data">
+
 
                                             <input type="hidden" name="work_id" value="<?php echo $work['id']; ?>">
 
