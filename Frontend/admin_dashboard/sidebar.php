@@ -24,7 +24,7 @@ $adminName = trim("$first_name $middle_name $last_name");
 
 // Set profile picture path
 $profilePic = (!empty($profile_picture) && file_exists($_SERVER['DOCUMENT_ROOT'] . "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture))
-    ? "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture
+    ? "../../Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture
     : "/Frontend/assets/default-profile.png";
 
 // Get current page filename
@@ -65,7 +65,7 @@ $navLinks = [
 <!-- Sidebar Container -->
 <div class="sidebar p-3 d-flex flex-column">
     <div class="text-center mb-3">
-        <img src="../../Frontend/admin_dashboard/uploads/profile_pics/<?php echo htmlspecialchars($admin['profile_picture']); ?>" alt="Profile Picture" class="mb-2 rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+        <img src="<?php echo htmlspecialchars($profilePic); ?>" alt="Profile Picture" class="mb-2 rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
         <h5 class="mb-0"><?php echo htmlspecialchars($adminName); ?></h5>
     </div>
 
