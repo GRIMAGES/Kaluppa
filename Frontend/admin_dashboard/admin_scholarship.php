@@ -277,10 +277,10 @@ if ($result->num_rows > 0) {
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <!-- JavaScript for Handling Modal -->
     <script>
-        function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
-    console.log("Application details function called"); // Debugging line
+ function showApplicationDetails(id, firstName, middleName, lastName, courseName, email, appliedAt, status, documents) {
+    console.log("Application details function called");
+    console.log("Raw documents string:", documents);
 
-    // Prepare details for modal
     var detailsHtml = `
         <p><strong>First Name:</strong> ${firstName}</p>
         <p><strong>Middle Name:</strong> ${middleName}</p>
@@ -290,49 +290,35 @@ if ($result->num_rows > 0) {
         <p><strong>Applied At:</strong> ${appliedAt}</p>
         <p><strong>Status:</strong> ${status}</p>
     `;
-    
-    // Populate modal with application details
     document.getElementById('applicationDetails').innerHTML = detailsHtml;
 
-    // Prepare document links
     var documentLinksHtml = '';
     var documentArray = documents.split(',');
-    documentArray.forEach(function(document, index) {   
-        documentLinksHtml += `
-            <div>
-                <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(document.trim())}&action=view" target="_blank" class="btn btn-primary w-100 mb-2">View Document ${index + 1}</a>
-                <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(document.trim())}&action=download" class="btn btn-success w-100">Download Document ${index + 1}</a>
-            </div>
-        `;
-    });
 
-    // Populate modal with document links
+    if (documents.trim() === '' || documentArray.length === 0 || (documentArray.length === 1 && documentArray[0].trim() === '')) {
+        documentLinksHtml = `<p class="text-danger">No uploaded documents available.</p>`;
+    } else {
+        documentArray.forEach(function(document, index) {
+            const trimmedDoc = document.trim();
+            if (trimmedDoc !== '') {
+                documentLinksHtml += `
+                    <div>
+                        <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(trimmedDoc)}&action=view" target="_blank" class="btn btn-primary w-100 mb-2">View Document ${index + 1}</a>
+                        <a href="../../Backend/admin_controller/view_document.php?file=${encodeURIComponent(trimmedDoc)}&action=download" class="btn btn-success w-100">Download Document ${index + 1}</a>
+                    </div>
+                `;
+            }
+        });
+    }
+
     document.getElementById('documentLinks').innerHTML = documentLinksHtml;
-    
-    // Show the modal
+
     var viewApplicationModal = new bootstrap.Modal(document.getElementById('viewApplicationModal'));
     viewApplicationModal.show();
 
-    console.log("Modal shown with ID:", id); // Debugging line
+    console.log("Modal shown with ID:", id);
 }
-$(document).ready(function() {
-        $('#scholarshipTable').DataTable();
-    });
-    $(document).ready(function() {
-        $("#scholarshipTable tbody").sortable();
-        $("#scholarshipTable tbody").disableSelection();
-    });
 
-    <?php if (isset($_SESSION['status_updated']) && $_SESSION['status_updated']): ?>
-    <script>
-        window.addEventListener('DOMContentLoaded', (event) => {
-            var toastEl = document.getElementById('statusToast');
-            var toast = new bootstrap.Toast(toastEl);
-            toast.show();
-        });
-    </script>
-    <?php unset($_SESSION['status_updated']); ?>
-<?php endif; ?>
 
     </script>
 </body>
