@@ -140,7 +140,7 @@ if (isset($_POST['change_password'])) {
 </head>
 <body>
 
-<?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 
 <div class="container mt-5">
     <div class="row">
