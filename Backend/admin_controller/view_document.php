@@ -1,153 +1,102 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once '../../Backend/connection.php';
+require_once '../../Backend/aes_key.php'; // AES_KEY and AES_IV defined here
 session_start();
-require_once '../connection.php';
-require_once '../aes_key.php'; // contains AES_KEY and AES_IV
 
-// Check if user is authenticated
+// Error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', '../../Backend/logs/view_document_errors.log');
+
+// Check if user is logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: ../../Frontend/index.php");
+    echo json_encode(['success' => false, 'error_code' => 1, 'message' => 'User not logged in']);
     exit();
 }
 
-// Validate input parameters
-if (!isset($_GET['file']) || !isset($_GET['action'])) {
-    die("Invalid request.");
+// Get logged-in user info
+$email = $_SESSION['email'];
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    echo json_encode(['success' => false, 'error_code' => 2, 'message' => 'User not found']);
+    exit();
+}
+$user_id = $user['id'];
+
+// Get Application ID from GET request
+if (!isset($_GET['application_id'])) {
+    echo json_encode(['success' => false, 'error_code' => 3, 'message' => 'Application ID is required']);
+    exit();
 }
 
-// Extract and decrypt the encrypted filename if it's in an array
-$file = $_GET['file'];
-if (is_array($file)) {
-    $file = reset($file);
+$application_id = $_GET['application_id'];
+
+// Fetch encrypted documents from database
+$query = "SELECT documents FROM applications WHERE id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $application_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$application = $result->fetch_assoc();
+
+if (!$application) {
+    echo json_encode(['success' => false, 'error_code' => 4, 'message' => 'Application not found']);
+    exit();
 }
 
-// Sanitize the encrypted file name
-$file = trim(urldecode($file));
+// Decrypt documents and prepare for download
+$encryptedDocuments = json_decode($application['documents'], true);
+$documents = [];
 
-// Decrypt the encrypted filename
-$decryptedFileName = openssl_decrypt(
-    base64_decode($file), // Assuming the filename was base64-encoded before encryption
-    'AES-256-CBC',        // Encryption method
-    AES_KEY,              // Your AES key
-    OPENSSL_RAW_DATA,     // OpenSSL option
-    AES_IV                // Your AES initialization vector
-);
-
-// Check if decryption was successful
-if ($decryptedFileName === false) {
-    die("❌ Failed to decrypt the filename. Please check your AES key and IV.");
-}
-
-// Debugging: Check the decrypted filename
-var_dump($decryptedFileName); // Check if filename is what you expect
-
-$action = $_GET['action'];
-
-// Define the correct file directory
-$file_dir = realpath(__DIR__ . '/../Documents/Scholarship') . DIRECTORY_SEPARATOR;
-
-// Check the directory path
-var_dump($file_dir); // Check if the directory is correct
-
-$file_path = $file_dir . $decryptedFileName;
-
-// Check the file path
-var_dump($file_path); // Check if the path looks correct
-
-// Check if the file exists
-if (!file_exists($file_path)) {
-    die("❌ File not found: " . htmlspecialchars($file_path));
-}
-
-// Ensure the file is a valid file and not a directory
-if (!is_file($file_path)) {
-    die("❌ The path is not a valid file: " . htmlspecialchars($file_path));
-}
-
-// Ensure the file is within the allowed directory
-if (strpos(realpath($file_path), $file_dir) !== 0) {
-    die("🚫 Access denied.");
-}
-
-// Generate a public URL for viewing (Modify this for your server setup)
-$base_url = "https://www.kaluppa.online/Kaluppa/Backend/Documents/Scholarship";
-$file_url = $base_url . '/' . urlencode($decryptedFileName);
-
-// Serve file based on action
-if ($action === 'view') {
-    // Read and decrypt file content
-    $encryptedContent = file_get_contents($file_path);
-    $decryptedContent = openssl_decrypt(
-        base64_decode($encryptedContent),
+foreach ($encryptedDocuments as $document) {
+    $decryptedData = openssl_decrypt(
+        base64_decode($document['file_data']),
         'AES-256-CBC',
         AES_KEY,
         OPENSSL_RAW_DATA,
         AES_IV
     );
 
-    // Check decryption success
-    if ($decryptedContent === false) {
-        die("❌ Failed to decrypt the file. Please check your AES key and IV.");
-    }
-
-    // Detect MIME type manually (optional, but safer)
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime_type = $finfo->buffer($decryptedContent);
-
-    $inline_types = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'text/plain'];
-
-    if (in_array($mime_type, $inline_types)) {
-        header('Content-Type: ' . $mime_type);
-        header('Content-Disposition: inline; filename="' . basename($file_path) . '"');
-        header('Content-Length: ' . strlen($decryptedContent));
-        echo $decryptedContent;
-        exit();
-    } else {
-        // Save temporarily if not inline-viewable (e.g., for Word Docs)
-        $tempFile = tempnam(sys_get_temp_dir(), 'dec_');
-        file_put_contents($tempFile, $decryptedContent);
-
-        // Serve via Google Docs Viewer
-        $tempUrl = $base_url . '/' . basename($tempFile); // Adjust this if you're not exposing /tmp
-        $google_viewer = "https://docs.google.com/gview?url=$tempUrl&embedded=true";
-        header("Location: $google_viewer");
+    if ($decryptedData === false) {
+        echo json_encode(['success' => false, 'error_code' => 5, 'message' => 'Failed to decrypt document']);
         exit();
     }
-} elseif ($action === 'download') {
-    // 🔥 NEW: Secure file download function
-    $encryptedContent = file_get_contents($file_path);
-    $decryptedContent = openssl_decrypt(
-        base64_decode($encryptedContent),
-        'AES-256-CBC',
-        AES_KEY,
-        OPENSSL_RAW_DATA,
-        AES_IV
-    );
 
-    // Ensure decryption is successful
-    if ($decryptedContent === false) {
-        die("❌ Failed to decrypt the file.");
+    $documents[] = [
+        'file_name' => $document['file_name'],
+        'file_data' => $decryptedData
+    ];
+}
+
+// Handle download
+if (isset($_GET['download'])) {
+    $fileName = $_GET['download'];
+
+    // Search for the requested file in the decrypted documents
+    foreach ($documents as $document) {
+        if ($document['file_name'] === $fileName) {
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="' . $fileName . '"');
+            echo $document['file_data'];
+            exit();
+        }
     }
 
-    // Determine file MIME type
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime_type = $finfo->buffer($decryptedContent);
-
-    // Set headers for secure file download
-    header('Content-Description: File Transfer');
-    header('Content-Type: ' . $mime_type);
-    header('Content-Disposition: attachment; filename="' . basename($decryptedFileName) . '"');
-    header('Expires: 0');
-    header('Cache-Control: must-revalidate');
-    header('Pragma: public');
-    header('Content-Length: ' . strlen($decryptedContent));
-
-    // Output decrypted file
-    echo $decryptedContent;
+    echo json_encode(['success' => false, 'error_code' => 6, 'message' => 'Document not found']);
     exit();
 }
 
-die("❌ Invalid action.");
+// Return documents information if not downloading
+echo json_encode([
+    'success' => true,
+    'documents' => array_map(function ($document) {
+        return $document['file_name'];
+    }, $documents)
+]);
 ?>
