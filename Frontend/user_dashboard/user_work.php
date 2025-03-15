@@ -270,6 +270,18 @@ if (!$workResult) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+    <div class="toast align-items-center text-white <?php echo $successMessage ? 'bg-success' : 'bg-danger'; ?> border-0"
+         role="alert" aria-live="assertive" aria-atomic="true"
+         data-bs-delay="3000" data-bs-autohide="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <?php echo $successMessage ?: $errorMessage; ?>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 
 <script>
     function showWorkDetails(workId) {
