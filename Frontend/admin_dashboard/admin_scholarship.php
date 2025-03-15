@@ -191,8 +191,8 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                             if (!empty($documents)) {
                                 // Ensure that documents is an array or object that can be encoded as JSON
                                 echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#downloadModal"
-                                    data-documents=\'' . htmlspecialchars(json_encode($documents)) . '\'
-                                    data-application-id="' . htmlspecialchars($id) . '">Download</button>';
+                                data-documents=\'' . htmlspecialchars(json_encode($documents)) . '\'
+                                data-application-id="' . htmlspecialchars($id) . '">Download</button>';
                             }
 
                             echo '</div>
@@ -384,7 +384,6 @@ downloadModal.addEventListener('show.bs.modal', function (event) {
         console.error("Error processing documents:", error);
     }
 });
-
 </script>
 </body>
 </html>
