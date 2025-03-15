@@ -285,7 +285,6 @@ if ($scholarship_result->num_rows > 0) {
                                 data-id="<?= $course['id'] ?>"
                                 data-name="<?= $course['name'] ?>"
                                 data-description="<?= $course['description'] ?>"
-                                data-duration="<?= $course['duration'] ?>"
                                 data-capacity="<?= $course['capacity'] ?>"
                                 data-instructor="<?= $course['instructor'] ?>"
                                 data-requisites="<?= $course['requisites'] ?>"
