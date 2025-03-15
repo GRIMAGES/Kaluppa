@@ -6,7 +6,6 @@ session_start();
 require_once '../connection.php';
 require_once '../aes_key.php'; // contains AES_KEY and AES_IV
 
-
 // Check if user is authenticated
 if (!isset($_SESSION['email'])) {
     header("Location: ../../Frontend/index.php");
@@ -46,7 +45,7 @@ if (strpos(realpath($file_path), $file_dir) !== 0) {
 
 // Generate a public URL for viewing (Modify this for your server setup)
 $base_url = "https://www.kaluppa.online/Kaluppa/Backend/Documents/Scholarship";
-$file_url = $base_url . urlencode($file);
+$file_url = $base_url . '/' . urlencode($file);
 
 // Serve file based on action
 if ($action === 'view') {
@@ -88,7 +87,39 @@ if ($action === 'view') {
         header("Location: $google_viewer");
         exit();
     }
+} elseif ($action === 'download') {
+    // 🔥 NEW: Secure file download function
+    $encryptedContent = file_get_contents($file_path);
+    $decryptedContent = openssl_decrypt(
+        base64_decode($encryptedContent),
+        'AES-256-CBC',
+        AES_KEY,
+        OPENSSL_RAW_DATA,
+        AES_IV
+    );
+
+    // Ensure decryption is successful
+    if ($decryptedContent === false) {
+        die("❌ Failed to decrypt the file.");
+    }
+
+    // Determine file MIME type
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime_type = $finfo->buffer($decryptedContent);
+
+    // Set headers for secure file download
+    header('Content-Description: File Transfer');
+    header('Content-Type: ' . $mime_type);
+    header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . strlen($decryptedContent));
+
+    // Output decrypted file
+    echo $decryptedContent;
+    exit();
 }
 
-
+die("❌ Invalid action.");
 ?>
