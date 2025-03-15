@@ -73,7 +73,7 @@ $allowedMime = ['application/pdf'];
 $allowedExt = ['pdf'];
 
 $fileTmpPath = $_FILES['resume']['tmp_name'];
-$fileName = $_FILES['resume']['name'];
+$fileName = uniqid() . '-' . $_FILES['resume']['name']; // Generate unique filename
 $fileMime = mime_content_type($fileTmpPath);
 $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
@@ -83,7 +83,7 @@ if (!in_array($fileMime, $allowedMime) || !in_array($fileExt, $allowedExt)) {
     exit();
 }
 
-// Prepare file path using original file name
+// Prepare file path using unique file name
 $uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 $resumePathToSave = 'Backend/Documents/Volunteer/' . $fileName;
 
