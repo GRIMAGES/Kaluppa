@@ -165,10 +165,10 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
                                         <td>
                                             <div class="d-inline-flex gap-2">
                                                 <button type="button" class="btn btn-sm btn-outline-success" 
-                                                    onclick="showApplicationDetails(' . $row['id'] . ', \'' . addslashes($row['first_name']) . '\', \'' . addslashes($row['middle_name']) . '\', \'' . addslashes($row['last_name']) . '\', \'' . addslashes($row['name']) . '\', \'' . addslashes($row['email']) . '\', \'' . addslashes($row['applied_at']) . '\', \'' . addslashes($row['status']) . '\', \'' . addslashes($row['document']) . '\')">
+                                                    onclick="showApplicationDetails(' . $row['id'] . ', \'' . addslashes($row['first_name']) . '\', \'' . addslashes($row['middle_name']) . '\', \'' . addslashes($row['last_name']) . '\', \'' . addslashes($row['name']) . '\', \'' . addslashes($row['email']) . '\', \'' . addslashes($row['applied_at']) . '\', \'' . addslashes($row['status']) . '\', \'' . addslashes($row['documents']) . '\')">
                                                     <i class="fas fa-eye"></i> View
                                                 </button>
-                                                <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($row['document']) . '&action=download" class="btn btn-sm btn-outline-primary">
+                                                <a href="../../Backend/admin_controller/view_document.php?file=' . urlencode($row['documents']) . '&action=download" class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-download"></i> Download
                                                 </a>
                                             </div>
