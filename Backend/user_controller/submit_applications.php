@@ -6,8 +6,21 @@ error_reporting(E_ALL);
 
 // Log errors to a file
 ini_set("log_errors", 1);
-ini_set("error_log", "../../Backend/logs/application_form_errors.log");
+$logFilePath = __DIR__ . "/../../Backend/logs/application_form_errors.log";
+ini_set("error_log", $logFilePath);
 
+// Make sure logs directory and file are writable
+$logDir = dirname($logFilePath);
+if (!file_exists($logDir)) {
+    mkdir($logDir, 0777, true);
+}
+if (!is_writable($logFilePath)) {
+    @touch($logFilePath);
+    @chmod($logFilePath, 0666); // Allow read/write for all users
+}
+error_log("Error log is writable and initialized.");
+
+// Load DB connection and start session
 require_once '../../Backend/connection.php';
 session_start();
 
@@ -68,11 +81,13 @@ if (!isset($_FILES['resume']) || $_FILES['resume']['error'] !== UPLOAD_ERR_OK) {
     exit();
 }
 
-// Prepare file path and move the file
-$resumeName = basename($_FILES['resume']['name']);
+// Prepare and sanitize file name
+$resumeNameRaw = basename($_FILES['resume']['name']);
+$resumeName = preg_replace("/[^a-zA-Z0-9\.\-_]/", "_", $resumeNameRaw); // clean filename
 $uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $resumeName;
 $resumePathToSave = 'Backend/Documents/Volunteer/' . $resumeName; // relative path for DB
 
+// Move uploaded file
 if (!move_uploaded_file($_FILES['resume']['tmp_name'], $uploadFilePath)) {
     error_log("File move failed. Error Code: " . $_FILES['resume']['error']);
     echo json_encode(['success' => false, 'message' => 'Failed to upload resume file.']);
@@ -86,7 +101,7 @@ $idResult = $conn->query($idQuery);
 if ($idResult && $idResult->num_rows > 0) {
     $lastIdRow = $idResult->fetch_assoc();
     $lastId = $lastIdRow['id'];
-    $lastNum = (int)substr($lastId, 4); // get number after 'VOL-'
+    $lastNum = (int)substr($lastId, 4);
     $newId = 'VOL-' . str_pad($lastNum + 1, 5, '0', STR_PAD_LEFT);
 } else {
     $newId = 'VOL-00001';
