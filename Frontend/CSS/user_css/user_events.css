@@ -76,11 +76,10 @@ body {
 }
 
 .featured-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    transition: transform 0.3s ease;
+    width: 500px; /* Fixed image width */
+    height: 160px; /* Fixed image height */
+    object-fit: cover; /* Maintain aspect ratio and crop if needed */
+    border-radius: 8px;
 }
 
 .featured-card img:hover {
