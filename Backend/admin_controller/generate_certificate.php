@@ -15,7 +15,7 @@ $admin_name = $_SESSION['email'] ?? 'System';
 
 // === Get template path from DB ===
 function getTemplatePath($conn, $certificate_type) {
-    $stmt = $conn->prepare("SELECT file_path FROM certificate_templates WHERE certificate_type = ?");
+    $stmt = $conn->prepare("SELECT file_path FROM certificate_templates WHERE id = ?");
     $stmt->bind_param("s", $certificate_type);
     $stmt->execute();
     $result = $stmt->get_result();
