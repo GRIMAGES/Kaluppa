@@ -126,7 +126,7 @@ if (isset($_POST['logout'])) {
                                 echo "<tr>
                                         <td>{$counter}</td>
                                         <td>{$row['course_name']}</td>
-                                        <td>{$row['name']}</td>
+                                        <td>{$row['user_name']}</td>
                                         <td>
                                             <a href='generate_certificate.php?generate={$row['id']}' class='btn btn-info btn-sm'>Generate Certificate</a>
                                         </td>
