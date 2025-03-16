@@ -16,13 +16,10 @@ function uploadTemplate($templateName, $file) {
         return "Invalid file type. Please upload an image or PDF.";
     }
 
-    // Define the upload directory
-    $uploadDir = '/templates/';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
-
-    // Save the file with the original name (basename())
+    // Define the correct upload directory path
+    $uploadDir = __DIR__ . '/templates/';  // Corrected to your existing 'templates' folder
+    
+    // Save the file with its original name (basename())
     $filePath = $uploadDir . basename($file['name']);
     
     // Check if the file already exists, and if so, append a number to avoid overwriting
@@ -30,6 +27,7 @@ function uploadTemplate($templateName, $file) {
         $filePath = $uploadDir . time() . "_" . basename($file['name']);
     }
 
+    // Try moving the file to the templates directory
     if (move_uploaded_file($file['tmp_name'], $filePath)) {
         // Insert template into the database
         global $conn;
@@ -47,6 +45,7 @@ function uploadTemplate($templateName, $file) {
         return "Failed to upload the file.";
     }
 }
+
 
 // Function to generate certificates for completed courses
 function generateCertificates() {
