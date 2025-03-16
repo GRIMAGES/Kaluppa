@@ -19,13 +19,25 @@ if (isset($_POST['submit_certificate'])) {
 
         // Check if the file extension is allowed
         if (in_array($file_ext, $allowed_types)) {
-            // Move file to upload directory
-            $upload_dir = '/templates/';
+            // Define the absolute path for the upload directory
+            $upload_dir = '/opt/bitnami/apache/htdocs/Kaluppa/Backend/templates/'; // Set your absolute path here
+
+            // Check if the directory exists, if not, create it
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true); // Create the directory if it doesn't exist
             }
-            $new_file_name = uniqid('cert_', true) . '.' . $file_ext;
-            if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+
+            // Use the original file name for the uploaded file
+            $target_file = $upload_dir . basename($file_name);
+
+            // Check if the file already exists
+            if (file_exists($target_file)) {
+                header("Location: ../../Frontend/admin_dashboard/admin_certificate.php?status=exists");
+                exit();
+            }
+
+            // Move the uploaded file to the target directory
+            if (move_uploaded_file($file_tmp, $target_file)) {
                 // File uploaded successfully
                 header("Location: ../../Frontend/admin_dashboard/admin_certificate.php?status=success");
                 exit();
