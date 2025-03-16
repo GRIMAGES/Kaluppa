@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Include the database connection and vendor autoload (if you use any libraries like FPDF or GD)
+// Include the database connection and vendor autoload
 require_once '../connection.php';
 require_once '../../vendor/autoload.php';
 
@@ -70,15 +70,13 @@ function generateCertificateWithTemplate($templatePath, $userName, $courseName) 
 
     // File path to save the generated certificate
     $certificateFile = $certificatesDir . uniqid() . '.pdf'; // Use PDF format for the certificate
-    
-    // Load the uploaded template
-    $template = file_get_contents($templatePath);
 
-    if (!$template) {
-        return false; // If template loading fails
+    // Check if the template file exists
+    if (!file_exists($templatePath)) {
+        return false; // Template file does not exist
     }
 
-    // Use FPDF or any other PDF library to generate the PDF from the template (assuming it's a PDF file)
+    // Create a new PDF document
     $pdf = new FPDF();
     $pdf->AddPage();
 
