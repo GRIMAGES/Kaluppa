@@ -1,62 +1,61 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-require_once '../lib/fpdf.php';  // Make sure path is correct
+require_once '../connection.php';
+require('../lib/fpdf.php'); // Adjust path based on where you put fpdf.php
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['recipientName'] ?? '';
-    $course = $_POST['courseName'] ?? '';
-    $awardDate = $_POST['awardDate'] ?? '';
-    $signedBy = $_POST['signedBy'] ?? '';
-    $templatePath = $_POST['template'] ?? '';
+$type = $_POST['certificate_type'] ?? '';
+$pdf = new FPDF('L', 'mm', 'A4');
+$pdf->AddPage();
+$pdf->SetFont('Arial', 'B', 24);
 
-    if (!$templatePath || !file_exists("../../Frontend/admin_dashboard/" . $templatePath)) {
-        die("Invalid or missing template.");
-    }
+switch ($type) {
+    case 'scholarship':
+        $course_id = $_POST['course_id'] ?? '';
+        if ($course_id) {
+            $query = $conn->prepare("SELECT name FROM courses WHERE id = ?");
+            $query->bind_param("i", $course_id);
+            $query->execute();
+            $result = $query->get_result();
+            $course = $result->fetch_assoc();
 
-    $fullTemplatePath = "../../Frontend/admin_dashboard/" . $templatePath;
+            $pdf->Cell(0, 20, "Scholarship Certificate", 0, 1, 'C');
+            $pdf->SetFont('Arial', '', 16);
+            $pdf->Cell(0, 10, "This is to certify that the student has completed the course:", 0, 1, 'C');
+            $pdf->SetFont('Arial', 'B', 18);
+            $pdf->Cell(0, 10, strtoupper($course['name']), 0, 1, 'C');
+        }
+        break;
 
-    // === PDF Generation ===
-    $pdf = new FPDF('L', 'mm', 'A4'); // Landscape A4
-    $pdf->AddPage();
+    case 'volunteer':
+        $work_id = $_POST['work_id'] ?? '';
+        if ($work_id) {
+            $query = $conn->prepare("SELECT title FROM works WHERE id = ?");
+            $query->bind_param("i", $work_id);
+            $query->execute();
+            $result = $query->get_result();
+            $work = $result->fetch_assoc();
 
-    // Add background template
-    $pdf->Image($fullTemplatePath, 0, 0, 297, 210); // full A4
+            $pdf->Cell(0, 20, "Volunteer Certificate", 0, 1, 'C');
+            $pdf->SetFont('Arial', '', 16);
+            $pdf->Cell(0, 10, "This is to certify participation in the volunteer work titled:", 0, 1, 'C');
+            $pdf->SetFont('Arial', 'B', 18);
+            $pdf->Cell(0, 10, strtoupper($work['title']), 0, 1, 'C');
+        }
+        break;
 
-    // Set font
-    $pdf->SetFont('Arial', 'B', 24);
-    $pdf->SetTextColor(0, 0, 0);
+    case 'request_documents':
+        $details = $_POST['document_details'] ?? '';
+        $pdf->Cell(0, 20, "Requested Document Certificate", 0, 1, 'C');
+        $pdf->SetFont('Arial', '', 16);
+        $pdf->Cell(0, 10, "This document certifies the request for:", 0, 1, 'C');
+        $pdf->SetFont('Arial', 'B', 18);
+        $pdf->Cell(0, 10, strtoupper($details), 0, 1, 'C');
+        break;
 
-    // Recipient Name
-    $pdf->SetXY(30, 80);
-    $pdf->Cell(237, 10, $name, 0, 1, 'C');
-
-    // Course Name
-    $pdf->SetFont('Arial', '', 20);
-    $pdf->SetXY(30, 95);
-    $pdf->Cell(237, 10, "for completing: " . $course, 0, 1, 'C');
-
-    // Date
-    $pdf->SetXY(30, 110);
-    $pdf->Cell(237, 10, "Date Awarded: " . $awardDate, 0, 1, 'C');
-
-    // Signed By
-    $pdf->SetXY(190, 160);
-    $pdf->SetFont('Arial', 'I', 16);
-    $pdf->Cell(80, 10, "Signed by: $signedBy", 0, 1, 'C');
-
-    // === Steganography (Optional Hidden Text Embedding) ===
-    $hideData = "Recipient: $name | Course: $course | Date: $awardDate | Signed by: $signedBy";
-    $pdf->SetFont('Arial', '', 6); // Tiny invisible text
-    $pdf->SetTextColor(255, 255, 255); // White on white
-    $pdf->SetXY(5, 205);
-    $pdf->Cell(0, 5, $hideData, 0, 0, 'L');
-
-    // Output PDF
-    $fileName = "certificate_" . str_replace(" ", "_", $name) . ".pdf";
-    $pdf->Output('D', $fileName); // Force download
-    exit();
+    default:
+        $pdf->Cell(0, 20, "Invalid certificate type selected.", 0, 1, 'C');
+        break;
 }
-?>
+
+$pdf->Output();
+exit;

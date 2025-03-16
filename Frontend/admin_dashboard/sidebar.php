@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once '../../Backend/connection.php';
 
 // Redirect if not logged in
