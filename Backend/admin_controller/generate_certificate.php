@@ -51,7 +51,6 @@ function uploadTemplate($templateName, $file) {
 function generateCertificates() {
     global $conn;
     
-    // Get all completed courses with user_id
     $query = "SELECT c.id, c.name AS course_name, 
                       a.user_id, 
                       CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name
@@ -61,32 +60,32 @@ function generateCertificates() {
 
     $result = $conn->query($query);
 
-    while ($row = $result->fetch_assoc()) {
-        $courseId = $row['id'];
-        $courseName = $row['course_name'];
-        $userId = $row['user_id'];  // Now we have user_id
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $courseId = $row['id'];
+            $courseName = $row['course_name'];
+            $userId = $row['user_id'];
 
-        // Fetch a template (for now, using the first template in the DB)
-        $templateQuery = "SELECT * FROM certificate_templates LIMIT 1";
-        $templateResult = $conn->query($templateQuery);
-        $template = $templateResult->fetch_assoc();
+            $templateQuery = "SELECT * FROM certificate_templates LIMIT 1";
+            $templateResult = $conn->query($templateQuery);
+            $template = $templateResult->fetch_assoc();
 
-        if ($template) {
-            // Generate the certificate (here you would integrate actual image/PDF generation)
-            $templatePath = $template['file_path'];
-
-            // For this example, we’ll simulate certificate generation
-            $certificateFile = generateCertificateImage($templatePath, $row['user_name'], $courseName);
-
-            // Save the generated certificate in the database
-            $certificateQuery = "INSERT INTO certificates (user_id, course_id, certificate_file) VALUES (?, ?, ?)";
-            $stmt = $conn->prepare($certificateQuery);
-            $stmt->bind_param("iis", $userId, $courseId, $certificateFile);
-            $stmt->execute();
+            if ($template) {
+                // Simulate certificate creation
+                $certificateFile = generateCertificateImage($template['file_path'], $row['user_name'], $courseName);
+                
+                // Save certificate to database
+                $certificateQuery = "INSERT INTO certificates (user_id, course_id, certificate_file) VALUES (?, ?, ?)";
+                $stmt = $conn->prepare($certificateQuery);
+                $stmt->bind_param("iis", $userId, $courseId, $certificateFile);
+                $stmt->execute();
+            }
         }
+        return true;  // Success
+    } else {
+        return false;  // No data found
     }
 }
-
 // Helper function to simulate generating a certificate image (you can integrate FPDF or GD here)
 function generateCertificateImage($templatePath, $userName, $courseName) {
     // This function simulates certificate creation.
@@ -105,15 +104,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['upload_success'] = "Template uploaded successfully!";
     
     // If there was an error, set error message
-    $_SESSION['upload_error'] = "There was an error uploading the template!";
-    header("Location: /Kaluppa/Frontend/admin_dashboard/admin_certificate.php");  // Redirect back to the form page
-    exit();
-    }
-
     if (isset($_POST['generate_certificates'])) {
         // Handle certificate generation
-        generateCertificates();
-        $_SESSION['generate_message'] = "Certificates generated successfully for all completed courses."; 
+        $result = generateCertificates();
+        
+        if ($result) {
+            $_SESSION['gen_success'] = "Certificates generated successfully for all completed courses.";
+        } else {
+            $_SESSION['gen_error'] = "An error occurred while generating certificates.";
+        }
+        
+        header("Location: /Kaluppa/Frontend/admin_dashboard/admin_certificate.php");  // Redirect to refresh and show message
+        exit();
     }
+}
 }
 ?>

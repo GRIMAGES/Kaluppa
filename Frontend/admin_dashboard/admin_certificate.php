@@ -172,6 +172,7 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+  $(document).ready(function() {
     // Show modal with messages
     <?php if ($uploadSuccess): ?>
         $('#modalMessageContent').text('<?php echo $uploadSuccess; ?>');
@@ -189,6 +190,8 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
         $('#modalMessageContent').text('<?php echo $genError; ?>');
         $('#messageModal').modal('show');
     <?php endif; ?>
+});
+
 </script>
 
 </body>
