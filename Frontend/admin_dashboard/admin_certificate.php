@@ -6,7 +6,7 @@ $timeout_duration = 1000; // 30 minutes
 
 // Redirect to login page if not logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -14,7 +14,7 @@ if (!isset($_SESSION['email'])) {
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {
     session_unset();
     session_destroy();
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -24,7 +24,7 @@ $_SESSION['LAST_ACTIVITY'] = time();
 // Logout logic
 if (isset($_POST['logout'])) {
     session_destroy();
-    header("Location: /Frontend/multiuserlogin.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 
@@ -46,9 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
     $fileName = basename($_FILES['template']['name']);
     $targetPath = $uploadDir . $fileName;
 
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
 
     if (move_uploaded_file($_FILES['template']['tmp_name'], $targetPath)) {
         list($posFullNameX, $posFullNameY) = explode(',', $_POST['pos_full_name']);
