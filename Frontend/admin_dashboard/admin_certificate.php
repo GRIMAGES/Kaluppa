@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 // Set session timeout duration (in seconds)
@@ -42,7 +45,7 @@ $stmt->close();
 
 // Handle template upload
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
-    $uploadDir = "../../templates/"; // Directory to store templates
+    $uploadDir = __DIR__ . "/templates/"; // Directory to store templates
     $fileName = basename($_FILES['template']['name']);
     $targetPath = $uploadDir . $fileName;
 
