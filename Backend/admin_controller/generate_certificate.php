@@ -17,13 +17,19 @@ function uploadTemplate($templateName, $file) {
     }
 
     // Define the upload directory
-    $uploadDir = 'uploads/templates/';
+    $uploadDir = '/templates/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
 
-    // Save the file with a unique name
-    $filePath = $uploadDir . uniqid() . "_" . basename($file['name']);
+    // Save the file with the original name (basename())
+    $filePath = $uploadDir . basename($file['name']);
+    
+    // Check if the file already exists, and if so, append a number to avoid overwriting
+    if (file_exists($filePath)) {
+        $filePath = $uploadDir . time() . "_" . basename($file['name']);
+    }
+
     if (move_uploaded_file($file['tmp_name'], $filePath)) {
         // Insert template into the database
         global $conn;
