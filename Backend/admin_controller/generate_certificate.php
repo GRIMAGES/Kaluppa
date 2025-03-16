@@ -102,7 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $templateName = $_POST['template_name'];
         $file = $_FILES['template_file'];
         $uploadMessage = uploadTemplate($templateName, $file);
-        $_SESSION['upload_message'] = $uploadMessage;  
+        $_SESSION['upload_success'] = "Template uploaded successfully!";
+    
+    // If there was an error, set error message
+    $_SESSION['upload_error'] = "There was an error uploading the template!";
+    header("Location: /Kaluppa/Frontend/admin/upload_template.php");  // Redirect back to the form page
+    exit();
     }
 
     if (isset($_POST['generate_certificates'])) {
