@@ -13,6 +13,16 @@ session_start();
 $type = $_POST['certificate_type'] ?? '';
 $admin_name = $_SESSION['email'] ?? 'System';
 
+// === Get template path from DB ===
+function getTemplatePath($conn, $certificate_type) {
+    $stmt = $conn->prepare("SELECT file_path FROM certificate_templates WHERE certificate_type = ?");
+    $stmt->bind_param("s", $certificate_type);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $template = $result->fetch_assoc();
+    return $template['file_path'] ?? null;
+}
+
 // ===== Initialize PDF =====
 $pdf = new TcpdfFpdi('L', 'mm', 'A4');
 $pdf->SetMargins(20, 20, 20);
@@ -52,9 +62,9 @@ if ($type === 'scholarship') {
         }
 
         // Set Template
-        $templatePath = '../../Templates/scholarship_template.pdf';
-        if (!file_exists($templatePath)) {
-            die("Template file not found: $templatePath");
+        $templatePath = getTemplatePath($conn, 'scholarship');
+        if (!$templatePath || !file_exists($templatePath)) {
+            die("Template file not found or not set in DB: $templatePath");
         }
         $pdf->setSourceFile($templatePath);
 
@@ -98,9 +108,9 @@ elseif ($type === 'volunteer') {
         $reference_title = $work['title'] ?? 'Volunteer Work';
 
         // Set Template
-        $templatePath = '../../Templates/volunteer_template.pdf';
-        if (!file_exists($templatePath)) {
-            die("Template file not found: $templatePath");
+        $templatePath = getTemplatePath($conn, 'volunteer');
+        if (!$templatePath || !file_exists($templatePath)) {
+            die("Template file not found or not set in DB: $templatePath");
         }
         $pdf->setSourceFile($templatePath);
 
@@ -132,9 +142,9 @@ elseif ($type === 'request_documents') {
     $reference_title = $_POST['document_details'] ?? 'Requested Document';
 
     // Set Template
-    $templatePath = '../../Templates/document_template.pdf';
-    if (!file_exists($templatePath)) {
-        die("Template file not found: $templatePath");
+    $templatePath = getTemplatePath($conn, 'request_documents');
+    if (!$templatePath || !file_exists($templatePath)) {
+        die("Template file not found or not set in DB: $templatePath");
     }
     $pdf->setSourceFile($templatePath);
 
