@@ -51,19 +51,20 @@ function uploadTemplate($templateName, $file) {
 function generateCertificates() {
     global $conn;
     
-    // Get all completed courses
+    // Get all completed courses with user_id
     $query = "SELECT c.id, c.name AS course_name, 
-                            CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name
-                     FROM courses c
-                     INNER JOIN applications a ON c.id = a.course_id
-                     WHERE c.status = 'completed' AND a.status = 'enrolled'";
+                      a.user_id, 
+                      CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name
+               FROM courses c
+               INNER JOIN applications a ON c.id = a.course_id
+               WHERE c.status = 'completed' AND a.status = 'enrolled'";
 
     $result = $conn->query($query);
 
     while ($row = $result->fetch_assoc()) {
         $courseId = $row['id'];
         $courseName = $row['course_name'];
-        $userName = $row['user_name'];
+        $userId = $row['user_id'];  // Now we have user_id
 
         // Fetch a template (for now, using the first template in the DB)
         $templateQuery = "SELECT * FROM certificate_templates LIMIT 1";
@@ -75,12 +76,12 @@ function generateCertificates() {
             $templatePath = $template['file_path'];
 
             // For this example, we’ll simulate certificate generation
-            $certificateFile = generateCertificateImage($templatePath, $userName, $courseName);
+            $certificateFile = generateCertificateImage($templatePath, $row['user_name'], $courseName);
 
-            // Save the generated certificate in the database (optional)
+            // Save the generated certificate in the database
             $certificateQuery = "INSERT INTO certificates (user_id, course_id, certificate_file) VALUES (?, ?, ?)";
             $stmt = $conn->prepare($certificateQuery);
-            $stmt->bind_param("iis", $row['user_id'], $courseId, $certificateFile);
+            $stmt->bind_param("iis", $userId, $courseId, $certificateFile);
             $stmt->execute();
         }
     }
