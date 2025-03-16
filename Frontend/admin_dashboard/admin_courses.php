@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
     $instructor = $_POST['courseInstructor'];
     $capacity = $_POST['courseCapacity'];
     $requisites = $_POST['courseRequisites'];
-    $requirements = $_POST['courseRequirements']; // <-- NEW LINE
+    $requirements = isset($_POST['courseRequirements']) ? $_POST['courseRequirements'] : null; // Safeguard
     $description = $_POST['courseDescription'];
     $status = $_POST['courseStatus'];
 
