@@ -155,6 +155,27 @@ while ($row = $templateResult->fetch_assoc()) {
     </form>
 </div>
 
+<!-- UPLOAD CERTIFICATE TEMPLATE SECTION -->
+<div class="certificate-form mt-4">
+    <h2 class="form-title">Upload New Certificate Template</h2>
+    <form action="../../Backend/admin_controller/upload_template.php" method="POST" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label for="template_name">Template Name</label>
+            <input type="text" class="form-control" id="template_name" name="template_name" placeholder="Enter template name" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="template_file">Select Template File (JPG, PNG, or PDF)</label>
+            <input type="file" class="form-control" id="template_file" name="template_file" accept=".jpg, .jpeg, .png, .pdf" required>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success px-4">Upload Template</button>
+        </div>
+    </form>
+</div>
+
+
 <script>
     const certType = document.getElementById('certificate_type');
     const scholarshipField = document.getElementById('scholarshipField');
