@@ -118,8 +118,14 @@ while ($row = $worksResult->fetch_assoc()) {
 
         <div class="form-group mb-4">
             <label for="template_file">Import Certificate Template (optional)</label>
-            <input type="file" class="form-control" name="template_file" id="template_file" accept=".jpg,.jpeg,.png,.pdf">
+            <input type="file" class="form-control" name="template_file" id="template_file" accept=".jpg,.jpeg,.png,.pdf" onchange="previewTemplate(event)">
             <small class="text-muted">Upload a custom template from Canva or other design tools (JPEG, PNG, or PDF).</small>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="form-group mb-4" id="template_preview_container" style="display: none;">
+            <label>Template Preview</label>
+            <div id="template_preview"></div>
         </div>
 
         <div class="text-center">
@@ -128,7 +134,7 @@ while ($row = $worksResult->fetch_assoc()) {
     </form>
 </div>
 
-<!-- JavaScript for conditional fields -->
+<!-- JavaScript for conditional fields and preview -->
 <script>
     const certType = document.getElementById('certificate_type');
     const scholarshipField = document.getElementById('scholarshipField');
@@ -152,6 +158,30 @@ while ($row = $worksResult->fetch_assoc()) {
 
     certType.addEventListener('change', toggleFields);
     window.addEventListener('DOMContentLoaded', toggleFields);
+
+    // Template Preview
+    function previewTemplate(event) {
+        const file = event.target.files[0];
+        const previewContainer = document.getElementById('template_preview_container');
+        const preview = document.getElementById('template_preview');
+
+        preview.innerHTML = ''; // Clear previous
+        if (file) {
+            previewContainer.style.display = 'block';
+            const fileURL = URL.createObjectURL(file);
+            const fileType = file.type;
+
+            if (fileType === 'application/pdf') {
+                preview.innerHTML = `<embed src="${fileURL}" type="application/pdf" width="100%" height="400px" style="border:1px solid #ccc; border-radius: 8px;" />`;
+            } else if (fileType.startsWith('image/')) {
+                preview.innerHTML = `<img src="${fileURL}" alt="Template Preview" style="max-width: 100%; border:1px solid #ccc; border-radius: 8px;" />`;
+            } else {
+                preview.innerHTML = `<p class="text-danger">Unsupported file format. Only JPG, PNG, or PDF are allowed.</p>`;
+            }
+        } else {
+            previewContainer.style.display = 'none';
+        }
+    }
 </script>
 
 </body>
