@@ -1,46 +1,22 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-session_start();
-require_once '../connection.php'; // Adjust path if needed
+require_once '../../Backend/connection.php';
 
-$targetDirectory = __DIR__ . "/../../Frontend/admin_dashboard/templates/";
-$allowedTypes = ['png', 'pdf'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_template'])) {
+    $uploadDir = '../../uploads/templates/';
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
-if (isset($_FILES['templateFile']) && $_FILES['templateFile']['error'] === UPLOAD_ERR_OK) {
-    $fileTmpPath = $_FILES['templateFile']['tmp_name'];
-    $fileName = basename($_FILES['templateFile']['name']);
-    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $file = $_FILES['new_template'];
+    $filename = basename($file['name']);
+    $targetPath = $uploadDir . $filename;
 
-    if (in_array($fileExtension, $allowedTypes)) {
-
-        // Create directory if it doesn't exist
-        if (!is_dir($targetDirectory)) {
-            mkdir($targetDirectory, 0777, true);
-        }
-
-        // Check again if writable
-        if (!is_writable($targetDirectory)) {
-            $_SESSION['uploadMessage'] = "Target directory still not writable: $targetDirectory";
-        } else {
-            $targetFilePath = $targetDirectory . $fileName;
-
-            if (move_uploaded_file($fileTmpPath, $targetFilePath)) {
-                $_SESSION['uploadMessage'] = "Template uploaded successfully.";
-            } else {
-                $_SESSION['uploadMessage'] = "Failed to move uploaded file.";
-            }
-        }
-
+    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+        $stmt = $conn->prepare("INSERT INTO certificate_templates (template_name, file_path) VALUES (?, ?)");
+        $stmt->bind_param("ss", $filename, $targetPath);
+        $stmt->execute();
+        header("Location: {$_SERVER['HTTP_REFERER']}?upload=success");
+        exit;
     } else {
-        $_SESSION['uploadMessage'] = "Invalid file type. Only PNG and PDF allowed.";
+        echo "Failed to upload file.";
     }
-} else {
-    $_SESSION['uploadMessage'] = "No file uploaded or error occurred. Error code: " . $_FILES['templateFile']['error'];
 }
-
-header("Location: ../../Frontend/admin dashboard/admin_certificate.php");
-exit();
-
 ?>

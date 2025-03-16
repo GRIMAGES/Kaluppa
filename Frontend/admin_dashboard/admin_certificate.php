@@ -47,25 +47,26 @@ while ($row = $worksResult->fetch_assoc()) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Generate Certificate | Admin Panel</title>
+    <title>Certificate Management | Admin Panel</title>
     <link rel="stylesheet" href="../assets/bootstrap.min.css">
     <style>
         body {
             background-color: #f9f9f9;
         }
-        .certificate-form {
-            max-width: 800px;
+        .container-box {
+            max-width: 900px;
             margin: 40px auto;
             background: #fff;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
         }
-        .form-title {
-            font-size: 26px;
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
             margin-bottom: 25px;
             text-align: center;
-            font-weight: bold;
             color: #333;
         }
         .form-group label {
@@ -77,9 +78,31 @@ while ($row = $worksResult->fetch_assoc()) {
 
 <?php include 'sidebar.php'; ?>
 
-<div class="certificate-form">
-    <h2 class="form-title">Generate Certificates for Completed Students</h2>
-    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank" enctype="multipart/form-data">
+<!-- 🔸 Import Certificate Template Section -->
+<div class="container-box">
+    <h2 class="section-title">Import Certificate Template</h2>
+    <form method="post" action="../../Backend/admin_controller/import_template.php" enctype="multipart/form-data">
+        <div class="form-group mb-3">
+            <label for="template_file">Upload Template File</label>
+            <input type="file" class="form-control" name="template_file" id="template_file" accept=".jpg,.jpeg,.png,.pdf" onchange="previewTemplate(event)" required>
+            <small class="text-muted">Supported formats: JPG, PNG, or PDF</small>
+        </div>
+
+        <div class="form-group mb-4" id="template_preview_container" style="display: none;">
+            <label>Template Preview</label>
+            <div id="template_preview"></div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success px-4">Import Template</button>
+        </div>
+    </form>
+</div>
+
+<!-- 🔸 Generate Certificates Section -->
+<div class="container-box">
+    <h2 class="section-title">Generate Certificates for Completed Students</h2>
+    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
         <div class="form-group mb-3">
             <label for="certificate_type">Certificate Type</label>
             <select class="form-control" name="certificate_type" id="certificate_type" required>
@@ -116,26 +139,14 @@ while ($row = $worksResult->fetch_assoc()) {
                    placeholder="Enter document request details" maxlength="255">
         </div>
 
-        <div class="form-group mb-4">
-            <label for="template_file">Import Certificate Template (optional)</label>
-            <input type="file" class="form-control" name="template_file" id="template_file" accept=".jpg,.jpeg,.png,.pdf" onchange="previewTemplate(event)">
-            <small class="text-muted">Upload a custom template from Canva or other design tools (JPEG, PNG, or PDF).</small>
-        </div>
-
-        <!-- Live Preview -->
-        <div class="form-group mb-4" id="template_preview_container" style="display: none;">
-            <label>Template Preview</label>
-            <div id="template_preview"></div>
-        </div>
-
         <div class="text-center">
             <button type="submit" class="btn btn-primary px-4">Generate Certificates</button>
         </div>
     </form>
 </div>
 
-<!-- JavaScript for conditional fields and preview -->
 <script>
+    // Show/hide fields based on selected certificate type
     const certType = document.getElementById('certificate_type');
     const scholarshipField = document.getElementById('scholarshipField');
     const volunteerField = document.getElementById('volunteerField');
@@ -159,13 +170,13 @@ while ($row = $worksResult->fetch_assoc()) {
     certType.addEventListener('change', toggleFields);
     window.addEventListener('DOMContentLoaded', toggleFields);
 
-    // Template Preview
+    // Template preview logic
     function previewTemplate(event) {
         const file = event.target.files[0];
         const previewContainer = document.getElementById('template_preview_container');
         const preview = document.getElementById('template_preview');
+        preview.innerHTML = '';
 
-        preview.innerHTML = ''; // Clear previous
         if (file) {
             previewContainer.style.display = 'block';
             const fileURL = URL.createObjectURL(file);
