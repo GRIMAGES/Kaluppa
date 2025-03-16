@@ -170,18 +170,6 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
     <?php if ($genError): ?>
         toastr.error('<?php echo $genError; ?>');
     <?php endif; ?>
-
-    <?php
-if (isset($_SESSION['upload_success'])) {
-    echo "<script>toastr.success('" . $_SESSION['upload_success'] . "');</script>";
-    unset($_SESSION['upload_success']); // Clear the message after showing it
-}
-
-if (isset($_SESSION['upload_error'])) {
-    echo "<script>toastr.error('" . $_SESSION['upload_error'] . "');</script>";
-    unset($_SESSION['upload_error']); // Clear the message after showing it
-}
-?>
 </script>
 
 </body>
