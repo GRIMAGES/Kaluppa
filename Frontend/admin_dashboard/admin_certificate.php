@@ -6,7 +6,7 @@ require_once '../../Backend/connection.php';
 session_start();
 if (isset($_SESSION['gen_success'])) {
     echo "<div class='alert alert-success'>" . $_SESSION['gen_success'] . "</div>";
-    unset($_SESSION['gen_success']);
+    unset($_SESSION['gen_success']);  // Clear the message after displaying
 }
 if (isset($_SESSION['gen_error'])) {
     echo "<div class='alert alert-danger'>" . $_SESSION['gen_error'] . "</div>";
@@ -18,6 +18,8 @@ if (isset($_SESSION['upload_message'])) {
     unset($_SESSION['upload_message']);
 }
 
+
+// Session timeout and logout functionality
 $timeout_duration = 1000;
 if (!isset($_SESSION['email'])) {
     header("Location: /Kaluppa/Frontend/index.php");
@@ -38,11 +40,13 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
+// Handling success and error messages
 $uploadSuccess = isset($_SESSION['upload_success']) ? $_SESSION['upload_success'] : '';
 $uploadError = isset($_SESSION['upload_error']) ? $_SESSION['upload_error'] : '';
 $genSuccess = isset($_SESSION['gen_success']) ? $_SESSION['gen_success'] : '';
 $genError = isset($_SESSION['gen_error']) ? $_SESSION['gen_error'] : '';
 
+// Clear session variables after displaying the message
 unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_success'], $_SESSION['gen_error']);
 ?>
 
@@ -79,10 +83,17 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
             background-color: #2e59d9;
             border-color: #2e59d9;
         }
-        .preview-img {
+        .template-preview {
+            margin-top: 15px;
+            display: none;
             max-width: 100%;
-            max-height: 300px;
-            margin-top: 10px;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+        .template-selector {
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -108,8 +119,9 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                             <label for="template_file">Upload Template (PNG/JPEG/PDF)</label>
                             <input type="file" name="template_file" class="form-control" id="template_file" required onchange="previewTemplate(event)">
                         </div>
-                        <div class="form-group">
-                            <img id="template-preview" class="preview-img" style="display: none;">
+                        <div class="form-group template-preview">
+                            <label>Preview Template</label>
+                            <img id="templatePreview" src="" alt="Template Preview" class="template-preview" />
                         </div>
                         <button type="submit" class="btn btn-primary btn-block" name="upload_template">Upload Template</button>
                     </form>
@@ -117,28 +129,27 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
             </div>
         </div>
 
-        <!-- Select Template Section -->
+        <!-- Template Selector Section -->
         <div class="col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h4 class="text-center">Select Certificate Template</h4>
                 </div>
                 <div class="card-body">
-                    <form action="../../Backend/admin_controller/generateCertificates.php" method="POST" id="select-template-form">
+                    <form action="../../Backend/admin_controller/selectTemplate.php" method="POST" id="select-template-form">
                         <div class="form-group">
                             <label for="template_select">Select Template</label>
-                            <select name="template_id" class="form-control" id="template_select" required>
+                            <select name="template_select" class="form-control" id="template_select" required>
                                 <?php
-                                // Fetching all templates from the database
-                                $query = "SELECT * FROM certificate_templates";
-                                $result = $conn->query($query);
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='{$row['id']}'>{$row['template_name']}</option>";
-                                }
+                                    $query = "SELECT id, template_name FROM certificate_templates";
+                                    $result = $conn->query($query);
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<option value='{$row['id']}'>{$row['template_name']}</option>";
+                                    }
                                 ?>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-success btn-block" name="select_template">Generate Certificate</button>
+                        <button type="submit" class="btn btn-primary btn-block" name="select_template">Select Template</button>
                     </form>
                 </div>
             </div>
@@ -167,19 +178,6 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  function previewTemplate(event) {
-    const preview = document.getElementById('template-preview');
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-      preview.style.display = 'block';
-      preview.src = e.target.result;
-    }
-
-    reader.readAsDataURL(file);
-  }
-
   $(document).ready(function() {
     // Show modal with messages
     <?php if ($uploadSuccess): ?>
@@ -198,7 +196,20 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
         $('#modalMessageContent').text('<?php echo $genError; ?>');
         $('#messageModal').modal('show');
     <?php endif; ?>
-});
+  });
+
+  function previewTemplate(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('templatePreview');
+            preview.src = e.target.result;
+            document.querySelector('.template-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+  }
 </script>
 
 </body>
