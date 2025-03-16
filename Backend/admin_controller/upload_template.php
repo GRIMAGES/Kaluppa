@@ -16,7 +16,7 @@ if (isset($_POST['submit_certificate'])) {
         
         if (in_array($file_ext, $allowed_types)) {
             // Move file to upload directory
-            $upload_dir = 'uploads/templates/';
+            $upload_dir = '/templates/';
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true); // Create the directory if it doesn't exist
             }
