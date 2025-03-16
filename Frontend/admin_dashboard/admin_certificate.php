@@ -44,7 +44,7 @@ if (isset($_POST['logout'])) {
     <h3>Generate Certificate</h3>
 
     <!-- File Upload Form for Template -->
-    <form action="upload_template.php" method="POST" id="templateForm" enctype="multipart/form-data">
+    <form action="../../admin_controller/upload_template.php" method="POST" id="templateForm" enctype="multipart/form-data">
         <div class="form-group">
             <label for="certificate_template">Upload Certificate Template (PDF, PNG, JPEG)</label>
             <input type="file" class="form-control-file" name="certificate_template" id="certificate_template" required>
