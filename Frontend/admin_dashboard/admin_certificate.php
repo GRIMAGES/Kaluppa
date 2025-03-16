@@ -46,70 +46,112 @@ while ($row = $worksResult->fetch_assoc()) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Certificate Generator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Generate Certificate | Admin Panel</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css">
     <style>
         body {
-            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .certificate-form {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .form-title {
+            font-size: 26px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group label {
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
-<?php include 'sidebar.php'; ?>
 
-<div class="container mt-4">
-    <h2>Generate Certificate</h2>
-    <form action="../../Backend/admin_controller/generate_certificate.php" method="POST">
-        <div class="mb-3">
-            <label for="certificateType" class="form-label">Select Certificate Type</label>
-            <select name="certificate_type" id="certificateType" class="form-select" required onchange="toggleCertificateOptions()">
-                <option value="">-- Select Type --</option>
-                <option value="scholarship">Scholarship</option>
-                <option value="volunteer">Volunteer</option>
-                <option value="request_documents">Request Documents</option>
+<div class="certificate-form">
+    <h2 class="form-title">Generate Certificate</h2>
+    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
+
+        <div class="form-group mb-3">
+            <label for="recipient_name">Recipient Name</label>
+            <input type="text" class="form-control" name="recipient_name" id="recipient_name" required placeholder="Enter recipient full name">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="certificate_type">Certificate Type</label>
+            <select class="form-control" name="certificate_type" id="certificate_type" required>
+                <option value="">-- Select Certificate Type --</option>
+                <option value="scholarship">Scholarship Certificate</option>
+                <option value="volunteer">Volunteer Certificate</option>
+                <option value="request_documents">Requested Document Certificate</option>
             </select>
         </div>
 
-        <!-- Scholarship Courses Dropdown -->
-        <div class="mb-3" id="scholarshipOptions" style="display:none;">
-            <label for="course" class="form-label">Select Course</label>
-            <select name="course_id" class="form-select">
+        <div class="form-group mb-3 d-none" id="scholarshipField">
+            <label for="course_id">Select Scholarship Course</label>
+            <select class="form-control" name="course_id" id="course_id">
                 <option value="">-- Select Course --</option>
-                <?php foreach ($courses as $course): ?>
-                    <option value="<?= $course['id'] ?>"><?= htmlspecialchars($course['name']) ?></option>
-                <?php endforeach; ?>
+                <?php
+                $courseQuery = $conn->query("SELECT id, name FROM courses");
+                while ($course = $courseQuery->fetch_assoc()) {
+                    echo "<option value='{$course['id']}'>{$course['name']}</option>";
+                }
+                ?>
             </select>
         </div>
 
-        <!-- Volunteer Work Dropdown -->
-        <div class="mb-3" id="volunteerOptions" style="display:none;">
-            <label for="work" class="form-label">Select Volunteer Work</label>
-            <select name="work_id" class="form-select">
+        <div class="form-group mb-3 d-none" id="volunteerField">
+            <label for="work_id">Select Volunteer Work</label>
+            <select class="form-control" name="work_id" id="work_id">
                 <option value="">-- Select Work --</option>
-                <?php foreach ($works as $work): ?>
-                    <option value="<?= $work['id'] ?>"><?= htmlspecialchars($work['title']) ?></option>
-                <?php endforeach; ?>
+                <?php
+                $workQuery = $conn->query("SELECT id, title FROM works");
+                while ($work = $workQuery->fetch_assoc()) {
+                    echo "<option value='{$work['id']}'>{$work['title']}</option>";
+                }
+                ?>
             </select>
         </div>
 
-        <!-- Request Document Info -->
-        <div class="mb-3" id="requestOptions" style="display:none;">
-            <label for="doc_details" class="form-label">Document Title</label>
-            <input type="text" name="document_details" class="form-control" placeholder="e.g., Certificate of Participation" />
+        <div class="form-group mb-3 d-none" id="documentField">
+            <label for="document_details">Document Details</label>
+            <input type="text" class="form-control" name="document_details" id="document_details" placeholder="Enter document request details">
         </div>
 
-        <button type="submit" class="btn btn-primary">Generate Certificate</button>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">Generate Certificate</button>
+        </div>
     </form>
 </div>
 
 <script>
-    function toggleCertificateOptions() {
-        var type = document.getElementById('certificateType').value;
-        document.getElementById('scholarshipOptions').style.display = (type === 'scholarship') ? 'block' : 'none';
-        document.getElementById('volunteerOptions').style.display = (type === 'volunteer') ? 'block' : 'none';
-        document.getElementById('requestOptions').style.display = (type === 'request_documents') ? 'block' : 'none';
-    }
+    const certType = document.getElementById('certificate_type');
+    const scholarshipField = document.getElementById('scholarshipField');
+    const volunteerField = document.getElementById('volunteerField');
+    const documentField = document.getElementById('documentField');
+
+    certType.addEventListener('change', function () {
+        const value = this.value;
+
+        scholarshipField.classList.add('d-none');
+        volunteerField.classList.add('d-none');
+        documentField.classList.add('d-none');
+
+        if (value === 'scholarship') {
+            scholarshipField.classList.remove('d-none');
+        } else if (value === 'volunteer') {
+            volunteerField.classList.remove('d-none');
+        } else if (value === 'request_documents') {
+            documentField.classList.remove('d-none');
+        }
+    });
 </script>
+
 </body>
 </html>
