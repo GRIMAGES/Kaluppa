@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 require_once '../connection.php';
 require_once '../../vendor/autoload.php';
 
-use setasign\Fpdi\TcpdfFpdi; // Extends TCPDF with FPDI
+use setasign\Fpdi\TcpdfFpdi;
 
 session_start();
 
@@ -19,8 +19,8 @@ $pdf->SetMargins(20, 20, 20);
 $pdf->SetAutoPageBreak(true, 20);
 $pdf->SetFont('Helvetica', '', 16);
 
-// Load your Canva/other template (PDF)
-$templatePath = '../../cert_templates/certificate_template.pdf'; // ✅ Put your designed Canva certificate here
+// Define your custom certificate template path
+$templatePath = '../../cert_templates/certificate_template.pdf'; // Make sure this exists
 
 if (!file_exists($templatePath)) {
     echo "<h3>Certificate template not found at: {$templatePath}</h3>";
@@ -44,7 +44,6 @@ if ($type === 'scholarship') {
             exit;
         }
 
-        // Get enrolled students
         $students_stmt = $conn->prepare("
             SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS full_name 
             FROM applications a
@@ -63,21 +62,22 @@ if ($type === 'scholarship') {
         while ($row = $students_result->fetch_assoc()) {
             $recipient_name = $row['full_name'];
 
-            // Import template
+            // Import and use template
             $pdf->AddPage();
             $tplIdx = $pdf->importPage(1);
-            $pdf->useTemplate($tplIdx, 0, 0, 297); // full A4 landscape width
+            $pdf->useTemplate($tplIdx, 0, 0, 297);
 
-            // Write Name - Adjust positions here based on your Canva design
-            $pdf->SetXY(20, 100); // X and Y position on certificate
+            // Write Recipient Name
+            $pdf->SetXY(20, 100);
+            $pdf->SetFont('Helvetica', '', 20);
             $pdf->Cell(0, 10, $recipient_name, 0, 1, 'C');
 
-            // Course Name
+            // Write Course Name
             $pdf->SetXY(20, 115);
-            $pdf->SetFont('Helvetica', '', 14);
+            $pdf->SetFont('Helvetica', '', 16);
             $pdf->Cell(0, 10, strtoupper($course_name), 0, 1, 'C');
 
-            // Log to DB
+            // Log generation
             $log_stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
             $log_stmt->bind_param("ssss", $recipient_name, $type, $course_name, $admin_name);
             $log_stmt->execute();
@@ -101,22 +101,18 @@ elseif ($type === 'volunteer') {
         $work = $result->fetch_assoc();
         $reference_title = $work['title'] ?? 'Volunteer Work';
 
-        // Template
         $pdf->AddPage();
         $tplIdx = $pdf->importPage(1);
         $pdf->useTemplate($tplIdx, 0, 0, 297);
 
-        // Write Name
         $pdf->SetXY(20, 100);
-        $pdf->SetFont('Helvetica', '', 16);
+        $pdf->SetFont('Helvetica', '', 20);
         $pdf->Cell(0, 10, $recipient_name, 0, 1, 'C');
 
-        // Volunteer Title
         $pdf->SetXY(20, 115);
-        $pdf->SetFont('Helvetica', '', 14);
+        $pdf->SetFont('Helvetica', '', 16);
         $pdf->Cell(0, 10, strtoupper($reference_title), 0, 1, 'C');
 
-        // Log to DB
         $log_stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
         $log_stmt->bind_param("ssss", $recipient_name, $type, $reference_title, $admin_name);
         $log_stmt->execute();
@@ -136,14 +132,13 @@ elseif ($type === 'request_documents') {
     $pdf->useTemplate($tplIdx, 0, 0, 297);
 
     $pdf->SetXY(20, 100);
-    $pdf->SetFont('Helvetica', '', 16);
+    $pdf->SetFont('Helvetica', '', 20);
     $pdf->Cell(0, 10, $recipient_name, 0, 1, 'C');
 
     $pdf->SetXY(20, 115);
-    $pdf->SetFont('Helvetica', '', 14);
+    $pdf->SetFont('Helvetica', '', 16);
     $pdf->Cell(0, 10, strtoupper($reference_title), 0, 1, 'C');
 
-    // Log
     $log_stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
     $log_stmt->bind_param("ssss", $recipient_name, $type, $reference_title, $admin_name);
     $log_stmt->execute();
@@ -152,8 +147,9 @@ elseif ($type === 'request_documents') {
     exit;
 }
 
-// Fallback
+// --- Invalid Request Fallback ---
 else {
     echo "<h3>Invalid certificate type selected.</h3>";
     exit;
 }
+?>
