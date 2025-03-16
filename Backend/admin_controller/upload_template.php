@@ -23,18 +23,18 @@ if (isset($_POST['submit_certificate'])) {
             $new_file_name = uniqid('cert_', true) . '.' . $file_ext;
             if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
                 // File uploaded successfully
-                header("Location: admin_certificate.php?status=success");
+                header("Location:  ../../Frontend/admin_dashboard/admin_certificate.php?status=success");
                 exit();
             } else {
-                header("Location: admin_certificate.php?status=error");
+                header("Location: ../../Frontend/admin_dashboard/admin_certificate.php?status=error");
                 exit();
             }
         } else {
-            header("Location: admin_certificate.php?status=invalid");
+            header("Location:  ../../Frontend/admin_dashboard/admin_certificate.php?status=invalid");
             exit();
         }
     } else {
-        header("Location: admin_certificate.php?status=empty");
+        header("Location:  ../../Frontend/admin_dashboard/admin_certificate.php?status=empty");
         exit();
     }
 }
