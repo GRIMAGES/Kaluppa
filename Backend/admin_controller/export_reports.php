@@ -51,7 +51,7 @@ if (!in_array($reportType, $validReportTypes)) die("Invalid report type.");
 
 // Fetch data based on report type
 if ($reportType === 'enrolled_scholars') {
-    $query = "SELECT a.id, a.last_name, a.middle_name, a.first_name, c.name AS course_name, a.email, a.status, a.document 
+    $query = "SELECT a.id, a.last_name, a.middle_name, a.first_name, c.name AS course_name, a.email, a.status, a.documents
               FROM applications a 
               INNER JOIN courses c ON a.course_id = c.id 
               WHERE a.status = 'enrolled'";
