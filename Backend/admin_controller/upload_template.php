@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $uploadPath = $uploadDir . $newFileName;
 
     if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-        $stmt = $conn->prepare("INSERT INTO certificate_templates (template_name, template_file) VALUES (?, ?)");
+        $stmt = $conn->prepare("INSERT INTO certificate_templates (template_name, file_path) VALUES (?, ?)");
         $stmt->bind_param("ss", $template_name, $newFileName);
 
         if ($stmt->execute()) {
