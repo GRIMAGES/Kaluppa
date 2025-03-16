@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $template_name = trim($_POST['template_name']);
     $file = $_FILES['template_file'];
 
-    $uploadDir = 'uploads/templates/';
+    $uploadDir = __DIR__ . '/templates/';
     $allowedTypes = ['jpg', 'jpeg', 'png', 'pdf'];
 
     $fileName = basename($file['name']);
