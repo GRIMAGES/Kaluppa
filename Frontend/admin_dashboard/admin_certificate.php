@@ -42,7 +42,7 @@ $stmt->close();
 
 // Handle template upload
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
-    $uploadDir = "../../certificate_templates/"; // Directory to store templates
+    $uploadDir = "../../templates/"; // Directory to store templates
     $fileName = basename($_FILES['template']['name']);
     $targetPath = $uploadDir . $fileName;
 
