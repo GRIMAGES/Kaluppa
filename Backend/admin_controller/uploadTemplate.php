@@ -1,9 +1,11 @@
 <?php
-session_start();
+session_start(); // Start session to store error/success messages
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-// uploadTemplate.php
+
+// Include the database connection
+require_once '../connection.php';
 
 // Function to handle file uploads (template upload)
 function uploadTemplate($templateName, $file) {
@@ -15,7 +17,7 @@ function uploadTemplate($templateName, $file) {
     }
 
     // Define the correct upload directory path
-    $uploadDir = __DIR__ . '/templates/';  // Corrected to your existing 'templates' folder
+    $uploadDir = __DIR__ . '/templates/';
     
     // Save the file with its original name (basename())
     $filePath = $uploadDir . basename($file['name']);
@@ -42,5 +44,13 @@ function uploadTemplate($templateName, $file) {
     } else {
         return "Failed to upload the file.";
     }
+}
+
+// Handle template upload POST request
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['upload_template'])) {
+    $templateName = $_POST['template_name'];
+    $file = $_FILES['template_file'];
+    $uploadMessage = uploadTemplate($templateName, $file);
+    $_SESSION['upload_message'] = $uploadMessage;
 }
 ?>

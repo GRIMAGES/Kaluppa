@@ -1,9 +1,12 @@
 <?php
-session_start();
+session_start(); // Start session to store error/success messages
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-// generateCertificates.php
+
+// Include the database connection and vendor autoload (if you use any libraries like FPDF or GD)
+require_once '../connection.php';
+require_once '../../vendor/autoload.php';
 
 // Function to generate certificates for completed courses
 function generateCertificates() {
@@ -92,6 +95,17 @@ function generateCertificateImage($templatePath, $userName, $courseName) {
         return $certificateFile;  // Return the file path of the generated certificate
     } else {
         return false;  // If something goes wrong
+    }
+}
+
+// Handle certificate generation POST request
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['generate_certificates'])) {
+    $result = generateCertificates();
+    
+    if ($result) {
+        $_SESSION['gen_success'] = "Certificates generated successfully for all completed courses.";
+    } else {
+        $_SESSION['gen_error'] = "An error occurred while generating certificates.";
     }
 }
 ?>
