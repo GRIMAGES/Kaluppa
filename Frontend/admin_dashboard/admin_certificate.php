@@ -69,7 +69,7 @@ if (isset($_POST['submit_certificate'])) {
 
 <div class="container mt-5">
     <h3>Generate Certificate</h3>
-    <form action="admin_certificate.php" method="POST" id="certificateForm" enctype="multipart/form-data">
+    <form action="../../admin_controller/generate_certificate.php" method="POST" id="certificateForm" enctype="multipart/form-data">
         <!-- Certificate Type -->
         <div class="form-group">
             <label for="certificate_type">Certificate Type</label>
