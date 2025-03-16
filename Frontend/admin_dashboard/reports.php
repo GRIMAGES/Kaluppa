@@ -15,15 +15,16 @@ if (isset($_POST['logout'])) {
 }
 
 // Fetch admin name and birthday
-$adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ?");
+$adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ? AND role IN ('admin', 'superadmin')");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
 $adminResult = $adminQuery->get_result();
 if ($adminRow = $adminResult->fetch_assoc()) {
     $adminBirthday = $adminRow['birthday']; // Fetching birthday
 } else {
-    die("Admin not found.");
+    die("Admin or Superadmin not found.");
 }
+
 // Fetch the exported reports for the logged-in admin
 $query = "SELECT * FROM export_logs WHERE admin_email = ?";
 $stmt = $conn->prepare($query);

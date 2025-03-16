@@ -71,6 +71,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
     exit();
 }
 
+// Handle the confirmation of upload to the database
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_upload'])) {
+    if (isset($_SESSION['imported_template'])) {
+        $fileName = basename($_SESSION['imported_template']);
+        $targetPath = __DIR__ . "/templates/" . $fileName;
+
+        if (rename($_SESSION['imported_template'], $targetPath)) {
+            // Proceed with the existing database upload logic
+            $query = "INSERT INTO certificate_templates (template_name, file_path, uploaded_by, certificate_type, font_full_name, font_course_name, font_certificate_no, pos_full_name_x, pos_full_name_y, pos_course_name_x, pos_course_name_y, pos_certificate_no_x, pos_certificate_no_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("sssssssssssss", $fileName, $targetPath, $_SESSION['email'], $_POST['certificate_type'], $_POST['font_full_name'], $_POST['font_course_name'], $_POST['font_certificate_no'], $posFullNameX, $posFullNameY, $posCourseNameX, $posCourseNameY, $posCertificateNoX, $posCertificateNoY);
+
+            $stmt->execute();
+            $stmt->close();
+
+            $_SESSION['upload_success'] = "Template uploaded successfully!";
+            unset($_SESSION['imported_template']);
+        } else {
+            $_SESSION['upload_error'] = "Failed to move the imported file to the templates directory.";
+        }
+    }
+
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+// Add a new form for importing the template
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['import_template'])) {
+    $importDir = __DIR__ . "/temp_templates/"; // Temporary directory to store imported templates
+    $importFileName = basename($_FILES['import_template']['name']);
+    $importTargetPath = $importDir . $importFileName;
+
+    if (move_uploaded_file($_FILES['import_template']['tmp_name'], $importTargetPath)) {
+        $_SESSION['import_success'] = "Template imported successfully! You can now preview and upload it.";
+        $_SESSION['imported_template'] = $importTargetPath;
+    } else {
+        $_SESSION['import_error'] = "Failed to import the file.";
+    }
+
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
+
 // Fetch the latest uploaded template
 $templateQuery = "SELECT template_name, file_path FROM certificate_templates ORDER BY id DESC LIMIT 1";
 $templateResult = $conn->query($templateQuery);
@@ -316,6 +358,42 @@ $template = $templateResult->fetch_assoc();
             </div>
             <button type="button" class="btn btn-primary mt-3" onclick="generateCertificates()">Generate Certificates</button>
         </form>
+
+        <form method="POST" enctype="multipart/form-data" class="mb-4">
+            <div class="form-section">
+                <h5>Import Certificate Template</h5>
+                <div class="mb-3">
+                    <label for="import_template" class="form-label">Import Certificate Template (PDF, JPG, PNG, etc.):</label>
+                    <input type="file" name="import_template" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp" required>
+                </div>
+                <button type="submit" class="btn btn-secondary">Import Template</button>
+            </div>
+        </form>
+
+        <?php if (isset($_SESSION['import_success'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['import_success']; unset($_SESSION['import_success']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['import_error'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?php echo $_SESSION['import_error']; unset($_SESSION['import_error']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['imported_template'])): ?>
+            <div class="mt-3">
+                <h5>Imported Template Preview:</h5>
+                <img src="<?php echo htmlspecialchars($_SESSION['imported_template']); ?>" alt="Imported Template Preview" class="img-fluid">
+                <form method="POST" class="mt-3">
+                    <input type="hidden" name="confirm_upload" value="1">
+                    <button type="submit" class="btn btn-success">Upload to Database</button>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
