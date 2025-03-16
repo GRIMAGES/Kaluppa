@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
     $instructor = $_POST['courseInstructor'];
     $capacity = $_POST['courseCapacity'];
     $requisites = $_POST['courseRequisites'];
-    $requirements = isset($_POST['courseRequirements']) ? $_POST['courseRequirements'] : null; // Safeguard
+    $requirements = !empty($_POST['courseRequirements']) ? $_POST['courseRequirements'] : 'No specific requirements';
     $description = $_POST['courseDescription'];
     $status = $_POST['courseStatus'];
 
@@ -115,8 +115,8 @@ $stmt->bind_param("ssssssssssi", $name, $imageName, $start_date, $end_date, $ins
             echo "Invalid image type.";
         }
     } else {
-        $stmt = $conn->prepare("UPDATE courses SET name = ?, start_date = ?, end_date = ?, instructor = ?, capacity = ?, requisites = ?, description = ?, status = ? WHERE id = ?");
-        $stmt->bind_param("ssssssssi", $name, $start_date, $end_date, $instructor, $capacity, $requisites, $description, $status, $id);
+        $stmt = $conn->prepare("UPDATE courses SET name = ?, start_date = ?, end_date = ?, instructor = ?, capacity = ?, requisites = ?, requirements = ?, description = ?, status = ? WHERE id = ?");
+        $stmt->bind_param("sssssssssi", $name, $start_date, $end_date, $instructor, $capacity, $requisites, $requirements, $description, $status, $id);
     }
 
     if ($stmt->execute()) {
