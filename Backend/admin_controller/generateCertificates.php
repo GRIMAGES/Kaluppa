@@ -28,6 +28,7 @@ function generateCertificates() {
             $courseId = $row['id'];
             $courseName = $row['course_name'];
             $userId = $row['user_id'];
+            $userName = $row['user_name'];
 
             $templateQuery = "SELECT * FROM certificate_templates LIMIT 1";  // Get the latest template
             $templateResult = $conn->query($templateQuery);
@@ -35,16 +36,20 @@ function generateCertificates() {
 
             if ($template) {
                 // Generate the certificate
-                $certificateFile = generateCertificateImage($template['file_path'], $row['user_name'], $courseName);
+                $certificateFile = generateCertificateImage($template['file_path'], $userName, $courseName);
                 
                 // Save certificate to database
-                $certificateQuery = "INSERT INTO certificates (user_id, course_id, certificate_file) VALUES (?, ?, ?)";
-                $stmt = $conn->prepare($certificateQuery);
-                $stmt->bind_param("iis", $userId, $courseId, $certificateFile);
-                if ($stmt->execute()) {
-                    $_SESSION['gen_success'] = "Certificates generated successfully for all completed courses.";
+                if ($certificateFile) {
+                    $certificateQuery = "INSERT INTO certificates (user_id, course_id, certificate_file) VALUES (?, ?, ?)";
+                    $stmt = $conn->prepare($certificateQuery);
+                    $stmt->bind_param("iis", $userId, $courseId, $certificateFile);
+                    if ($stmt->execute()) {
+                        $_SESSION['gen_success'] = "Certificates generated successfully for all completed courses.";
+                    } else {
+                        $_SESSION['gen_error'] = "Failed to save the certificate for user: $userName";
+                    }
                 } else {
-                    $_SESSION['gen_error'] = "Failed to save the certificate for user ID: " . $userId;
+                    $_SESSION['gen_error'] = "Failed to generate the certificate image for user: $userName";
                 }
             }
         }
@@ -108,4 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['generate_certificates'
         $_SESSION['gen_error'] = "An error occurred while generating certificates.";
     }
 }
+
+// Redirect back to the previous page after processing
+header("Location: " . $_SERVER['HTTP_REFERER']);
+exit;
 ?>
