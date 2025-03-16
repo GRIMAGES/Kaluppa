@@ -59,7 +59,7 @@ if ($result && $result->num_rows > 0) {
     </style>
 </head>
 <body>
-
+<?php include 'sidebar.php'; ?>
 <div class="container table-container">
     <h2>Certificate Logs</h2>
     <?php if (!empty($logs)): ?>

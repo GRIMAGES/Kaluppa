@@ -73,7 +73,7 @@ while ($row = $worksResult->fetch_assoc()) {
     </style>
 </head>
 <body>
-
+<?php include 'sidebar.php'; ?>
 <div class="certificate-form">
     <h2 class="form-title">Generate Certificate</h2>
     <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
