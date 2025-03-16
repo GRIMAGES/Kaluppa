@@ -35,19 +35,12 @@ function generateCertificates() {
             $template = $templateResult->fetch_assoc();
 
             if ($template) {
-                // Generate the certificate
+                // Generate the certificate and directly output it to the browser
                 $certificateFile = generateCertificateWithTemplate($template['file_path'], $userName, $courseName);
                 
-                // Save certificate to database
+                // If certificate generation is successful, set success message
                 if ($certificateFile) {
-                    $certificateQuery = "INSERT INTO certificates (user_id, course_id, certificate_file) VALUES (?, ?, ?)";
-                    $stmt = $conn->prepare($certificateQuery);
-                    $stmt->bind_param("iis", $userId, $courseId, $certificateFile);
-                    if ($stmt->execute()) {
-                        $_SESSION['gen_success'] = "Certificates generated successfully for all completed courses.";
-                    } else {
-                        $_SESSION['gen_error'] = "Failed to save the certificate for user: $userName";
-                    }
+                    $_SESSION['gen_success'] = "Certificates generated successfully for all completed courses.";
                 } else {
                     $_SESSION['gen_error'] = "Failed to generate the certificate image for user: $userName";
                 }
@@ -62,15 +55,6 @@ function generateCertificates() {
 
 // Helper function to generate certificate with the uploaded template
 function generateCertificateWithTemplate($templatePath, $userName, $courseName) {
-    // Ensure the certificates directory exists
-    $certificatesDir = __DIR__ . '/certificates/';
-    if (!is_dir($certificatesDir)) {
-        mkdir($certificatesDir, 0777, true);  // Create directory if it doesn't exist
-    }
-
-    // File path to save the generated certificate
-    $certificateFile = $certificatesDir . uniqid() . '.pdf'; // Use PDF format for the certificate
-
     // Extract the base filename from the database file path
     $templateFileName = basename($templatePath);  // This will extract the file name (e.g., template.pdf)
 
@@ -104,16 +88,10 @@ function generateCertificateWithTemplate($templatePath, $userName, $courseName) 
     $pdf->SetXY(50, 100); // Position for the course name
     $pdf->Cell(0, 10, $courseName, 0, 1, 'C'); // Center the course name
 
-    // Output the PDF to the file path
-    if ($pdf->Output('F', $certificateFile)) {
-        error_log("Certificate successfully generated at: " . $certificateFile);
-        return $certificateFile;  // Return the file path of the generated certificate
-    } else {
-        error_log("PDF generation failed.");
-        return false;  // If something goes wrong
-    }
+    // Output the PDF directly to the browser (this will trigger a download prompt)
+    $pdf->Output('D', 'certificate_' . uniqid() . '.pdf');
+    return true;  // Return true if the PDF is generated successfully
 }
-
 
 // Handle certificate generation POST request
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['generate_certificates'])) {
