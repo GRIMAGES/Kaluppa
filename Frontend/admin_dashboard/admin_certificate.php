@@ -31,132 +31,110 @@ if (isset($_POST['logout'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generate Certificate | Admin Panel</title>
     <link rel="stylesheet" href="../assets/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/custom.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <style>
+        body {
+            background-color: #f4f7fa;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+    </style>
 </head>
 <body>
 
 <?php include 'sidebar.php'; ?>
 
-<div class="container mt-5">
-    <h3>Generate Certificate</h3>
-
-    <!-- File Upload Form for Template -->
-    <form action="../../Backend/admin_controller/upload_template.php" method="POST" id="templateForm" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="certificate_template">Upload Certificate Template (PDF, PNG, JPEG)</label>
-            <input type="file" class="form-control-file" name="certificate_template" id="certificate_template" required>
+<div class="container">
+    <div class="row">
+        <!-- Upload Template Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="text-center">Upload Certificate Template</h4>
+                </div>
+                <div class="card-body">
+                    <form action="generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
+                        <div class="form-group">
+                            <label for="template_name">Template Name</label>
+                            <input type="text" name="template_name" class="form-control" id="template_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="template_file">Upload Template (PNG/JPEG/PDF)</label>
+                            <input type="file" name="template_file" class="form-control" id="template_file" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" name="upload_template">Upload Template</button>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <button type="submit" name="submit_certificate" class="btn btn-primary">Upload Template</button>
+        <!-- Generate Certificates Section -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="text-center">Generate Certificates for Completed Courses</h4>
+                </div>
+                <div class="card-body">
+                    <form action="generate_certificate.php" method="POST" id="generate-certificates-form">
+                        <button type="submit" class="btn btn-success btn-block" name="generate_certificates">Generate Certificates</button>
+                    </form>
+                    <hr>
+                    <h5>Completed Courses</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Course Name</th>
+                                <th>Student Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Fetching completed courses
+                            $query = "SELECT c.id, c.course_name, u.name FROM courses c INNER JOIN users u ON c.user_id = u.id WHERE c.completion_status = 'completed'";
+                            $result = $conn->query($query);
+                            $counter = 1;
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>
+                                        <td>{$counter}</td>
+                                        <td>{$row['course_name']}</td>
+                                        <td>{$row['name']}</td>
+                                        <td>
+                                            <a href='generate_certificate.php?generate={$row['id']}' class='btn btn-info btn-sm'>Generate Certificate</a>
+                                        </td>
+                                      </tr>";
+                                $counter++;
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </form>
-
-    <hr>
-
-    <!-- Display status messages -->
-    <?php
-    if (isset($_GET['status'])) {
-        switch ($_GET['status']) {
-            case 'success':
-                echo "<div class='alert alert-success'>File uploaded successfully!</div>";
-                break;
-            case 'error':
-                echo "<div class='alert alert-danger'>Error uploading the file.</div>";
-                break;
-            case 'invalid':
-                echo "<div class='alert alert-warning'>Invalid file type. Only PDF, PNG, and JPEG are allowed.</div>";
-                break;
-            case 'empty':
-                echo "<div class='alert alert-warning'>Please upload a valid file.</div>";
-                break;
-        }
-    }
-    ?>
-
-    <!-- Certificate Type Form -->
-    <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" id="certificateForm" enctype="multipart/form-data">
-        <!-- Certificate Type -->
-        <div class="form-group">
-            <label for="certificate_type">Certificate Type</label>
-            <select class="form-control" name="certificate_type" id="certificate_type" required>
-                <option value="scholarship">Scholarship</option>
-                <option value="volunteer">Volunteer</option>
-                <option value="request_documents">Requested Document</option>
-            </select>
-        </div>
-
-        <!-- Scholarship Section -->
-        <div class="form-group" id="course_section" style="display:none;">
-            <label for="course_id">Select Course</label>
-            <select class="form-control" name="course_id" id="course_id">
-                <?php
-                    $result = $conn->query("SELECT id, name FROM courses");
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
-                    }
-                ?>
-            </select>
-        </div>
-
-        <!-- Volunteer Section -->
-        <div class="form-group" id="volunteer_section" style="display:none;">
-            <label for="recipient_name">Recipient Name</label>
-            <input type="text" class="form-control" name="recipient_name" id="recipient_name" required>
-            <label for="work_id">Work Title</label>
-            <select class="form-control" name="work_id" id="work_id">
-                <?php
-                    $result = $conn->query("SELECT id, title FROM works");
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
-                    }
-                ?>
-            </select>
-        </div>
-
-        <!-- Document Request Section -->
-        <div class="form-group" id="document_section" style="display:none;">
-            <label for="recipient_name_doc">Recipient Name</label>
-            <input type="text" class="form-control" name="recipient_name" id="recipient_name_doc" required>
-            <label for="document_details">Document Details</label>
-            <input type="text" class="form-control" name="document_details" id="document_details" required>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary" name="submit_certificate">Generate Certificate</button>
-        </div>
-    </form>
-
+    </div>
 </div>
-
-<script>
-    // Show and hide sections based on certificate type
-    $(document).ready(function() {
-        $('#certificate_type').change(function() {
-            var selectedType = $(this).val();
-            if (selectedType === 'scholarship') {
-                $('#course_section').show();
-                $('#volunteer_section').hide();
-                $('#document_section').hide();
-            } else if (selectedType === 'volunteer') {
-                $('#volunteer_section').show();
-                $('#course_section').hide();
-                $('#document_section').hide();
-            } else if (selectedType === 'request_documents') {
-                $('#document_section').show();
-                $('#course_section').hide();
-                $('#volunteer_section').hide();
-            }
-        });
-
-        // Trigger change to show default section
-        $('#certificate_type').trigger('change');
-    });
-</script>
 
 </body>
 </html>
