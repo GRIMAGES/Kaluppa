@@ -26,28 +26,31 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Fetch courses
-$courses = [];
-$courseQuery = "SELECT id, name FROM courses";
-$courseResult = $conn->query($courseQuery);
-while ($row = $courseResult->fetch_assoc()) {
-    $courses[] = $row;
-}
-
-// Fetch volunteer works
-$works = [];
-$worksQuery = "SELECT id, title FROM works";
-$worksResult = $conn->query($worksQuery);
-while ($row = $worksResult->fetch_assoc()) {
-    $works[] = $row;
-}
-
-// Fetch certificate templates
-$templates = [];
-$templateQuery = "SELECT id, template_name, file_path FROM certificate_templates";
-$templateResult = $conn->query($templateQuery);
-while ($row = $templateResult->fetch_assoc()) {
-    $templates[] = $row;
+// Handle the file upload here if the form is submitted
+if (isset($_POST['submit_certificate'])) {
+    if (isset($_FILES['certificate_template']) && $_FILES['certificate_template']['error'] == 0) {
+        // Allowed file types
+        $allowed_types = ['pdf', 'png', 'jpeg', 'jpg'];
+        $file_name = $_FILES['certificate_template']['name'];
+        $file_tmp = $_FILES['certificate_template']['tmp_name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        if (in_array($file_ext, $allowed_types)) {
+            // Move file to upload directory
+            $upload_dir = 'uploads/';
+            $new_file_name = uniqid('cert_', true) . '.' . $file_ext;
+            if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+                // File uploaded successfully
+                echo "File uploaded successfully!";
+            } else {
+                echo "Error uploading the file.";
+            }
+        } else {
+            echo "Invalid file type. Only PDF, PNG, and JPEG are allowed.";
+        }
+    } else {
+        echo "Please upload a valid file.";
+    }
 }
 ?>
 
@@ -57,177 +60,100 @@ while ($row = $templateResult->fetch_assoc()) {
     <meta charset="UTF-8">
     <title>Generate Certificate | Admin Panel</title>
     <link rel="stylesheet" href="../assets/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f9f9f9;
-        }
-        .certificate-form {
-            max-width: 800px;
-            margin: 40px auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        .form-title {
-            font-size: 26px;
-            margin-bottom: 25px;
-            text-align: center;
-            font-weight: bold;
-            color: #333;
-        }
-        .form-group label {
-            font-weight: 600;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 </head>
 <body>
 
 <?php include 'sidebar.php'; ?>
 
-<div class="certificate-form">
-    <h2 class="form-title">Generate Certificates for Completed Students</h2>
-
-    <!-- GENERATE CERTIFICATE FORM -->
-    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank" enctype="multipart/form-data">
-        <!-- Select Existing Template -->
-        <div class="form-group mb-3">
-            <label for="template_id">Select Certificate Template</label>
-            <select class="form-control" name="template_id" id="template_id" required onchange="showTemplatePreview()">
-                <option value="">-- Choose Template --</option>
-                <?php foreach ($templates as $template): ?>
-                    <option value="<?= $template['id'] ?>" data-file="<?= $template['file_path'] ?>">
-
-                        <?= htmlspecialchars($template['template_name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <!-- Preview Container -->
-        <div class="form-group mb-4" id="template_preview_container" style="display: none;">
-            <label>Template Preview</label>
-            <div id="template_preview"></div>
-        </div>
-
+<div class="container mt-5">
+    <h3>Generate Certificate</h3>
+    <form action="admin_certificate.php" method="POST" id="certificateForm" enctype="multipart/form-data">
         <!-- Certificate Type -->
-        <div class="form-group mb-3">
+        <div class="form-group">
             <label for="certificate_type">Certificate Type</label>
             <select class="form-control" name="certificate_type" id="certificate_type" required>
-                <option value="">-- Select Certificate Type --</option>
-                <option value="scholarship">Scholarship Certificate</option>
-                <option value="volunteer">Volunteer Certificate</option>
-                <option value="request_documents">Requested Document Certificate</option>
+                <option value="scholarship">Scholarship</option>
+                <option value="volunteer">Volunteer</option>
+                <option value="request_documents">Requested Document</option>
             </select>
         </div>
 
-        <!-- Scholarship Field -->
-        <div class="form-group mb-3 d-none" id="scholarshipField">
-            <label for="course_id">Select Scholarship Course</label>
+        <!-- File Upload for Template -->
+        <div class="form-group">
+            <label for="certificate_template">Upload Certificate Template (PDF, PNG, JPEG)</label>
+            <input type="file" class="form-control-file" name="certificate_template" id="certificate_template" required>
+        </div>
+
+        <!-- Scholarship Section -->
+        <div class="form-group" id="course_section" style="display:none;">
+            <label for="course_id">Select Course</label>
             <select class="form-control" name="course_id" id="course_id">
-                <option value="">-- Select Course --</option>
-                <?php foreach ($courses as $course): ?>
-                    <option value="<?= $course['id'] ?>"><?= htmlspecialchars($course['name']) ?></option>
-                <?php endforeach; ?>
+                <?php
+                    // Fetch courses from the database and populate options here
+                    $result = $conn->query("SELECT id, name FROM courses");
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+                    }
+                ?>
             </select>
         </div>
 
-        <!-- Volunteer Field -->
-        <div class="form-group mb-3 d-none" id="volunteerField">
-            <label for="work_id">Select Volunteer Work</label>
+        <!-- Volunteer Section -->
+        <div class="form-group" id="volunteer_section" style="display:none;">
+            <label for="recipient_name">Recipient Name</label>
+            <input type="text" class="form-control" name="recipient_name" id="recipient_name" required>
+            <label for="work_id">Work Title</label>
             <select class="form-control" name="work_id" id="work_id">
-                <option value="">-- Select Work --</option>
-                <?php foreach ($works as $work): ?>
-                    <option value="<?= $work['id'] ?>"><?= htmlspecialchars($work['title']) ?></option>
-                <?php endforeach; ?>
+                <?php
+                    // Fetch volunteer works from the database
+                    $result = $conn->query("SELECT id, title FROM works");
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
+                    }
+                ?>
             </select>
         </div>
 
-        <!-- Requested Document Field -->
-        <div class="form-group mb-3 d-none" id="documentField">
+        <!-- Document Request Section -->
+        <div class="form-group" id="document_section" style="display:none;">
+            <label for="recipient_name_doc">Recipient Name</label>
+            <input type="text" class="form-control" name="recipient_name" id="recipient_name_doc" required>
             <label for="document_details">Document Details</label>
-            <input type="text" class="form-control" name="document_details" id="document_details"
-                   placeholder="Enter document request details" maxlength="255">
+            <input type="text" class="form-control" name="document_details" id="document_details" required>
         </div>
 
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary px-4">Generate Certificates</button>
-        </div>
-    </form>
-</div>
-
-<!-- UPLOAD CERTIFICATE TEMPLATE SECTION -->
-<div class="certificate-form mt-4">
-    <h2 class="form-title">Upload New Certificate Template</h2>
-    <form action="../../Backend/admin_controller/upload_template.php" method="POST" enctype="multipart/form-data">
-        <div class="form-group mb-3">
-            <label for="template_name">Template Name</label>
-            <input type="text" class="form-control" id="template_name" name="template_name" placeholder="Enter template name" required>
-        </div>
-
-        <div class="form-group mb-3">
-            <label for="template_file">Select Template File (JPG, PNG, or PDF)</label>
-            <input type="file" class="form-control" id="template_file" name="template_file" accept=".jpg, .jpeg, .png, .pdf" required>
-        </div>
-
-        <div class="text-center">
-            <button type="submit" class="btn btn-success px-4">Upload Template</button>
+        <!-- Submit Button -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" name="submit_certificate">Generate Certificate</button>
         </div>
     </form>
 </div>
-
 
 <script>
-    const certType = document.getElementById('certificate_type');
-    const scholarshipField = document.getElementById('scholarshipField');
-    const volunteerField = document.getElementById('volunteerField');
-    const documentField = document.getElementById('documentField');
-
-    function toggleFields() {
-        const value = certType.value;
-        scholarshipField.classList.add('d-none');
-        volunteerField.classList.add('d-none');
-        documentField.classList.add('d-none');
-
-        if (value === 'scholarship') {
-            scholarshipField.classList.remove('d-none');
-        } else if (value === 'volunteer') {
-            volunteerField.classList.remove('d-none');
-        } else if (value === 'request_documents') {
-            documentField.classList.remove('d-none');
-        }
-    }
-
-    certType.addEventListener('change', toggleFields);
-    window.addEventListener('DOMContentLoaded', toggleFields);
-
-    // Preview Selected Template
-    function showTemplatePreview() {
-        const select = document.getElementById('template_id');
-        const selectedOption = select.options[select.selectedIndex];
-        const filePath = selectedOption.getAttribute('data-file');
-
-        const previewContainer = document.getElementById('template_preview_container');
-        const preview = document.getElementById('template_preview');
-        preview.innerHTML = '';
-
-        if (filePath) {
-            previewContainer.style.display = 'block';
-
-            const ext = filePath.split('.').pop().toLowerCase();
-            const fullPath = '../../uploads/certificate_templates/' + filePath;
-
-            if (ext === 'pdf') {
-                preview.innerHTML = `<embed src="${fullPath}" type="application/pdf" width="100%" height="400px" style="border:1px solid #ccc; border-radius: 8px;" />`;
-            } else if (['jpg', 'jpeg', 'png'].includes(ext)) {
-                preview.innerHTML = `<img src="${fullPath}" alt="Template Preview" style="max-width: 100%; border:1px solid #ccc; border-radius: 8px;" />`;
-            } else {
-                preview.innerHTML = `<p class="text-danger">Unsupported file format. Only JPG, PNG, or PDF are allowed.</p>`;
+    // Show and hide sections based on certificate type
+    $(document).ready(function() {
+        $('#certificate_type').change(function() {
+            var selectedType = $(this).val();
+            if (selectedType === 'scholarship') {
+                $('#course_section').show();
+                $('#volunteer_section').hide();
+                $('#document_section').hide();
+            } else if (selectedType === 'volunteer') {
+                $('#volunteer_section').show();
+                $('#course_section').hide();
+                $('#document_section').hide();
+            } else if (selectedType === 'request_documents') {
+                $('#document_section').show();
+                $('#course_section').hide();
+                $('#volunteer_section').hide();
             }
-        } else {
-            previewContainer.style.display = 'none';
-        }
-    }
+        });
+
+        // Trigger change to show default section
+        $('#certificate_type').trigger('change');
+    });
 </script>
 
 </body>
