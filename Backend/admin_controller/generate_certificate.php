@@ -13,15 +13,34 @@ session_start();
 $type = $_POST['certificate_type'] ?? '';
 $admin_name = $_SESSION['email'] ?? 'System';
 
-// Initialize PDF
+// ===== Handle Certificate Template File Upload =====
+if (isset($_FILES['template_file']) && $_FILES['template_file']['error'] === UPLOAD_ERR_OK) {
+    $uploadDir = '../../uploads/templates/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+    $fileName = basename($_FILES['template_file']['name']);
+    $targetPath = $uploadDir . $fileName;
+
+    if (move_uploaded_file($_FILES['template_file']['tmp_name'], $targetPath)) {
+        // File uploaded successfully
+        $templatePath = $targetPath;
+    } else {
+        echo "<h3>Failed to upload template file.</h3>";
+        exit;
+    }
+} else {
+    // Default Template Path
+    $templatePath = '../../cert_templates/certificate_template.pdf';
+}
+
+// ===== Initialize PDF =====
 $pdf = new TcpdfFpdi('L', 'mm', 'A4');
 $pdf->SetMargins(20, 20, 20);
 $pdf->SetAutoPageBreak(true, 20);
 $pdf->SetFont('Helvetica', '', 16);
 
-// Define your custom certificate template path
-$templatePath = '../../cert_templates/certificate_template.pdf'; // Make sure this exists
-
+// ===== Check if template exists =====
 if (!file_exists($templatePath)) {
     echo "<h3>Certificate template not found at: {$templatePath}</h3>";
     exit;
@@ -62,22 +81,18 @@ if ($type === 'scholarship') {
         while ($row = $students_result->fetch_assoc()) {
             $recipient_name = $row['full_name'];
 
-            // Import and use template
             $pdf->AddPage();
             $tplIdx = $pdf->importPage(1);
             $pdf->useTemplate($tplIdx, 0, 0, 297);
 
-            // Write Recipient Name
             $pdf->SetXY(20, 100);
             $pdf->SetFont('Helvetica', '', 20);
             $pdf->Cell(0, 10, $recipient_name, 0, 1, 'C');
 
-            // Write Course Name
             $pdf->SetXY(20, 115);
             $pdf->SetFont('Helvetica', '', 16);
             $pdf->Cell(0, 10, strtoupper($course_name), 0, 1, 'C');
 
-            // Log generation
             $log_stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
             $log_stmt->bind_param("ssss", $recipient_name, $type, $course_name, $admin_name);
             $log_stmt->execute();

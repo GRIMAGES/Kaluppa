@@ -77,7 +77,7 @@ while ($row = $worksResult->fetch_assoc()) {
 
 <div class="certificate-form">
     <h2 class="form-title">Generate Certificates for Completed Students</h2>
-    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
+    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank" enctype="multipart/form-data">
         <div class="form-group mb-3">
             <label for="certificate_type">Certificate Type</label>
             <select class="form-control" name="certificate_type" id="certificate_type" required>
@@ -112,6 +112,12 @@ while ($row = $worksResult->fetch_assoc()) {
             <label for="document_details">Document Details</label>
             <input type="text" class="form-control" name="document_details" id="document_details"
                    placeholder="Enter document request details" maxlength="255">
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="template_file">Import Certificate Template (optional)</label>
+            <input type="file" class="form-control" name="template_file" id="template_file" accept=".jpg,.jpeg,.png,.pdf">
+            <small class="text-muted">Upload a custom template from Canva or other design tools (JPEG, PNG, or PDF).</small>
         </div>
 
         <div class="text-center">
