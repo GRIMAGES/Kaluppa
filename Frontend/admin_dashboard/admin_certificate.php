@@ -113,7 +113,12 @@ if (isset($_POST['logout'])) {
                         <tbody>
                             <?php
                             // Fetching completed courses
-                            $query = "SELECT c.id, c.name, u.name FROM courses c INNER JOIN user u ON c.user_id = u.id WHERE c.completion_status = 'completed'";
+                            $query = "SELECT c.id, c.name AS course_name, 
+                            CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name 
+                     FROM courses c
+                     INNER JOIN applications a ON c.id = a.course_id
+                     WHERE a.status = 'completed'";
+           
                             $result = $conn->query($query);
                             $counter = 1;
                             while ($row = $result->fetch_assoc()) {
