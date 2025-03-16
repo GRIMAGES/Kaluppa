@@ -15,21 +15,23 @@ $admin_name = $_SESSION['email'] ?? 'System';
 
 // ===== Handle Certificate Template File Upload =====
 if (isset($_FILES['template_file']) && $_FILES['template_file']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = '../../uploads/templates/';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
+    $uploadDir = __DIR__ . '/templates/'; // Now points to Kaluppa/Backend/admin_controller/templates/
+    
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0755, true); // Create folder if not existing
     }
+
     $fileName = basename($_FILES['template_file']['name']);
     $targetPath = $uploadDir . $fileName;
 
     if (move_uploaded_file($_FILES['template_file']['tmp_name'], $targetPath)) {
-        // File uploaded successfully
-        $templatePath = $targetPath;
+        echo "Template uploaded successfully: $targetPath";
     } else {
-        echo "<h3>Failed to upload template file.</h3>";
-        exit;
+        echo "Failed to upload template file.";
     }
-} else {
+}
+
+ else {
     // Default Template Path
     $templatePath = '../../cert_templates/certificate_template.pdf';
 }
