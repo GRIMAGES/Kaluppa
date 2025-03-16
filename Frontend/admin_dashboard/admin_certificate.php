@@ -74,15 +74,10 @@ while ($row = $worksResult->fetch_assoc()) {
 </head>
 <body>
 <?php include 'sidebar.php'; ?>
-<div class="certificate-form">
-    <h2 class="form-title">Generate Certificate</h2>
-    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
-        <div class="form-group mb-3">
-            <label for="recipient_name">Recipient Name</label>
-            <input type="text" class="form-control" name="recipient_name" id="recipient_name"
-                   required placeholder="Enter recipient full name" maxlength="100">
-        </div>
 
+<div class="certificate-form">
+    <h2 class="form-title">Generate Certificates for Completed Students</h2>
+    <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
         <div class="form-group mb-3">
             <label for="certificate_type">Certificate Type</label>
             <select class="form-control" name="certificate_type" id="certificate_type" required>
@@ -120,7 +115,7 @@ while ($row = $worksResult->fetch_assoc()) {
         </div>
 
         <div class="text-center">
-            <button type="submit" class="btn btn-primary px-4">Generate Certificate</button>
+            <button type="submit" class="btn btn-primary px-4">Generate Certificates</button>
         </div>
     </form>
 </div>
