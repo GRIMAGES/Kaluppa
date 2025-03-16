@@ -101,29 +101,30 @@ function generateCertificateImage($templatePath, $userName, $courseName) {
     if (!is_dir($certificatesDir)) {
         mkdir($certificatesDir, 0777, true);  // Create directory if it doesn't exist
     }
+
+    // File path to save the generated certificate
+    $certificateFile = $certificatesDir . uniqid() . '.png'; // Unique file name for each certificate
     
-    // This function simulates certificate creation.
-    // Replace this with actual image/PDF generation logic.
-    $certificateFile = $certificatesDir . uniqid() . '.png'; // Use the certificates folder
-    
-    // For now, create a simple certificate image using GD
+    // Create a simple image using GD (replace with actual logic to generate a certificate)
     $image = imagecreatetruecolor(600, 400);
     $bgColor = imagecolorallocate($image, 255, 255, 255);  // White background
     $textColor = imagecolorallocate($image, 0, 0, 0);  // Black text
     imagefill($image, 0, 0, $bgColor);
-    
-    // Add text to the certificate (you can adjust the fonts and positioning)
+
+    // Add some text to the certificate
     imagestring($image, 5, 50, 150, "Certificate of Completion", $textColor);
     imagestring($image, 3, 50, 200, "This is to certify that", $textColor);
     imagestring($image, 4, 50, 250, $userName, $textColor);
     imagestring($image, 4, 50, 300, "has completed the course:", $textColor);
     imagestring($image, 4, 50, 350, $courseName, $textColor);
-    
-    // Save the image as a file in the certificates directory
-    imagepng($image, $certificateFile);
-    imagedestroy($image);
 
-    return $certificateFile;
+    // Save the image
+    if (imagepng($image, $certificateFile)) {
+        imagedestroy($image); // Clean up
+        return $certificateFile;  // Return the file path of the generated certificate
+    } else {
+        return false;  // If something goes wrong
+    }
 }
 // Handle actions (Backend processing)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
