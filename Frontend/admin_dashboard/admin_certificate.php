@@ -114,10 +114,11 @@ if (isset($_POST['logout'])) {
                             <?php
                             // Fetching completed courses
                             $query = "SELECT c.id, c.name AS course_name, 
-                            CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name 
+                            CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name
                      FROM courses c
                      INNER JOIN applications a ON c.id = a.course_id
-                     WHERE a.status = 'completed'";
+                     WHERE c.status = 'completed' AND a.status = 'enrolled'";
+           
            
                             $result = $conn->query($query);
                             $counter = 1;
