@@ -6,7 +6,7 @@ require_once '../../Backend/connection.php';
 session_start();
 if (isset($_SESSION['gen_success'])) {
     echo "<div class='alert alert-success'>" . $_SESSION['gen_success'] . "</div>";
-    unset($_SESSION['gen_success']);  // Clear the message after displaying
+    unset($_SESSION['gen_success']);
 }
 if (isset($_SESSION['gen_error'])) {
     echo "<div class='alert alert-danger'>" . $_SESSION['gen_error'] . "</div>";
@@ -18,8 +18,6 @@ if (isset($_SESSION['upload_message'])) {
     unset($_SESSION['upload_message']);
 }
 
-
-// Session timeout and logout functionality
 $timeout_duration = 1000;
 if (!isset($_SESSION['email'])) {
     header("Location: /Kaluppa/Frontend/index.php");
@@ -40,13 +38,11 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Handling success and error messages
 $uploadSuccess = isset($_SESSION['upload_success']) ? $_SESSION['upload_success'] : '';
 $uploadError = isset($_SESSION['upload_error']) ? $_SESSION['upload_error'] : '';
 $genSuccess = isset($_SESSION['gen_success']) ? $_SESSION['gen_success'] : '';
 $genError = isset($_SESSION['gen_error']) ? $_SESSION['gen_error'] : '';
 
-// Clear session variables after displaying the message
 unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_success'], $_SESSION['gen_error']);
 ?>
 
@@ -83,6 +79,11 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
             background-color: #2e59d9;
             border-color: #2e59d9;
         }
+        .preview-img {
+            max-width: 100%;
+            max-height: 300px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -105,7 +106,10 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                         </div>
                         <div class="form-group">
                             <label for="template_file">Upload Template (PNG/JPEG/PDF)</label>
-                            <input type="file" name="template_file" class="form-control" id="template_file" required>
+                            <input type="file" name="template_file" class="form-control" id="template_file" required onchange="previewTemplate(event)">
+                        </div>
+                        <div class="form-group">
+                            <img id="template-preview" class="preview-img" style="display: none;">
                         </div>
                         <button type="submit" class="btn btn-primary btn-block" name="upload_template">Upload Template</button>
                     </form>
@@ -113,52 +117,29 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
             </div>
         </div>
 
-        <!-- Generate Certificates Section -->
+        <!-- Select Template Section -->
         <div class="col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h4 class="text-center">Generate Certificates for Completed Courses</h4>
+                    <h4 class="text-center">Select Certificate Template</h4>
                 </div>
                 <div class="card-body">
-                    <form action="../../Backend/admin_controller/generateCertificates.php" method="POST" id="generate-certificates-form">
-                        <button type="submit" class="btn btn-success btn-block" name="generate_certificates">Generate Certificates</button>
+                    <form action="../../Backend/admin_controller/generateCertificates.php" method="POST" id="select-template-form">
+                        <div class="form-group">
+                            <label for="template_select">Select Template</label>
+                            <select name="template_id" class="form-control" id="template_select" required>
+                                <?php
+                                // Fetching all templates from the database
+                                $query = "SELECT * FROM certificate_templates";
+                                $result = $conn->query($query);
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<option value='{$row['id']}'>{$row['template_name']}</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block" name="select_template">Generate Certificate</button>
                     </form>
-                    <hr>
-                    <h5>Completed Courses</h5>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Course Name</th>
-                                <th>Student Name</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Fetching completed courses
-                            $query = "SELECT c.id, c.name AS course_name, 
-                            CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name
-                     FROM courses c
-                     INNER JOIN applications a ON c.id = a.course_id
-                     WHERE c.status = 'completed' AND a.status = 'enrolled'";
-
-                            $result = $conn->query($query);
-                            $counter = 1;
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<tr>
-                                        <td>{$counter}</td>
-                                        <td>{$row['course_name']}</td>
-                                        <td>{$row['user_name']}</td>
-                                        <td>
-                                            <a href='../../Backend/admin_controller/generateCertificates.php?generate={$row['id']}' class='btn btn-info btn-sm'>Generate Certificate</a>
-                                        </td>
-                                      </tr>";
-                                $counter++;
-                            }
-                            ?>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -186,6 +167,19 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+  function previewTemplate(event) {
+    const preview = document.getElementById('template-preview');
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      preview.style.display = 'block';
+      preview.src = e.target.result;
+    }
+
+    reader.readAsDataURL(file);
+  }
+
   $(document).ready(function() {
     // Show modal with messages
     <?php if ($uploadSuccess): ?>
@@ -205,7 +199,6 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
         $('#messageModal').modal('show');
     <?php endif; ?>
 });
-
 </script>
 
 </body>
