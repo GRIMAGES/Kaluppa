@@ -20,7 +20,7 @@ if (isset($_POST['submit_certificate'])) {
         // Check if the file extension is allowed
         if (in_array($file_ext, $allowed_types)) {
             // Define the absolute path for the upload directory
-            $upload_dir = '/opt/bitnami/apache/htdocs/Kaluppa/Backend/templates/'; // Set your absolute path here
+            $upload_dir = '/opt/bitnami/apache/htdocs/Kaluppa/Backend/admin_controller/templates/'; // Set your absolute path here
 
             // Check if the directory exists, if not, create it
             if (!is_dir($upload_dir)) {
