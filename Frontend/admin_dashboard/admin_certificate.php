@@ -5,6 +5,20 @@ error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 
+if (isset($_SESSION['upload_message'])) {
+    echo "<p>{$_SESSION['upload_message']}</p>";
+    unset($_SESSION['upload_message']);  // Clear message after display
+}
+
+if (isset($_SESSION['gen_success'])) {
+    echo "<p>{$_SESSION['gen_success']}</p>";
+    unset($_SESSION['gen_success']);
+}
+
+if (isset($_SESSION['gen_error'])) {
+    echo "<p>{$_SESSION['gen_error']}</p>";
+    unset($_SESSION['gen_error']);
+}
 // Session timeout and logout functionality
 $timeout_duration = 1000;
 if (!isset($_SESSION['email'])) {
