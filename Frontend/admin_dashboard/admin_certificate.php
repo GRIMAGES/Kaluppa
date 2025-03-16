@@ -44,7 +44,7 @@ while ($row = $worksResult->fetch_assoc()) {
 
 // Fetch certificate templates
 $templates = [];
-$templateQuery = "SELECT id, template_name, template_file FROM certificate_templates";
+$templateQuery = "SELECT id, template_name, file_path FROM certificate_templates";
 $templateResult = $conn->query($templateQuery);
 while ($row = $templateResult->fetch_assoc()) {
     $templates[] = $row;
