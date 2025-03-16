@@ -1,63 +1,38 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-require_once '../connection.php';
+// upload_template.php
+require_once '../../Backend/connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $template_name = trim($_POST['template_name']);
-    $file = $_FILES['template_file'];
-
-    $uploadDir = __DIR__ . '/templates/';
-    $allowedTypes = ['jpg', 'jpeg', 'png', 'pdf'];
-
-    $fileName = basename($file['name']);
-    $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
-    if (!in_array($fileExt, $allowedTypes)) {
-        echo "❌ Invalid file type. Only JPG, PNG, and PDF are allowed.";
-        exit;
-    }
-
-    // 📁 Use the original filename (no uniqid)
-    $newFileName = $fileName;
-    $uploadPath = $uploadDir . $newFileName;
-
-    if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
-        // 🔍 Check if template_name already exists
-        $check = $conn->prepare("SELECT id FROM certificate_templates WHERE template_name = ?");
-        $check->bind_param("s", $template_name);
-        $check->execute();
-        $checkResult = $check->get_result();
-
-        if ($checkResult->num_rows > 0) {
-            // ✅ Exists — update the existing file_path
-            $row = $checkResult->fetch_assoc();
-            $existingId = $row['id'];
-
-            $update = $conn->prepare("UPDATE certificate_templates SET file_path = ? WHERE id = ?");
-            $update->bind_param("si", $newFileName, $existingId);
-
-            if ($update->execute()) {
-                echo "<script>alert('✅ Template updated successfully.'); window.location.href = '../../Frontend/admin_dashboard/admin_certificate.php';</script>";
+// Handle the file upload
+if (isset($_POST['submit_certificate'])) {
+    if (isset($_FILES['certificate_template']) && $_FILES['certificate_template']['error'] == 0) {
+        // Allowed file types
+        $allowed_types = ['pdf', 'png', 'jpeg', 'jpg'];
+        $file_name = $_FILES['certificate_template']['name'];
+        $file_tmp = $_FILES['certificate_template']['tmp_name'];
+        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+        
+        if (in_array($file_ext, $allowed_types)) {
+            // Move file to upload directory
+            $upload_dir = 'uploads/templates/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true); // Create the directory if it doesn't exist
+            }
+            $new_file_name = uniqid('cert_', true) . '.' . $file_ext;
+            if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
+                // File uploaded successfully
+                header("Location: admin_certificate.php?status=success");
+                exit();
             } else {
-                echo "❌ Failed to update existing template.";
+                header("Location: admin_certificate.php?status=error");
+                exit();
             }
         } else {
-            // ❌ Not found — insert as new
-            $stmt = $conn->prepare("INSERT INTO certificate_templates (template_name, file_path) VALUES (?, ?)");
-            $stmt->bind_param("ss", $template_name, $newFileName);
-
-            if ($stmt->execute()) {
-                echo "<script>alert('✅ Template uploaded successfully.'); window.location.href = '../../Frontend/admin_dashboard/admin_certificate.php';</script>";
-            } else {
-                echo "❌ Failed to save to database.";
-            }
+            header("Location: admin_certificate.php?status=invalid");
+            exit();
         }
     } else {
-        echo "❌ Failed to upload file.";
+        header("Location: admin_certificate.php?status=empty");
+        exit();
     }
-} else {
-    echo "Invalid request.";
 }
 ?>

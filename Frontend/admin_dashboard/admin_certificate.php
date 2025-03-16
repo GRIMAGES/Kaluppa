@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 
-// Session timeout
+// Session timeout and logout functionality
 $timeout_duration = 1000;
 if (!isset($_SESSION['email'])) {
     header("Location: /Kaluppa/Frontend/index.php");
@@ -25,33 +25,6 @@ if (isset($_POST['logout'])) {
     header("Location: /Kaluppa/Frontend/index.php");
     exit();
 }
-
-// Handle the file upload here if the form is submitted
-if (isset($_POST['submit_certificate'])) {
-    if (isset($_FILES['certificate_template']) && $_FILES['certificate_template']['error'] == 0) {
-        // Allowed file types
-        $allowed_types = ['pdf', 'png', 'jpeg', 'jpg'];
-        $file_name = $_FILES['certificate_template']['name'];
-        $file_tmp = $_FILES['certificate_template']['tmp_name'];
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-        
-        if (in_array($file_ext, $allowed_types)) {
-            // Move file to upload directory
-            $upload_dir = 'uploads/';
-            $new_file_name = uniqid('cert_', true) . '.' . $file_ext;
-            if (move_uploaded_file($file_tmp, $upload_dir . $new_file_name)) {
-                // File uploaded successfully
-                echo "File uploaded successfully!";
-            } else {
-                echo "Error uploading the file.";
-            }
-        } else {
-            echo "Invalid file type. Only PDF, PNG, and JPEG are allowed.";
-        }
-    } else {
-        echo "Please upload a valid file.";
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -69,6 +42,42 @@ if (isset($_POST['submit_certificate'])) {
 
 <div class="container mt-5">
     <h3>Generate Certificate</h3>
+
+    <!-- File Upload Form for Template -->
+    <form action="upload_template.php" method="POST" id="templateForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="certificate_template">Upload Certificate Template (PDF, PNG, JPEG)</label>
+            <input type="file" class="form-control-file" name="certificate_template" id="certificate_template" required>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" name="submit_certificate" class="btn btn-primary">Upload Template</button>
+        </div>
+    </form>
+
+    <hr>
+
+    <!-- Display status messages -->
+    <?php
+    if (isset($_GET['status'])) {
+        switch ($_GET['status']) {
+            case 'success':
+                echo "<div class='alert alert-success'>File uploaded successfully!</div>";
+                break;
+            case 'error':
+                echo "<div class='alert alert-danger'>Error uploading the file.</div>";
+                break;
+            case 'invalid':
+                echo "<div class='alert alert-warning'>Invalid file type. Only PDF, PNG, and JPEG are allowed.</div>";
+                break;
+            case 'empty':
+                echo "<div class='alert alert-warning'>Please upload a valid file.</div>";
+                break;
+        }
+    }
+    ?>
+
+    <!-- Certificate Type Form -->
     <form action="../../admin_controller/generate_certificate.php" method="POST" id="certificateForm" enctype="multipart/form-data">
         <!-- Certificate Type -->
         <div class="form-group">
@@ -80,18 +89,11 @@ if (isset($_POST['submit_certificate'])) {
             </select>
         </div>
 
-        <!-- File Upload for Template -->
-        <div class="form-group">
-            <label for="certificate_template">Upload Certificate Template (PDF, PNG, JPEG)</label>
-            <input type="file" class="form-control-file" name="certificate_template" id="certificate_template" required>
-        </div>
-
         <!-- Scholarship Section -->
         <div class="form-group" id="course_section" style="display:none;">
             <label for="course_id">Select Course</label>
             <select class="form-control" name="course_id" id="course_id">
                 <?php
-                    // Fetch courses from the database and populate options here
                     $result = $conn->query("SELECT id, name FROM courses");
                     while ($row = $result->fetch_assoc()) {
                         echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
@@ -107,7 +109,6 @@ if (isset($_POST['submit_certificate'])) {
             <label for="work_id">Work Title</label>
             <select class="form-control" name="work_id" id="work_id">
                 <?php
-                    // Fetch volunteer works from the database
                     $result = $conn->query("SELECT id, title FROM works");
                     while ($row = $result->fetch_assoc()) {
                         echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
@@ -129,6 +130,7 @@ if (isset($_POST['submit_certificate'])) {
             <button type="submit" class="btn btn-primary" name="submit_certificate">Generate Certificate</button>
         </div>
     </form>
+
 </div>
 
 <script>
