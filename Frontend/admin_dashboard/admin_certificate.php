@@ -47,10 +47,6 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 
-    <!-- Toast CSS for Bootstrap -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
     <style>
         body {
             background-color: #f4f7fa;
@@ -88,18 +84,17 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                     <h4 class="text-center">Upload Certificate Template</h4>
                 </div>
                 <div class="card-body">
-                <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
-    <div class="form-group">
-        <label for="template_name">Template Name</label>
-        <input type="text" name="template_name" class="form-control" id="template_name" required>
-    </div>
-    <div class="form-group">
-        <label for="template_file">Upload Template (PNG/JPEG/PDF)</label>
-        <input type="file" name="template_file" class="form-control" id="template_file" required>
-    </div>
-    <button type="submit" class="btn btn-primary btn-block" name="upload_template">Upload Template</button>
-</form>
-
+                    <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
+                        <div class="form-group">
+                            <label for="template_name">Template Name</label>
+                            <input type="text" name="template_name" class="form-control" id="template_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="template_file">Upload Template (PNG/JPEG/PDF)</label>
+                            <input type="file" name="template_file" class="form-control" id="template_file" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" name="upload_template">Upload Template</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -156,19 +151,43 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
     </div>
 </div>
 
+<!-- Modal for displaying messages -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Notification</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalMessageContent"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    // Displaying toast notifications based on PHP session messages
+    // Show modal with messages
     <?php if ($uploadSuccess): ?>
-        toastr.success('<?php echo $uploadSuccess; ?>');
+        $('#modalMessageContent').text('<?php echo $uploadSuccess; ?>');
+        $('#messageModal').modal('show');
     <?php endif; ?>
     <?php if ($uploadError): ?>
-        toastr.error('<?php echo $uploadError; ?>');
+        $('#modalMessageContent').text('<?php echo $uploadError; ?>');
+        $('#messageModal').modal('show');
     <?php endif; ?>
     <?php if ($genSuccess): ?>
-        toastr.success('<?php echo $genSuccess; ?>');
+        $('#modalMessageContent').text('<?php echo $genSuccess; ?>');
+        $('#messageModal').modal('show');
     <?php endif; ?>
     <?php if ($genError): ?>
-        toastr.error('<?php echo $genError; ?>');
+        $('#modalMessageContent').text('<?php echo $genError; ?>');
+        $('#messageModal').modal('show');
     <?php endif; ?>
 </script>
 
