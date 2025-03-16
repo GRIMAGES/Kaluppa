@@ -4,9 +4,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
-
-
-session_start();
 if (isset($_SESSION['gen_success'])) {
     echo "<div class='alert alert-success'>" . $_SESSION['gen_success'] . "</div>";
     unset($_SESSION['gen_success']);  // Clear the message after displaying
