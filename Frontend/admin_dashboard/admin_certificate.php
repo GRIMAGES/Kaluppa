@@ -113,7 +113,7 @@ if (isset($_POST['logout'])) {
                         <tbody>
                             <?php
                             // Fetching completed courses
-                            $query = "SELECT c.id, c.course_name, u.name FROM courses c INNER JOIN users u ON c.user_id = u.id WHERE c.completion_status = 'completed'";
+                            $query = "SELECT c.id, c.course_name, u.name FROM courses c INNER JOIN user u ON c.user_id = u.id WHERE c.completion_status = 'completed'";
                             $result = $conn->query($query);
                             $counter = 1;
                             while ($row = $result->fetch_assoc()) {
