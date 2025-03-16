@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->bind_param("ss", $template_name, $newFileName);
 
         if ($stmt->execute()) {
-            echo "<script>alert('✅ Template uploaded successfully.'); window.location.href = '../../Frontend/admin/generate_certificate.php';</script>";
+            echo "<script>alert('✅ Template uploaded successfully.'); window.location.href = '../../Frontend/admin_dashboard/admin_certificate.php';</script>";
         } else {
             echo "❌ Failed to save to database.";
         }
