@@ -77,10 +77,10 @@ while ($row = $worksResult->fetch_assoc()) {
 <div class="certificate-form">
     <h2 class="form-title">Generate Certificate</h2>
     <form method="post" action="../../Backend/admin_controller/generate_certificate.php" target="_blank">
-
         <div class="form-group mb-3">
             <label for="recipient_name">Recipient Name</label>
-            <input type="text" class="form-control" name="recipient_name" id="recipient_name" required placeholder="Enter recipient full name">
+            <input type="text" class="form-control" name="recipient_name" id="recipient_name"
+                   required placeholder="Enter recipient full name" maxlength="100">
         </div>
 
         <div class="form-group mb-3">
@@ -97,12 +97,9 @@ while ($row = $worksResult->fetch_assoc()) {
             <label for="course_id">Select Scholarship Course</label>
             <select class="form-control" name="course_id" id="course_id">
                 <option value="">-- Select Course --</option>
-                <?php
-                $courseQuery = $conn->query("SELECT id, name FROM courses");
-                while ($course = $courseQuery->fetch_assoc()) {
-                    echo "<option value='{$course['id']}'>{$course['name']}</option>";
-                }
-                ?>
+                <?php foreach ($courses as $course): ?>
+                    <option value="<?= $course['id'] ?>"><?= htmlspecialchars($course['name']) ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
 
@@ -110,18 +107,16 @@ while ($row = $worksResult->fetch_assoc()) {
             <label for="work_id">Select Volunteer Work</label>
             <select class="form-control" name="work_id" id="work_id">
                 <option value="">-- Select Work --</option>
-                <?php
-                $workQuery = $conn->query("SELECT id, title FROM works");
-                while ($work = $workQuery->fetch_assoc()) {
-                    echo "<option value='{$work['id']}'>{$work['title']}</option>";
-                }
-                ?>
+                <?php foreach ($works as $work): ?>
+                    <option value="<?= $work['id'] ?>"><?= htmlspecialchars($work['title']) ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
 
         <div class="form-group mb-3 d-none" id="documentField">
             <label for="document_details">Document Details</label>
-            <input type="text" class="form-control" name="document_details" id="document_details" placeholder="Enter document request details">
+            <input type="text" class="form-control" name="document_details" id="document_details"
+                   placeholder="Enter document request details" maxlength="255">
         </div>
 
         <div class="text-center">
@@ -136,9 +131,8 @@ while ($row = $worksResult->fetch_assoc()) {
     const volunteerField = document.getElementById('volunteerField');
     const documentField = document.getElementById('documentField');
 
-    certType.addEventListener('change', function () {
-        const value = this.value;
-
+    function toggleFields() {
+        const value = certType.value;
         scholarshipField.classList.add('d-none');
         volunteerField.classList.add('d-none');
         documentField.classList.add('d-none');
@@ -150,7 +144,10 @@ while ($row = $worksResult->fetch_assoc()) {
         } else if (value === 'request_documents') {
             documentField.classList.remove('d-none');
         }
-    });
+    }
+
+    certType.addEventListener('change', toggleFields);
+    window.addEventListener('DOMContentLoaded', toggleFields);
 </script>
 
 </body>
