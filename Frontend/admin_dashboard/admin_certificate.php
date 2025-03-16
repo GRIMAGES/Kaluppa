@@ -4,9 +4,10 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
+
 if (isset($_SESSION['gen_success'])) {
     echo "<div class='alert alert-success'>" . $_SESSION['gen_success'] . "</div>";
-    unset($_SESSION['gen_success']);  // Clear the message after displaying
+    unset($_SESSION['gen_success']);
 }
 if (isset($_SESSION['gen_error'])) {
     echo "<div class='alert alert-danger'>" . $_SESSION['gen_error'] . "</div>";
@@ -17,7 +18,6 @@ if (isset($_SESSION['upload_message'])) {
     echo "<div class='alert alert-info'>" . $_SESSION['upload_message'] . "</div>";
     unset($_SESSION['upload_message']);
 }
-
 
 // Session timeout and logout functionality
 $timeout_duration = 1000;
@@ -40,7 +40,6 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Handling success and error messages
 $uploadSuccess = isset($_SESSION['upload_success']) ? $_SESSION['upload_success'] : '';
 $uploadError = isset($_SESSION['upload_error']) ? $_SESSION['upload_error'] : '';
 $genSuccess = isset($_SESSION['gen_success']) ? $_SESSION['gen_success'] : '';
@@ -151,6 +150,43 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                         </div>
                         <button type="submit" class="btn btn-primary btn-block" name="select_template">Select Template</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Courses Table Section -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="text-center">Course List</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Course Name</th>
+                                <th>Instructor</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                $courseQuery = "SELECT * FROM courses";
+                                $courseResult = $conn->query($courseQuery);
+                                while ($course = $courseResult->fetch_assoc()) {
+                                    echo "<tr>
+                                            <td>{$course['id']}</td>
+                                            <td>{$course['course_name']}</td>
+                                            <td>{$course['instructor']}</td>
+                                            <td>{$course['duration']}</td>
+                                          </tr>";
+                                }
+                            ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
