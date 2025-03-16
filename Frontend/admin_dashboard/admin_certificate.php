@@ -158,7 +158,7 @@ $template = $templateResult->fetch_assoc();
     </script>
 </head>
 <body>
-    <?php include 'admin_sidebar.php'; ?>
+<?php include 'sidebar.php'; ?>
 
     <div class="container mt-4">
         <h2 class="mb-4">Generate Certificates</h2>
