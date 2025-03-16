@@ -96,7 +96,7 @@ if (isset($_POST['logout'])) {
                     <h4 class="text-center">Generate Certificates for Completed Courses</h4>
                 </div>
                 <div class="card-body">
-                    <form action="generate_certificate.php" method="POST" id="generate-certificates-form">
+                    <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" id="generate-certificates-form">
                         <button type="submit" class="btn btn-success btn-block" name="generate_certificates">Generate Certificates</button>
                     </form>
                     <hr>
@@ -128,7 +128,7 @@ if (isset($_POST['logout'])) {
                                         <td>{$row['course_name']}</td>
                                         <td>{$row['user_name']}</td>
                                         <td>
-                                            <a href='generate_certificate.php?generate={$row['id']}' class='btn btn-info btn-sm'>Generate Certificate</a>
+                                            <a href='../../Backend/admin_controller/generate_certificate.php?generate={$row['id']}' class='btn btn-info btn-sm'>Generate Certificate</a>
                                         </td>
                                       </tr>";
                                 $counter++;
