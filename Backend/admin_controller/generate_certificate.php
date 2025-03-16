@@ -52,9 +52,11 @@ function generateCertificates() {
     global $conn;
     
     // Get all completed courses
-    $query = "SELECT c.id, c.course_name, u.name FROM courses c
-              INNER JOIN users u ON c.user_id = u.id
-              WHERE c.completion_status = 'completed'";
+    $query = "SELECT c.id, c.name AS course_name, 
+                            CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name
+                     FROM courses c
+                     INNER JOIN applications a ON c.id = a.course_id
+                     WHERE c.status = 'completed' AND a.status = 'enrolled'";
 
     $result = $conn->query($query);
 
