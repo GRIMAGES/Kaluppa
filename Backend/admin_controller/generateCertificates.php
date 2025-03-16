@@ -80,6 +80,9 @@ function generateCertificateWithTemplate($templatePath, $userName, $courseName) 
     // Combine the template directory and file name to get the full path
     $fullTemplatePath = $templateDir . $templateFileName;
 
+    // Debugging: Log the full path of the template
+    error_log("Looking for template at: " . $fullTemplatePath);
+
     // Check if the template file exists
     if (!file_exists($fullTemplatePath)) {
         error_log("Template file does not exist: " . $fullTemplatePath);
@@ -103,12 +106,14 @@ function generateCertificateWithTemplate($templatePath, $userName, $courseName) 
 
     // Output the PDF to the file path
     if ($pdf->Output('F', $certificateFile)) {
+        error_log("Certificate successfully generated at: " . $certificateFile);
         return $certificateFile;  // Return the file path of the generated certificate
     } else {
         error_log("PDF generation failed.");
         return false;  // If something goes wrong
     }
 }
+
 
 // Handle certificate generation POST request
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['generate_certificates'])) {
