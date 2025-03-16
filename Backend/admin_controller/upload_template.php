@@ -19,7 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    $newFileName = uniqid('template_', true) . '.' . $fileExt;
+    // 📁 Use the original filename (no uniqid)
+    $newFileName = $fileName;
     $uploadPath = $uploadDir . $newFileName;
 
     if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
