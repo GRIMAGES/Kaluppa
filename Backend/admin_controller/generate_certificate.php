@@ -15,34 +15,6 @@ $admin_name = $_SESSION['email'] ?? 'System';
 
 $templatePath = ''; // Initialize early to avoid undefined error
 
-// ===== Handle Certificate Template File Upload =====
-if (isset($_FILES['template_file']) && $_FILES['template_file']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = __DIR__ . '/templates/'; // Path: Kaluppa/Backend/admin_controller/templates/
-
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0755, true); // Create folder if it doesn't exist
-    }
-
-    $fileName = basename($_FILES['template_file']['name']);
-    $targetPath = $uploadDir . $fileName;
-
-    if (move_uploaded_file($_FILES['template_file']['tmp_name'], $targetPath)) {
-        echo "Template uploaded successfully: $targetPath<br>";
-        $templatePath = $targetPath; // ✅ SET the actual path for further use
-    } else {
-        echo "Failed to upload template file.<br>";
-        $templatePath = '../../cert_templates/certificate_template.pdf'; // fallback
-    }
-} else {
-    // Fallback default path if no template uploaded
-    $templatePath = '../../cert_templates/certificate_template.pdf';
-}
-
-// ===== Check if template exists =====
-if (!file_exists($templatePath)) {
-    echo "<h3>Certificate template not found at: {$templatePath}</h3>";
-    exit;
-}
 
 // ===== Initialize PDF =====
 $pdf = new TcpdfFpdi('L', 'mm', 'A4');

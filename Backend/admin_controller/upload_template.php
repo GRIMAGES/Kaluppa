@@ -10,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['new_template'])) {
     $targetPath = $uploadDir . $filename;
 
     if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-        $stmt = $conn->prepare("INSERT INTO certificate_templates (template_name, file_path) VALUES (?, ?)");
-        $stmt->bind_param("ss", $filename, $targetPath);
+        $stmt = $conn->prepare("INSERT INTO certificate_templates (id, template_name, file_path) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $filename, $targetPath);
         $stmt->execute();
         header("Location: {$_SERVER['HTTP_REFERER']}?upload=success");
         exit;
