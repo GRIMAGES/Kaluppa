@@ -4,43 +4,25 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once '../connection.php';
-require_once __DIR__ . '/../../vendor/autoload.php'; // TCPDF autoload via Composer
+require_once '../../vendor/autoload.php';
 
 use TCPDF;
 
 session_start();
 
 $type = $_POST['certificate_type'] ?? '';
-$recipient = $_POST['recipient_name'] ?? 'Recipient Name';
+$recipient_name = $_POST['recipient_name'] ?? 'Recipient';
+$admin_name = $_SESSION['email'] ?? 'System';
 
-// Create new PDF document
 $pdf = new TCPDF('L', PDF_UNIT, 'A4', true, 'UTF-8', false);
-
-// Set document info
-$pdf->SetCreator('Kaluppa System');
-$pdf->SetAuthor('Kaluppa Foundation');
-$pdf->SetTitle('Certificate of Recognition');
-$pdf->SetSubject('Certificate');
-$pdf->SetKeywords('Certificate, Scholarship, Volunteer, Document');
-
-// Remove default header/footer
-$pdf->setPrintHeader(false);
-$pdf->setPrintFooter(false);
-
-// Set margins and add page
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('KALUPPA');
+$pdf->SetTitle('Certificate');
 $pdf->SetMargins(20, 20, 20, true);
 $pdf->AddPage();
 
-// Styles
-$titleStyle = 'font-size: 28px; font-weight: bold; text-align: center;';
-$subtitleStyle = 'font-size: 18px; text-align: center;';
-$contentStyle = 'font-size: 16px; text-align: center; margin-top: 20px;';
-$highlightStyle = 'font-size: 20px; font-weight: bold; color: #000066; text-align: center;';
-
-// Build certificate content
-$html = "<h1 style='$titleStyle'>CERTIFICATE OF RECOGNITION</h1>";
-$html .= "<br><h2 style='$subtitleStyle'>Presented to</h2>";
-$html .= "<h2 style='$highlightStyle'>" . strtoupper($recipient) . "</h2>";
+$html = '';
+$reference_title = '';
 
 switch ($type) {
     case 'scholarship':
@@ -51,9 +33,11 @@ switch ($type) {
             $query->execute();
             $result = $query->get_result();
             $course = $result->fetch_assoc();
+            $reference_title = $course['name'] ?? 'Scholarship Course';
 
-            $html .= "<div style='$contentStyle'>In recognition of successfully completing the scholarship course:</div>";
-            $html .= "<div style='$highlightStyle'>" . strtoupper($course['name']) . "</div>";
+            $html .= '<h1 style="text-align:center;">Scholarship Certificate</h1>';
+            $html .= '<p style="text-align:center;font-size:16px;">This is to certify that <strong>' . htmlspecialchars($recipient_name) . '</strong> has completed the course:</p>';
+            $html .= '<h2 style="text-align:center;">' . strtoupper(htmlspecialchars($reference_title)) . '</h2>';
         }
         break;
 
@@ -65,27 +49,37 @@ switch ($type) {
             $query->execute();
             $result = $query->get_result();
             $work = $result->fetch_assoc();
+            $reference_title = $work['title'] ?? 'Volunteer Work';
 
-            $html .= "<div style='$contentStyle'>In appreciation for your voluntary service in the project:</div>";
-            $html .= "<div style='$highlightStyle'>" . strtoupper($work['title']) . "</div>";
+            $html .= '<h1 style="text-align:center;">Volunteer Certificate</h1>';
+            $html .= '<p style="text-align:center;font-size:16px;">This is to certify that <strong>' . htmlspecialchars($recipient_name) . '</strong> has participated in the volunteer work titled:</p>';
+            $html .= '<h2 style="text-align:center;">' . strtoupper(htmlspecialchars($reference_title)) . '</h2>';
         }
         break;
 
     case 'request_documents':
-        $details = $_POST['document_details'] ?? '';
-        $html .= "<div style='$contentStyle'>This certificate acknowledges the request for:</div>";
-        $html .= "<div style='$highlightStyle'>" . strtoupper($details) . "</div>";
+        $reference_title = $_POST['document_details'] ?? 'Requested Documents';
+
+        $html .= '<h1 style="text-align:center;">Requested Document Certificate</h1>';
+        $html .= '<p style="text-align:center;font-size:16px;">This document certifies that <strong>' . htmlspecialchars($recipient_name) . '</strong> has requested the document:</p>';
+        $html .= '<h2 style="text-align:center;">' . strtoupper(htmlspecialchars($reference_title)) . '</h2>';
         break;
 
     default:
-        $html .= "<div style='$contentStyle'>Invalid certificate type selected.</div>";
+        $html .= '<h1 style="text-align:center;">Invalid Certificate Type</h1>';
         break;
 }
 
-// Add date issued
-$html .= "<br><div style='$subtitleStyle'>Date Issued: " . date('F j, Y') . "</div>";
-
-// Render to PDF
+// Output the certificate HTML
 $pdf->writeHTML($html, true, false, true, false, '');
+
+// Save certificate log to database
+if (!empty($reference_title) && !empty($recipient_name)) {
+    $stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $recipient_name, $type, $reference_title, $admin_name);
+    $stmt->execute();
+}
+
+// Output PDF to browser
 $pdf->Output('certificate.pdf', 'I');
 exit;
