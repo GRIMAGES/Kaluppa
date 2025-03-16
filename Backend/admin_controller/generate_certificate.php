@@ -68,7 +68,7 @@ function generateCertificates() {
             $courseName = $row['course_name'];
             $userId = $row['user_id'];
 
-            $templateQuery = "SELECT * FROM certificate_templates LIMIT 1";
+            $templateQuery = "SELECT * FROM certificate_templates LIMIT 1";  // Get the latest template
             $templateResult = $conn->query($templateQuery);
             $template = $templateResult->fetch_assoc();
 
@@ -94,7 +94,7 @@ function generateCertificates() {
     }
 }
 
-// Helper function to simulate generating a certificate image (you can integrate FPDF or GD here)
+// Helper function to simulate generating a certificate image (using GD)
 function generateCertificateImage($templatePath, $userName, $courseName) {
     // Ensure the certificates directory exists
     $certificatesDir = __DIR__ . '/certificates/';
@@ -105,18 +105,28 @@ function generateCertificateImage($templatePath, $userName, $courseName) {
     // File path to save the generated certificate
     $certificateFile = $certificatesDir . uniqid() . '.png'; // Unique file name for each certificate
     
-    // Create a simple image using GD (replace with actual logic to generate a certificate)
-    $image = imagecreatetruecolor(600, 400);
-    $bgColor = imagecolorallocate($image, 255, 255, 255);  // White background
-    $textColor = imagecolorallocate($image, 0, 0, 0);  // Black text
-    imagefill($image, 0, 0, $bgColor);
+    // Load the template image (it can be a PNG or JPEG)
+    $image = imagecreatefrompng($templatePath);  // Change to imagecreatefromjpeg() if it's a JPEG
+    if (!$image) {
+        return false; // If template loading fails
+    }
 
-    // Add some text to the certificate
-    imagestring($image, 5, 50, 150, "Certificate of Completion", $textColor);
-    imagestring($image, 3, 50, 200, "This is to certify that", $textColor);
-    imagestring($image, 4, 50, 250, $userName, $textColor);
-    imagestring($image, 4, 50, 300, "has completed the course:", $textColor);
-    imagestring($image, 4, 50, 350, $courseName, $textColor);
+    // Text color
+    $textColor = imagecolorallocate($image, 0, 0, 0);  // Black text
+
+    // Set font path (Make sure to have a TTF font in the folder)
+    $fontPath = __DIR__ . '/fonts/arial.ttf';  // Example, you can change this path
+    if (!file_exists($fontPath)) {
+        return false; // If the font file is missing
+    }
+
+    // Define positions for the text on the image (adjust these values based on template layout)
+    $userNamePosition = [250, 250];  // Adjust the X, Y positions for the user's name
+    $courseNamePosition = [250, 300]; // Adjust the X, Y positions for the course name
+
+    // Add text to the image
+    imagettftext($image, 20, 0, $userNamePosition[0], $userNamePosition[1], $textColor, $fontPath, $userName);
+    imagettftext($image, 20, 0, $courseNamePosition[0], $courseNamePosition[1], $textColor, $fontPath, $courseName);
 
     // Save the image
     if (imagepng($image, $certificateFile)) {
@@ -126,6 +136,7 @@ function generateCertificateImage($templatePath, $userName, $courseName) {
         return false;  // If something goes wrong
     }
 }
+
 // Handle actions (Backend processing)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['upload_template'])) {
