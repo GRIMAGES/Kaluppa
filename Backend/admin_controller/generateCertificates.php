@@ -71,8 +71,18 @@ function generateCertificateWithTemplate($templatePath, $userName, $courseName) 
     // File path to save the generated certificate
     $certificateFile = $certificatesDir . uniqid() . '.pdf'; // Use PDF format for the certificate
 
+    // Extract the base filename from the database file path
+    $templateFileName = basename($templatePath);  // This will extract the file name (e.g., template.pdf)
+
+    // Assuming the templates are stored in a directory relative to this script
+    $templateDir = __DIR__ . '/templates/';  // Adjust this path to where your templates are stored
+
+    // Combine the template directory and file name to get the full path
+    $fullTemplatePath = $templateDir . $templateFileName;
+
     // Check if the template file exists
-    if (!file_exists($templatePath)) {
+    if (!file_exists($fullTemplatePath)) {
+        error_log("Template file does not exist: " . $fullTemplatePath);
         return false; // Template file does not exist
     }
 
@@ -95,6 +105,7 @@ function generateCertificateWithTemplate($templatePath, $userName, $courseName) 
     if ($pdf->Output('F', $certificateFile)) {
         return $certificateFile;  // Return the file path of the generated certificate
     } else {
+        error_log("PDF generation failed.");
         return false;  // If something goes wrong
     }
 }
