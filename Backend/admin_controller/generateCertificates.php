@@ -36,7 +36,7 @@ function generateCertificates() {
 
             if ($template) {
                 // Generate the certificate
-                $certificateFile = generateCertificateImage($template['file_path'], $userName, $courseName);
+                $certificateFile = generateCertificateWithTemplate($template['file_path'], $userName, $courseName);
                 
                 // Save certificate to database
                 if ($certificateFile) {
@@ -60,8 +60,8 @@ function generateCertificates() {
     }
 }
 
-// Helper function to simulate generating a certificate image (using GD)
-function generateCertificateImage($templatePath, $userName, $courseName) {
+// Helper function to generate certificate with the uploaded template
+function generateCertificateWithTemplate($templatePath, $userName, $courseName) {
     // Ensure the certificates directory exists
     $certificatesDir = __DIR__ . '/certificates/';
     if (!is_dir($certificatesDir)) {
@@ -69,34 +69,32 @@ function generateCertificateImage($templatePath, $userName, $courseName) {
     }
 
     // File path to save the generated certificate
-    $certificateFile = $certificatesDir . uniqid() . '.png'; // Unique file name for each certificate
+    $certificateFile = $certificatesDir . uniqid() . '.pdf'; // Use PDF format for the certificate
     
-    // Load the template image (it can be a PNG or JPEG)
-    $image = imagecreatefrompng($templatePath);  // Change to imagecreatefromjpeg() if it's a JPEG
-    if (!$image) {
+    // Load the uploaded template
+    $template = file_get_contents($templatePath);
+
+    if (!$template) {
         return false; // If template loading fails
     }
 
-    // Text color
-    $textColor = imagecolorallocate($image, 0, 0, 0);  // Black text
+    // Use FPDF or any other PDF library to generate the PDF from the template (assuming it's a PDF file)
+    $pdf = new FPDF();
+    $pdf->AddPage();
 
-    // Set font path (Make sure to have a TTF font in the folder)
-    $fontPath = __DIR__ . '/fonts/arial.ttf';  // Example, you can change this path
-    if (!file_exists($fontPath)) {
-        return false; // If the font file is missing
-    }
+    // Set font and color (adjust the font and size as needed)
+    $pdf->SetFont('Arial', 'B', 16);
+    $pdf->SetTextColor(0, 0, 0); // Black text
 
-    // Define positions for the text on the image (adjust these values based on template layout)
-    $userNamePosition = [250, 250];  // Adjust the X, Y positions for the user's name
-    $courseNamePosition = [250, 300]; // Adjust the X, Y positions for the course name
+    // Define positions for the text (adjust these based on the template layout)
+    $pdf->SetXY(50, 60);  // Position for the user's name
+    $pdf->Cell(0, 10, $userName, 0, 1, 'C'); // Center the user's name
 
-    // Add text to the image
-    imagettftext($image, 20, 0, $userNamePosition[0], $userNamePosition[1], $textColor, $fontPath, $userName);
-    imagettftext($image, 20, 0, $courseNamePosition[0], $courseNamePosition[1], $textColor, $fontPath, $courseName);
+    $pdf->SetXY(50, 100); // Position for the course name
+    $pdf->Cell(0, 10, $courseName, 0, 1, 'C'); // Center the course name
 
-    // Save the image
-    if (imagepng($image, $certificateFile)) {
-        imagedestroy($image); // Clean up
+    // Output the PDF to the file path
+    if ($pdf->Output('F', $certificateFile)) {
         return $certificateFile;  // Return the file path of the generated certificate
     } else {
         return false;  // If something goes wrong
