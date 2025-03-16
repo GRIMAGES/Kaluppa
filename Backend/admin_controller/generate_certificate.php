@@ -42,7 +42,7 @@ if ($type === 'scholarship') {
         $students_stmt = $conn->prepare("
             SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) AS full_name 
             FROM applications a
-            JOIN users u ON a.user_id = u.id
+            JOIN user u ON a.user_id = u.id
             WHERE a.course_id = ?
         ");
         $students_stmt->bind_param("i", $course_id);
