@@ -13,16 +13,13 @@ session_start();
 $type = $_POST['certificate_type'] ?? '';
 $admin_name = $_SESSION['email'] ?? 'System';
 
-$templatePath = ''; // Initialize early to avoid undefined error
-
-
 // ===== Initialize PDF =====
 $pdf = new TcpdfFpdi('L', 'mm', 'A4');
 $pdf->SetMargins(20, 20, 20);
 $pdf->SetAutoPageBreak(true, 20);
 $pdf->SetFont('Helvetica', '', 16);
 
-// --- Scholarship Certificate ---
+// ===== Certificate: Scholarship =====
 if ($type === 'scholarship') {
     $course_id = $_POST['course_id'] ?? '';
 
@@ -54,6 +51,13 @@ if ($type === 'scholarship') {
             exit;
         }
 
+        // Set Template
+        $templatePath = '../../Templates/scholarship_template.pdf';
+        if (!file_exists($templatePath)) {
+            die("Template file not found: $templatePath");
+        }
+        $pdf->setSourceFile($templatePath);
+
         while ($row = $students_result->fetch_assoc()) {
             $recipient_name = $row['full_name'];
 
@@ -69,6 +73,7 @@ if ($type === 'scholarship') {
             $pdf->SetFont('Helvetica', '', 16);
             $pdf->Cell(0, 10, strtoupper($course_name), 0, 1, 'C');
 
+            // Log
             $log_stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
             $log_stmt->bind_param("ssss", $recipient_name, $type, $course_name, $admin_name);
             $log_stmt->execute();
@@ -79,7 +84,7 @@ if ($type === 'scholarship') {
     }
 }
 
-// --- Volunteer Certificate ---
+// ===== Certificate: Volunteer =====
 elseif ($type === 'volunteer') {
     $recipient_name = $_POST['recipient_name'] ?? 'Recipient';
     $work_id = $_POST['work_id'] ?? '';
@@ -91,6 +96,13 @@ elseif ($type === 'volunteer') {
         $result = $stmt->get_result();
         $work = $result->fetch_assoc();
         $reference_title = $work['title'] ?? 'Volunteer Work';
+
+        // Set Template
+        $templatePath = '../../Templates/volunteer_template.pdf';
+        if (!file_exists($templatePath)) {
+            die("Template file not found: $templatePath");
+        }
+        $pdf->setSourceFile($templatePath);
 
         $pdf->AddPage();
         $tplIdx = $pdf->importPage(1);
@@ -104,6 +116,7 @@ elseif ($type === 'volunteer') {
         $pdf->SetFont('Helvetica', '', 16);
         $pdf->Cell(0, 10, strtoupper($reference_title), 0, 1, 'C');
 
+        // Log
         $log_stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
         $log_stmt->bind_param("ssss", $recipient_name, $type, $reference_title, $admin_name);
         $log_stmt->execute();
@@ -113,10 +126,17 @@ elseif ($type === 'volunteer') {
     }
 }
 
-// --- Request Document Certificate ---
+// ===== Certificate: Requested Document =====
 elseif ($type === 'request_documents') {
     $recipient_name = $_POST['recipient_name'] ?? 'Recipient';
     $reference_title = $_POST['document_details'] ?? 'Requested Document';
+
+    // Set Template
+    $templatePath = '../../Templates/document_template.pdf';
+    if (!file_exists($templatePath)) {
+        die("Template file not found: $templatePath");
+    }
+    $pdf->setSourceFile($templatePath);
 
     $pdf->AddPage();
     $tplIdx = $pdf->importPage(1);
@@ -130,6 +150,7 @@ elseif ($type === 'request_documents') {
     $pdf->SetFont('Helvetica', '', 16);
     $pdf->Cell(0, 10, strtoupper($reference_title), 0, 1, 'C');
 
+    // Log
     $log_stmt = $conn->prepare("INSERT INTO certificate_logs (recipient_name, certificate_type, reference_title, generated_by) VALUES (?, ?, ?, ?)");
     $log_stmt->bind_param("ssss", $recipient_name, $type, $reference_title, $admin_name);
     $log_stmt->execute();
@@ -138,7 +159,7 @@ elseif ($type === 'request_documents') {
     exit;
 }
 
-// --- Invalid Request Fallback ---
+// ===== Fallback: Invalid Request =====
 else {
     echo "<h3>Invalid certificate type selected.</h3>";
     exit;
