@@ -5,20 +5,23 @@ error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 
-if (isset($_SESSION['upload_message'])) {
-    echo "<p>{$_SESSION['upload_message']}</p>";
-    unset($_SESSION['upload_message']);  // Clear message after display
-}
 
+session_start();
 if (isset($_SESSION['gen_success'])) {
-    echo "<p>{$_SESSION['gen_success']}</p>";
-    unset($_SESSION['gen_success']);
+    echo "<div class='alert alert-success'>" . $_SESSION['gen_success'] . "</div>";
+    unset($_SESSION['gen_success']);  // Clear the message after displaying
 }
-
 if (isset($_SESSION['gen_error'])) {
-    echo "<p>{$_SESSION['gen_error']}</p>";
+    echo "<div class='alert alert-danger'>" . $_SESSION['gen_error'] . "</div>";
     unset($_SESSION['gen_error']);
 }
+
+if (isset($_SESSION['upload_message'])) {
+    echo "<div class='alert alert-info'>" . $_SESSION['upload_message'] . "</div>";
+    unset($_SESSION['upload_message']);
+}
+
+
 // Session timeout and logout functionality
 $timeout_duration = 1000;
 if (!isset($_SESSION['email'])) {
