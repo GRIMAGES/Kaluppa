@@ -25,6 +25,15 @@ if (isset($_POST['logout'])) {
     header("Location: /Kaluppa/Frontend/index.php");
     exit();
 }
+
+// Handling success and error messages
+$uploadSuccess = isset($_SESSION['upload_success']) ? $_SESSION['upload_success'] : '';
+$uploadError = isset($_SESSION['upload_error']) ? $_SESSION['upload_error'] : '';
+$genSuccess = isset($_SESSION['gen_success']) ? $_SESSION['gen_success'] : '';
+$genError = isset($_SESSION['gen_error']) ? $_SESSION['gen_error'] : '';
+
+// Clear session variables after displaying the message
+unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_success'], $_SESSION['gen_error']);
 ?>
 
 <!DOCTYPE html>
@@ -37,6 +46,11 @@ if (isset($_POST['logout'])) {
     <link rel="stylesheet" href="../assets/custom.css">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+
+    <!-- Toast CSS for Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     <style>
         body {
             background-color: #f4f7fa;
@@ -75,7 +89,6 @@ if (isset($_POST['logout'])) {
                 </div>
                 <div class="card-body">
                 <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
-
                         <div class="form-group">
                             <label for="template_name">Template Name</label>
                             <input type="text" name="template_name" class="form-control" id="template_name" required>
@@ -119,8 +132,7 @@ if (isset($_POST['logout'])) {
                      FROM courses c
                      INNER JOIN applications a ON c.id = a.course_id
                      WHERE c.status = 'completed' AND a.status = 'enrolled'";
-           
-           
+
                             $result = $conn->query($query);
                             $counter = 1;
                             while ($row = $result->fetch_assoc()) {
@@ -142,6 +154,22 @@ if (isset($_POST['logout'])) {
         </div>
     </div>
 </div>
+
+<script>
+    // Displaying toast notifications based on PHP session messages
+    <?php if ($uploadSuccess): ?>
+        toastr.success('<?php echo $uploadSuccess; ?>');
+    <?php endif; ?>
+    <?php if ($uploadError): ?>
+        toastr.error('<?php echo $uploadError; ?>');
+    <?php endif; ?>
+    <?php if ($genSuccess): ?>
+        toastr.success('<?php echo $genSuccess; ?>');
+    <?php endif; ?>
+    <?php if ($genError): ?>
+        toastr.error('<?php echo $genError; ?>');
+    <?php endif; ?>
+</script>
 
 </body>
 </html>
