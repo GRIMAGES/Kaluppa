@@ -98,7 +98,7 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                     <h4 class="text-center">Upload Certificate Template</h4>
                 </div>
                 <div class="card-body">
-                    <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
+                    <form action="../../Backend/admin_controller/uploadTemplate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
                         <div class="form-group">
                             <label for="template_name">Template Name</label>
                             <input type="text" name="template_name" class="form-control" id="template_name" required>
@@ -120,7 +120,7 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                     <h4 class="text-center">Generate Certificates for Completed Courses</h4>
                 </div>
                 <div class="card-body">
-                    <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" id="generate-certificates-form">
+                    <form action="../../Backend/admin_controller/generateCertificates.php" method="POST" id="generate-certificates-form">
                         <button type="submit" class="btn btn-success btn-block" name="generate_certificates">Generate Certificates</button>
                     </form>
                     <hr>
@@ -151,7 +151,7 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                                         <td>{$row['course_name']}</td>
                                         <td>{$row['user_name']}</td>
                                         <td>
-                                            <a href='../../Backend/admin_controller/generate_certificate.php?generate={$row['id']}' class='btn btn-info btn-sm'>Generate Certificate</a>
+                                            <a href='../../Backend/admin_controller/generateCertificates.php?generate={$row['id']}' class='btn btn-info btn-sm'>Generate Certificate</a>
                                         </td>
                                       </tr>";
                                 $counter++;
