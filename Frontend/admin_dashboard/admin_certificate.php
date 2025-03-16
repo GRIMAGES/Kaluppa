@@ -89,16 +89,17 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
                 </div>
                 <div class="card-body">
                 <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
-                        <div class="form-group">
-                            <label for="template_name">Template Name</label>
-                            <input type="text" name="template_name" class="form-control" id="template_name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="template_file">Upload Template (PNG/JPEG/PDF)</label>
-                            <input type="file" name="template_file" class="form-control" id="template_file" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block" name="upload_template">Upload Template</button>
-                    </form>
+    <div class="form-group">
+        <label for="template_name">Template Name</label>
+        <input type="text" name="template_name" class="form-control" id="template_name" required>
+    </div>
+    <div class="form-group">
+        <label for="template_file">Upload Template (PNG/JPEG/PDF)</label>
+        <input type="file" name="template_file" class="form-control" id="template_file" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block" name="upload_template">Upload Template</button>
+</form>
+
                 </div>
             </div>
         </div>
@@ -169,6 +170,18 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
     <?php if ($genError): ?>
         toastr.error('<?php echo $genError; ?>');
     <?php endif; ?>
+
+    <?php
+if (isset($_SESSION['upload_success'])) {
+    echo "<script>toastr.success('" . $_SESSION['upload_success'] . "');</script>";
+    unset($_SESSION['upload_success']); // Clear the message after showing it
+}
+
+if (isset($_SESSION['upload_error'])) {
+    echo "<script>toastr.error('" . $_SESSION['upload_error'] . "');</script>";
+    unset($_SESSION['upload_error']); // Clear the message after showing it
+}
+?>
 </script>
 
 </body>

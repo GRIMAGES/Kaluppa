@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // If there was an error, set error message
     $_SESSION['upload_error'] = "There was an error uploading the template!";
-    header("Location: /Kaluppa/Frontend/admin/upload_template.php");  // Redirect back to the form page
+    header("Location: /Kaluppa/Frontend/admin_dashboard/admin_certificate.php");  // Redirect back to the form page
     exit();
     }
 
