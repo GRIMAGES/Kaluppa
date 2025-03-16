@@ -96,7 +96,7 @@ while ($row = $templateResult->fetch_assoc()) {
             <select class="form-control" name="template_id" id="template_id" required onchange="showTemplatePreview()">
                 <option value="">-- Choose Template --</option>
                 <?php foreach ($templates as $template): ?>
-                    <option value="<?= $template['id'] ?>" data-file="<?= htmlspecialchars($template['template_file']) ?>">
+                    <option value="<?= $template['id'] ?>" data-file="<?= htmlspecialchars($template['file_path']) ?>">
                         <?= htmlspecialchars($template['template_name']) ?>
                     </option>
                 <?php endforeach; ?>
