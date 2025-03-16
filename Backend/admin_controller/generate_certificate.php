@@ -102,12 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $templateName = $_POST['template_name'];
         $file = $_FILES['template_file'];
         $uploadMessage = uploadTemplate($templateName, $file);
+        $_SESSION['upload_message'] = $uploadMessage;  
     }
 
     if (isset($_POST['generate_certificates'])) {
         // Handle certificate generation
         generateCertificates();
-        $generateMessage = "Certificates generated for all completed courses.";
+        $_SESSION['generate_message'] = "Certificates generated successfully for all completed courses."; 
     }
 }
 ?>
