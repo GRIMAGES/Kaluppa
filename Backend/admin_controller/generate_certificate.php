@@ -63,7 +63,7 @@ function generateCertificates() {
     while ($row = $result->fetch_assoc()) {
         $courseId = $row['id'];
         $courseName = $row['course_name'];
-        $userName = $row['name'];
+        $userName = $row['user_name'];
 
         // Fetch a template (for now, using the first template in the DB)
         $templateQuery = "SELECT * FROM certificate_templates LIMIT 1";
