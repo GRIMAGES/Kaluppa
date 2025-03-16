@@ -160,29 +160,39 @@ unset($_SESSION['upload_success'], $_SESSION['upload_error'], $_SESSION['gen_suc
         <div class="col-lg-12">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h4 class="text-center">Course List</h4>
+                    <h4 class="text-center">Completed Courses and Users</h4>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Course Name</th>
-                                <th>Instructor</th>
-                                <th>Duration</th>
+                                <th>User Name</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                                $courseQuery = "SELECT * FROM courses";
-                                $courseResult = $conn->query($courseQuery);
-                                while ($course = $courseResult->fetch_assoc()) {
-                                    echo "<tr>
-                                            <td>{$course['id']}</td>
-                                            <td>{$course['course_name']}</td>
-                                            <td>{$course['instructor']}</td>
-                                            <td>{$course['duration']}</td>
-                                          </tr>";
+                                // Query to fetch completed courses and corresponding users
+                                $query = "SELECT c.id, c.name AS course_name, 
+                                              a.user_id, 
+                                              CONCAT(a.first_name, ' ', a.middle_name, ' ', a.last_name) AS user_name
+                                           FROM courses c
+                                           INNER JOIN applications a ON c.id = a.course_id
+                                           WHERE c.status = 'completed' AND a.status = 'enrolled'";
+
+                                $result = $conn->query($query);
+
+                                // Check if there are any records
+                                if ($result->num_rows > 0) {
+                                    // Loop through the result and display each row
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>
+                                                <td>" . htmlspecialchars($row['course_name']) . "</td>
+                                                <td>" . htmlspecialchars($row['user_name']) . "</td>
+                                              </tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='2'>No completed courses found for enrolled users.</td></tr>";
                                 }
                             ?>
                         </tbody>
