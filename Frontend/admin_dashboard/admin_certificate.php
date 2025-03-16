@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
 
+// Session timeout handling
 $timeout_duration = 1000;
 if (!isset($_SESSION['email'])) {
     header("Location: /Kaluppa/Frontend/index.php");
@@ -73,6 +74,7 @@ while ($row = $worksResult->fetch_assoc()) {
     </style>
 </head>
 <body>
+
 <?php include 'sidebar.php'; ?>
 
 <div class="certificate-form">
@@ -126,6 +128,7 @@ while ($row = $worksResult->fetch_assoc()) {
     </form>
 </div>
 
+<!-- JavaScript for showing/hiding form fields -->
 <script>
     const certType = document.getElementById('certificate_type');
     const scholarshipField = document.getElementById('scholarshipField');

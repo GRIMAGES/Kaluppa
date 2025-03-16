@@ -13,27 +13,35 @@ session_start();
 $type = $_POST['certificate_type'] ?? '';
 $admin_name = $_SESSION['email'] ?? 'System';
 
+$templatePath = ''; // Initialize early to avoid undefined error
+
 // ===== Handle Certificate Template File Upload =====
 if (isset($_FILES['template_file']) && $_FILES['template_file']['error'] === UPLOAD_ERR_OK) {
-    $uploadDir = __DIR__ . '/templates/'; // Now points to Kaluppa/Backend/admin_controller/templates/
-    
+    $uploadDir = __DIR__ . '/templates/'; // Path: Kaluppa/Backend/admin_controller/templates/
+
     if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0755, true); // Create folder if not existing
+        mkdir($uploadDir, 0755, true); // Create folder if it doesn't exist
     }
 
     $fileName = basename($_FILES['template_file']['name']);
     $targetPath = $uploadDir . $fileName;
 
     if (move_uploaded_file($_FILES['template_file']['tmp_name'], $targetPath)) {
-        echo "Template uploaded successfully: $targetPath";
+        echo "Template uploaded successfully: $targetPath<br>";
+        $templatePath = $targetPath; // ✅ SET the actual path for further use
     } else {
-        echo "Failed to upload template file.";
+        echo "Failed to upload template file.<br>";
+        $templatePath = '../../cert_templates/certificate_template.pdf'; // fallback
     }
+} else {
+    // Fallback default path if no template uploaded
+    $templatePath = '../../cert_templates/certificate_template.pdf';
 }
 
- else {
-    // Default Template Path
-    $templatePath = '../../cert_templates/certificate_template.pdf';
+// ===== Check if template exists =====
+if (!file_exists($templatePath)) {
+    echo "<h3>Certificate template not found at: {$templatePath}</h3>";
+    exit;
 }
 
 // ===== Initialize PDF =====
@@ -41,12 +49,6 @@ $pdf = new TcpdfFpdi('L', 'mm', 'A4');
 $pdf->SetMargins(20, 20, 20);
 $pdf->SetAutoPageBreak(true, 20);
 $pdf->SetFont('Helvetica', '', 16);
-
-// ===== Check if template exists =====
-if (!file_exists($templatePath)) {
-    echo "<h3>Certificate template not found at: {$templatePath}</h3>";
-    exit;
-}
 
 // --- Scholarship Certificate ---
 if ($type === 'scholarship') {
