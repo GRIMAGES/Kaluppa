@@ -74,7 +74,8 @@ if (isset($_POST['logout'])) {
                     <h4 class="text-center">Upload Certificate Template</h4>
                 </div>
                 <div class="card-body">
-                    <form action="generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
+                <form action="../../Backend/admin_controller/generate_certificate.php" method="POST" enctype="multipart/form-data" id="upload-template-form">
+
                         <div class="form-group">
                             <label for="template_name">Template Name</label>
                             <input type="text" name="template_name" class="form-control" id="template_name" required>
