@@ -14,6 +14,7 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
+$adminEmail = $_SESSION['email'] ?? ''; // Initialize adminEmail from session data
 
 // Fetch the exported reports for the logged-in admin
 $query = "SELECT * FROM export_logs WHERE admin_email = ?";
