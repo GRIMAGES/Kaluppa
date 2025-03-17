@@ -203,7 +203,7 @@ $template = $templateResult->fetch_assoc();
 
         function generateCertificates() {
             var selectedUsers = [];
-            document.querySelectorAll("input[name='user_id[]']:checked").forEach((checkbox) => {
+            document.querySelectorAll("input[name='user_ids[]']:checked").forEach((checkbox) => {
                 selectedUsers.push(checkbox.value);
             });
             if (selectedUsers.length > 0) {
