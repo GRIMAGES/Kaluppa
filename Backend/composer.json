@@ -5,6 +5,7 @@
         "dompdf/dompdf": "^3.0",
         "tecnickcom/tcpdf": "^6.8",
         "setasign/fpdf": "^1.8",
-        "setasign/fpdi": "^2.6"
+        "setasign/fpdi": "^2.6",
+        "predis/predis": "^2.3"
     }
 }
