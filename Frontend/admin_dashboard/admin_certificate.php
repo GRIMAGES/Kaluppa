@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_upload'])) {
 }
 // Add a new form for importing the template
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['import_template'])) {
-    $importDir = __DIR__ . "/temp_templates/"; // Temporary directory to store imported templates
+    $importDir = __DIR__ . "/templates/"; // Temporary directory to store imported templates
     $importFileName = basename($_FILES['import_template']['name']);
     $importTargetPath = $importDir . $importFileName;
 
