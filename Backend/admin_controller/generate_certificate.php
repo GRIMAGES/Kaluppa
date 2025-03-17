@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 session_start();
-require_once '../../connection.php';  // Corrected path to connection.php
+require_once '../connection.php';  // Corrected path to connection.php
 
 function generateCertificate($userId, $templatePath, $outputDir) {
     global $conn;  // Access the global connection object
