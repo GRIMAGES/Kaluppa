@@ -49,15 +49,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
     $fileName = basename($_FILES['template']['name']);
     $targetPath = $uploadDir . $fileName;
 
+    // Handle missing data gracefully in PHP
+    $posFullNameX = $posFullNameY = $posCourseNameX = $posCourseNameY = $posCertificateNoX = $posCertificateNoY = null;
+    if (isset($_POST['pos_full_name'])) {
+        list($posFullNameX, $posFullNameY) = explode(',', $_POST['pos_full_name']);
+    }
+    if (isset($_POST['pos_course_name'])) {
+        list($posCourseNameX, $posCourseNameY) = explode(',', $_POST['pos_course_name']);
+    }
+    if (isset($_POST['pos_certificate_no'])) {
+        list($posCertificateNoX, $posCertificateNoY) = explode(',', $_POST['pos_certificate_no']);
+    }
+
+    // Ensure certificate_type is not null
+    $certificateType = $_POST['certificate_type'] ?? 'default'; // Provide a default value or handle appropriately
 
     if (move_uploaded_file($_FILES['template']['tmp_name'], $targetPath)) {
-        list($posFullNameX, $posFullNameY) = explode(',', $_POST['pos_full_name']);
-        list($posCourseNameX, $posCourseNameY) = explode(',', $_POST['pos_course_name']);
-        list($posCertificateNoX, $posCertificateNoY) = explode(',', $_POST['pos_certificate_no']);
-
         $query = "INSERT INTO certificate_templates (template_name, file_path, uploaded_by, certificate_type, font_full_name, font_course_name, font_certificate_no, pos_full_name_x, pos_full_name_y, pos_course_name_x, pos_course_name_y, pos_certificate_no_x, pos_certificate_no_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("sssssssssssss", $fileName, $targetPath, $_SESSION['email'], $_POST['certificate_type'], $_POST['font_full_name'], $_POST['font_course_name'], $_POST['font_certificate_no'], $posFullNameX, $posFullNameY, $posCourseNameX, $posCourseNameY, $posCertificateNoX, $posCertificateNoY);
+        $stmt->bind_param("sssssssssssss", $fileName, $targetPath, $_SESSION['email'], $certificateType, $_POST['font_full_name'], $_POST['font_course_name'], $_POST['font_certificate_no'], $posFullNameX, $posFullNameY, $posCourseNameX, $posCourseNameY, $posCertificateNoX, $posCertificateNoY);
 
         $stmt->execute();
         $stmt->close();
@@ -306,31 +316,6 @@ $template = $templateResult->fetch_assoc();
             <button type="button" class="btn btn-primary mt-3" onclick="generateCertificates()">Generate Certificates</button>
         </form>
 
-        <?php if (isset($_SESSION['import_success'])): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <?php echo $_SESSION['import_success']; unset($_SESSION['import_success']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['import_error'])): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <?php echo $_SESSION['import_error']; unset($_SESSION['import_error']); ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        <?php endif; ?>
-
-        <?php if (isset($_SESSION['imported_template'])): ?>
-            <div class="mt-3">
-                <h5>Imported Template Preview:</h5>
-                <img src="<?php echo htmlspecialchars($_SESSION['imported_template']); ?>" alt="Imported Template Preview" class="img-fluid">
-                <form method="POST" class="mt-3">
-                    <input type="hidden" name="confirm_upload" value="1">
-                    <button type="submit" class="btn btn-success">Upload to Database</button>
-                </form>
-            </div>
-        <?php endif; ?>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
