@@ -64,10 +64,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
     // Ensure certificate_type is not null
     $certificateType = $_POST['certificate_type'] ?? 'default'; // Provide a default value or handle appropriately
 
+    // Ensure font selections are not null
+    $fontFullName = $_POST['font_full_name'] ?? 'Arial'; // Provide a default value
+    $fontCourseName = $_POST['font_course_name'] ?? 'Arial'; // Provide a default value
+    $fontCertificateNo = $_POST['font_certificate_no'] ?? 'Arial'; // Provide a default value
+
     if (move_uploaded_file($_FILES['template']['tmp_name'], $targetPath)) {
         $query = "INSERT INTO certificate_templates (template_name, file_path, uploaded_by, certificate_type, font_full_name, font_course_name, font_certificate_no, pos_full_name_x, pos_full_name_y, pos_course_name_x, pos_course_name_y, pos_certificate_no_x, pos_certificate_no_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("sssssssssssss", $fileName, $targetPath, $_SESSION['email'], $certificateType, $_POST['font_full_name'], $_POST['font_course_name'], $_POST['font_certificate_no'], $posFullNameX, $posFullNameY, $posCourseNameX, $posCourseNameY, $posCertificateNoX, $posCertificateNoY);
+        $stmt->bind_param("sssssssssssss", $fileName, $targetPath, $_SESSION['email'], $certificateType, $fontFullName, $fontCourseName, $fontCertificateNo, $posFullNameX, $posFullNameY, $posCourseNameX, $posCourseNameY, $posCertificateNoX, $posCertificateNoY);
 
         $stmt->execute();
         $stmt->close();
