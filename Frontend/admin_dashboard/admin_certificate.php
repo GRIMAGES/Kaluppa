@@ -45,7 +45,7 @@ $stmt->close();
 
 // Handle template upload
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
-    $uploadDir = __DIR__ . "/templates/"; // Directory to store templates
+    $uploadDir = __DIR__ . "/../../Backend/admin_controller/templates/"; // Correct directory to store templates
     $fileName = basename($_FILES['template']['name']);
     $targetPath = $uploadDir . $fileName;
 
@@ -75,7 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_upload'])) {
     if (isset($_SESSION['imported_template'])) {
         $fileName = basename($_SESSION['imported_template']);
-        $targetPath = __DIR__ . "/templates/" . $fileName;
+        $targetPath = __DIR__ . "/../../Backend/admin_controller/templates/" . $fileName;
 
         if (rename($_SESSION['imported_template'], $targetPath)) {
             // Proceed with the existing database upload logic
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_upload'])) {
 }
 // Add a new form for importing the template
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['import_template'])) {
-    $importDir = __DIR__ . "/templates/"; // Temporary directory to store imported templates
+    $importDir = __DIR__ . "/../../Backend/admin_controller/templates/"; // Correct directory to store imported templates
     $importFileName = basename($_FILES['import_template']['name']);
     $importTargetPath = $importDir . $importFileName;
 
