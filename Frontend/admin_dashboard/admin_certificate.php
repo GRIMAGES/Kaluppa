@@ -306,17 +306,6 @@ $template = $templateResult->fetch_assoc();
             <button type="button" class="btn btn-primary mt-3" onclick="generateCertificates()">Generate Certificates</button>
         </form>
 
-        <form method="POST" enctype="multipart/form-data" class="mb-4">
-            <div class="form-section">
-                <h5>Import Certificate Template</h5>
-                <div class="mb-3">
-                    <label for="import_template" class="form-label">Import Certificate Template (PDF, JPG, PNG, etc.):</label>
-                    <input type="file" name="import_template" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp" required>
-                </div>
-                <button type="submit" class="btn btn-secondary">Import Template</button>
-            </div>
-        </form>
-
         <?php if (isset($_SESSION['import_success'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?php echo $_SESSION['import_success']; unset($_SESSION['import_success']); ?>
@@ -331,6 +320,16 @@ $template = $templateResult->fetch_assoc();
             </div>
         <?php endif; ?>
 
+        <?php if (isset($_SESSION['imported_template'])): ?>
+            <div class="mt-3">
+                <h5>Imported Template Preview:</h5>
+                <img src="<?php echo htmlspecialchars($_SESSION['imported_template']); ?>" alt="Imported Template Preview" class="img-fluid">
+                <form method="POST" class="mt-3">
+                    <input type="hidden" name="confirm_upload" value="1">
+                    <button type="submit" class="btn btn-success">Upload to Database</button>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
