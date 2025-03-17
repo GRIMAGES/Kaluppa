@@ -9,7 +9,7 @@ function generateCertificate($userId, $templatePath, $outputDir) {
     global $conn;  // Access the global connection object
 
     // Fetch user data
-    $query = "SELECT first_name, last_name, course_name FROM user INNER JOIN applications ON user.id = applications.user_id WHERE id = ?";
+    $query = "SELECT user.first_name, user.last_name, applications.course_name FROM user INNER JOIN applications ON user.id = applications.user_id WHERE user.id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $userId);
     $stmt->execute();
@@ -56,6 +56,11 @@ function generateCertificate($userId, $templatePath, $outputDir) {
 
 // Example usage
 try {
+    // Check if user_id is set
+    if (!isset($_GET['user_id'])) {
+        die("Error: user_id not provided.");
+    }
+
     $userId = $_GET['user_id']; // Get user ID from request
     $templatePath = '../../Backend/admin_controller/templates/template.png'; // Path to the template
     $outputDir = '../../Backend/admin_controller/generated_certificates'; // Directory to save certificates
