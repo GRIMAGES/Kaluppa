@@ -3,6 +3,9 @@ require_once 'connection.php';
 require_once 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Print form data for debugging
+    var_dump($_POST);
+
     $firstName = $_POST['firstName'];
     $middleName = $_POST['middleName'];
     $lastName = $_POST['lastName'];
@@ -18,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $isVerified = 1;
 
     $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, role, gender, password, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        die('Prepare failed: ' . $conn->error);
+    }
+
     $stmt->bind_param('sssssssi', $firstName, $middleName, $lastName, $email, $role, $gender, $hashedPassword, $isVerified);
 
     if ($stmt->execute()) {
@@ -31,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo 'User added successfully but email sending failed';
         }
     } else {
-        echo 'Error adding user';
+        echo 'Error adding user: ' . $stmt->error;
     }
 
     $stmt->close();
