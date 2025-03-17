@@ -5,6 +5,9 @@ error_reporting(E_ALL);
 session_start();
 require_once '../connection.php';  // Corrected path to connection.php
 
+// Debugging: Print the GET variables to check if user_id is passed
+var_dump($_GET);
+
 function generateCertificate($userId, $templatePath, $outputDir) {
     global $conn;  // Access the global connection object
 
