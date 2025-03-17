@@ -1,14 +1,10 @@
 <?php
-session_start(); // Start session to store error/success messages
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Include the database connection
-require_once '../connection.php';
-
 session_start();
+require_once '../../connection.php';  // Corrected path to connection.php
+
 function generateCertificate($userId, $templatePath, $outputDir) {
+    global $conn;  // Access the global connection object
+
     // Fetch user data
     $query = "SELECT first_name, last_name, course_name FROM user INNER JOIN applications ON user.id = applications.user_id WHERE user.id = ?";
     $stmt = $conn->prepare($query);
@@ -25,12 +21,15 @@ function generateCertificate($userId, $templatePath, $outputDir) {
     // Load the template
     $template = imagecreatefrompng($templatePath);
     if (!$template) {
-        throw new Exception("Failed to load template.");
+        throw new Exception("Failed to load template. Ensure the template exists and the path is correct.");
     }
 
     // Define text color and font
     $black = imagecolorallocate($template, 0, 0, 0);
     $fontPath = __DIR__ . '/fonts/arial.ttf'; // Ensure this path is correct
+    if (!file_exists($fontPath)) {
+        throw new Exception("Font file not found: " . $fontPath);
+    }
 
     // Customize the certificate with user data
     $fullName = $user['first_name'] . ' ' . $user['last_name'];
@@ -39,8 +38,14 @@ function generateCertificate($userId, $templatePath, $outputDir) {
     imagettftext($template, 20, 0, 100, 200, $black, $fontPath, $courseName);
 
     // Save the certificate
+    if (!is_dir($outputDir)) {
+        throw new Exception("Output directory not found: " . $outputDir);
+    }
     $outputPath = $outputDir . '/certificate_' . $userId . '.png';
-    imagepng($template, $outputPath);
+    if (!imagepng($template, $outputPath)) {
+        throw new Exception("Failed to save certificate.");
+    }
+
     imagedestroy($template);
 
     return $outputPath;
@@ -56,4 +61,4 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
-?> 
+?>
