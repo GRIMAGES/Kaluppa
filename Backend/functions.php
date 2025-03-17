@@ -19,33 +19,39 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
     $mail = new PHPMailer(true);
 
     try {
-        // Configure PHPMailer for SMTP
+        // Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Enable verbose debug output
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'wgonzales@kaluppa.org'; // Replace with your Gmail address
-        $mail->Password   = 'qfsp ihop mdqg ngoy'; // Replace with your Gmail app-specific password
-        $mail->SMTPSecure = 'tls';
-        $mail->Port       = 587;
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'wgonzales@kaluppa.org';
+        $mail->Password = 'qfsp ihop mdqg ngoy';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
 
-        // Set email details
-        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA'); // Replace with your name
+        // Recipients
+        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA');
         $mail->addAddress($toEmail, $username);
+        $mail->addReplyTo('wgonzales@kaluppa.org', 'KALUPPA');
 
-        // Generate the verification link
+        // Generate verification link
         $verificationLink = "https://kaluppa.online/Kaluppa/Backend/otpverification.php?email=" . urlencode($toEmail) . "&otp=" . urlencode($otp);
 
-
-        // Set email content with the verification link
+        // Content
         $mail->isHTML(true);
         $mail->Subject = $subject;
-        $mail->Body    = "Hello $username,<br><br>Please click the link below to verify your account:<br><a href='$verificationLink'>$verificationLink</a><br><br>Or use the OTP code: $otp";
+        $mail->Body = "Hello $username,<br><br>Please click the link below to verify your account:<br><a href='$verificationLink'>$verificationLink</a><br><br>Or use the OTP code: $otp";
+        $mail->AltBody = "Hello $username,\n\nPlease use this OTP code to verify your account: $otp\n\nOr visit: $verificationLink";
 
-        // Send the email
-        $mail->send();
+        if(!$mail->send()) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+            return false;
+        }
         return true;
+
     } catch (Exception $e) {
-        return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        return false;
     }
 }
 
@@ -54,28 +60,35 @@ function sendEmail($toEmail, $username, $subject, $message) {
     $mail = new PHPMailer(true);
 
     try {
-        // Configure PHPMailer for SMTP
+        // Server settings
+        $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Enable verbose debug output
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'wgonzales@kaluppa.org'; // Replace with your Gmail address
-        $mail->Password   = 'qfsp ihop mdqg ngoy'; // Replace with your Gmail app-specific password
-        $mail->SMTPSecure = 'tls';
-        $mail->Port       = 587;
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'wgonzales@kaluppa.org';
+        $mail->Password = 'qfsp ihop mdqg ngoy';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
 
-        // Set email details
-        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA'); // Replace with your name
+        // Recipients
+        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA');
         $mail->addAddress($toEmail, $username);
+        $mail->addReplyTo('wgonzales@kaluppa.org', 'KALUPPA');
 
-        // Set email content
+        // Content
         $mail->isHTML(true);
         $mail->Subject = $subject;
-        $mail->Body    = $message;
+        $mail->Body = $message;
+        $mail->AltBody = strip_tags($message);
 
-        // Send the email
-        $mail->send();
+        if(!$mail->send()) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+            return false;
+        }
         return true;
+
     } catch (Exception $e) {
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
         return false;
     }
 }
