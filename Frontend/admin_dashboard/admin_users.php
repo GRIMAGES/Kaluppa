@@ -225,8 +225,9 @@ if (isset($_POST['logout'])) {
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
-                        alert('User added successfully');
-                        location.reload();
+                        console.log(response); // <-- Add this
+    alert(response);       // Shows the actual message returned from PHP
+    location.reload();
                     },
                     error: function() {
                         alert('Error adding user');
