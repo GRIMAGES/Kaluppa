@@ -12,7 +12,10 @@ function generateCertificate($userId, $templatePath, $outputDir) {
     global $conn;  // Access the global connection object
 
     // Fetch user data
-    $query = "SELECT user.first_name, user.last_name, applications.course_name FROM user INNER JOIN applications ON user.id = applications.user_id WHERE user.id = ?";
+    $query = "SELECT user.first_name, user.last_name, courses.name AS course_name FROM user 
+              INNER JOIN applications ON user.id = applications.user_id 
+              INNER JOIN courses ON applications.course_id = courses.id 
+              WHERE user.id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $userId);
     $stmt->execute();
