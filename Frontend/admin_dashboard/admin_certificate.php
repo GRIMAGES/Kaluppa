@@ -207,7 +207,7 @@ $template = $templateResult->fetch_assoc();
                 selectedUsers.push(checkbox.value);
             });
             if (selectedUsers.length > 0) {
-                window.open("../../Backend/admin_controller/generate_certificate.php?user_ids=" + selectedUsers.join(","), "_blank");
+                window.open("../../Backend/admin_controller/generate_certificate.php?user_id=" + selectedUsers.join(","), "_blank");
             } else {
                 alert("Please select at least one user.");
             }
