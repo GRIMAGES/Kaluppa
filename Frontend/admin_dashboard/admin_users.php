@@ -224,8 +224,7 @@ if (isset($_POST['logout'])) {
                     url: '/Kaluppa/Backend/add_users.php',
                     type: 'POST',
                     data: $(this).serialize(),
-                    success: function(response) { // <-- Add this
-    alert(response);       // Shows the actual message returned from PHP
+                    success: function(response) { // <-- Add this       // Shows the actual message returned from PHP
     location.reload();
                     },
                     error: function() {
