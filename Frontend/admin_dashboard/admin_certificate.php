@@ -203,11 +203,11 @@ $template = $templateResult->fetch_assoc();
 
         function generateCertificates() {
             var selectedUsers = [];
-            document.querySelectorAll("input[name='user_ids[]']:checked").forEach((checkbox) => {
+            document.querySelectorAll("input[name='user_id[]']:checked").forEach((checkbox) => {
                 selectedUsers.push(checkbox.value);
             });
             if (selectedUsers.length > 0) {
-                window.open("../../Backend/admin_controller/generate_certificate.php?user_id=" + selectedUsers.join(","), "_blank");
+                window.open("../../Backend/admin_controller/generate_certificate.php?user_ids=" + selectedUsers.join(","), "_blank");
             } else {
                 alert("Please select at least one user.");
             }
