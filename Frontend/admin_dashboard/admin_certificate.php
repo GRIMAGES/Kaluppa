@@ -224,70 +224,17 @@ $template = $templateResult->fetch_assoc();
                 <h5>Upload Certificate Template</h5>
                 <div class="mb-3">
                     <label for="template" class="form-label">Upload Certificate Template (PDF, JPG, PNG, etc.):</label>
-                    <input type="file" name="template" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp" required>
+                    <input type="file" name="template" id="template" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.webp" required onchange="previewTemplate()">
                 </div>
-                
-                <div class="mb-3">
-                    <label for="certificate_type" class="form-label">Select Certificate Type:</label>
-                    <select name="certificate_type" class="form-select" required>
-                        <option value="volunteer">Volunteer Certificate</option>
-                        <option value="scholarship">Scholarship Certificate</option>
-                        <option value="event">Event Certificate</option>
-                    </select>
-                </div>
+                <button type="button" class="btn btn-secondary" onclick="importTemplate()">Import</button>
+                <button type="submit" class="btn btn-success">Upload Template</button>
             </div>
-
-            <div class="form-section">
-                <h5>Font and Position Settings</h5>
-                <div class="template-container">
-                    <img src="<?php echo htmlspecialchars($template['file_path']); ?>" alt="Template Preview" class="img-fluid">
-                    <div class="draggable" style="left: 50px; top: 110px;">Full Name<input type="hidden" name="pos_full_name" value="50,110"></div>
-                    <div class="draggable" style="left: 50px; top: 135px;">Course Name<input type="hidden" name="pos_course_name" value="50,135"></div>
-                    <div class="draggable" style="left: 50px; top: 180px;">Certificate No<input type="hidden" name="pos_certificate_no" value="50,180"></div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="font_full_name" class="form-label">Font for Full Name:</label>
-                            <select name="font_full_name" class="form-select" required>
-                                <option value="PinyonScript">Pinyon Script</option>
-                                <option value="Arial">Arial</option>
-                                <option value="Times">Times New Roman</option>
-                                <option value="Courier">Courier New</option>
-                                <option value="Georgia">Georgia</option>
-                                <option value="Verdana">Verdana</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="font_course_name" class="form-label">Font for Course Name:</label>
-                            <select name="font_course_name" class="form-select" required>
-                                <option value="Times">Times New Roman</option>
-                                <option value="Arial">Arial</option>
-                                <option value="Courier">Courier New</option>
-                                <option value="Georgia">Georgia</option>
-                                <option value="Verdana">Verdana</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="font_certificate_no" class="form-label">Font for Certificate Number:</label>
-                            <select name="font_certificate_no" class="form-select" required>
-                                <option value="Times">Times New Roman</option>
-                                <option value="Arial">Arial</option>
-                                <option value="Courier">Courier New</option>
-                                <option value="Georgia">Georgia</option>
-                                <option value="Verdana">Verdana</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-success">Upload Template</button>
         </form>
+
+        <div id="templatePreview" class="mt-3" style="display: none;">
+            <h5>Template Preview:</h5>
+            <img id="previewImage" src="#" alt="Template Preview" class="img-fluid">
+        </div>
 
         <?php if (!empty($template)): ?>
             <div class="mt-3">
@@ -397,5 +344,33 @@ $template = $templateResult->fetch_assoc();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function previewTemplate() {
+            const fileInput = document.getElementById('template');
+            const file = fileInput.files[0];
+            const preview = document.getElementById('templatePreview');
+            const previewImage = document.getElementById('previewImage');
+
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        function importTemplate() {
+            const fileInput = document.getElementById('template');
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to import.');
+                return;
+            }
+            previewTemplate();
+        }
+    </script>
 </body>
 </html>
