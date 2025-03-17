@@ -28,7 +28,7 @@ $customFileName = isset($_GET['customTitle']) ? htmlspecialchars($_GET['customTi
 $fileType = isset($_GET['file_type']) ? strtolower($_GET['file_type']) : 'pdf';
 $adminEmail = $_SESSION['email'];
 
-// Fetch admin details
+// Fetch admin details and format birthday properly
 $adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
@@ -40,7 +40,9 @@ if (!$adminRow) {
     die("Admin not found.");
 }
 
-$exportPassword = date('Ymd', strtotime($adminRow['birthday']));
+// Format birthday as YYYYMMDD, ensuring proper date handling
+$birthday = new DateTime($adminRow['birthday']);
+$exportPassword = $birthday->format('Ymd');
 
 // Validate report type
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
@@ -82,7 +84,15 @@ $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
 $pdf->SetCreator('Report System');
 $pdf->SetAuthor($adminEmail);
 $pdf->SetTitle($customFileName);
-$pdf->SetProtection(['print', 'copy'], $exportPassword, null, 0, null);
+
+// Use the formatted password for PDF protection
+$pdf->SetProtection(
+    array('print', 'copy'), 
+    $exportPassword,
+    $exportPassword,
+    3,
+    null
+);
 
 $pdf->AddPage();
 $pdf->SetFont('helvetica', 'B', 12);
@@ -126,7 +136,9 @@ try {
     $mail->isHTML(true);
     $mail->Subject = "Exported Report: $customFileName";
     $mail->Body = "Hello,<br><br>Your requested report has been exported successfully.<br>
-                   <strong>Password:</strong> Your birthday (YYYYMMDD)<br><br>Best regards,<br>System Admin";
+                   <strong>Password:</strong> Your birthday in YYYYMMDD format (e.g., 19900101)<br>
+                   <strong>Your Password:</strong> {$exportPassword}<br><br>
+                   Best regards,<br>System Admin";
 
     $mail->send();
     $_SESSION['message'] = "Report exported and emailed successfully.";
