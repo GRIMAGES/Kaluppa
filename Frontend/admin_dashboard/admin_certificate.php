@@ -50,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES['template'])) {
     $targetPath = $uploadDir . $fileName;
 
     // Handle missing data gracefully in PHP
-    $posFullNameX = $posFullNameY = $posCourseNameX = $posCourseNameY = $posCertificateNoX = $posCertificateNoY = null;
+    $posFullNameX = $posFullNameY = $posCourseNameX = $posCourseNameY = $posCertificateNoX = $posCertificateNoY = 0; // Default to 0 if not set
     if (isset($_POST['pos_full_name'])) {
         list($posFullNameX, $posFullNameY) = explode(',', $_POST['pos_full_name']);
     }
