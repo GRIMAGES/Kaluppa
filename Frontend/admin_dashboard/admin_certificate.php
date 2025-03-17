@@ -331,16 +331,6 @@ $template = $templateResult->fetch_assoc();
             </div>
         <?php endif; ?>
 
-        <?php if (isset($_SESSION['imported_template'])): ?>
-            <div class="mt-3">
-                <h5>Imported Template Preview:</h5>
-                <img src="<?php echo htmlspecialchars($_SESSION['imported_template']); ?>" alt="Imported Template Preview" class="img-fluid">
-                <form method="POST" class="mt-3">
-                    <input type="hidden" name="confirm_upload" value="1">
-                    <button type="submit" class="btn btn-success">Upload to Database</button>
-                </form>
-            </div>
-        <?php endif; ?>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
