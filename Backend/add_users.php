@@ -36,11 +36,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $subject = "Your Account Has Been Created";
         $message = "Hello $firstName,\n\nYour account has been created. Here are your login details:\n\nEmail: $email\nTemporary Password: $tempPassword\n\nPlease change your password after logging in.";
 
-        if (sendEmail($email, $firstName, $subject, $message)) {
-            echo 'User added successfully and email sent';
-        } else {
-            error_log('User added successfully but email sending failed');
-            echo 'User added successfully but email sending failed';
+        try {
+            if (sendEmail($email, $firstName, $subject, $message)) {
+                echo 'User added successfully and email sent';
+            } else {
+                error_log('User added successfully but email sending failed');
+                echo 'User added successfully but email sending failed';
+            }
+        } catch (Exception $e) {
+            error_log('Email error: ' . $e->getMessage());
+            echo 'User added but email failed: ' . $e->getMessage();
         }
     } else {
         error_log('Error adding user: ' . $stmt->error);
