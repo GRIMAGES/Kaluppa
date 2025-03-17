@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addEvent'])) {
     $description = $_POST['eventDescription'];
 
     // Handle image upload
-    $targetDir = "../images/";
+    $targetDir = "../Images/";
     $imageName = basename($_FILES["eventImage"]["name"]);
     $targetFilePath = $targetDir . $imageName;
     $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
@@ -84,7 +84,7 @@ if (isset($_GET['edit_event'])) {
 
         // Handle image upload (optional: keep old image if not updated)
         $imageName = $_FILES["eventImage"]["name"] ? basename($_FILES["eventImage"]["name"]) : $eventData['image'];
-        $targetFilePath = "../images/" . $imageName;
+        $targetFilePath = "../Images/" . $imageName;
 
         if ($_FILES["eventImage"]["name"]) {
             move_uploaded_file($_FILES["eventImage"]["tmp_name"], $targetFilePath);
