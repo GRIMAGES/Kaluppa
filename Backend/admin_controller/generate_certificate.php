@@ -35,7 +35,7 @@ function generateCertificate($userId, $templatePath, $outputDir) {
 
     // Define text color and font
     $black = imagecolorallocate($template, 0, 0, 0);
-    $fontPath = __DIR__ . '/vendor/tecnickcom/tcpdf/fonts/helvetica.php'; // Corrected path to use helvetica font
+    $fontPath = __DIR__ . '/../../vendor/tecnickcom/tcpdf/fonts/helvetica.php'; // Corrected path to use helvetica font
     if (!file_exists($fontPath)) {
         throw new Exception("Font file not found: " . $fontPath);
     }
