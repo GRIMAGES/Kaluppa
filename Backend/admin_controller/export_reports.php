@@ -137,7 +137,6 @@ try {
     $mail->Subject = "Exported Report: $customFileName";
     $mail->Body = "Hello,<br><br>Your requested report has been exported successfully.<br>
                    <strong>Password:</strong> Your birthday in YYYYMMDD format (e.g., 19900101)<br>
-                   <strong>Your Password:</strong> {$exportPassword}<br><br>
                    Best regards,<br>System Admin";
 
     $mail->send();
