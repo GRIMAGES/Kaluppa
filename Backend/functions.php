@@ -26,7 +26,7 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
         $mail->SMTPAuth = true;
         $mail->Username = 'wgonzales@kaluppa.org';
         $mail->Password = 'qfsp ihop mdqg ngoy';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
         // Recipients
