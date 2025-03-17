@@ -60,6 +60,15 @@ function generateCertificate($userId, $templatePath, $outputDir) {
     return $outputPath;
 }
 
+// Fetch the template path from the database
+$templateQuery = "SELECT file_path FROM certificate_templates ORDER BY id DESC LIMIT 1";
+$templateResult = $conn->query($templateQuery);
+$templateData = $templateResult->fetch_assoc();
+if (!$templateData) {
+    throw new Exception("Template not found in the database.");
+}
+$templatePath = $templateData['file_path'];
+
 // Example usage
 try {
     // Check if user_id is set
@@ -68,7 +77,6 @@ try {
     }
 
     $userId = $_GET['user_id']; // Get user ID from request
-    $templatePath = '../../Backend/admin_controller/templates/template.png'; // Path to the template
     $outputDir = '../../Backend/admin_controller/generated_certificates'; // Directory to save certificates
     $certificatePath = generateCertificate($userId, $templatePath, $outputDir);
     echo "Certificate generated: " . $certificatePath;
