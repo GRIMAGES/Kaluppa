@@ -2,6 +2,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+ini_set('max_execution_time', 300); // Set to 5 minutes
 
 require_once '../../Backend/connection.php'; // Path to connection.php
 require_once '../../vendor/autoload.php';  // PHPMailer, PhpSpreadsheet, TCPDF should be in the Backend vendor folder.
@@ -24,120 +25,110 @@ if (!isset($_SESSION['email'])) {
 
 $reportType = isset($_GET['report_type']) ? htmlspecialchars($_GET['report_type']) : 'unknown';
 $customFileName = isset($_GET['customTitle']) ? htmlspecialchars($_GET['customTitle']) : 'report';
-$fileType = isset($_GET['file_type']) ? strtolower($_GET['file_type']) : 'xlsx';  // Ensure $fileType is always set.
+$fileType = isset($_GET['file_type']) ? strtolower($_GET['file_type']) : 'pdf';
 $adminEmail = $_SESSION['email'];
 
-// Fetch admin name and birthday
+// Fetch admin details
 $adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
 $adminQuery->execute();
 $adminResult = $adminQuery->get_result();
-if ($adminRow = $adminResult->fetch_assoc()) {
-    $adminBirthday = $adminRow['birthday']; // Fetching birthday
-} else {
-    die("Admin not found.");
-}
+$adminRow = $adminResult->fetch_assoc();
 $adminQuery->close();
 
-// Format the birthday (YYYYMMDD)
-$formattedBirthday = date('Ymd', strtotime($adminBirthday));  // e.g., '19900313'
+if (!$adminRow) {
+    die("Admin not found.");
+}
 
-// Password for encryption (based on admin's birthday)
-$exportPassword = $formattedBirthday;  // Set the password to the admin's birthday in YYYYMMDD format
+$exportPassword = date('Ymd', strtotime($adminRow['birthday']));
 
-// Validate report types
+// Validate report type
 $validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
-if (!in_array($reportType, $validReportTypes)) die("Invalid report type.");
+if (!in_array($reportType, $validReportTypes)) {
+    die("Invalid report type.");
+}
 
-// Fetch data based on report type
+// Optimize queries to fetch only necessary data
 if ($reportType === 'enrolled_scholars') {
-    $query = "SELECT a.id, a.last_name, a.middle_name, a.first_name, c.name AS course_name, a.email, a.status, a.documents
+    $query = "SELECT a.id, a.last_name, a.middle_name, a.first_name, c.name AS course_name 
               FROM applications a 
               INNER JOIN courses c ON a.course_id = c.id 
-              WHERE a.status = 'enrolled'";
-    $columns = ['ID', 'Last Name', 'Middle Name', 'First Name', 'Course Name', 'Email', 'Status', 'Document'];
+              WHERE a.status = 'enrolled'
+              LIMIT 1000"; // Add limit for safety
+    $columns = ['ID', 'Last Name', 'Middle Name', 'First Name', 'Course Name'];
 } else {
-    $query = "SELECT v.id, v.name, v.email, v.application_date, v.status, v.resume_path, v.phone 
+    $query = "SELECT v.id, v.name, v.email, v.application_date, v.status 
               FROM volunteer_application v 
-              WHERE v.status = 'approved'";
-    $columns = ['ID', 'Name', 'Email', 'Application Date', 'Status', 'Resume Path', 'Phone'];
+              WHERE v.status = 'approved'
+              LIMIT 1000"; // Add limit for safety
+    $columns = ['ID', 'Name', 'Email', 'Application Date', 'Status'];
 }
 
 $result = $conn->query($query);
-if (!$result) die("Query error: " . $conn->error);
+if (!$result) {
+    die("Query error: " . $conn->error);
+}
 
-// Store result in array
 $data = [];
 while ($row = $result->fetch_assoc()) {
     $data[] = array_values($row);
 }
 
-// Generate file
-$tempFilePath = "/mnt/data/{$customFileName}." . ($fileType === 'pdf' ? 'pdf' : 'xlsx');
+// Use system temp directory instead of /mnt/data/
+$tempFilePath = sys_get_temp_dir() . '/' . $customFileName . '.pdf';
 
-// Ensure that the file path is valid and the directory is writable
-if (!is_writable('/mnt/data/')) {
-    die("Directory is not writable. Please check the directory permissions.");
+// Generate PDF more efficiently
+$pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
+$pdf->SetCreator('Report System');
+$pdf->SetAuthor($adminEmail);
+$pdf->SetTitle($customFileName);
+$pdf->SetProtection(['print', 'copy'], $exportPassword, null, 0, null);
+
+$pdf->AddPage();
+$pdf->SetFont('helvetica', 'B', 12);
+
+// Calculate column widths
+$pageWidth = $pdf->GetPageWidth() - 20; // Leave margins
+$colWidth = $pageWidth / count($columns);
+
+// Add headers
+foreach ($columns as $index => $col) {
+    $pdf->Cell($colWidth, 10, $col, 1, 0, 'C');
+}
+$pdf->Ln();
+
+// Add data
+$pdf->SetFont('helvetica', '', 10);
+foreach ($data as $row) {
+    foreach ($row as $cell) {
+        $pdf->Cell($colWidth, 10, $cell, 1, 0, 'L');
+    }
+    $pdf->Ln();
 }
 
-if ($fileType === 'pdf') {
-    // Create PDF manually using FPDF + FPDI
-    $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
-    $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor($adminEmail);
-    $pdf->SetTitle($customFileName);
-    $pdf->SetSubject($reportType);
+$pdf->Output($tempFilePath, 'F');
 
-    // PDF Password Protection
-    $pdf->SetProtection(['print', 'copy'], $exportPassword, null, 0, null);
-
-    $pdf->AddPage();
-    $html = "<h3>{$customFileName}</h3><table border='1' cellspacing='0' cellpadding='4'><thead><tr>";
-    foreach ($columns as $col) {
-        $html .= "<th>$col</th>";
-    }
-    $html .= "</tr></thead><tbody>";
-
-    foreach ($data as $row) {
-        $html .= "<tr>";
-        foreach ($row as $cell) {
-            $html .= "<td>" . htmlspecialchars($cell) . "</td>";
-        }
-        $html .= "</tr>";
-    }
-    $html .= "</tbody></table>";
-    $pdf->writeHTML($html);
-
-    // Output the PDF file
-    $pdf->Output($tempFilePath, 'F');
-} else {
-    die("Invalid file type.");
-}
-
-// Send email with attachment
+// Send email
 $mail = new PHPMailer(true);
-
 try {
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP host
+    $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
-    $mail->Username = 'wgonzales@kaluppa.org'; // Sender email
-    $mail->Password = 'qfsp ihop mdqg ngoy';    // Sender email password
+    $mail->Username = 'wgonzales@kaluppa.org';
+    $mail->Password = 'qfsp ihop mdqg ngoy';
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
     $mail->setFrom('wgonzales@kaluppa.org', 'Report System');
-    $mail->addAddress($adminEmail, $adminEmail);  // You can change this to the admin name or another name
+    $mail->addAddress($adminEmail);
     $mail->addAttachment($tempFilePath);
 
     $mail->isHTML(true);
     $mail->Subject = "Exported Report: $customFileName";
-    $mail->Body = "Hello $adminEmail,<br><br>Your requested <strong>$reportType</strong> report has been exported successfully.<br>
-<strong>File Type:</strong> $fileType<br>
-<strong>Password:</strong> The password for the report is your birthday YYYYMMDD .<br><br>Best regards,<br>System Admin";
+    $mail->Body = "Hello,<br><br>Your requested report has been exported successfully.<br>
+                   <strong>Password:</strong> Your birthday (YYYYMMDD)<br><br>Best regards,<br>System Admin";
 
     $mail->send();
-    // Success message to be displayed after redirection
     $_SESSION['message'] = "Report exported and emailed successfully.";
 } catch (Exception $e) {
     $_SESSION['message'] = "Email could not be sent. Error: {$mail->ErrorInfo}";
@@ -147,9 +138,11 @@ try {
 $logQuery = $conn->prepare("INSERT INTO export_logs (admin_email, admin_name, report_type, file_name, file_type) VALUES (?, ?, ?, ?, ?)");
 $logQuery->bind_param('sssss', $adminEmail, $adminEmail, $reportType, $customFileName, $fileType);
 $logQuery->execute();
+
+// Clean up
+unlink($tempFilePath);
 $conn->close();
 
-// Redirect back to the same page
 header("Location: {$_SERVER['HTTP_REFERER']}");
 exit();
 ?>
