@@ -225,17 +225,15 @@ if (isset($_POST['logout'])) {
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
-                        try {
-                            const result = JSON.parse(response);
-                            alert(result.message);
-                            if (result.success) {
-                                location.reload();
-                            }
-                        } catch (e) {
-                            alert(response);
-                            if (response.includes('successfully')) {
-                                location.reload();
-                            }
+                        // Extract only the last line which contains our success/error message
+                        const lines = response.split('\n');
+                        const lastLine = lines[lines.length - 1].trim();
+                        
+                        if (lastLine.includes('successfully')) {
+                            alert('User added successfully and email sent');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + lastLine);
                         }
                     },
                     error: function(xhr, status, error) {
