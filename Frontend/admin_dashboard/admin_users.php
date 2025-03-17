@@ -221,7 +221,7 @@ if (isset($_POST['logout'])) {
             $('#addUserForm').on('submit', function(e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '/Kaluppa/Backend/add_user.php',
+                    url: '/Kaluppa/Backend/add_users.php',
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
