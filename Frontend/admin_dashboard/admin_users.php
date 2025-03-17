@@ -224,11 +224,23 @@ if (isset($_POST['logout'])) {
                     url: '/Kaluppa/Backend/add_users.php',
                     type: 'POST',
                     data: $(this).serialize(),
-                    success: function(response) { // <-- Add this       // Shows the actual message returned from PHP
-    location.reload();
+                    success: function(response) {
+                        try {
+                            const result = JSON.parse(response);
+                            if (result.success) {
+                                alert('User added successfully!');
+                                location.reload();
+                            } else {
+                                alert('Error: ' + result.message);
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse response:', response);
+                            alert('Invalid response from server. Please check the console for details.');
+                        }
                     },
-                    error: function() {
-                        alert('Error adding user');
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText);
+                        alert('Error adding user: ' + error);
                     }
                 });
             });
