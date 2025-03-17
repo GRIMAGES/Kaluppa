@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $stmt = $conn->prepare("INSERT INTO user (first_name, middle_name, last_name, email, role, gender, password, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
+        error_log('Prepare failed: ' . $conn->error);
         die('Prepare failed: ' . $conn->error);
     }
 
@@ -35,13 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (sendEmail($email, $firstName, $subject, $message)) {
             echo 'User added successfully and email sent';
         } else {
+            error_log('User added successfully but email sending failed');
             echo 'User added successfully but email sending failed';
         }
     } else {
+        error_log('Error adding user: ' . $stmt->error);
         echo 'Error adding user: ' . $stmt->error;
     }
 
     $stmt->close();
     $conn->close();
 }
-?>
