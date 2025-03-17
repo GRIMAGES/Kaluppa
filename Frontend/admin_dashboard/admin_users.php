@@ -227,19 +227,18 @@ if (isset($_POST['logout'])) {
                     success: function(response) {
                         try {
                             const result = JSON.parse(response);
+                            alert(result.message);
                             if (result.success) {
-                                alert('User added successfully!');
                                 location.reload();
-                            } else {
-                                alert('Error: ' + result.message);
                             }
                         } catch (e) {
-                            console.error('Failed to parse response:', response);
-                            alert('Invalid response from server. Please check the console for details.');
+                            alert(response);
+                            if (response.includes('successfully')) {
+                                location.reload();
+                            }
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('AJAX Error:', xhr.responseText);
                         alert('Error adding user: ' + error);
                     }
                 });

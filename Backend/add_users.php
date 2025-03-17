@@ -7,7 +7,7 @@ require_once 'functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Print form data for debugging
-    var_dump($_POST);
+    // var_dump($_POST);
 
     $firstName = $_POST['firstName'];
     $middleName = $_POST['middleName'];
@@ -38,18 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         try {
             if (sendEmail($email, $firstName, $subject, $message)) {
-                echo 'User added successfully and email sent';
+                echo json_encode(['success' => true, 'message' => 'User added successfully and email sent']);
             } else {
-                error_log('User added successfully but email sending failed');
-                echo 'User added successfully but email sending failed';
+                echo json_encode(['success' => false, 'message' => 'User added successfully but email sending failed']);
             }
         } catch (Exception $e) {
-            error_log('Email error: ' . $e->getMessage());
-            echo 'User added but email failed: ' . $e->getMessage();
+            echo json_encode(['success' => false, 'message' => 'User added but email failed']);
         }
     } else {
-        error_log('Error adding user: ' . $stmt->error);
-        echo 'Error adding user: ' . $stmt->error;
+        echo json_encode(['success' => false, 'message' => 'Error adding user']);
     }
 
     $stmt->close();
