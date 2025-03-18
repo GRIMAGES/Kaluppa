@@ -5,68 +5,68 @@ body {
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* Card Styles */
-.card {
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
-    color: #e0e0e0;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    /* Dark theme card with glow effect */
+    .card {
+        background-color: #111; /* Ultra-dark background */
+        color: #f1f1f1; /* Light readable text */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.1), 0 0 30px rgba(0, 255, 255, 0.05);
+        transition: 0.3s ease-in-out;
+    }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-}
+    .card:hover {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.15);
+        transform: scale(1.02);
+    }
 
-/* Card Titles & Text */
-.card-title {
-    color: #00ffff;
-    text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
-    font-weight: bold;
-}
+    .card-img-top {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        object-fit: cover;
+        height: 200px;
+    }
 
-.card-text {
-    color: #ccc;
-}
+    .card-title {
+        font-weight: 700;
+        color: #00ffff; /* Neon accent title */
+        text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    }
 
-/* Image Styling */
-.card-img-top {
-    border-radius: 12px 12px 0 0;
-    object-fit: cover;
-    height: 220px;
-}
+    .card-text {
+        color: #dcdcdc;
+        font-size: 15px;
+    }
 
-/* Custom Buttons */
-.btn-custom-edit,
-.btn-custom-delete {
-    background: transparent;
-    color: #00ffff;
-    border: 1px solid #00ffff;
-    transition: 0.3s ease;
-    font-weight: 500;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-}
+    .btn-custom-edit,
+    .btn-custom-delete {
+        background-color: transparent;
+        color: #ffffff;
+        border: 1px solid #00ffff;
+        padding: 6px 12px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: 0.3s ease-in-out;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    }
 
-.btn-custom-edit:hover {
-    background: #00ffff;
-    color: #0d0d0d;
-    box-shadow: 0 0 15px #00ffff;
-}
+    .btn-custom-edit:hover {
+        background-color: #00ffff;
+        color: #000;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    }
 
-.btn-custom-delete {
-    color: #ff4c4c;
-    border-color: #ff4c4c;
-    box-shadow: 0 0 10px rgba(255, 76, 76, 0.3);
-}
+    .btn-custom-delete:hover {
+        background-color: #ff4d4d;
+        color: #fff;
+        border-color: #ff4d4d;
+        box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+    }
 
-.btn-custom-delete:hover {
-    background: #ff4c4c;
-    color: #0d0d0d;
-    box-shadow: 0 0 15px #ff4c4c;
-}
-
+    /* Fix form spacing */
+    form.d-inline {
+        display: inline;
+    }
 /* Modals */
 .modal-content.modal-custom {
     background-color: #1c1c1c;
