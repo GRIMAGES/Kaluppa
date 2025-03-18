@@ -271,43 +271,43 @@ if (isset($_GET['id'])) {
 </div>
 
 <!-- Add Work Modal -->
-<div id="addWorkModal">
-    <div>
-        <div>
+<div class="modal fade" id="addWorkModal" tabindex="-1" aria-labelledby="addWorkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
             <form action="admin_works.php" method="POST" enctype="multipart/form-data">
-                <div>
-                    <h5 id="addWorkModalLabel">Add Work</h5>
-                    <button type="button">Close</button>
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="addWorkModalLabel">Add Work</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div>
-                    <div>
-                        <input type="text" name="title" id="title" placeholder="Enter title" required>
-                        <label for="title">Title</label>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" name="title" class="form-control" id="title" placeholder="Enter title" required>
+                        <label for="title" class="text-light">Title</label>
                     </div>
-                    <div>
-                        <textarea name="description" id="description" placeholder="Enter description" required></textarea>
-                        <label for="description">Description</label>
+                    <div class="form-floating mb-3">
+                        <textarea name="description" class="form-control" id="description" placeholder="Enter description" required></textarea>
+                        <label for="description" class="text-light">Description</label>
                     </div>
-                    <div>
-                        <input type="datetime-local" name="work_datetime" id="work_datetime" required>
-                        <label for="work_datetime">Work Date & Time</label>
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" name="work_datetime" class="form-control" id="work_datetime" required>
+                        <label for="work_datetime" class="text-light">Work Date & Time</label>
                     </div>
-                    <div>
-                        <input type="text" name="location" id="location" placeholder="Location" required>
-                        <label for="location">Location</label>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="location" class="form-control" id="location" placeholder="Location" required>
+                        <label for="location" class="text-light">Location</label>
                     </div>
-                    <div>
-                        <textarea name="requirements" id="requirements" placeholder="Enter requirements" required></textarea>
-                        <label for="requirements">Requirements</label>
+                    <div class="form-floating mb-3">
+                        <textarea name="requirements" class="form-control" id="requirements" placeholder="Enter requirements" required></textarea>
+                        <label for="requirements" class="text-light">Requirements</label>
                     </div>
-                    <div>
-                        <label for="image">Upload Image</label>
-                        <input type="file" name="image" id="image">
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Upload Image</label>
+                        <input type="file" name="image" id="image" class="form-control">
                     </div>
                 </div>
-                <div>
-                    <button type="submit" name="add_work">Add Work</button>
-                    <button type="button">Cancel</button>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="submit" name="add_work" class="btn btn-outline-light px-4">Add Work</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -315,50 +315,49 @@ if (isset($_GET['id'])) {
 </div>
 
 <!-- Edit Work Modal -->
-<div id="editWorkModal">
-    <div>
-        <div>
+<div class="modal fade" id="editWorkModal" tabindex="-1" aria-labelledby="editWorkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
             <form method="POST" enctype="multipart/form-data">
-                <div>
-                    <h5 id="editWorkModalLabel">Edit Work</h5>
-                    <button type="button">Close</button>
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="editWorkModalLabel">Edit Work</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div>
+                <div class="modal-body">
                     <input type="hidden" name="id" id="edit-id">
-                    <div>
-                        <input type="text" name="title" id="edit-title" placeholder="Enter title" required>
-                        <label for="edit-title">Title</label>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="title" class="form-control" id="edit-title" placeholder="Enter title" required>
+                        <label for="edit-title" class="text-light">Title</label>
                     </div>
-                    <div>
-                        <textarea name="description" id="edit-description" placeholder="Enter description" required></textarea>
-                        <label for="edit-description">Description</label>
+                    <div class="form-floating mb-3">
+                        <textarea name="description" class="form-control " id="edit-description" placeholder="Enter description" required></textarea>
+                        <label for="edit-description" class="text-light">Description</label>
                     </div>
-                    <div>
-                        <input type="datetime-local" name="work_datetime" id="edit-datetime" required>
-                        <label for="edit-datetime">Work Date & Time</label>
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" name="work_datetime" class="form-control" id="edit-datetime" required>
+                        <label for="edit-datetime" class="text-light">Work Date & Time</label>
                     </div>
-                    <div>
-                        <input type="text" name="location" id="edit-location" placeholder="Location" required>
-                        <label for="edit-location">Location</label>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="location" class="form-control" id="edit-location" placeholder="Location" required>
+                        <label for="edit-location" class="text-light">Location</label>
                     </div>
-                    <div>
-                        <textarea name="requirements" id="edit-requirements" placeholder="Enter requirements" required></textarea>
-                        <label for="edit-requirements">Requirements</label>
+                    <div class="form-floating mb-3">
+                        <textarea name="requirements" class="form-control " id="edit-requirements" placeholder="Enter requirements" required></textarea>
+                        <label for="edit-requirements" class="text-light">Requirements</label>
                     </div>
-                    <div>
-                        <label for="edit-image">Change Image</label>
-                        <input type="file" name="image" id="edit-image">
+                    <div class="mb-3">
+                        <label for="edit-image" class="form-label">Change Image</label>
+                        <input type="file" name="image" id="edit-image" class="form-control">
                     </div>
                 </div>
-                <div>
-                    <button type="submit" name="edit_work">Save Changes</button>
-                    <button type="button">Cancel</button>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="submit" name="edit_work" class="btn btn-outline-light px-4">Save Changes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
-    </div>
+    </div
 </div>
-
 
 <!-- Toast Container -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
