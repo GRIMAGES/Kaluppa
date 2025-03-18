@@ -285,24 +285,22 @@ if (isset($_GET['id'])) {
     <?php endwhile; ?>
 </div>
 
-
 <!-- Add Work Modal -->
 <div class="modal fade" id="addWorkModal" tabindex="-1" aria-labelledby="addWorkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white" style="border-radius: 15px; border: 1px solid #444;">
-        <form action="admin_works.php" method="POST" enctype="multipart/form-data">
-
+        <div class="modal-content modal-custom">
+            <form action="admin_works.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-header border-bottom border-secondary">
                     <h5 class="modal-title" id="addWorkModalLabel">Add Work</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-floating mb-3">
-                        <input type="text" name="title" class="form-control bg-dark text-wite border-secondary" id="title" placeholder="Enter title" required>
+                        <input type="text" name="title" class="form-control bg-dark text-white border-secondary" id="title" placeholder="Enter title" required>
                         <label for="title" class="text-light">Title</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea name="description" class="form-control bg-dark text-white border-secondary" id="description" placeholder="Enter description" style="height: 100px;" required></textarea>
+                        <textarea name="description" class="form-control bg-dark text-white border-secondary textarea-height" id="description" placeholder="Enter description" required></textarea>
                         <label for="description" class="text-light">Description</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -314,7 +312,7 @@ if (isset($_GET['id'])) {
                         <label for="location" class="text-light">Location</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea name="requirements" class="form-control bg-dark text-white border-secondary" id="requirements" placeholder="Enter requirements" style="height: 100px;" required></textarea>
+                        <textarea name="requirements" class="form-control bg-dark text-white border-secondary textarea-height" id="requirements" placeholder="Enter requirements" required></textarea>
                         <label for="requirements" class="text-light">Requirements</label>
                     </div>
                     <div class="mb-3">
@@ -331,11 +329,10 @@ if (isset($_GET['id'])) {
     </div>
 </div>
 
-
 <!-- Edit Work Modal -->
 <div class="modal fade" id="editWorkModal" tabindex="-1" aria-labelledby="editWorkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-white" style="border-radius: 15px; border: 1px solid #444;">
+        <div class="modal-content modal-custom">
             <form method="POST" enctype="multipart/form-data">
                 <div class="modal-header border-bottom border-secondary">
                     <h5 class="modal-title" id="editWorkModalLabel">Edit Work</h5>
@@ -343,13 +340,12 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id" id="edit-id">
-
                     <div class="form-floating mb-3">
                         <input type="text" name="title" class="form-control bg-dark text-white border-secondary" id="edit-title" placeholder="Enter title" required>
                         <label for="edit-title" class="text-light">Title</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea name="description" class="form-control bg-dark text-white border-secondary" id="edit-description" placeholder="Enter description" style="height: 100px;" required></textarea>
+                        <textarea name="description" class="form-control bg-dark text-white border-secondary textarea-height" id="edit-description" placeholder="Enter description" required></textarea>
                         <label for="edit-description" class="text-light">Description</label>
                     </div>
                     <div class="form-floating mb-3">
@@ -361,7 +357,7 @@ if (isset($_GET['id'])) {
                         <label for="edit-location" class="text-light">Location</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <textarea name="requirements" class="form-control bg-dark text-white border-secondary" id="edit-requirements" placeholder="Enter requirements" style="height: 100px;" required></textarea>
+                        <textarea name="requirements" class="form-control bg-dark text-white border-secondary textarea-height" id="edit-requirements" placeholder="Enter requirements" required></textarea>
                         <label for="edit-requirements" class="text-light">Requirements</label>
                     </div>
                     <div class="mb-3">
@@ -376,6 +372,7 @@ if (isset($_GET['id'])) {
             </form>
         </div>
     </div>
+</div>
 
 <!-- Toast Container -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
