@@ -1,94 +1,123 @@
-<style>
-/* Modal Overlay */
-.modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
+/* General Body Dark Background */
+body {
+    background-color: #0d0d0d;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* Modal Box */
-.modal-box {
-    background: #fff;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 600px;
-    padding: 20px;
-    animation: fadeIn 0.3s ease-in-out;
+/* Card Styles */
+.card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    color: #e0e0e0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Header */
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
 }
 
-.modal-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-.close-btn {
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-/* Body */
-.modal-body .form-group {
-    margin-bottom: 15px;
-}
-
-.modal-body label {
-    display: block;
-    margin-bottom: 5px;
+/* Card Titles & Text */
+.card-title {
+    color: #00ffff;
+    text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
     font-weight: bold;
 }
 
-.modal-body input,
-.modal-body textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+.card-text {
+    color: #ccc;
 }
 
-/* Footer */
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+/* Image Styling */
+.card-img-top {
+    border-radius: 12px 12px 0 0;
+    object-fit: cover;
+    height: 220px;
 }
 
-.btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    background-color: #007bff;
+/* Custom Buttons */
+.btn-custom-edit,
+.btn-custom-delete {
+    background: transparent;
+    color: #00ffff;
+    border: 1px solid #00ffff;
+    transition: 0.3s ease;
+    font-weight: 500;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.btn-custom-edit:hover {
+    background: #00ffff;
+    color: #0d0d0d;
+    box-shadow: 0 0 15px #00ffff;
+}
+
+.btn-custom-delete {
+    color: #ff4c4c;
+    border-color: #ff4c4c;
+    box-shadow: 0 0 10px rgba(255, 76, 76, 0.3);
+}
+
+.btn-custom-delete:hover {
+    background: #ff4c4c;
+    color: #0d0d0d;
+    box-shadow: 0 0 15px #ff4c4c;
+}
+
+/* Modals */
+.modal-content.modal-custom {
+    background-color: #1c1c1c;
+    border: 1px solid #444;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    color: #f0f0f0;
+}
+
+/* Form Inputs */
+.modal-custom .form-control {
+    background-color: #121212;
+    border: 1px solid #00ffff;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.modal-custom .form-control::placeholder {
+    color: #aaa;
+}
+
+/* Form Labels */
+.modal-custom .form-label {
+    color: #00ffff;
+    text-shadow: 0 0 4px rgba(0, 255, 255, 0.5);
+    font-weight: 500;
+}
+
+/* Modal Buttons */
+.modal-custom .btn-outline-light {
+    border-color: #00ffff;
+    color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.modal-custom .btn-outline-light:hover {
+    background-color: #00ffff;
+    color: #000;
+    box-shadow: 0 0 15px #00ffff;
+}
+
+.modal-custom .btn-outline-secondary {
+    border-color: #888;
+    color: #ccc;
+}
+
+.modal-custom .btn-outline-secondary:hover {
+    background-color: #333;
     color: #fff;
-    cursor: pointer;
-    font-weight: bold;
 }
 
-.btn-cancel {
-    background-color: #dc3545;
+/* Modal Close Button */
+.btn-close-white {
+    filter: brightness(1000%);
 }
-
-.btn:hover {
-    opacity: 0.9;
-}
-
-/* Fade animation */
-@keyframes fadeIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-</style>
