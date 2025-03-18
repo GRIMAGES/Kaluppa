@@ -168,3 +168,152 @@ body {
     transform: translateY(-2px);
     color: #fff;
 }
+.modal-content {
+    background: linear-gradient(145deg, #1a1a1a, #242424);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+}
+
+.modal-header {
+    background: linear-gradient(145deg, #242424, #1a1a1a);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px 20px 0 0;
+    padding: 1.5rem;
+}
+
+.modal-title {
+    color: #00bcd4;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.modal-body {
+    background: #1a1a1a;
+    padding: 2rem;
+}
+
+/* Form Group Styling */
+.mb-4 {
+    position: relative;
+    margin-bottom: 1.8rem !important;
+}
+
+.form-label {
+    color: #00bcd4;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-label i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+    color: #00bcd4;
+}
+
+/* Input Fields Styling */
+.form-control {
+    background-color: #2c2f38;
+    border: 2px solid #363942;
+    border-radius: 12px;
+    color: #fff;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    background-color: #363942;
+    border-color: #00bcd4;
+    box-shadow: 0 0 0 4px rgba(0, 188, 212, 0.15);
+}
+
+/* File Input Styling */
+input[type="file"].form-control {
+    padding: 8px;
+    background: linear-gradient(145deg, #2c2f38, #363942);
+    border: 2px dashed #444;
+}
+
+input[type="file"].form-control:hover {
+    border-color: #00bcd4;
+    background: #363942;
+}
+
+/* Textarea Styling */
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Button Styling */
+.modal-footer {
+    background: linear-gradient(145deg, #242424, #1a1a1a);
+    border-top: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 0 20px 20px;
+    padding: 1.5rem;
+}
+
+.btn-success {
+    background: linear-gradient(145deg, #00bcd4, #008c9e);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background: linear-gradient(145deg, #00d4ed, #00a4b9);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 188, 212, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(145deg, #4a4a4a, #3a3a3a);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(145deg, #5a5a5a, #4a4a4a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Close Button Styling */
+.btn-close {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    padding: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* Placeholder Styling */
+.form-control::placeholder {
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+/* DateTime Input Styling */
+input[type="datetime-local"] {
+    color-scheme: dark;
+}
