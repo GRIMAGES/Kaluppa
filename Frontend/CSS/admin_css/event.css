@@ -63,47 +63,7 @@ body {
     transform: scale(1.05);
 }
 
-/* Dark Modal Styling */
-.modal-content {
-    background-color: #1a1a1a;
-    color: #ffffff;
-    border-radius: 20px;
-    border: none;
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.85);
-}
 
-.modal-header,
-.modal-body {
-    background-color: #1a1a1a;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.modal-title {
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.btn-close {
-    filter: invert(1);
-}
-
-.form-label {
-    color: #cccccc;
-    font-weight: 500;
-}
-
-.form-control {
-    background-color: #2b2b2b;
-    color: #ffffff;
-    border: 1px solid #444;
-    border-radius: 10px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.form-control:focus {
-    border-color: #ffc107;
-    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
-}
 
 /* Submit Button Styling */
 .btn-success {
