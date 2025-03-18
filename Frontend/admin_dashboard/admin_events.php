@@ -173,7 +173,7 @@ if (isset($_GET['delete_event'])) {
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="eventTitle" class="form-label">Event Title</label>
-                                <input type="text" class="form-control" name="eventTitle" id="eventTitle" required>
+                                <input type="text-white" class="form-control" name="eventTitle" id="eventTitle" required>
                             </div>
                             <div class="mb-3">
                                 <label for="eventImage" class="form-label" >Event Image</label>
