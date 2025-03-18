@@ -280,28 +280,28 @@ if (isset($_GET['id'])) {
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-floating mb-3">
+                    <div class="mb-3">
+                        <label for="title" class="form-label text-light fw-semibold">Title</label>
                         <input type="text" name="title" class="form-control" id="title" placeholder="Enter title" required>
-                        <label for="title" class="text-light">Title</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <textarea name="description" class="form-control" id="description" placeholder="Enter description" required></textarea>
-                        <label for="description" class="text-light">Description</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="datetime-local" name="work_datetime" class="form-control" id="work_datetime" required>
-                        <label for="work_datetime" class="text-light">Work Date & Time</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" name="location" class="form-control" id="location" placeholder="Location" required>
-                        <label for="location" class="text-light">Location</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <textarea name="requirements" class="form-control" id="requirements" placeholder="Enter requirements" required></textarea>
-                        <label for="requirements" class="text-light">Requirements</label>
                     </div>
                     <div class="mb-3">
-                        <label for="image" class="form-label">Upload Image</label>
+                        <label for="description" class="form-label text-light fw-semibold">Description</label>
+                        <textarea name="description" class="form-control" id="description" rows="3" placeholder="Enter description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="work_datetime" class="form-label text-light fw-semibold">Work Date & Time</label>
+                        <input type="datetime-local" name="work_datetime" class="form-control" id="work_datetime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label text-light fw-semibold">Location</label>
+                        <input type="text" name="location" class="form-control" id="location" placeholder="Enter location" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="requirements" class="form-label text-light fw-semibold">Requirements</label>
+                        <textarea name="requirements" class="form-control" id="requirements" rows="3" placeholder="Enter requirements" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label text-light fw-semibold">Upload Image</label>
                         <input type="file" name="image" id="image" class="form-control">
                     </div>
                 </div>
@@ -325,28 +325,28 @@ if (isset($_GET['id'])) {
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id" id="edit-id">
-                    <div class="form-floating mb-3">
+                    <div class="mb-3">
+                        <label for="edit-title" class="form-label text-light fw-semibold">Title</label>
                         <input type="text" name="title" class="form-control" id="edit-title" placeholder="Enter title" required>
-                        <label for="edit-title" class="text-light">Title</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <textarea name="description" class="form-control " id="edit-description" placeholder="Enter description" required></textarea>
-                        <label for="edit-description" class="text-light">Description</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="datetime-local" name="work_datetime" class="form-control" id="edit-datetime" required>
-                        <label for="edit-datetime" class="text-light">Work Date & Time</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" name="location" class="form-control" id="edit-location" placeholder="Location" required>
-                        <label for="edit-location" class="text-light">Location</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <textarea name="requirements" class="form-control " id="edit-requirements" placeholder="Enter requirements" required></textarea>
-                        <label for="edit-requirements" class="text-light">Requirements</label>
                     </div>
                     <div class="mb-3">
-                        <label for="edit-image" class="form-label">Change Image</label>
+                        <label for="edit-description" class="form-label text-light fw-semibold">Description</label>
+                        <textarea name="description" class="form-control" id="edit-description" rows="3" placeholder="Enter description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-datetime" class="form-label text-light fw-semibold">Work Date & Time</label>
+                        <input type="datetime-local" name="work_datetime" class="form-control" id="edit-datetime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-location" class="form-label text-light fw-semibold">Location</label>
+                        <input type="text" name="location" class="form-control" id="edit-location" placeholder="Enter location" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-requirements" class="form-label text-light fw-semibold">Requirements</label>
+                        <textarea name="requirements" class="form-control" id="edit-requirements" rows="3" placeholder="Enter requirements" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-image" class="form-label text-light fw-semibold">Change Image</label>
                         <input type="file" name="image" id="edit-image" class="form-control">
                     </div>
                 </div>
@@ -356,8 +356,9 @@ if (isset($_GET['id'])) {
                 </div>
             </form>
         </div>
-    </div
+    </div>
 </div>
+
 
 <!-- Toast Container -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
