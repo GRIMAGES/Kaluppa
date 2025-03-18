@@ -161,42 +161,70 @@ if (isset($_GET['delete_event'])) {
 
         <h1>Event Manager</h1>
 
-        <!-- Add Event Modal -->
         <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addEventModalLabel">Add New Event</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="" method="POST" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label for="eventTitle" class="form-label">Event Title</label>
-                                <input type="text-white" class="form-control" name="eventTitle" id="eventTitle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="eventImage" class="form-label" >Event Image</label>
-                                <input type="file" class="form-control" name="eventImage" id="eventImage" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="eventTime" class="form-label" >Event Time</label>
-                                <input type="datetime-local" class="form-control" name="eventTime" id="eventTime" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="organizerName" class="form-label" >Organizer Name</label>
-                                <input type="text" class="form-control" name="organizerName" id="organizerName" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="eventDescription" class="form-label">Description</label>
-                                <textarea class="form-control" name="eventDescription" id="eventDescription" rows="4" required></textarea>
-                            </div>
-                            <button type="submit" name="addEvent" class="btn btn-success">Add Event</button>
-                        </form>
-                    </div>
-                </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEventModalLabel">
+                    <i class="fas fa-calendar-plus me-2"></i>Add New Event
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div> 
+            <div class="modal-body">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="eventTitle" class="form-label">
+                            <i class="fas fa-heading me-2"></i>Event Title
+                        </label>
+                        <input type="text" class="form-control" name="eventTitle" id="eventTitle" 
+                               placeholder="Enter event title" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="eventImage" class="form-label">
+                            <i class="fas fa-image me-2"></i>Event Image
+                        </label>
+                        <input type="file" class="form-control" name="eventImage" id="eventImage" 
+                               accept="image/*" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="eventTime" class="form-label">
+                            <i class="fas fa-clock me-2"></i>Event Time
+                        </label>
+                        <input type="datetime-local" class="form-control" name="eventTime" 
+                               id="eventTime" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="organizerName" class="form-label">
+                            <i class="fas fa-user me-2"></i>Organizer Name
+                        </label>
+                        <input type="text" class="form-control" name="organizerName" 
+                               id="organizerName" placeholder="Enter organizer name" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="eventDescription" class="form-label">
+                            <i class="fas fa-align-left me-2"></i>Description
+                        </label>
+                        <textarea class="form-control" name="eventDescription" id="eventDescription" 
+                                rows="4" placeholder="Enter event description" required></textarea>
+                    </div>
+                    
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" name="addEvent" class="btn btn-success">
+                            <i class="fas fa-plus me-2"></i>Add Event
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="text-white">Event Listings</h2>

@@ -187,7 +187,95 @@ table.table-dark-custom td {
     margin-right: 6px;
     font-size: 14px;
 }
-.form-floating > label {
-    padding: 0 .5rem;
-    z-index: 2;
-  }
+.modal-content {
+    background: #1c1c1c;
+    border: 1px solid #333;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3);
+}
+
+.modal-header {
+    border-bottom: 1px solid #333;
+    background: #242424;
+    border-radius: 15px 15px 0 0;
+    padding: 1.5rem;
+}
+
+.modal-title {
+    color: #00bcd4 !important;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    background: #1c1c1c;
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #333;
+    background: #242424;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Form Controls */
+.form-label {
+    color: #00bcd4 !important;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    background-color: #2c2f38;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: #fff;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: #363942;
+    border-color: #00bcd4;
+    box-shadow: 0 0 0 0.2rem rgba(0, 188, 212, 0.25);
+    color: #fff;
+}
+
+.form-control::placeholder {
+    color: #6c757d;
+}
+
+/* Button Styling */
+.btn-success {
+    background: linear-gradient(145deg, #00bcd4, #008c9e);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background: linear-gradient(145deg, #00d4ed, #00a4b9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
+}
+
+/* File Input Styling */
+input[type="file"] {
+    background: #2c2f38;
+    border: 2px dashed #444;
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: #00bcd4;
+}
+
+/* Textarea Styling */
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
