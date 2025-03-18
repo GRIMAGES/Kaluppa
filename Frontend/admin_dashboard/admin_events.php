@@ -160,12 +160,13 @@ if (isset($_GET['delete_event'])) {
 
         <h1>Event Manager</h1>
 
-        <div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+      <!-- Add Event Modal -->
+<div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addEventModalLabel">
-                    <i class="fas fa-calendar-plus me-2"></i>Add New Event
+                    <i class="fas fa-calendar-plus me-2"></i>Create New Event
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -173,15 +174,15 @@ if (isset($_GET['delete_event'])) {
                 <form action="" method="POST" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="eventTitle" class="form-label">
-                            <i class="fas fa-heading me-2"></i>Event Title
+                            <i class="fas fa-heading"></i>Event Title
                         </label>
                         <input type="text" class="form-control" name="eventTitle" id="eventTitle" 
-                               placeholder="Enter event title" required>
+                               placeholder="Enter a captivating title" required>
                     </div>
                     
                     <div class="mb-4">
                         <label for="eventImage" class="form-label">
-                            <i class="fas fa-image me-2"></i>Event Image
+                            <i class="fas fa-image"></i>Event Banner
                         </label>
                         <input type="file" class="form-control" name="eventImage" id="eventImage" 
                                accept="image/*" required>
@@ -189,7 +190,7 @@ if (isset($_GET['delete_event'])) {
                     
                     <div class="mb-4">
                         <label for="eventTime" class="form-label">
-                            <i class="fas fa-clock me-2"></i>Event Time
+                            <i class="fas fa-clock"></i>Schedule
                         </label>
                         <input type="datetime-local" class="form-control" name="eventTime" 
                                id="eventTime" required>
@@ -197,18 +198,18 @@ if (isset($_GET['delete_event'])) {
                     
                     <div class="mb-4">
                         <label for="organizerName" class="form-label">
-                            <i class="fas fa-user me-2"></i>Organizer Name
+                            <i class="fas fa-user"></i>Event Organizer
                         </label>
                         <input type="text" class="form-control" name="organizerName" 
-                               id="organizerName" placeholder="Enter organizer name" required>
+                               id="organizerName" placeholder="Who's organizing this event?" required>
                     </div>
                     
                     <div class="mb-4">
                         <label for="eventDescription" class="form-label">
-                            <i class="fas fa-align-left me-2"></i>Description
+                            <i class="fas fa-align-left"></i>Event Details
                         </label>
                         <textarea class="form-control" name="eventDescription" id="eventDescription" 
-                                rows="4" placeholder="Enter event description" required></textarea>
+                                rows="4" placeholder="Describe your event..." required></textarea>
                     </div>
                     
                     <div class="text-end">
@@ -216,7 +217,7 @@ if (isset($_GET['delete_event'])) {
                             <i class="fas fa-times me-2"></i>Cancel
                         </button>
                         <button type="submit" name="addEvent" class="btn btn-success">
-                            <i class="fas fa-plus me-2"></i>Add Event
+                            <i class="fas fa-plus me-2"></i>Create Event
                         </button>
                     </div>
                 </form>
