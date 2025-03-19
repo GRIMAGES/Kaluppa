@@ -334,144 +334,152 @@ body {
 .event-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Space between cards */
-    justify-content: flex-start; /* Align items to the left */
-    max-width: 1200px; /* Adjusted width to fit longer cards */
-    margin-left: 20px; /* Small left margin */
-    animation: fadeIn 1s ease-in-out; /* Add fade-in effect */
+    gap: 20px; /* Add space between cards */
+    justify-content: flex-start;
+    max-width: 1200px;
+    margin-left: 20px;
+    animation: fadeIn 1s ease-in-out;
 }
 
 .event-card {
-    width: 550px; /* Increased width for even longer rectangular shape */
-    height: 300px; /* Slightly adjusted height */
-    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update event card color */
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align items to the left */
-    justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.event-card img {
-    width: 500px; /* Fixed image width */
-    height: 160px; /* Fixed image height */
-    object-fit: cover; /* Maintain aspect ratio and crop if needed */
+    width: 300px;
+    background: #fff;
     border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.event-card .btn:hover {
-    background-color: #C1E6BA;
-    color: white;
-    border: none;
+.event-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
 }
 
-.event-card .event-title {
-    font-size: 1.3em;
+.event-details {
+    padding: 15px;
+}
+
+.event-title {
+    font-size: 1.2em;
     font-weight: bold;
-    color: white; /* Update text color */
-    text-align: left; /* Align text to the left */
+    margin-bottom: 10px;
 }
 
-.event-card .event-details {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align items to the left */
-    justify-content: center;
-    text-align: left; /* Align text to the left */
-    color: white; /* Update text color */
+.event-time {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 15px;
 }
 
-.event-card .view-details-button {
-    background: #4CAF50; /* Change button background color */
+.view-details-button {
+    background-color: #007bff;
     color: #fff;
     border: none;
-    padding: 8px 12px;
+    padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
-    margin-top: auto; /* Pushes the button to the bottom */
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
-.event-card .view-details-button:hover {
-    background: #388E3C; /* Change button background color on hover */
-    transform: translateX(10px); /* Move to the right */
-    clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%); /* Carved effect */
-    border-radius: 0 20px 20px 0;
-    box-shadow: 2px 0px 10px rgba(193, 230, 186, 0.5);
+.view-details-button:hover {
+    background-color: #0056b3;
 }
 
-.event-card .event-status {
-    font-size: 0.9em;
-    color: white; /* Update text color */
-    text-align: left; /* Align text to the left */
+.custom-modal .modal-content {
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: none;
 }
 
-.event-card .event-duration {
-    font-size: 0.9em;
-    color: white; /* Update text color */
-    text-align: left; /* Align text to the left */
+.custom-modal .modal-header {
+    background-color: #1a4629;
+    color: white;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
 }
 
-.event-card p {
-    color: white; /* Update p text color */
+.custom-modal .modal-body {
+    background-color: #f9f9f9;
+    color: #333;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 }
 
-.event-card i {
-    color: white; /* Update i text color */
+/* Featured Card */
+.card:hover {
+    transform: scale(1.02);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.event-card h5 {
-    color: white; /* Update h5 text color */
+.featured-card {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 25px 30px;
+    height: 90%; /* Further reduced height */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 100%; /* Make width responsive */
+    margin-top: 50px;
+    margin-left: 20px; /* Move more to the right */
+    border-radius: 8px; /* More rectangular shape */
 }
 
-.card-title.text-success h5 {
-    color: white; /* Ensure h5 text color is white */
+.featured-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
 }
 
-.card-text {
-    color: white; /* Ensure p text color is white */
+.featured-card-img {
+    width: 100%;
+    height: 250px; /* Consistent height */
+    object-fit: cover; /* Ensure the image covers the area */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    transition: transform 0.4s ease;
 }
 
-.card-body {
-    color: white; /* Ensure div class card-body text color is white */
+.featured-card:hover .featured-card-img {
+    transform: scale(1.05);
 }
 
-/* Ensure the modal closes properly */
-.modal-backdrop {
-    z-index: 1040 !important;
+.featured-card-body {
+    padding: 20px;
+    color: white;
+    text-align: center;
 }
 
-.modal-content {
-    z-index: 1050 !important;
+.featured-card-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 15px;
 }
 
-.modal-content {
-    background-color: #f8f9fa;
+.view-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #1a4629;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-/* Add a smooth background animation */
-.modal-content {
-    animation: fadeInModal 0.4s ease-in-out;
-}
-
-@keyframes fadeInModal {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.view-btn:hover {
+    background-color: #0f3d22;
+    transform: scale(1.05);
 }
 
 /* Loading animation */
