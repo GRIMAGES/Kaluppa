@@ -145,25 +145,50 @@ $categorizedCourses = categorizeCourses($courseResult);
         <div class="row">
           <!-- Left Column: Course Details -->
           <div class="col-md-6 border-end">
-            <h4 class="mb-3" id="courseName"></h4>
-            <div class="mb-2">
-              <strong>Duration:</strong> <span id="courseDuration"></span> hours
-            </div>
-            <div class="mb-2">
-              <strong>Description:</strong>
-              <p id="courseDescription" class="mb-0"></p>
-            </div>
-            <div class="mb-2">
-              <strong>Prerequisites:</strong>
-              <p id="coursePrerequisites" class="mb-0"></p>
-            </div>
-            <div class="mb-2">
-              <strong>Instructor:</strong> <span id="courseInstructor"></span>
+            <div class="course-info-section">
+              <h4 class="mb-3" id="courseName"></h4>
+              
+              <div class="info-group mb-3">
+                <div class="mb-2">
+                  <strong><i class="fas fa-calendar-alt me-2"></i>Start Date:</strong>
+                  <span id="courseStartDate"></span>
+                </div>
+                <div class="mb-2">
+                  <strong><i class="fas fa-calendar-check me-2"></i>End Date:</strong>
+                  <span id="courseEndDate"></span>
+                </div>
+              </div>
+
+              <div class="info-group mb-3">
+                <div class="mb-2">
+                  <strong><i class="fas fa-user-tie me-2"></i>Instructor:</strong>
+                  <span id="courseInstructor"></span>
+                </div>
+                <div class="mb-2">
+                  <strong><i class="fas fa-info-circle me-2"></i>Status:</strong>
+                  <span id="courseStatus" class="badge"></span>
+                </div>
+              </div>
+
+              <div class="info-group mb-3">
+                <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
+                <p id="courseDescription" class="mt-1 mb-3"></p>
+              </div>
+
+              <div class="info-group mb-3">
+                <strong><i class="fas fa-list-ul me-2"></i>Requirements:</strong>
+                <p id="courseRequirements" class="mt-1 mb-3"></p>
+              </div>
+
+              <div class="info-group mb-3">
+                <strong><i class="fas fa-check-circle me-2"></i>Prerequisites:</strong>
+                <p id="coursePrerequisites" class="mt-1"></p>
+              </div>
             </div>
           </div>
 
           <!-- Right Column: Application Form -->
-          <div class="col-md-6" style="max-height: 400px; overflow-y: auto;">
+          <div class="col-md-6" style="max-height: 500px; overflow-y: auto;">
             <form id="applicationForm" action="https://www.kaluppa.online/Kaluppa/Backend/user_controller/submit_application.php" method="POST" enctype="multipart/form-data">
               <div class="mb-3">
                 <label for="first_name" class="form-label">First Name</label>
@@ -302,17 +327,23 @@ function showCourseDetails(courseId) {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                // Replace alert with a Bootstrap modal
                 const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
                 document.getElementById("errorModalMessage").textContent = "Error loading course details. Please try again.";
                 errorModal.show();
             } else {
                 // Populate course details
                 document.getElementById("courseName").textContent = data.name;
-                document.getElementById("courseDuration").textContent = data.duration;
-                document.getElementById("courseDescription").textContent = data.description;
-                document.getElementById("coursePrerequisites").textContent = data.requisites;
+                document.getElementById("courseStartDate").textContent = formatDate(data.start_date);
+                document.getElementById("courseEndDate").textContent = formatDate(data.end_date);
                 document.getElementById("courseInstructor").textContent = data.instructor;
+                document.getElementById("courseDescription").textContent = data.description;
+                document.getElementById("courseRequirements").textContent = data.requirements;
+                document.getElementById("coursePrerequisites").textContent = data.requisites;
+
+                // Set status with appropriate badge color
+                const statusElement = document.getElementById("courseStatus");
+                statusElement.textContent = data.status;
+                statusElement.className = `badge bg-${getStatusColor(data.status)}`;
 
                 // Update hidden input with course ID for the form
                 document.getElementById("course_id").value = courseId;
@@ -328,6 +359,26 @@ function showCourseDetails(courseId) {
             document.getElementById("errorModalMessage").textContent = "An unexpected error occurred. Please try again later.";
             errorModal.show();
         });
+}
+
+// Helper function to format date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+}
+
+// Helper function to get status badge color
+function getStatusColor(status) {
+    switch (status.toLowerCase()) {
+        case 'upcoming':
+            return 'warning';
+        case 'ongoing':
+            return 'success';
+        case 'completed':
+            return 'secondary';
+        default:
+            return 'primary';
+    }
 }
 
 document.getElementById('applicationForm').addEventListener('submit', function(e) {
