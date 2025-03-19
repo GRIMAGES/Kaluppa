@@ -127,38 +127,35 @@ if (!$workResult) {
                     </div>
                 </div>
 
-                <!-- ✅ MODAL (inside the loop) -->
+                <!-- Work Details Modal -->
                 <div class="modal fade" id="workModal<?php echo $work['id']; ?>" tabindex="-1" aria-labelledby="workModalLabel<?php echo $work['id']; ?>" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content shadow-lg rounded-4 custom-modal">
-                            <div class="modal-header">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
                                 <h5 class="modal-title" id="workModalLabel<?php echo $work['id']; ?>"><?php echo htmlspecialchars($work['title']); ?></h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
+
                             <div class="modal-body">
                                 <div class="row">
-                                    <!-- Left Column: Work Details -->
+                                    <!-- Left Column: Work Info -->
                                     <div class="col-md-6 border-end">
-                                        <div class="work-info-section">
-                                            <h4 class="mb-3"><?php echo htmlspecialchars($work['title']); ?></h4>
-                                            <div class="info-group mb-3">
-                                                <div class="mb-2">
-                                                    <strong><i class="fas fa-map-marker-alt me-2"></i>Location:</strong>
-                                                    <span><?php echo htmlspecialchars($work['location']); ?></span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <strong><i class="fas fa-calendar-alt me-2"></i>Date:</strong>
-                                                    <span><?php echo htmlspecialchars($work['work_datetime']); ?></span>
-                                                </div>
-                                            </div>
-                                            <div class="info-group mb-3">
-                                                <strong><i class="fas fa-list-ul me-2"></i>Requirements:</strong>
-                                                <p><?php echo htmlspecialchars($work['requirements']); ?></p>
-                                            </div>
-                                            <div class="info-group mb-3">
-                                                <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
-                                                <p><?php echo htmlspecialchars($work['description']); ?></p>
-                                            </div>
+                                        <h4 class="mb-3"><?php echo htmlspecialchars($work['title']); ?></h4>
+                                        <div class="mb-2">
+                                            <strong>Location:</strong>
+                                            <p><?php echo htmlspecialchars($work['location']); ?></p>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Date:</strong>
+                                            <p><?php echo htmlspecialchars($work['work_datetime']); ?></p>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Requirements:</strong>
+                                            <p><?php echo htmlspecialchars($work['requirements']); ?></p>
+                                        </div>
+                                        <div class="mb-2">
+                                            <strong>Description:</strong>
+                                            <p><?php echo htmlspecialchars($work['description']); ?></p>
                                         </div>
                                     </div>
 
@@ -226,7 +223,6 @@ if (!$workResult) {
                         </div>
                     </div>
                 </div>
-                <!-- END MODAL -->
             <?php endwhile; ?>
         <?php else: ?>
             <p>No volunteer works available at the moment.</p>
