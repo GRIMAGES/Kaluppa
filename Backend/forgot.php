@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['forgot_password'])) {
 
             $mail->isHTML(true);
             $mail->Subject = 'Password Reset';
-            $mail->Body    = 'Click the following link to reset your password: <a href="https://kaluppa.online/Kaluppa/Frontend/otpverification.php?reset_token=' . $resetToken . '">Reset Password</a>';
+            $mail->Body    = 'Click the following link to reset your password: <a href="https://kaluppa.online/Kaluppa/Frontend/changepassword.php?reset_token=' . $resetToken . '">Reset Password</a>';
 
             $mail->send();
 
