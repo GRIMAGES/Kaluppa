@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['forgot_password'])) {
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'wgonzales@kaluppa.org';
-            $mail->Password   = 'ngqt vydl kvjz lgsl';
+            $mail->Password   = 'qfsp ihop mdqg ngoy';
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
 
@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['forgot_password'])) {
 
             $mail->isHTML(true);
             $mail->Subject = 'Password Reset';
-            $mail->Body    = 'Click the following link to reset your password: <a href="http://localhost:3000/Frontend/changepassword.php?reset_token=' . $resetToken . '">Reset Password</a>';
+            $mail->Body    = 'Click the following link to reset your password: <a href="https://kaluppa.online/Kaluppa/Backend/otpverification.php?reset_token=' . $resetToken . '">Reset Password</a>';
 
             $mail->send();
 
