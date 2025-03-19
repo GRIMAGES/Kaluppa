@@ -2,8 +2,11 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 require_once 'google_config.php';
 require_once '../Backend/connection.php'; // DB connection
+
+session_start(); // Start session at the top
 
 if (isset($_GET['code'])) {
     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
@@ -30,8 +33,6 @@ if (isset($_GET['code'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    session_start(); // Start session before redirect
-
     if ($result->num_rows > 0) {
         // Existing user
         $user = $result->fetch_assoc();
@@ -39,7 +40,6 @@ if (isset($_GET['code'])) {
         $_SESSION['email'] = $user['email'];
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['role'] = $user['role'];
-
     } else {
         // New user registration
         $role = 'user'; // Default role
@@ -72,5 +72,9 @@ if (isset($_GET['code'])) {
         exit();
     }
 } else {
-    echo "Authorization code not received.";
+    // 🔁 Redirect to Google Auth if code is not yet present
+    $authUrl = $client->createAuthUrl();
+    header("Location: $authUrl");
+    exit;
 }
+?>
