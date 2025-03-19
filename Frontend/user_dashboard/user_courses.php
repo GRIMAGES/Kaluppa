@@ -165,6 +165,10 @@ $categorizedCourses = categorizeCourses($courseResult);
                   <span id="courseInstructor"></span>
                 </div>
                 <div class="mb-2">
+                  <strong><i class="fas fa-users me-2"></i>Enrollment:</strong>
+                  <span id="courseEnrollment" class="enrollment-status"></span>
+                </div>
+                <div class="mb-2">
                   <strong><i class="fas fa-info-circle me-2"></i>Status:</strong>
                   <span id="courseStatus" class="badge"></span>
                 </div>
@@ -339,6 +343,19 @@ function showCourseDetails(courseId) {
                 document.getElementById("courseDescription").textContent = data.description;
                 document.getElementById("courseRequirements").textContent = data.requirements;
                 document.getElementById("coursePrerequisites").textContent = data.requisites;
+
+                // Add enrollment information
+                const enrollmentElement = document.getElementById("courseEnrollment");
+                enrollmentElement.textContent = `${data.enrolled_students}/${data.capacity}`;
+                
+                // Add color coding based on capacity
+                if (data.enrolled_students >= data.capacity) {
+                    enrollmentElement.classList.add('text-danger', 'fw-bold');
+                } else if (data.enrolled_students >= data.capacity * 0.8) {
+                    enrollmentElement.classList.add('text-warning', 'fw-bold');
+                } else {
+                    enrollmentElement.classList.add('text-success', 'fw-bold');
+                }
 
                 // Set status with appropriate badge color
                 const statusElement = document.getElementById("courseStatus");
