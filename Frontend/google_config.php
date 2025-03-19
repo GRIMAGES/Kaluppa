@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php'; // Keep this if your vendor folder is still one directory up
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__); // <-- FIXED: points to correct folder
 $dotenv->load();
 
 $client = new Google_Client();

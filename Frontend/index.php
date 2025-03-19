@@ -118,7 +118,7 @@ session_start();
                 <h1>Sign in</h1>
                 <div class="social-container">
                 <a href="" class="social" title="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
-    <a href="google_login_button.php" class="social" title="Register with Google"><i class="fab fa-google"></i></a>
+    <a href="login_google.php" class="social" title="Register with Google"><i class="fab fa-google"></i></a>
     <a href="" class="social" title="Register with QR Code"><i class="fas fa-qrcode"></i></a>
                 </div>
                 <span>or use your account</span>
