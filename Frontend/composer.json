@@ -5,6 +5,7 @@
         "dompdf/dompdf": "^3.0",
         "google/apiclient-services": "^0.396.0",
         "google/apiclient": "2.12",
-        "endroid/qr-code": "^6.0"
+        "endroid/qr-code": "^6.0",
+        "vlucas/phpdotenv": "^5.6"
     }
 }

@@ -1,11 +1,13 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
- 
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 $client = new Google_Client();
-$client->setClientId('275298191714-6di06o4lcemkk8rhhvlba5griugtpnj6.apps.googleusercontent.com');
-$client->setClientSecret('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');
-$client->setRedirectUri('https://kaluppa.online/Kaluppa/Frontend/login_google.php');
+$client->setClientId($_ENV['GOOGLE_CLIENT_ID']);
+$client->setClientSecret($_ENV['GOOGLE_CLIENT_SECRET']);
+$client->setRedirectUri($_ENV['GOOGLE_REDIRECT_URI']);
 $client->addScope('email');
 $client->addScope('profile');
 ?>
