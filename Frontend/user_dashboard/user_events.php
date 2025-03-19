@@ -110,9 +110,9 @@ if ($result->num_rows > 0) {
                                         </div>
                                     </div>
 
-                                    <!-- Right Column: Additional Info or Actions -->
-                                    <div class="col-md-6" style="max-height: 500px; overflow-y: auto;">
-                                        <!-- Add any additional information or actions here -->
+                                    <!-- Right Column: Event Image -->
+                                    <div class="col-md-6">
+                                        <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow" alt="Event Image">
                                     </div>
                                 </div>
                             </div>
