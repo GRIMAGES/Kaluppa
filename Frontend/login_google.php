@@ -60,11 +60,11 @@ if (isset($_GET['code'])) {
     // ✅ ROLE-BASED REDIRECTION
     if ($_SESSION['role'] === 'superadmin' || $_SESSION['role'] === 'admin') {
         error_log("Redirecting to admin dashboard");
-        header("Location: ../Frontend/admin dashboard/admin_dashboard.php");
+        header("Location: ../Frontend/admin_dashboard/admin_dashboard.php");
         exit();
     } else if ($_SESSION['role'] === 'user' || $_SESSION['role'] === 'alumni') {
         error_log("Redirecting to user dashboard");
-        header("Location: ../Frontend/user dashboard/user_dashboard.php");
+        header("Location: ../Frontend/user_dashboard/user_dashboard.php");
         exit();
     } else {
         // Optional: Redirect other roles or unknown roles
