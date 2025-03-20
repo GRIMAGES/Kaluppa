@@ -193,7 +193,6 @@ body {
     font-size: 12px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
-
 /* Filter Container */
 .filter-container {
     background-color: #f8f9fa; /* Light background */

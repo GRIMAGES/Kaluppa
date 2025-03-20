@@ -61,34 +61,6 @@ if ($coursesResult->num_rows > 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_calendars.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .calendar-container {
-            padding: 20px;
-            animation: fadeIn 0.8s ease-in-out;
-        }
-        .fade-in {
-            animation: fadeIn 0.7s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .event-course {
-            background-color: #cce5ff;
-            padding: 5px;
-            border-radius: 5px;
-            transition: all 0.4s ease;
-        }
-        .event-regular {
-            background-color: #d4edda;
-            padding: 5px;
-            border-radius: 5px;
-            transition: all 0.4s ease;
-        }
-        .fc .fc-event {
-            transition: all 0.4s ease;
-        }
-    </style>
 </head>
 <body style="background-color: #ddead1;">
 <?php include 'sidebar.php'; ?>
