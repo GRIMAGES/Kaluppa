@@ -14,7 +14,7 @@ body {
 /* Calendar Container */
 .calendar-container {
     width: 90%; /* Increase width */
-    background:rgb(9, 17, 2); /* Update sidebar background color */
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
