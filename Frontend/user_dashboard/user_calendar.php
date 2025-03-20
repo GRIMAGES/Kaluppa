@@ -32,16 +32,22 @@ if ($coursesResult->num_rows > 0) {
     while ($course = $coursesResult->fetch_assoc()) {
         $startDate = new DateTime($course['start_date']);
         $endDate = new DateTime($course['end_date']);
-        $endDate->modify('+1 day'); // Include the end date
 
-        for ($date = $startDate; $date < $endDate; $date->modify('+1 day')) {
-            $events[] = [
-                'title' => $course['name'],
-                'start' => $date->format('Y-m-d'),
-                'description' => 'Scholarship: ' . $course['name'],
-                'type' => 'scholarship'
-            ];
-        }
+        // Add event for the start date
+        $events[] = [
+            'title' => $course['name'] . ' (Start)',
+            'start' => $startDate->format('Y-m-d'),
+            'description' => 'Scholarship Start: ' . $course['name'],
+            'type' => 'scholarship'
+        ];
+
+        // Add event for the end date
+        $events[] = [
+            'title' => $course['name'] . ' (End)',
+            'start' => $endDate->format('Y-m-d'),
+            'description' => 'Scholarship End: ' . $course['name'],
+            'type' => 'scholarship'
+        ];
     }
 }
 ?>

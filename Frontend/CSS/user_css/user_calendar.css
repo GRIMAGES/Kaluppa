@@ -33,7 +33,7 @@ body {
     height: 600px; /* Increase calendar height */
     margin: 0 auto;
     border-radius: 10px;
-    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Update sidebar background color */
+    background:rgb(9, 17, 2); /* Update sidebar background color */
     padding: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.8s ease-in-out;
@@ -174,7 +174,7 @@ body {
     color: white; /* Change text color to white */
 }
 
-/* Add styles for course events */
+/* Add styles for course start and end events */
 .course-event {
     background-color: yellow !important; /* Set course events to yellow */
     color: black !important; /* Ensure text is readable */
