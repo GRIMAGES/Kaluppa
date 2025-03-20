@@ -90,13 +90,32 @@ if ($coursesResult->num_rows > 0) {
         }
     </style>
 </head>
-<body>
+<body style="background-color: #ddead1;">
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-theme text-white">
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Are you sure you want to log out?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Calendar Section -->
 <div class="calendar-container">
-    <h3 class="mb-3">Event Calendar</h3>
+    <h3 class="mb-3" style="color: white;">Event Calendar</h3>
     <div class="calendar-wrapper">
         <div id="calendar"></div>
     </div>
