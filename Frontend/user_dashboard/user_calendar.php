@@ -79,7 +79,15 @@ if ($coursesResult->num_rows > 0) {
     </div>
 </div>
 
-<!-- Filter Section -->
+<!-- Calendar Section -->
+<div class="calendar-container">
+    <h3 class="mb-3">Event Calendar</h3>
+    <div class="calendar-wrapper">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+<!-- Move Filter Section Below Calendar -->
 <div class="filter-container mb-3">
     <label for="eventFilter" class="form-label">Filter Events:</label>
     <select id="eventFilter" class="form-select">
@@ -89,14 +97,14 @@ if ($coursesResult->num_rows > 0) {
         <option value="volunteer">Volunteer</option>
         <!-- Add more options as needed -->
     </select>
-</div>
-
-<!-- Calendar Section -->
-<div class="calendar-container">
-    <h3 class="mb-3">Event Calendar</h3>
-    <div class="calendar-wrapper">
-        <div id="calendar"></div>
-    </div>
+    <label for="timeFilter" class="form-label mt-2">Filter by Time:</label>
+    <select id="timeFilter" class="form-select">
+        <option value="all">All Times</option>
+        <option value="morning">Morning (5 AM - 12 PM)</option>
+        <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+        <option value="evening">Evening (5 PM - 9 PM)</option>
+        <option value="night">Night (9 PM - 5 AM)</option>
+    </select>
 </div>
 
 <!-- Event Description Modal -->
@@ -155,18 +163,26 @@ if ($coursesResult->num_rows > 0) {
         });
         calendar.render();
 
-        // Filter events based on the selected type
-        document.getElementById('eventFilter').addEventListener('change', function() {
-            var selectedType = this.value;
+        // Filter events based on the selected type and time
+        function filterEvents() {
+            var selectedType = document.getElementById('eventFilter').value;
+            var selectedTime = document.getElementById('timeFilter').value;
             var filteredEvents = <?php echo json_encode($events); ?>.filter(function(event) {
-                if (selectedType === 'all') {
-                    return true;
-                }
-                return event.description.toLowerCase().includes(selectedType);
+                var matchesType = selectedType === 'all' || event.description.toLowerCase().includes(selectedType);
+                var eventTime = new Date(event.start).getHours();
+                var matchesTime = selectedTime === 'all' || 
+                    (selectedTime === 'morning' && eventTime >= 5 && eventTime < 12) ||
+                    (selectedTime === 'afternoon' && eventTime >= 12 && eventTime < 17) ||
+                    (selectedTime === 'evening' && eventTime >= 17 && eventTime < 21) ||
+                    (selectedTime === 'night' && (eventTime >= 21 || eventTime < 5));
+                return matchesType && matchesTime;
             });
             calendar.removeAllEvents();
             calendar.addEventSource(filteredEvents);
-        });
+        }
+
+        document.getElementById('eventFilter').addEventListener('change', filterEvents);
+        document.getElementById('timeFilter').addEventListener('change', filterEvents);
     });
 
     // Make the calendar resizable
