@@ -29,12 +29,18 @@ $coursesResult = $conn->query($coursesQuery);
 
 if ($coursesResult->num_rows > 0) {
     while ($course = $coursesResult->fetch_assoc()) {
-        $events[] = [
-            'title' => $course['name'],
-            'start' => $course['start_date'],
-            'end' => $course['end_date'],
-            'description' => 'Course: ' . $course['name']
-        ];
+        $startDate = new DateTime($course['start_date']);
+        $endDate = new DateTime($course['end_date']);
+        $endDate->modify('+1 day'); // Include the end date
+
+        // Create an event for each day of the course
+        for ($date = $startDate; $date < $endDate; $date->modify('+1 day')) {
+            $events[] = [
+                'title' => $course['name'],
+                'start' => $date->format('Y-m-d'),
+                'description' => 'Course: ' . $course['name']
+            ];
+        }
     }
 }
 ?>
@@ -71,6 +77,18 @@ if ($coursesResult->num_rows > 0) {
             </div>
         </div>
     </div>
+</div>
+
+<!-- Filter Section -->
+<div class="filter-container mb-3">
+    <label for="eventFilter" class="form-label">Filter Events:</label>
+    <select id="eventFilter" class="form-select">
+        <option value="all">All</option>
+        <option value="event">Events</option>
+        <option value="scholarship">Scholarships</option>
+        <option value="volunteer">Volunteer</option>
+        <!-- Add more options as needed -->
+    </select>
 </div>
 
 <!-- Calendar Section -->
@@ -126,9 +144,29 @@ if ($coursesResult->num_rows > 0) {
                 // Show the modal
                 var eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
                 eventModal.show();
+            },
+            eventContent: function(arg) {
+                // Add a custom class based on the event type
+                var eventType = arg.event.extendedProps.description.startsWith('Course:') ? 'course-event' : 'regular-event';
+                return { 
+                    html: `<div class="${eventType}">${arg.event.title}</div>`
+                };
             }
         });
         calendar.render();
+
+        // Filter events based on the selected type
+        document.getElementById('eventFilter').addEventListener('change', function() {
+            var selectedType = this.value;
+            var filteredEvents = <?php echo json_encode($events); ?>.filter(function(event) {
+                if (selectedType === 'all') {
+                    return true;
+                }
+                return event.description.toLowerCase().includes(selectedType);
+            });
+            calendar.removeAllEvents();
+            calendar.addEventSource(filteredEvents);
+        });
     });
 
     // Make the calendar resizable

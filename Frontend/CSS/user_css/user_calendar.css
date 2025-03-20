@@ -14,7 +14,7 @@ body {
 /* Calendar Container */
 .calendar-container {
     width: 90%; /* Increase width */
-    background: #4b6043; /* Match container background color */
+    background: green; /* Set container background to green */
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -172,4 +172,24 @@ body {
     background-color: rgb(2, 61, 15);
     border: none;
     color: white; /* Change text color to white */
+}
+
+/* Add styles for course events */
+.course-event {
+    background-color: yellow !important; /* Set course events to yellow */
+    color: black !important; /* Ensure text is readable */
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 12px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Add styles for regular events */
+.regular-event {
+    background-color: #4CAF50 !important; /* Set regular events to green */
+    color: white !important;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 12px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
