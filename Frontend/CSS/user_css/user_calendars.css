@@ -13,12 +13,12 @@ body {
 
 /* Calendar Container */
 .calendar-container {
-    width: 90%; /* Increase width */
+    width: 70%; /* Decrease width */
     background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-top: 80px;
+    margin-top: 100px; /* Increase top margin to move below the topbar */
     margin-left: 280px; /* Move the container to the right */
     animation: slideIn 0.6s ease-in-out;
     resize: both; /* Make the container resizable */
@@ -30,10 +30,10 @@ body {
 /* Calendar Wrapper */
 .calendar-wrapper {
     width: 100%;
-    height: 600px; /* Increase calendar height */
+    height: 500px; /* Decrease calendar height */
     margin: 0 auto;
     border-radius: 10px;
-    background:rgb(9, 17, 2); /* Update sidebar background color */
+    background: rgb(9, 17, 2); /* Update sidebar background color */
     padding: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.8s ease-in-out;
@@ -44,6 +44,29 @@ body {
     height: 100%;
     background: #ddead1; /* Ensure calendar background color is changed */
     border-radius: 10px;
+}
+
+/* Filter Container */
+.filter-container {
+    background-color: #f8f9fa; /* Light background */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    width: 70%; /* Match the width of the calendar container */
+    margin: 20px auto; /* Center the filter container and add top margin */
+}
+
+.filter-container .form-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-container .form-select {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
 }
 
 /* Calendar Toolbar */
@@ -149,13 +172,14 @@ body {
         opacity: 1;
     }
 }
+
 .modal-content {
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border: none;
 }
 
- .modal-header {
+.modal-header {
     background-color: #1a4629;
     color: white;
     border-top-left-radius: 16px;
@@ -168,6 +192,7 @@ body {
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
 }
+
 .modal-footer.justify-content-center .btn-theme {
     background-color: rgb(2, 61, 15);
     border: none;
@@ -192,24 +217,4 @@ body {
     padding: 5px;
     font-size: 12px;
     transition: background-color 0.3s ease, transform 0.3s ease;
-}
-/* Filter Container */
-.filter-container {
-    background-color: #f8f9fa; /* Light background */
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-}
-
-.filter-container .form-label {
-    font-weight: bold;
-    color: #333;
-}
-
-.filter-container .form-select {
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
 }
