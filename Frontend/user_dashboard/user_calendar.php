@@ -143,53 +143,62 @@ if ($coursesResult->num_rows > 0) {
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const calendarEl = document.getElementById('calendar');
-        const originalEvents = <?php echo json_encode($events); ?>;
-
-        const calendar = new FullCalendar.Calendar(calendarEl, {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
+            events: <?php echo json_encode($events); ?>, // Pass PHP array to JavaScript
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            events: originalEvents,
             editable: false,
             eventClick: function (info) {
+                // Set the event title and description into the modal
                 document.getElementById('eventTitle').innerText = info.event.title;
                 document.getElementById('eventDescription').innerText = info.event.extendedProps.description;
-                new bootstrap.Modal(document.getElementById('eventModal')).show();
+                
+                // Show the modal
+                var eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+                eventModal.show();
             },
-            eventContent: function (arg) {
-                const type = arg.event.extendedProps.type;
-                const cssClass = type === 'scholarship' ? 'event-course fade-in' : 'event-regular fade-in';
-                return { html: `<div class="${cssClass}">${arg.event.title}</div>` };
+            eventContent: function(arg) {
+                // Add a custom class based on the event type
+                var eventType = arg.event.extendedProps.description.startsWith('Course:') ? 'course-event' : 'regular-event';
+                return { 
+                    html: `<div class="${eventType}">${arg.event.title}</div>`
+                };
             }
         });
-
         calendar.render();
 
+        // Filter events based on the selected type and time
         function filterEvents() {
-            const type = document.getElementById('eventFilter').value;
-            const time = document.getElementById('timeFilter').value;
-
-            const filtered = originalEvents.filter(event => {
-                const matchType = (type === 'all') || (event.type === type);
-                const hour = new Date(event.start).getHours();
-                let matchTime = true;
-                if (time === 'morning') matchTime = hour >= 5 && hour < 12;
-                else if (time === 'afternoon') matchTime = hour >= 12 && hour < 17;
-                else if (time === 'evening') matchTime = hour >= 17 && hour < 21;
-                else if (time === 'night') matchTime = hour >= 21 || hour < 5;
-                return matchType && matchTime;
+            var selectedType = document.getElementById('eventFilter').value;
+            var selectedTime = document.getElementById('timeFilter').value;
+            var filteredEvents = <?php echo json_encode($events); ?>.filter(function(event) {
+                var matchesType = selectedType === 'all' || event.description.toLowerCase().includes(selectedType);
+                var eventTime = new Date(event.start).getHours();
+                var matchesTime = selectedTime === 'all' || 
+                    (selectedTime === 'morning' && eventTime >= 5 && eventTime < 12) ||
+                    (selectedTime === 'afternoon' && eventTime >= 12 && eventTime < 17) ||
+                    (selectedTime === 'evening' && eventTime >= 17 && eventTime < 21) ||
+                    (selectedTime === 'night' && (eventTime >= 21 || eventTime < 5));
+                return matchesType && matchesTime;
             });
-
             calendar.removeAllEvents();
-            calendar.addEventSource(filtered);
+            calendar.addEventSource(filteredEvents);
         }
 
         document.getElementById('eventFilter').addEventListener('change', filterEvents);
         document.getElementById('timeFilter').addEventListener('change', filterEvents);
+    });
+
+    // Make the calendar resizable
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarContainer = document.querySelector('.calendar-container');
+        calendarContainer.style.resize = 'both';
+        calendarContainer.style.overflow = 'auto';
     });
 </script>
 </body>

@@ -193,3 +193,24 @@ body {
     font-size: 12px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
+
+/* Filter Container */
+.filter-container {
+    background-color: #f8f9fa; /* Light background */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.filter-container .form-label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filter-container .form-select {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
