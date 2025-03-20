@@ -13,7 +13,7 @@ body {
 
 /* Calendar Container */
 .calendar-container {
-    width: 70%; /* Decrease width */
+    width: 80%; /* Increase width */
     background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
     padding: 20px;
     border-radius: 15px;
@@ -30,7 +30,7 @@ body {
 /* Calendar Wrapper */
 .calendar-wrapper {
     width: 100%;
-    height: 500px; /* Decrease calendar height */
+    height: 600px; /* Increase calendar height */
     margin: 0 auto;
     border-radius: 10px;
     background: rgb(9, 17, 2); /* Update sidebar background color */
@@ -48,13 +48,16 @@ body {
 
 /* Filter Container */
 .filter-container {
-    background-color: #f8f9fa; /* Light background */
-    padding: 15px;
+    background-color: #f0f0f0; /* Light background */
+    padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
-    width: 70%; /* Match the width of the calendar container */
+    width: 60%; /* Make the filter container smaller */
     margin: 20px auto; /* Center the filter container and add top margin */
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Add gap between filter elements */
 }
 
 .filter-container .form-label {
@@ -67,6 +70,8 @@ body {
     margin-bottom: 10px;
     border-radius: 5px;
     border: 1px solid #ced4da;
+    background-color: #e0e0e0; /* Add background color to select */
+    color: #333; /* Text color */
 }
 
 /* Calendar Toolbar */
