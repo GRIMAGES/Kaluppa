@@ -13,94 +13,65 @@ body {
 
 /* Calendar Container */
 .calendar-container {
-    width: 90%; /* Increased width */
+    width: 85%; /* Increase width */
     background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
-    padding: 25px;
+    padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    margin-top: 100px;
-    margin-left: 280px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 100px; /* Increase top margin to move below the topbar */
+    margin-left: 280px; /* Move the container to the right */
     animation: slideIn 0.6s ease-in-out;
-    resize: both;
-    overflow: auto;
-    position: relative;
-    z-index: 1;
+    resize: both; /* Make the container resizable */
+    overflow: auto; /* Ensure content is scrollable if resized */
+    position: relative; /* Ensure it is not behind the sidebar */
+    z-index: 1; /* Ensure it is not behind the sidebar */
 }
 
 /* Calendar Wrapper */
 .calendar-wrapper {
     width: 100%;
-    height: 800px; /* Increased height */
+    height: 500px; /* Decrease calendar height */
     margin: 0 auto;
-    border-radius: 12px;
-    background: rgb(9, 17, 2);
-    padding: 15px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    background: rgb(9, 17, 2); /* Update sidebar background color */
+    padding: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.8s ease-in-out;
-    transition: all 0.3s ease;
 }
 
 #calendar {
     width: 100%;
     height: 100%;
-    background: #ddead1;
-    border-radius: 12px;
-    transition: transform 0.3s ease;
+    background: #ddead1; /* Ensure calendar background color is changed */
+    border-radius: 10px;
 }
 
 /* Filter Container */
 .filter-container {
-    background: linear-gradient(145deg, #ffffff, #f0f0f0);
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1),
-                -5px -5px 15px rgba(255, 255, 255, 0.8);
+    background-color: #f0f0f0; /* Light background */
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: 20px;
-    width: 40%; /* Decreased width */
-    margin: 20px auto;
+    width: 60%; /* Make the filter container smaller */
+    margin: 20px auto; /* Center the filter container and add top margin */
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: all 0.3s ease;
-}
-
-.filter-container:hover {
-    transform: translateY(-3px);
-    box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.15),
-                -7px -7px 20px rgba(255, 255, 255, 0.9);
+    justify-content: space-between;
+    gap: 10px; /* Add gap between filter elements */
 }
 
 .filter-container .form-label {
-    font-weight: 600;
-    color: #2c3e50;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    margin-bottom: 5px;
-    transition: color 0.3s ease;
+    font-weight: bold;
+    color: #333;
 }
 
 .filter-container .form-select {
-    padding: 10px;
-    border-radius: 8px;
-    border: 2px solid #e0e0e0;
-    background-color: #ffffff;
-    color: #333;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.filter-container .form-select:hover {
-    border-color: #4CAF50;
-    transform: translateX(3px);
-}
-
-.filter-container .form-select:focus {
-    outline: none;
-    border-color: #388E3C;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    background-color: #e0e0e0; /* Add background color to select */
+    color: #333; /* Text color */
 }
 
 /* Calendar Toolbar */
