@@ -7,6 +7,36 @@ if (!isset($_SESSION['email'])) {
 }
 
 $email = $_SESSION['email'];
+
+// Fetch events from the database
+$eventsQuery = "SELECT event_time, title FROM events ORDER BY event_time ASC";
+$eventsResult = $conn->query($eventsQuery);
+
+$events = [];
+if ($eventsResult->num_rows > 0) {
+    while ($event = $eventsResult->fetch_assoc()) {
+        $events[] = [
+            'title' => $event['title'],
+            'start' => $event['event_time'],
+            'description' => 'Event: ' . $event['title']
+        ];
+    }
+}
+
+// Fetch courses from the database
+$coursesQuery = "SELECT start_date, end_date, name FROM courses ORDER BY start_date ASC";
+$coursesResult = $conn->query($coursesQuery);
+
+if ($coursesResult->num_rows > 0) {
+    while ($course = $coursesResult->fetch_assoc()) {
+        $events[] = [
+            'title' => $course['name'],
+            'start' => $course['start_date'],
+            'end' => $course['end_date'],
+            'description' => 'Course: ' . $course['name']
+        ];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,7 +111,7 @@ $email = $_SESSION['email'];
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: 'https://kaluppa.online/Kaluppa/Backend/user controller/get_events.php', // Endpoint for fetching events
+            events: <?php echo json_encode($events); ?>, // Pass PHP array to JavaScript
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
