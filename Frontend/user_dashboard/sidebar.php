@@ -46,6 +46,7 @@ $navLinks = [
     ['href' => 'user_transactions.php', 'icon' => 'fas fa-exchange-alt', 'text' => 'Applications'],
     ['href' => 'user_calendar.php', 'icon' => 'fas fa-calendar', 'text' => 'Calendar'],
     ['href' => 'user_notifications.php', 'icon' => 'fas fa-bell', 'text' => 'Notifications'],
+    ['href' => 'user_alumni.php', 'icon' => 'fas fa-user-graduate', 'text' => 'Alumni'],
 ];
 ?>
 
