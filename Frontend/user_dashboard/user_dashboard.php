@@ -89,6 +89,21 @@ while ($row = $resultCards->fetch_assoc()) {
 $query = "SELECT * FROM featured_cards ORDER BY id ASC";
 $result = $conn->query($query);
 $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch events for the calendar
+$events = [];
+$eventsQuery = "SELECT event_time, title FROM events ORDER BY event_time ASC";
+$eventsResult = $conn->query($eventsQuery);
+if ($eventsResult->num_rows > 0) {
+    while ($event = $eventsResult->fetch_assoc()) {
+        $events[] = [
+            'title' => $event['title'],
+            'start' => $event['event_time'],
+            'description' => 'Event: ' . $event['title'],
+            'type' => 'event'
+        ];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -261,7 +276,7 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
-        var events = <?php echo json_encode($events); ?>; // Ensure $events is defined in this file
+        var events = <?php echo json_encode($events); ?>;
 
         // Color logic: Blue for scholarships, Yellow for events
         events = events.map(event => {
