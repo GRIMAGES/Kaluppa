@@ -195,3 +195,39 @@ body {
     font-size: 12px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
+
+/* Add full color styles for specific event types */
+.event-blue {
+    background-color: #2196F3 !important;
+    color: white !important;
+}
+
+.event-red {
+    background-color: #f44336 !important;
+    color: white !important;
+}
+
+.event-orange {
+    background-color: #ff9800 !important;
+    color: white !important;
+}
+
+.event-purple {
+    background-color: #9c27b0 !important;
+    color: white !important;
+}
+
+.event-teal {
+    background-color: #009688 !important;
+    color: white !important;
+}
+
+.event-gray {
+    background-color: #757575 !important;
+    color: white !important;
+}
+
+.event-pink {
+    background-color: #e91e63 !important;
+    color: white !important;
+}

@@ -50,62 +50,15 @@ if ($coursesResult->num_rows > 0) {
     <meta charset="UTF-8">
     <title>Event Calendar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="../CSS/user_css/calendar.css">
     <!-- Bootstrap & FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/main.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            background-color: #e6f2e6; /* match sidebar tone */
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .main-content {
-            margin-left: 250px; /* adjust based on sidebar width */
-            padding: 80px 30px 30px; /* topbar height + spacing */
-        }
-
-        .fc-toolbar-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .filter-box {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #198754; /* Bootstrap success/green tone */
-        }
-
-        #calendar {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-content {
-            border-radius: 10px;
-        }
-
-        .modal-header {
-            background-color: #198754;
-            color: white;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
-        .modal-body {
-            background-color: #f7fdf7;
-        }
-    </style>
 </head>
-<body>
+<body style="background: #ddead1;">
 
 <!-- Include Sidebar and Topbar -->
 <?php include 'sidebar.php'; ?>
