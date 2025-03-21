@@ -93,7 +93,7 @@ if ($coursesResult->num_rows > 0) {
     </div>
 </div>
 
-<!-- Filter Section -->
+<!-- Move Filter Section Below Calendar -->
 <div class="filter-container mb-4 px-3">
     <label for="eventFilter" class="form-label">Filter by Type:</label>
     <select id="eventFilter" class="form-select">
