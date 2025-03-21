@@ -65,7 +65,8 @@ if ($coursesResult->num_rows > 0) {
 <body style="background-color: #ddead1;">
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
-<!-- Logout Confirmation Modal -->
+
+<!-- Logout Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -79,21 +80,51 @@ if ($coursesResult->num_rows > 0) {
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
-
             </div>
         </div>
     </div>
 </div>
 
-<!-- Calendar Section -->
-<div class="calendar-container">
-    <h3 class="mb-3" style="color: white;">Event Calendar</h3>
-    <div class="calendar-wrapper">
+<!-- Main Calendar & Filter Section -->
+<div class="container mt-4">
+    <div class="text-center mb-3">
+        <h3 class="text-white">Event Calendar</h3>
+    </div>
+
+    <!-- Calendar -->
+    <div class="bg-white rounded shadow-sm p-3 mb-4">
         <div id="calendar"></div>
     </div>
+
+    <!-- Filter Section -->
+    <div class="bg-white rounded shadow-sm p-3 mb-4">
+        <div class="row g-3 align-items-end justify-content-center">
+            <div class="col-md-5">
+                <label for="eventFilter" class="form-label mb-1">Filter by Event Type:</label>
+                <select class="form-select" id="eventFilter">
+                    <option value="all">All</option>
+                    <option value="event">Event</option>
+                    <option value="scholarship">Scholarship</option>
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label for="timeFilter" class="form-label mb-1">Filter by Time:</label>
+                <select class="form-select" id="timeFilter">
+                    <option value="all">All Day</option>
+                    <option value="morning">Morning (5AM - 12PM)</option>
+                    <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                    <option value="evening">Evening (5PM - 9PM)</option>
+                    <option value="night">Night (9PM - 5AM)</option>
+                </select>
+            </div>
+            <div class="col-md-2 text-center">
+                <button class="btn btn-success w-100" id="applyFilterBtn">
+                    <i class="fas fa-filter me-1"></i>Filter
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
-
-
 
 <!-- Event Modal -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
@@ -114,34 +145,6 @@ if ($coursesResult->num_rows > 0) {
     </div>
 </div>
 
-
-<!-- Filter Section -->
-<div class="mt-3 p-3 bg-white rounded shadow-sm" style="max-width: 600px; margin: 0 auto;">
-    <div class="row g-2 align-items-end">
-        <div class="col-md-5">
-            <label for="eventFilter" class="form-label mb-1">Filter by Event Type:</label>
-            <select class="form-select" id="eventFilter">
-                <option value="all">All</option>
-                <option value="event">Event</option>
-                <option value="scholarship">Scholarship</option>
-            </select>
-        </div>
-        <div class="col-md-5">
-            <label for="timeFilter" class="form-label mb-1">Filter by Time:</label>
-            <select class="form-select" id="timeFilter">
-                <option value="all">All Day</option>
-                <option value="morning">Morning (5AM - 12PM)</option>
-                <option value="afternoon">Afternoon (12PM - 5PM)</option>
-                <option value="evening">Evening (5PM - 9PM)</option>
-                <option value="night">Night (9PM - 5AM)</option>
-            </select>
-        </div>
-        <div class="col-md-2 text-center">
-            <button class="btn btn-success w-100 mt-2" id="applyFilterBtn"><i class="fas fa-filter me-1"></i>Filter</button>
-        </div>
-    </div>
-</div>
-
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
@@ -154,7 +157,7 @@ if ($coursesResult->num_rows > 0) {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: <?php echo json_encode($events); ?>, // Pass PHP array to JavaScript
+            events: <?php echo json_encode($events); ?>,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
@@ -162,25 +165,13 @@ if ($coursesResult->num_rows > 0) {
             },
             editable: false,
             eventClick: function (info) {
-                // Set the event title and description into the modal
                 document.getElementById('eventTitle').innerText = info.event.title;
                 document.getElementById('eventDescription').innerText = info.event.extendedProps.description;
-                
-                // Show the modal
-                var eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
-                eventModal.show();
-            },
-            eventContent: function(arg) {
-                // Add a custom class based on the event type
-                var eventType = arg.event.extendedProps.description.startsWith('Course:') ? 'course-event' : 'regular-event';
-                return { 
-                    html: `<div class="${eventType}">${arg.event.title}</div>`
-                };
+                new bootstrap.Modal(document.getElementById('eventModal')).show();
             }
         });
         calendar.render();
 
-        // Filtering function
         function filterEvents(calendarInstance) {
             var selectedType = document.getElementById('eventFilter').value;
             var selectedTime = document.getElementById('timeFilter').value;
@@ -199,22 +190,13 @@ if ($coursesResult->num_rows > 0) {
             calendarInstance.addEventSource(filteredEvents);
         }
 
-        // 👉 ADD THESE EVENT LISTENERS HERE
-        document.getElementById('eventFilter').addEventListener('change', function() {
+        document.getElementById('eventFilter').addEventListener('change', function () {
             filterEvents(calendar);
         });
 
-        document.getElementById('timeFilter').addEventListener('change', function() {
+        document.getElementById('timeFilter').addEventListener('change', function () {
             filterEvents(calendar);
         });
-
-    });
-
-    // Optional: Make the calendar container resizable
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarContainer = document.querySelector('.calendar-container');
-        calendarContainer.style.resize = 'both';
-        calendarContainer.style.overflow = 'auto';
     });
 </script>
 
