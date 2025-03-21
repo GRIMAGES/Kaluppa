@@ -74,7 +74,7 @@ if ($coursesResult->num_rows > 0) {
         }
     </style>
 </head>
-<body>
+<body style="background-color: #ddead1;">
 
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
@@ -201,3 +201,4 @@ if ($coursesResult->num_rows > 0) {
 
 </body>
 </html>
+
