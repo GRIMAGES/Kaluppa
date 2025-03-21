@@ -58,6 +58,7 @@ body {
     display: flex;
     justify-content: space-between;
     gap: 10px; /* Add gap between filter elements */
+    margin-top: 50px;
 }
 
 .filter-container .form-label {
