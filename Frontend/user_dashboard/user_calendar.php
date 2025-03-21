@@ -114,6 +114,34 @@ if ($coursesResult->num_rows > 0) {
     </div>
 </div>
 
+
+<!-- Filter Section -->
+<div class="mt-3 p-3 bg-white rounded shadow-sm" style="max-width: 600px; margin: 0 auto;">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label for="eventFilter" class="form-label mb-1">Filter by Event Type:</label>
+            <select class="form-select" id="eventFilter">
+                <option value="all">All</option>
+                <option value="event">Event</option>
+                <option value="scholarship">Scholarship</option>
+            </select>
+        </div>
+        <div class="col-md-5">
+            <label for="timeFilter" class="form-label mb-1">Filter by Time:</label>
+            <select class="form-select" id="timeFilter">
+                <option value="all">All Day</option>
+                <option value="morning">Morning (5AM - 12PM)</option>
+                <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                <option value="evening">Evening (5PM - 9PM)</option>
+                <option value="night">Night (9PM - 5AM)</option>
+            </select>
+        </div>
+        <div class="col-md-2 text-center">
+            <button class="btn btn-success w-100 mt-2" id="applyFilterBtn"><i class="fas fa-filter me-1"></i>Filter</button>
+        </div>
+    </div>
+</div>
+
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
@@ -152,34 +180,43 @@ if ($coursesResult->num_rows > 0) {
         });
         calendar.render();
 
-        // Filter events based on the selected type and time
-        function filterEvents() {
+        // Filtering function
+        function filterEvents(calendarInstance) {
             var selectedType = document.getElementById('eventFilter').value;
             var selectedTime = document.getElementById('timeFilter').value;
             var filteredEvents = <?php echo json_encode($events); ?>.filter(function(event) {
-                var matchesType = selectedType === 'all' || event.description.toLowerCase().includes(selectedType);
-                var eventTime = new Date(event.start).getHours();
-                var matchesTime = selectedTime === 'all' || 
-                    (selectedTime === 'morning' && eventTime >= 5 && eventTime < 12) ||
-                    (selectedTime === 'afternoon' && eventTime >= 12 && eventTime < 17) ||
-                    (selectedTime === 'evening' && eventTime >= 17 && eventTime < 21) ||
-                    (selectedTime === 'night' && (eventTime >= 21 || eventTime < 5));
+                var matchesType = selectedType === 'all' || event.type === selectedType;
+                var eventHour = new Date(event.start).getHours();
+                var matchesTime = selectedTime === 'all' ||
+                    (selectedTime === 'morning' && eventHour >= 5 && eventHour < 12) ||
+                    (selectedTime === 'afternoon' && eventHour >= 12 && eventHour < 17) ||
+                    (selectedTime === 'evening' && eventHour >= 17 && eventHour < 21) ||
+                    (selectedTime === 'night' && (eventHour >= 21 || eventHour < 5));
                 return matchesType && matchesTime;
             });
-            calendar.removeAllEvents();
-            calendar.addEventSource(filteredEvents);
+
+            calendarInstance.removeAllEvents();
+            calendarInstance.addEventSource(filteredEvents);
         }
 
-        document.getElementById('eventFilter').addEventListener('change', filterEvents);
-        document.getElementById('timeFilter').addEventListener('change', filterEvents);
+        // 👉 ADD THESE EVENT LISTENERS HERE
+        document.getElementById('eventFilter').addEventListener('change', function() {
+            filterEvents(calendar);
+        });
+
+        document.getElementById('timeFilter').addEventListener('change', function() {
+            filterEvents(calendar);
+        });
+
     });
 
-    // Make the calendar resizable
+    // Optional: Make the calendar container resizable
     document.addEventListener('DOMContentLoaded', function () {
         var calendarContainer = document.querySelector('.calendar-container');
         calendarContainer.style.resize = 'both';
         calendarContainer.style.overflow = 'auto';
     });
 </script>
+
 </body>
 </html>
