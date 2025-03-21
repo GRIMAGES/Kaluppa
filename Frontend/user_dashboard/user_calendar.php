@@ -8,11 +8,10 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
-// Fetch events
+// Fetch Events
+$events = [];
 $eventsQuery = "SELECT event_time, title FROM events ORDER BY event_time ASC";
 $eventsResult = $conn->query($eventsQuery);
-
-$events = [];
 if ($eventsResult->num_rows > 0) {
     while ($event = $eventsResult->fetch_assoc()) {
         $events[] = [
@@ -24,104 +23,104 @@ if ($eventsResult->num_rows > 0) {
     }
 }
 
-// Fetch courses (Scholarships)
+// Fetch Courses (Scholarships)
 $coursesQuery = "SELECT start_date, end_date, name FROM courses ORDER BY start_date ASC";
 $coursesResult = $conn->query($coursesQuery);
-
 if ($coursesResult->num_rows > 0) {
     while ($course = $coursesResult->fetch_assoc()) {
-        $startDate = new DateTime($course['start_date']);
-        $endDate = new DateTime($course['end_date']);
-
-        // Add event for the start date
         $events[] = [
             'title' => $course['name'] . ' (Start)',
-            'start' => $startDate->format('Y-m-d'),
+            'start' => $course['start_date'],
             'description' => 'Scholarship Start: ' . $course['name'],
             'type' => 'scholarship'
         ];
-
-        // Add event for the end date
         $events[] = [
             'title' => $course['name'] . ' (End)',
-            'start' => $endDate->format('Y-m-d'),
+            'start' => $course['end_date'],
             'description' => 'Scholarship End: ' . $course['name'],
             'type' => 'scholarship'
         ];
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../CSS/user_css/calendar.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/main.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ddead1;
+        }
+        #calendar {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .fc-toolbar-title {
+            font-size: 1.5rem;
+        }
+        .filter-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
-<body style="background-color: #ddead1;">
+<body>
+
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
-<!-- Logout Modal -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-theme text-white">
-                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p>Are you sure you want to log out?</p>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+<div class="container-fluid mt-4">
+    <div class="row justify-content-center mb-3">
+        <div class="col-12 text-center">
+            <h3 class="text-dark fw-bold">Event Calendar</h3>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10 filter-box">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label">Filter by Event Type:</label>
+                    <select class="form-select" id="eventFilter">
+                        <option value="all">All</option>
+                        <option value="event">Event</option>
+                        <option value="scholarship">Scholarship</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Filter by Time:</label>
+                    <select class="form-select" id="timeFilter">
+                        <option value="all">All Day</option>
+                        <option value="morning">Morning (5AM - 12PM)</option>
+                        <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                        <option value="evening">Evening (5PM - 9PM)</option>
+                        <option value="night">Night (9PM - 5AM)</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button class="btn btn-success" id="applyFilterBtn">
+                        <i class="fas fa-filter me-1"></i> Filter
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Main Calendar & Filter Section -->
-<div class="container mt-4">
-    <div class="text-center mb-3">
-        <h3 class="text-white">Event Calendar</h3>
-    </div>
 
     <!-- Calendar -->
-    <div class="bg-white rounded shadow-sm p-3 mb-4">
-        <div id="calendar"></div>
-    </div>
-
-    <!-- Filter Section -->
-    <div class="bg-white rounded shadow-sm p-3 mb-4">
-        <div class="row g-3 align-items-end justify-content-center">
-            <div class="col-md-5">
-                <label for="eventFilter" class="form-label mb-1">Filter by Event Type:</label>
-                <select class="form-select" id="eventFilter">
-                    <option value="all">All</option>
-                    <option value="event">Event</option>
-                    <option value="scholarship">Scholarship</option>
-                </select>
-            </div>
-            <div class="col-md-5">
-                <label for="timeFilter" class="form-label mb-1">Filter by Time:</label>
-                <select class="form-select" id="timeFilter">
-                    <option value="all">All Day</option>
-                    <option value="morning">Morning (5AM - 12PM)</option>
-                    <option value="afternoon">Afternoon (12PM - 5PM)</option>
-                    <option value="evening">Evening (5PM - 9PM)</option>
-                    <option value="night">Night (9PM - 5AM)</option>
-                </select>
-            </div>
-            <div class="col-md-2 text-center">
-                <button class="btn btn-success w-100" id="applyFilterBtn">
-                    <i class="fas fa-filter me-1"></i>Filter
-                </button>
-            </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div id="calendar" class="bg-white rounded shadow p-3 mt-3"></div>
         </div>
     </div>
 </div>
@@ -138,9 +137,6 @@ if ($coursesResult->num_rows > 0) {
                 <h5 id="eventTitle"></h5>
                 <p id="eventDescription"></p>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
@@ -155,48 +151,51 @@ if ($coursesResult->num_rows > 0) {
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+        var events = <?php echo json_encode($events); ?>;
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: <?php echo json_encode($events); ?>,
+            events: events,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            editable: false,
-            eventClick: function (info) {
+            eventClick: function(info) {
                 document.getElementById('eventTitle').innerText = info.event.title;
                 document.getElementById('eventDescription').innerText = info.event.extendedProps.description;
                 new bootstrap.Modal(document.getElementById('eventModal')).show();
             }
         });
+
         calendar.render();
 
-        function filterEvents(calendarInstance) {
-            var selectedType = document.getElementById('eventFilter').value;
-            var selectedTime = document.getElementById('timeFilter').value;
-            var filteredEvents = <?php echo json_encode($events); ?>.filter(function(event) {
-                var matchesType = selectedType === 'all' || event.type === selectedType;
-                var eventHour = new Date(event.start).getHours();
-                var matchesTime = selectedTime === 'all' ||
-                    (selectedTime === 'morning' && eventHour >= 5 && eventHour < 12) ||
-                    (selectedTime === 'afternoon' && eventHour >= 12 && eventHour < 17) ||
-                    (selectedTime === 'evening' && eventHour >= 17 && eventHour < 21) ||
-                    (selectedTime === 'night' && (eventHour >= 21 || eventHour < 5));
-                return matchesType && matchesTime;
+        function filterEvents() {
+            var typeFilter = document.getElementById('eventFilter').value;
+            var timeFilter = document.getElementById('timeFilter').value;
+
+            var filtered = events.filter(function(event) {
+                var typeMatch = typeFilter === 'all' || event.type === typeFilter;
+                var timeMatch = true;
+
+                if (timeFilter !== 'all') {
+                    var hour = new Date(event.start).getHours();
+                    if (timeFilter === 'morning') timeMatch = hour >= 5 && hour < 12;
+                    else if (timeFilter === 'afternoon') timeMatch = hour >= 12 && hour < 17;
+                    else if (timeFilter === 'evening') timeMatch = hour >= 17 && hour < 21;
+                    else if (timeFilter === 'night') timeMatch = hour >= 21 || hour < 5;
+                }
+
+                return typeMatch && timeMatch;
             });
 
-            calendarInstance.removeAllEvents();
-            calendarInstance.addEventSource(filteredEvents);
+            calendar.removeAllEvents();
+            calendar.addEventSource(filtered);
         }
 
-        document.getElementById('eventFilter').addEventListener('change', function () {
-            filterEvents(calendar);
-        });
-
-        document.getElementById('timeFilter').addEventListener('change', function () {
-            filterEvents(calendar);
-        });
+        document.getElementById('eventFilter').addEventListener('change', filterEvents);
+        document.getElementById('timeFilter').addEventListener('change', filterEvents);
+        document.getElementById('applyFilterBtn').addEventListener('click', filterEvents);
     });
 </script>
 
