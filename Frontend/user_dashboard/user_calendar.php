@@ -54,30 +54,32 @@ if ($coursesResult->num_rows > 0) {
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/main.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #eaf6f0;
+            background-color: #f8f9fa;
             font-family: 'Segoe UI', sans-serif;
+            color: #212529;
         }
         .main-content {
             margin-left: 250px;
-            padding: 80px 30px 30px;
+            padding: 60px 20px;
         }
         .fc-toolbar-title {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 700;
+            color: #198754;
         }
         .filter-box {
             background: #fff;
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 20px;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border-left: 5px solid #198754;
         }
         #calendar {
             background: #fff;
             border-radius: 12px;
             padding: 15px;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         .modal-content {
             border-radius: 10px;
@@ -89,20 +91,31 @@ if ($coursesResult->num_rows > 0) {
             border-top-right-radius: 10px;
         }
         .modal-body {
-            background-color: #f0fdf4;
+            background-color: #f8f9fa;
         }
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
-                padding: 60px 15px 20px;
+                padding: 40px 15px;
             }
             .filter-box .row > div {
                 margin-bottom: 10px;
             }
         }
+        @media (max-width: 576px) {
+            .fc-toolbar-title {
+                font-size: 1.4rem;
+            }
+            .filter-box {
+                padding: 15px;
+            }
+            #calendar {
+                padding: 10px;
+            }
+        }
     </style>
-</head>
-<body>
+</head><body style="background: #ddead1;">
+    
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 <div class="main-content">
