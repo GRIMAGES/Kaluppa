@@ -98,30 +98,35 @@ if ($coursesResult->num_rows > 0) {
                 margin-left: 0;
                 padding: 40px 15px;
             }
-            .filter-box .row > div {
-                margin-bottom: 10px;
-            }
-        }
-        @media (max-width: 576px) {
-            .fc-toolbar-title {
-                font-size: 1.4rem;
-            }
-            .filter-box {
-                padding: 15px;
-            }
-            #calendar {
-                padding: 10px;
-            }
         }
     </style>
-</head><body style="background: #ddead1;">
-    
+</head>
+<body style="background: #ddead1;">
+
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
+
 <div class="main-content">
     <div class="container-fluid">
-        <h3 class="text-success fw-bold mb-3">📅 Event Calendar</h3>
-        <div class="filter-box">
+    <h3 class="text-success fw-bold mb-3">📅 Event Calendar</h3>
+
+<!-- Legend Start -->
+<div class="mb-3">
+    <h5 class="fw-semibold">Legend:</h5>
+    <div class="d-flex flex-wrap gap-3 align-items-center">
+        <div class="d-flex align-items-center">
+            <div style="width: 20px; height: 20px; background-color: #4dabf7; border-radius: 4px; margin-right: 8px;"></div>
+            <span>Scholarships</span>
+        </div>
+        <div class="d-flex align-items-center">
+            <div style="width: 20px; height: 20px; background-color: #f9c74f; border-radius: 4px; margin-right: 8px;"></div>
+            <span>Events</span>
+        </div>
+    </div>
+</div>
+<!-- Legend End -->
+
+<div class="filter-box">
             <div class="row g-3 align-items-end">
                 <div class="col-md-5">
                     <label class="form-label fw-semibold">Filter by Event Type:</label>
@@ -151,6 +156,7 @@ if ($coursesResult->num_rows > 0) {
         <div id="calendar"></div>
     </div>
 </div>
+
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -165,36 +171,40 @@ if ($coursesResult->num_rows > 0) {
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
         var events = <?php echo json_encode($events); ?>;
 
-        // Assign colors based on event type
+        // Color logic: Blue for scholarships, Yellow for events
         events = events.map(event => {
             if (event.type === 'event') {
-                event.backgroundColor = '#f9c74f'; // Yellow for events
+                event.backgroundColor = '#f9c74f'; // Yellow
                 event.borderColor = '#f9c74f';
+                event.textColor = '#000'; // Dark text
             } else if (event.type === 'scholarship') {
-                event.backgroundColor = '#90be6d'; // Blue for scholarships
-                event.borderColor = '#90be6d';
+                event.backgroundColor = '#4dabf7'; // Blue
+                event.borderColor = '#4dabf7';
+                event.textColor = '#fff'; // White text
             }
             return event;
         });
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: events,
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
+            events: events,
             eventClick: function(info) {
                 document.getElementById('eventTitle').innerText = info.event.title;
                 document.getElementById('eventDescription').innerText = info.event.extendedProps.description;
@@ -232,5 +242,6 @@ if ($coursesResult->num_rows > 0) {
         document.getElementById('applyFilterBtn').addEventListener('click', filterEvents);
     });
 </script>
+
 </body>
 </html>
