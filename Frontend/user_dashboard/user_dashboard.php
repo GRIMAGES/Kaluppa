@@ -104,6 +104,26 @@ if ($eventsResult->num_rows > 0) {
         ];
     }
 }
+
+// Fetch courses for the calendar
+$coursesQuery = "SELECT start_date, end_date, name FROM courses ORDER BY start_date ASC";
+$coursesResult = $conn->query($coursesQuery);
+if ($coursesResult->num_rows > 0) {
+    while ($course = $coursesResult->fetch_assoc()) {
+        $events[] = [
+            'title' => $course['name'] . ' (Start)',
+            'start' => $course['start_date'],
+            'description' => 'Course Start: ' . $course['name'],
+            'type' => 'scholarship'
+        ];
+        $events[] = [
+            'title' => $course['name'] . ' (End)',
+            'start' => $course['end_date'],
+            'description' => 'Course End: ' . $course['name'],
+            'type' => 'scholarship'
+        ];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
