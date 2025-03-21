@@ -93,24 +93,7 @@ if ($coursesResult->num_rows > 0) {
     </div>
 </div>
 
-<!-- Move Filter Section Below Calendar -->
-<div class="filter-container mb-4 px-3">
-    <label for="eventFilter" class="form-label">Filter by Type:</label>
-    <select id="eventFilter" class="form-select">
-        <option value="all">All</option>
-        <option value="event">Events</option>
-        <option value="scholarship">Scholarships</option>
-    </select>
 
-    <label for="timeFilter" class="form-label mt-2">Filter by Time:</label>
-    <select id="timeFilter" class="form-select">
-        <option value="all">All Times</option>
-        <option value="morning">Morning (5 AM - 12 PM)</option>
-        <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
-        <option value="evening">Evening (5 PM - 9 PM)</option>
-        <option value="night">Night (9 PM - 5 AM)</option>
-    </select>
-</div>
 
 <!-- Event Modal -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
