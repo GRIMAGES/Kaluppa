@@ -195,3 +195,31 @@ body {
     font-size: 12px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
+
+/* Filter Container */
+.filter-container {
+    width: 80%; /* Match the width of the calendar container */
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Match the calendar container color */
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px auto; /* Center the filter container */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.form-select {
+    width: 45%; /* Adjust width for better alignment */
+    background-color: #ddead1; /* Match the page background color */
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.form-select:hover {
+    background-color: #c8e6c9; /* Lighter green on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
