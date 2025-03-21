@@ -50,214 +50,62 @@ if ($coursesResult->num_rows > 0) {
     <meta charset="UTF-8">
     <title>Event Calendar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <!-- Bootstrap & FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/main.min.css" rel="stylesheet">
-<style>
-/* General Body and Layout */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #ddead1; /* Match page background color */
-    display: flex;
-    justify-content: flex-start; /* Align items to the left */
-    align-items: flex-start; /* Align items to the top */
-    height: 100vh;
-    overflow: hidden;
-    padding-top: 20px; /* Add padding to move content down */
-}
 
-/* Calendar Container */
-.calendar-container {
-    width: 80%; /* Decrease width to avoid sidebar overlap */
-    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-top: 100px; /* Increase top margin to move below the topbar */
-    margin-left: 200px; /* Increase this value to move the calendar further to the right */
-    animation: slideIn 0.6s ease-in-out;
-    resize: both; /* Make the container resizable */
-    overflow: auto; /* Ensure content is scrollable if resized */
-    position: relative; /* Ensure it is not behind the sidebar */
-    z-index: 1; /* Ensure it is not behind the sidebar */
-}
+    <style>
+        body {
+            background-color: #e6f2e6; /* match sidebar tone */
+            font-family: 'Segoe UI', sans-serif;
+        }
 
-/* Calendar Wrapper */
-.calendar-wrapper {
-    width: 100%;
-    height: 500px; /* Adjust calendar height */
-    margin: 0 auto;
-    border-radius: 10px;
-    background: rgb(9, 17, 2); /* Update sidebar background color */
-    padding: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.8s ease-in-out;
-}
+        .main-content {
+            margin-left: 250px; /* adjust based on sidebar width */
+            padding: 80px 30px 30px; /* topbar height + spacing */
+        }
 
-#calendar {
-    width: 100%;
-    height: 100%;
-    background: #ddead1; /* Ensure calendar background color is changed */
-    border-radius: 10px;
-}
+        .fc-toolbar-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
 
-/* Calendar Toolbar */
-.fc-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
+        .filter-box {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #198754; /* Bootstrap success/green tone */
+        }
 
-.fc-toolbar-title {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 600;
-    font-size: 18px; /* Adjust font size */
-    color: white; /* Match text color */
-}
+        #calendar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-.fc-button {
-    background-color: #4CAF50; /* Match button background color */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
+        .modal-content {
+            border-radius: 10px;
+        }
 
-.fc-button:hover {
-    background-color: #388E3C; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
-}
+        .modal-header {
+            background-color: #198754;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
 
-.fc-button-primary {
-    background-color: #4CAF50; /* Match button background color */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.fc-button-primary:hover {
-    background-color: #388E3C; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
-}
-
-/* Calendar Events */
-.fc-event {
-    border-radius: 8px;
-    background-color: #4CAF50; /* Match event background color */
-    color: white;
-    padding: 5px;
-    font-size: 12px; /* Adjust font size */
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.fc-event:hover {
-    background-color: #388E3C; /* Darker green on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
-}
-
-/* Calendar Day Headers */
-.fc-col-header-cell {
-    background-color: #4b6043; /* Match header background color */
-    color: white; /* Match text color */
-    padding: 10px;
-    border-radius: 5px;
-}
-
-/* Calendar Day Cells */
-.fc-daygrid-day {
-    background-color: #ddead1; /* Match day cell background color */
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.fc-daygrid-day:hover {
-    background-color: #c8e6c9; /* Lighter green on hover */
-}
-
-/* Calendar Today Highlight */
-.fc-day-today {
-    background-color: #81c784; /* Highlight today's date */
-    border-radius: 5px;
-}
-
-/* Advanced Animations */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.modal-content {
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    border: none;
-}
-
-.modal-header {
-    background-color: #1a4629;
-    color: white;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-}
-
-.custom-modal .modal-body {
-    background-color: #f9f9f9;
-    color: #333;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-}
-
-.modal-footer.justify-content-center .btn-theme {
-    background-color: rgb(2, 61, 15);
-    border: none;
-    color: white; /* Change text color to white */
-}
-
-/* Add styles for course start and end events */
-.course-event {
-    background-color: yellow !important; /* Set course events to yellow */
-    color: black !important; /* Ensure text is readable */
-    border-radius: 8px;
-    padding: 5px;
-    font-size: 12px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-/* Add styles for regular events */
-.regular-event {
-    background-color: #4CAF50 !important; /* Set regular events to green */
-    color: white !important;
-    border-radius: 8px;
-    padding: 5px;
-    font-size: 12px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-
-</style>
+        .modal-body {
+            background-color: #f7fdf7;
+        }
+    </style>
 </head>
-<body style="background: #ddead1;">
+<body>
 
 <!-- Include Sidebar and Topbar -->
 <?php include 'sidebar.php'; ?>
