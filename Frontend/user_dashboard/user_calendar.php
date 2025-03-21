@@ -8,7 +8,6 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
-// Fetch Events
 $events = [];
 $eventsQuery = "SELECT event_time, title FROM events ORDER BY event_time ASC";
 $eventsResult = $conn->query($eventsQuery);
@@ -23,7 +22,6 @@ if ($eventsResult->num_rows > 0) {
     }
 }
 
-// Fetch Courses (Scholarships)
 $coursesQuery = "SELECT start_date, end_date, name FROM courses ORDER BY start_date ASC";
 $coursesResult = $conn->query($coursesQuery);
 if ($coursesResult->num_rows > 0) {
@@ -50,73 +48,66 @@ if ($coursesResult->num_rows > 0) {
     <meta charset="UTF-8">
     <title>Event Calendar</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap & FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/main.min.css" rel="stylesheet">
-
     <style>
         body {
-            background-color: #e6f2e6; /* match sidebar tone */
+            background-color: #eaf6f0;
             font-family: 'Segoe UI', sans-serif;
         }
-
         .main-content {
-            margin-left: 250px; /* adjust based on sidebar width */
-            padding: 80px 30px 30px; /* topbar height + spacing */
+            margin-left: 250px;
+            padding: 80px 30px 30px;
         }
-
         .fc-toolbar-title {
-            font-size: 1.5rem;
-            font-weight: bold;
+            font-size: 1.6rem;
+            font-weight: 700;
         }
-
         .filter-box {
-            background: #ffffff;
+            background: #fff;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #198754; /* Bootstrap success/green tone */
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #198754;
         }
-
         #calendar {
-            background-color: #ffffff;
+            background: #fff;
             border-radius: 12px;
             padding: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
         }
-
         .modal-content {
             border-radius: 10px;
         }
-
         .modal-header {
             background-color: #198754;
             color: white;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
         }
-
         .modal-body {
-            background-color: #f7fdf7;
+            background-color: #f0fdf4;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 60px 15px 20px;
+            }
+            .filter-box .row > div {
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-
-<!-- Include Sidebar and Topbar -->
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
-
-<!-- Main Content Wrapper -->
 <div class="main-content">
     <div class="container-fluid">
         <h3 class="text-success fw-bold mb-3">📅 Event Calendar</h3>
-
-        <!-- Filter Section -->
         <div class="filter-box">
             <div class="row g-3 align-items-end">
                 <div class="col-md-5">
@@ -144,16 +135,12 @@ if ($coursesResult->num_rows > 0) {
                 </div>
             </div>
         </div>
-
-        <!-- Calendar -->
         <div id="calendar"></div>
     </div>
 </div>
-
-<!-- Event Modal -->
 <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content fade-in">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -165,14 +152,11 @@ if ($coursesResult->num_rows > 0) {
         </div>
     </div>
 </div>
-
-<!-- JS Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
@@ -223,6 +207,5 @@ if ($coursesResult->num_rows > 0) {
         document.getElementById('applyFilterBtn').addEventListener('click', filterEvents);
     });
 </script>
-
 </body>
 </html>
