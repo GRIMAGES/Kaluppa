@@ -4,7 +4,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #ddead1; /* Match page background color */
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; /* Align items to the left */
     align-items: flex-start; /* Align items to the top */
     height: 100vh;
     overflow: hidden;
@@ -19,7 +19,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-top: 100px; /* Increase top margin to move below the topbar */
-    margin-left: 20px; /* Adjust this value to move the calendar to the right */
+    margin-left: 200px; /* Increase this value to move the calendar further to the right */
     animation: slideIn 0.6s ease-in-out;
     resize: both; /* Make the container resizable */
     overflow: auto; /* Ensure content is scrollable if resized */
