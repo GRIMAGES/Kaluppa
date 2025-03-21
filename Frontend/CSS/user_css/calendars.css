@@ -19,7 +19,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     margin-top: 100px; /* Increase top margin to move below the topbar */
-    margin-left: 0; /* Center the container */
+    margin-left: 20px; /* Adjust this value to move the calendar to the right */
     animation: slideIn 0.6s ease-in-out;
     resize: both; /* Make the container resizable */
     overflow: auto; /* Ensure content is scrollable if resized */
