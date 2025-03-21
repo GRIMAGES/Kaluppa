@@ -102,6 +102,9 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/main.min.css" rel="stylesheet">
 </head>
 <body style="background-color: #ddead1;">
 <?php include 'sidebar.php'; ?>
@@ -261,25 +264,37 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+        var events = <?php echo json_encode($events); ?>; // Ensure $events is defined in this file
+
+        // Color logic: Blue for scholarships, Yellow for events
+        events = events.map(event => {
+            if (event.type === 'event') {
+                event.backgroundColor = '#f9c74f'; // Yellow
+                event.borderColor = '#f9c74f';
+                event.textColor = '#000'; // Dark text
+            } else if (event.type === 'scholarship') {
+                event.backgroundColor = '#4dabf7'; // Blue
+                event.borderColor = '#4dabf7';
+                event.textColor = '#fff'; // White text
+            }
+            return event;
+        });
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
-            events: 'https://kaluppa.online/Kaluppa/Backend/user controller/get_events.php', // Endpoint for fetching events
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            editable: false,
-            eventClick: function (info) {
-                // Set the event title and description into the modal
+            events: events,
+            eventClick: function(info) {
                 document.getElementById('eventTitle').innerText = info.event.title;
                 document.getElementById('eventDescription').innerText = info.event.extendedProps.description;
-                
-                // Show the modal
-                var eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
-                eventModal.show();
+                new bootstrap.Modal(document.getElementById('eventModal')).show();
             }
         });
+
         calendar.render();
     });
 </script>
