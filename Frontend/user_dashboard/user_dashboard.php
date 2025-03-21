@@ -225,10 +225,8 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
         <?php endforeach; ?>
     </div>
 
-    
-
-   <!-- Calendar Section -->
-   <div class="calendar-container mt-5">
+    <!-- Calendar Section -->
+    <div class="calendar-container mt-5">
         <h3 class="mb-3">Event Calendar</h3>
         <div class="calendar-wrapper">
             <div id="calendar"></div>
@@ -253,9 +251,8 @@ $featuredCards = $result->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
     </div>
+</div>
 
-    
-<!-- FullCalendar and Dependencies -->
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/index.global.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.8/index.global.min.js"></script>
