@@ -175,6 +175,18 @@ if ($coursesResult->num_rows > 0) {
         var calendarEl = document.getElementById('calendar');
         var events = <?php echo json_encode($events); ?>;
 
+        // Assign colors based on event type
+        events = events.map(event => {
+            if (event.type === 'event') {
+                event.backgroundColor = '#f9c74f'; // Yellow for events
+                event.borderColor = '#f9c74f';
+            } else if (event.type === 'scholarship') {
+                event.backgroundColor = '#90be6d'; // Blue for scholarships
+                event.borderColor = '#90be6d';
+            }
+            return event;
+        });
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             events: events,
