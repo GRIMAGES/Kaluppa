@@ -72,11 +72,12 @@ $alumni_result = $alumni_stmt->get_result();
             margin-top: 100px;
         }
         .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); /* Deeper shadow */
             transition: transform 0.2s;
             background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
             color: white;
             margin: 20px auto; /* Center the cards horizontally with margin */
+            border-radius: 15px; /* Rounded corners */
         }
         .card:hover {
             transform: scale(1.05);
