@@ -112,9 +112,9 @@ $alumni_result = $alumni_stmt->get_result();
     <div class="row justify-content-center">
         <!-- Card 1 -->
         <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#requestDocumentsModal">
                 <div class="card-body">
-                    <i class="fas fa-file-alt card-icon"></i> <!-- Changed icon -->
+                    <i class="fas fa-file-alt card-icon"></i>
                     <h5 class="card-title" style="color: white;">Request Documents</h5>
                     <p class="card-text">Requesting Documents, Certificates and etc.</p>
                 </div>
@@ -122,9 +122,9 @@ $alumni_result = $alumni_stmt->get_result();
         </div>
         <!-- Card 2 -->
         <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#careerAssistanceModal">
                 <div class="card-body">
-                    <i class="fas fa-briefcase card-icon"></i> <!-- Changed icon -->
+                    <i class="fas fa-briefcase card-icon"></i>
                     <h5 class="card-title" style="color: white;">Career Assistance</h5>
                     <p class="card-text">Financial, Career and other assistances</p>
                 </div>
@@ -163,6 +163,56 @@ $alumni_result = $alumni_stmt->get_result();
                     <?php endwhile; ?>
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Request Documents Modal -->
+<div class="modal fade" id="requestDocumentsModal" tabindex="-1" aria-labelledby="requestDocumentsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-theme text-white">
+                <h5 class="modal-title" id="requestDocumentsModalLabel">Request Documents</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="documentType" class="form-label">Document Type</label>
+                        <input type="text" class="form-control" id="documentType" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Reason</label>
+                        <textarea class="form-control" id="reason" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Career Assistance Modal -->
+<div class="modal fade" id="careerAssistanceModal" tabindex="-1" aria-labelledby="careerAssistanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-theme text-white">
+                <h5 class="modal-title" id="careerAssistanceModalLabel">Career Assistance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="assistanceType" class="form-label">Assistance Type</label>
+                        <input type="text" class="form-control" id="assistanceType" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="details" class="form-label">Details</label>
+                        <textarea class="form-control" id="details" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
