@@ -80,6 +80,38 @@ $alumni_result = $alumni_stmt->get_result();
 <!-- Alumni Section -->
 <div class="container alumni-section">
     <div class="row justify-content-center">
+        <!-- Card 1 -->
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-graduate card-icon"></i>
+                    <h5 class="card-title" style="color: white;">Alumni Name 1</h5>
+                    <p class="card-text">Brief description about Alumni 1.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-graduate card-icon"></i>
+                    <h5 class="card-title" style="color: white;">Alumni Name 2</h5>
+                    <p class="card-text">Brief description about Alumni 2.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-graduate card-icon"></i>
+                    <h5 class="card-title" style="color: white;">Alumni Name 3</h5>
+                    <p class="card-text">Brief description about Alumni 3.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
         <div class="col-md-12">
             <table id="alumniTable" class="display">
                 <thead>
