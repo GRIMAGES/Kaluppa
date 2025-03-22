@@ -275,19 +275,26 @@ if (isset($_POST['logout'])) {
                             type: 'POST',
                             data: { id: userId },
                             success: function(userDetails) {
-                                const user = JSON.parse(userDetails);
-                                // Determine category
-                                const category = 'Course'; // or 'Volunteer', adjust as needed
-                                addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name, category);
+                                try {
+                                    const user = JSON.parse(userDetails);
+                                    // Add to alumni table for both categories
+                                    addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name, 'Course');
+                                    addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name, 'Volunteer');
+                                } catch (e) {
+                                    alert('Error parsing user details: ' + e.message);
+                                    console.error('Error parsing user details:', e);
+                                }
                             },
-                            error: function() {
-                                alert('Error fetching user details');
+                            error: function(xhr, status, error) {
+                                alert('Error fetching user details: ' + error);
+                                console.error('Error fetching user details:', error);
                             }
                         });
                     }
                 },
-                error: function() {
-                    alert('Error updating role');
+                error: function(xhr, status, error) {
+                    alert('Error updating role: ' + error);
+                    console.error('Error updating role:', error);
                 }
             });
         }
@@ -298,10 +305,11 @@ if (isset($_POST['logout'])) {
                 type: 'POST',
                 data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName, category: category },
                 success: function(response) {
-                    alert('User added to alumni table successfully');
+                    alert('User added to alumni table successfully for category: ' + category);
                 },
-                error: function() {
-                    alert('Error adding user to alumni table');
+                error: function(xhr, status, error) {
+                    alert('Error adding user to alumni table for category ' + category + ': ' + error);
+                    console.error('Error adding user to alumni table for category ' + category + ':', error);
                 }
             });
         }

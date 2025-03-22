@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $details = $result->num_rows > 0 ? $result->fetch_assoc()['name'] : 'N/A';
         // Debugging statement to log course details
         error_log("Course details: " . $details);
-    } else {
+    } else if ($category == 'Volunteer') {
         $stmt = $conn->prepare("SELECT title FROM works WHERE user_id = ? AND status = 'completed'");
         $stmt->bind_param("i", $userId);
         $stmt->execute();
@@ -28,6 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $details = $result->num_rows > 0 ? $result->fetch_assoc()['title'] : 'N/A';
         // Debugging statement to log work details
         error_log("Work details: " . $details);
+    } else {
+        $details = 'N/A';
+        error_log("Invalid category: " . $category);
     }
 
     // Debugging statement to check the value of details
