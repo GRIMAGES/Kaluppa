@@ -26,12 +26,12 @@ if ($result->num_rows > 0) {
 $alumni_stmt = $conn->prepare("
     SELECT a.first_name, a.middle_name, a.last_name, 'Course' AS category, c.name AS details, c.status
     FROM alumni a
-    JOIN courses c ON a.user_id = c.user_id
+    JOIN courses c ON a.user_id = (SELECT user_id FROM applications WHERE course_id = c.id)
     WHERE c.status = 'completed'
     UNION
     SELECT a.first_name, a.middle_name, a.last_name, 'Volunteer' AS category, w.title AS details, w.status
     FROM alumni a
-    JOIN works w ON a.user_id = w.user_id
+    JOIN works w ON a.user_id = (SELECT user_id FROM volunteer_application WHERE work_id = w.id)
     WHERE w.status = 'completed'
 ");
 $alumni_stmt->execute();
