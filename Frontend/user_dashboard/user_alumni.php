@@ -40,6 +40,42 @@ if ($result->num_rows > 0) {
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
+<!-- Alumni Section -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- Card 1 -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="path/to/image1.jpg" class="card-img-top" alt="Alumni 1">
+                <div class="card-body">
+                    <h5 class="card-title">Alumni Name 1</h5>
+                    <p class="card-text">Brief description about Alumni 1.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="path/to/image2.jpg" class="card-img-top" alt="Alumni 2">
+                <div class="card-body">
+                    <h5 class="card-title">Alumni Name 2</h5>
+                    <p class="card-text">Brief description about Alumni 2.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="col-md-4">
+            <div class="card">
+                <img src="path/to/image3.jpg" class="card-img-top" alt="Alumni 3">
+                <div class="card-body">
+                    <h5 class="card-title">Alumni Name 3</h5>
+                    <p class="card-text">Brief description about Alumni 3.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -59,8 +95,6 @@ if ($result->num_rows > 0) {
         </div>
     </div>
 </div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
