@@ -42,13 +42,15 @@ if ($result->num_rows > 0) {
         .card {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
+            background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
+            color: white;
         }
         .card:hover {
             transform: scale(1.05);
         }
         .card-icon {
             font-size: 100px;
-            color: #6c757d;
+            color: #ddead1;
             margin: 20px 0;
         }
     </style>
