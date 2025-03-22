@@ -10,14 +10,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Fetch course name or volunteer work name based on category
     if ($category == 'Course') {
-        $stmt = $conn->prepare("SELECT course_name FROM courses WHERE user_id = ? AND status = 'completed'");
+        $stmt = $conn->prepare("SELECT name FROM courses WHERE user_id = ? AND status = 'completed'");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $details = $result->num_rows > 0 ? $result->fetch_assoc()['course_name'] : 'N/A';
     } else {
-        $stmt = $conn->prepare("SELECT work_name FROM works WHERE user_id = ? AND status = 'completed'");
+        $stmt = $conn->prepare("SELECT title FROM works WHERE user_id = ? AND status = 'completed'");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $details = $result->num_rows > 0 ? $result->fetch_assoc()['work_name'] : 'N/A';
     }
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $details = $result->num_rows > 0 ? $result->fetch_assoc()['course_name'] : 'N/A';
 
     $stmt = $conn->prepare("INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $status = 'completed'; // Example status, adjust as needed
