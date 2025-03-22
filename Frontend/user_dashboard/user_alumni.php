@@ -36,6 +36,9 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
         .alumni-section {
             margin-top: 100px;
         }
@@ -44,6 +47,7 @@ if ($result->num_rows > 0) {
             transition: transform 0.2s;
             background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
             color: white;
+            margin: 0 auto; /* Center the cards horizontally */
         }
         .card:hover {
             transform: scale(1.05);
@@ -56,6 +60,9 @@ if ($result->num_rows > 0) {
         .card-title, .card-text {
             color: white;
         }
+        .modal-title {
+            color: white;
+        }
     </style>
 </head>
 <body style="background-color: #ddead1;">
@@ -64,7 +71,7 @@ if ($result->num_rows > 0) {
 
 <!-- Alumni Section -->
 <div class="container alumni-section">
-    <div class="row">
+    <div class="row justify-content-center">
         <!-- Card 1 -->
         <div class="col-md-4">
             <div class="card text-center">
