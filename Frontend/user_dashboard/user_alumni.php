@@ -37,7 +37,7 @@ if ($result->num_rows > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Verdana', sans-serif;
         }
         .alumni-section {
             margin-top: 100px;
@@ -47,7 +47,7 @@ if ($result->num_rows > 0) {
             transition: transform 0.2s;
             background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
             color: white;
-            margin: 0 auto; /* Center the cards horizontally */
+            margin: 20px auto; /* Center the cards horizontally with margin */
         }
         .card:hover {
             transform: scale(1.05);
