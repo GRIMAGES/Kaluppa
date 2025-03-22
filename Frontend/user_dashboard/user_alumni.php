@@ -40,7 +40,7 @@ if ($result->num_rows > 0) {
             margin-top: 100px;
         }
         .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: transform 0.2s;
             background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
             color: white;
@@ -52,6 +52,9 @@ if ($result->num_rows > 0) {
             font-size: 100px;
             color: #ddead1;
             margin: 20px 0;
+        }
+        .card-title, .card-text {
+            color: white;
         }
     </style>
 </head>
