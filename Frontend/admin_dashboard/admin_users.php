@@ -20,7 +20,18 @@ if (isset($_POST['logout'])) {
 }
 
 // Function to add user to alumni table if role is 'alumni'
-function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $category, $details) {
+function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $category) {
+    // Fetch course name or volunteer work name based on category
+    if ($category == 'Course') {
+        $stmt = $conn->prepare("SELECT course_name FROM courses WHERE user_id = ? AND status = 'completed'");
+    } else {
+        $stmt = $conn->prepare("SELECT work_name FROM works WHERE user_id = ? AND status = 'completed'");
+    }
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $details = $result->num_rows > 0 ? $result->fetch_assoc()['course_name'] : 'N/A';
+
     $stmt = $conn->prepare("INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $status = 'completed'; // Example status, adjust as needed
     $stmt->bind_param("issssss", $userId, $firstName, $middleName, $lastName, $category, $details, $status);
@@ -277,10 +288,9 @@ function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $c
                             data: { id: userId },
                             success: function(userDetails) {
                                 const user = JSON.parse(userDetails);
-                                // Determine category and details
+                                // Determine category
                                 const category = 'Course'; // or 'Volunteer', adjust as needed
-                                const details = 'Course Name'; // or 'Volunteer Name', adjust as needed
-                                addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name, category, details);
+                                addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name, category);
                             },
                             error: function() {
                                 alert('Error fetching user details');
@@ -322,11 +332,11 @@ function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $c
             });
         }
 
-        function addToAlumniTable(userId, firstName, middleName, lastName, category, details) {
+        function addToAlumniTable(userId, firstName, middleName, lastName, category) {
             $.ajax({
                 url: '/Kaluppa/Backend/add_to_alumni.php',
                 type: 'POST',
-                data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName, category: category, details: details },
+                data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName, category: category },
                 success: function(response) {
                     alert('User added to alumni table successfully');
                 },
