@@ -219,20 +219,20 @@ $alumni_result = $alumni_stmt->get_result();
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="careerAssistanceModalLabel">Career Assistance</h5>
+                <h5 class="modal-title" id="careerAssistanceModalLabel"><i class="fas fa-briefcase"></i> Career Assistance</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form>
-                    <h5 class="mb-3">Application Form</h5>
+                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Career Assistance Form</h5>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="nameOfSchool" class="form-label">Name of School</label>
-                            <input type="text" class="form-control" id="nameOfSchool" required>
+                            <label for="careerNameOfSchool" class="form-label"><i class="fas fa-school"></i> Name of School</label>
+                            <input type="text" class="form-control" id="careerNameOfSchool" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="contactPerson" class="form-label">Contact Person(s)</label>
-                            <input type="text" class="form-control" id="contactPerson" required>
+                            <label for="careerContactPerson" class="form-label"><i class="fas fa-user"></i> Contact Person(s)</label>
+                            <input type="text" class="form-control" id="careerContactPerson" required>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -379,7 +379,179 @@ $alumni_result = $alumni_stmt->get_result();
                             <input type="date" class="form-control" id="witnessDate" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Career Assistance Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Financial Assistance Modal -->
+<div class="modal fade" id="financialAssistanceModal" tabindex="-1" aria-labelledby="financialAssistanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="financialAssistanceModalLabel"><i class="fas fa-dollar-sign"></i> Financial Assistance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Financial Assistance Form</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="financialNameOfSchool" class="form-label"><i class="fas fa-school"></i> Name of School</label>
+                            <input type="text" class="form-control" id="financialNameOfSchool" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="financialContactPerson" class="form-label"><i class="fas fa-user"></i> Contact Person(s)</label>
+                            <input type="text" class="form-control" id="financialContactPerson" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" id="phone" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                    </div>
+                    <h5 class="mb-3">Project Description</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="projectName" class="form-label">Project Name</label>
+                            <input type="text" class="form-control" id="projectName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="projectSummary" class="form-label">Project Summary</label>
+                            <textarea class="form-control" id="projectSummary" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="targetAudience" class="form-label">Target Audience</label>
+                            <input type="text" class="form-control" id="targetAudience" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="goals" class="form-label">Goals</label>
+                            <textarea class="form-control" id="goals" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="evaluation" class="form-label">Evaluation</label>
+                            <textarea class="form-control" id="evaluation" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="objectives" class="form-label">Objectives</label>
+                            <textarea class="form-control" id="objectives" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="acknowledgement" class="form-label">Acknowledgement</label>
+                            <textarea class="form-control" id="acknowledgement" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <h5 class="mb-3">Project Budget</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="needs" class="form-label">Needs</label>
+                            <input type="text" class="form-control" id="needs" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="cost" class="form-label">Cost</label>
+                            <input type="text" class="form-control" id="cost" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="sourceFunding" class="form-label">Source Funding</label>
+                            <input type="text" class="form-control" id="sourceFunding" required>
+                        </div>
+                    </div>
+                    <h5 class="mb-3">Eligibility</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Your project advocates for the following aspects of wellness. Check which apply to you:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="healthyEating">
+                            <label class="form-check-label" for="healthyEating">Healthy eating</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="activeLifestyle">
+                            <label class="form-check-label" for="activeLifestyle">Active lifestyle</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="healthProtection">
+                            <label class="form-check-label" for="healthProtection">Health protection</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="pollutionFreeEnvironment">
+                            <label class="form-check-label" for="pollutionFreeEnvironment">Pollution-free environment</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="childDevelopment">
+                            <label class="form-check-label" for="childDevelopment">Child development</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="mentalHealth">
+                            <label class="form-check-label" for="mentalHealth">Mental health</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="other">
+                            <label class="form-check-label" for="other">Other:</label>
+                            <input type="text" class="form-control mt-2" id="otherText">
+                        </div>
+                    </div>
+                    <h5 class="mb-3">Authorization</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="applicantSignature" class="form-label">Applicant's Signature</label>
+                            <input type="text" class="form-control" id="applicantSignature" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contactInformation" class="form-label">Contact Information</label>
+                            <input type="text" class="form-control" id="contactInformation" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="witnessSignature" class="form-label">Signature of the Witness</label>
+                            <input type="text" class="form-control" id="witnessSignature" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="witnessTelephone" class="form-label">Telephone</label>
+                            <input type="text" class="form-control" id="witnessTelephone" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="witnessDate" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="witnessDate" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Financial Assistance Request</button>
                 </form>
             </div>
         </div>
