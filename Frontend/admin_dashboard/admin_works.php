@@ -48,6 +48,7 @@ if (isset($_POST['add_work'])) {
     $workDatetime = $_POST['work_datetime'];
     $location = $_POST['location'];
     $requirements = $_POST['requirements'];
+    $status = $_POST['status'];
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $image = $_FILES['image'];
@@ -60,8 +61,8 @@ if (isset($_POST['add_work'])) {
 
         if (in_array($ext, $allowed)) {
             if (move_uploaded_file($imageTmp, $uploadPath)) {
-                $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements, image) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param("ssssss", $title, $description, $workDatetime, $location, $requirements, $imageName);
+                $stmt = $conn->prepare("INSERT INTO works (title, description, work_datetime, location, requirements, image, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssssss", $title, $description, $workDatetime, $location, $requirements, $imageName, $status);
                 if ($stmt->execute()) {
                     $_SESSION['toast_success'] = "✅ Work added successfully!";
                 } else {
@@ -90,6 +91,7 @@ if (isset($_POST['edit_work'])) {
     $workDatetime = $_POST['work_datetime'];
     $location = $_POST['location'];
     $requirements = $_POST['requirements'];
+    $status = $_POST['status'];
     $existingImage = $_POST['existing_image']; // hidden input from form
     $imagePath = $existingImage;
 
@@ -117,9 +119,9 @@ if (isset($_POST['edit_work'])) {
         }
     }
 
-    $stmt = $conn->prepare("UPDATE works SET title=?, description=?, work_datetime=?, location=?, requirements=?, image=? WHERE id=?");
+    $stmt = $conn->prepare("UPDATE works SET title=?, description=?, work_datetime=?, location=?, requirements=?, image=?, status=? WHERE id=?");
     if ($stmt) {
-        $stmt->bind_param("ssssssi", $title, $description, $workDatetime, $location, $requirements, $imagePath, $id);
+        $stmt->bind_param("sssssssi", $title, $description, $workDatetime, $location, $requirements, $imagePath, $status, $id);
         if ($stmt->execute()) {
             $_SESSION['toast_success'] = "✅ Work updated successfully!";
         } else {
@@ -301,6 +303,14 @@ if (isset($_GET['id'])) {
                         <textarea name="requirements" class="form-control" id="requirements" rows="3" placeholder="Enter requirements" required></textarea>
                     </div>
                     <div class="mb-3">
+                        <label for="status" class="form-label text-light fw-semibold">Status</label>
+                        <select name="status" class="form-control" id="status" required>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="image" class="form-label text-light fw-semibold">Upload Image</label>
                         <input type="file" name="image" id="image" class="form-control">
                     </div>
@@ -344,6 +354,14 @@ if (isset($_GET['id'])) {
                     <div class="mb-3">
                         <label for="edit-requirements" class="form-label text-light fw-semibold">Requirements</label>
                         <textarea name="requirements" class="form-control" id="edit-requirements" rows="3" placeholder="Enter requirements" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit-status" class="form-label text-light fw-semibold">Status</label>
+                        <select name="status" class="form-control" id="edit-status" required>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="edit-image" class="form-label text-light fw-semibold">Change Image</label>
