@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $middleName = $_POST['middle_name'];
     $lastName = $_POST['last_name'];
     $category = $_POST['category'];
+    $details = $_POST['details'];
 
     // Fetch course name or volunteer work title based on category
     if ($category == 'Course') {
