@@ -113,7 +113,7 @@ $alumni_result = $alumni_stmt->get_result();
         <div class="col-md-4">
             <div class="card text-center">
                 <div class="card-body">
-                    <i class="fas fa-user-graduate card-icon"></i>
+                    <i class="fas fa-file-alt card-icon"></i> <!-- Changed icon -->
                     <h5 class="card-title" style="color: white;">Request Documents</h5>
                     <p class="card-text">Requesting Documents, Certificates and etc.</p>
                 </div>
@@ -123,9 +123,9 @@ $alumni_result = $alumni_stmt->get_result();
         <div class="col-md-4">
             <div class="card text-center">
                 <div class="card-body">
-                    <i class="fas fa-user-graduate card-icon"></i>
-                    <h5 class="card-title" style="color: white;">Carreer Assistance</h5>
-                    <p class="card-text">Financial, Carreer and other assistances</p>
+                    <i class="fas fa-briefcase card-icon"></i> <!-- Changed icon -->
+                    <h5 class="card-title" style="color: white;">Career Assistance</h5>
+                    <p class="card-text">Financial, Career and other assistances</p>
                 </div>
             </div>
         </div>
