@@ -269,118 +269,45 @@ $alumni_result = $alumni_stmt->get_result();
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="financialAssistanceModalLabel"><i class="fas fa-dollar-sign"></i> Career Assistance</h5>
+                <h5 class="modal-title" id="financialAssistanceModalLabel"><i class="fas fa-dollar-sign"></i> Financial Assistance</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form>
-                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Career Assistance Form</h5>
+                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Financial Assistance Form</h5>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label">Full Name</label>
                         <input type="text" class="form-control" id="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="gender" class="form-label">Gender</label>
-                        <input type="text" class="form-control" id="gender" required>
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="dob" class="form-label">Date of Birth</label>
-                        <input type="date" class="form-control" id="dob" required>
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone" required>
                     </div>
                     <div class="mb-3">
                         <label for="currentAddress" class="form-label">Current Address</label>
                         <input type="text" class="form-control" id="currentAddress" required>
                     </div>
                     <div class="mb-3">
-                        <label for="permanentAddress" class="form-label">Permanent Address</label>
-                        <input type="text" class="form-control" id="permanentAddress" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="age" class="form-label">Age</label>
-                        <input type="number" class="form-control" id="age" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="occupation" class="form-label">Occupation</label>
+                        <label for="occupation" class="form-label">Current Occupation</label>
                         <input type="text" class="form-control" id="occupation" required>
                     </div>
                     <div class="mb-3">
-                        <label for="civilStatus" class="form-label">Civil Status</label>
-                        <input type="text" class="form-control" id="civilStatus" required>
+                        <label for="assistanceType" class="form-label">Type of Assistance Needed</label>
+                        <select class="form-control" id="assistanceType" required>
+                            <option value="financial">Financial Assistance</option>
+                            <option value="career">Career Guidance</option>
+                            <option value="other">Other</option>
+                        </select>
                     </div>
                     <div class="mb-3">
-                        <label for="placeOfBirth" class="form-label">Place of Birth</label>
-                        <input type="text" class="form-control" id="placeOfBirth" required>
+                        <label for="description" class="form-label">Description of Need</label>
+                        <textarea class="form-control" id="description" rows="3" required></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="height" class="form-label">Height</label>
-                        <input type="text" class="form-control" id="height" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="weight" class="form-label">Weight</label>
-                        <input type="text" class="form-control" id="weight" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="fatherName" class="form-label">Father's Name</label>
-                        <input type="text" class="form-control" id="fatherName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="motherName" class="form-label">Mother's Name</label>
-                        <input type="text" class="form-control" id="motherName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="language" class="form-label">Language or dialect spoken</label>
-                        <input type="text" class="form-control" id="language" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="emergencyContact" class="form-label">Person to be contacted in case of emergency</label>
-                        <input type="text" class="form-control" id="emergencyContact" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="emergencyAddress" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="emergencyAddress" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="emergencyContactNo" class="form-label">Contact No.</label>
-                        <input type="text" class="form-control" id="emergencyContactNo" required>
-                    </div>
-                    <h5 class="mb-3">Educational Background</h5>
-                    <div class="mb-3">
-                        <label for="elementary" class="form-label">Elementary</label>
-                        <input type="text" class="form-control" id="elementary" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="elementaryYear" class="form-label">Year Graduated</label>
-                        <input type="text" class="form-control" id="elementaryYear" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="highSchool" class="form-label">High School</label>
-                        <input type="text" class="form-control" id="highSchool" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="highSchoolYear" class="form-label">Year Graduated</label>
-                        <input type="text" class="form-control" id="highSchoolYear" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="college" class="form-label">College</label>
-                        <input type="text" class="form-control" id="college" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="collegeYear" class="form-label">Year Graduated</label>
-                        <input type="text" class="form-control" id="collegeYear" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="certification" class="form-label">Certification</label>
-                        <textarea class="form-control" id="certification" rows="3" required>I hereby certify that the facts contained in this bio-data are true and complete to the best of my knowledge.</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="date" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="signature" class="form-label">Signature</label>
-                        <input type="text" class="form-control" id="signature" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Career Assistance Request</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Request</button>
                 </form>
             </div>
         </div>
