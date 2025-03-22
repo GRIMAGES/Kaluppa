@@ -154,11 +154,11 @@ $alumni_result = $alumni_stmt->get_result();
         </div>
         <!-- Card 3 -->
         <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#financialAssistanceModal">
                 <div class="card-body">
-                    <i class="fas fa-user-graduate card-icon"></i>
-                    <h5 class="card-title" style="color: white;">Alumni Name 3</h5>
-                    <p class="card-text">Brief description about Alumni 3.</p>
+                    <i class="fas fa-dollar-sign card-icon"></i>
+                    <h5 class="card-title" style="color: white;">Financial Assistance</h5>
+                    <p class="card-text">Financial support and funding opportunities.</p>
                 </div>
             </div>
         </div>
