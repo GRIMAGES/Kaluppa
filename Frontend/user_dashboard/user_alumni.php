@@ -101,6 +101,28 @@ $alumni_result = $alumni_stmt->get_result();
             color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        .modal-header {
+            background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
+            color: white;
+        }
+        .modal-content {
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+        .modal-body {
+            background-color: #ddead1;
+        }
+        .form-label {
+            color: rgb(2, 61, 15);
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: rgb(2, 61, 15);
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: rgb(26, 70, 41);
+        }
     </style>
 </head>
 <body style="background-color: #ddead1;">
@@ -171,7 +193,7 @@ $alumni_result = $alumni_stmt->get_result();
 <div class="modal fade" id="requestDocumentsModal" tabindex="-1" aria-labelledby="requestDocumentsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-theme text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="requestDocumentsModalLabel">Request Documents</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -196,7 +218,7 @@ $alumni_result = $alumni_stmt->get_result();
 <div class="modal fade" id="careerAssistanceModal" tabindex="-1" aria-labelledby="careerAssistanceModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-theme text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="careerAssistanceModalLabel">Career Assistance</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
