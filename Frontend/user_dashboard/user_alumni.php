@@ -60,6 +60,9 @@ if ($result->num_rows > 0) {
         .card-title, .card-text {
             color: white;
         }
+        .card-title {
+            color: white;
+        }
         .modal-title {
             color: white;
         }
