@@ -31,6 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $status = 'completed'; // Example status, adjust as needed
     $stmt->bind_param("issssss", $userId, $firstName, $middleName, $lastName, $category, $details, $status);
 
+    // Debugging statements to log the SQL query and parameters
+    error_log("SQL Query: INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES ($userId, $firstName, $middleName, $lastName, $category, $details, $status)");
+
     if ($stmt->execute()) {
         echo 'User added to alumni table successfully';
     } else {
