@@ -46,9 +46,10 @@ if ($result->num_rows > 0) {
         .card:hover {
             transform: scale(1.05);
         }
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
+        .card-icon {
+            font-size: 100px;
+            color: #6c757d;
+            margin: 20px 0;
         }
     </style>
 </head>
@@ -61,9 +62,9 @@ if ($result->num_rows > 0) {
     <div class="row">
         <!-- Card 1 -->
         <div class="col-md-4">
-            <div class="card">
-                <img src="path/to/image1.jpg" class="card-img-top" alt="Alumni 1">
+            <div class="card text-center">
                 <div class="card-body">
+                    <i class="fas fa-user-graduate card-icon"></i>
                     <h5 class="card-title">Alumni Name 1</h5>
                     <p class="card-text">Brief description about Alumni 1.</p>
                 </div>
@@ -71,9 +72,9 @@ if ($result->num_rows > 0) {
         </div>
         <!-- Card 2 -->
         <div class="col-md-4">
-            <div class="card">
-                <img src="path/to/image2.jpg" class="card-img-top" alt="Alumni 2">
+            <div class="card text-center">
                 <div class="card-body">
+                    <i class="fas fa-user-graduate card-icon"></i>
                     <h5 class="card-title">Alumni Name 2</h5>
                     <p class="card-text">Brief description about Alumni 2.</p>
                 </div>
@@ -81,9 +82,9 @@ if ($result->num_rows > 0) {
         </div>
         <!-- Card 3 -->
         <div class="col-md-4">
-            <div class="card">
-                <img src="path/to/image3.jpg" class="card-img-top" alt="Alumni 3">
+            <div class="card text-center">
                 <div class="card-body">
+                    <i class="fas fa-user-graduate card-icon"></i>
                     <h5 class="card-title">Alumni Name 3</h5>
                     <p class="card-text">Brief description about Alumni 3.</p>
                 </div>
