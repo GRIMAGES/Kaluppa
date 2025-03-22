@@ -21,7 +21,7 @@ if (isset($_POST['logout'])) {
 
 // Function to add user to alumni table if role is 'alumni'
 function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $category) {
-    // Fetch course name or volunteer work name based on category
+    // Fetch course name or volunteer work title based on category
     if ($category == 'Course') {
         $stmt = $conn->prepare("SELECT name FROM courses WHERE user_id = ? AND status = 'completed'");
         $stmt->bind_param("i", $userId);
