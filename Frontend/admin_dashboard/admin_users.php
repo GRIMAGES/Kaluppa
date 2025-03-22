@@ -19,27 +19,11 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Function to add user to alumni table if role is 'alumni'
-function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $category) {
-    // Fetch course name or volunteer work title based on category
-    if ($category == 'Course') {
-        $stmt = $conn->prepare("SELECT name FROM courses WHERE user_id = ? AND status = 'completed'");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $details = $result->num_rows > 0 ? $result->fetch_assoc()['name'] : 'N/A';
-    } else {
-        $stmt = $conn->prepare("SELECT title FROM works WHERE user_id = ? AND status = 'completed'");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $details = $result->num_rows > 0 ? $result->fetch_assoc()['title'] : 'N/A';
-    }
-
-    $stmt = $conn->prepare("INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $status = 'completed'; // Example status, adjust as needed
-    $stmt->bind_param("issssss", $userId, $firstName, $middleName, $lastName, $category, $details, $status);
-    $stmt->execute();
+// Logout logic
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header("Location: /Frontend/index.php");
+    exit();
 }
 
 ?>
@@ -308,6 +292,20 @@ function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $c
             });
         }
 
+        function addToAlumniTable(userId, firstName, middleName, lastName, category) {
+            $.ajax({
+                url: '/Kaluppa/Backend/add_to_alumni.php',
+                type: 'POST',
+                data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName, category: category },
+                success: function(response) {
+                    alert('User added to alumni table successfully');
+                },
+                error: function() {
+                    alert('Error adding user to alumni table');
+                }
+            });
+        }
+
         function updateRole(userId) {
             const selectElement = document.querySelector(`select[onchange="changeRole(${userId}, this.value)"]`);
             const newRole = selectElement.value;
@@ -332,20 +330,6 @@ function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $c
                 },
                 error: function() {
                     alert('Error deleting user');
-                }
-            });
-        }
-
-        function addToAlumniTable(userId, firstName, middleName, lastName, category) {
-            $.ajax({
-                url: '/Kaluppa/Backend/add_to_alumni.php',
-                type: 'POST',
-                data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName, category: category },
-                success: function(response) {
-                    alert('User added to alumni table successfully');
-                },
-                error: function() {
-                    alert('Error adding user to alumni table');
                 }
             });
         }
