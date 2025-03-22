@@ -39,6 +39,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
 $navLinks = [
     ['href' => 'user_dashboard.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Dashboard'],
+    ['href' => 'user_alumni.php', 'icon' => 'fas fa-user-graduate', 'text' => 'Alumni'],
     ['href' => 'user_courses.php', 'icon' => 'fas fa-graduation-cap', 'text' => 'Courses'],
     ['href' => 'user_work.php', 'icon' => 'fas fa-hands-helping', 'text' => 'Volunteer Work'],
     ['href' => 'user_events.php', 'icon' => 'fas fa-calendar-alt', 'text' => 'Events'],
@@ -46,7 +47,7 @@ $navLinks = [
     ['href' => 'user_transactions.php', 'icon' => 'fas fa-exchange-alt', 'text' => 'Applications'],
     ['href' => 'user_calendar.php', 'icon' => 'fas fa-calendar', 'text' => 'Calendar'],
     ['href' => 'user_notifications.php', 'icon' => 'fas fa-bell', 'text' => 'Notifications'],
-    ['href' => 'user_alumni.php', 'icon' => 'fas fa-user-graduate', 'text' => 'Alumni'],
+    
 ];
 ?>
 
