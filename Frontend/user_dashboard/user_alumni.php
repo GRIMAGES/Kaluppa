@@ -60,7 +60,7 @@ if ($result->num_rows > 0) {
         .card-title, .card-text {
             color: white;
         }
-        .card-title {
+        .card-title{
             color: white;
         }
         .modal-title {
@@ -80,7 +80,7 @@ if ($result->num_rows > 0) {
             <div class="card text-center">
                 <div class="card-body">
                     <i class="fas fa-user-graduate card-icon"></i>
-                    <h5 class="card-title">Alumni Name 1</h5>
+                    <h5 class="card-title" style="color: white;">Alumni Name 1</h5>
                     <p class="card-text">Brief description about Alumni 1.</p>
                 </div>
             </div>
@@ -90,7 +90,7 @@ if ($result->num_rows > 0) {
             <div class="card text-center">
                 <div class="card-body">
                     <i class="fas fa-user-graduate card-icon"></i>
-                    <h5 class="card-title">Alumni Name 2</h5>
+                    <h5 class="card-title" style="color: white;">Alumni Name 2</h5>
                     <p class="card-text">Brief description about Alumni 2.</p>
                 </div>
             </div>
@@ -100,7 +100,7 @@ if ($result->num_rows > 0) {
             <div class="card text-center">
                 <div class="card-body">
                     <i class="fas fa-user-graduate card-icon"></i>
-                    <h5 class="card-title">Alumni Name 3</h5>
+                    <h5 class="card-title" style="color: white;">Alumni Name 3</h5>
                     <p class="card-text">Brief description about Alumni 3.</p>
                 </div>
             </div>
