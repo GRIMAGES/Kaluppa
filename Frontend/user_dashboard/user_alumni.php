@@ -24,12 +24,12 @@ if ($result->num_rows > 0) {
 
 // Fetch alumni data from the alumni table
 $alumni_stmt = $conn->prepare("
-    SELECT a.first_name, a.middle_name, a.last_name, 'Course' AS category, c.course_name AS details, c.status
+    SELECT a.first_name, a.middle_name, a.last_name, 'Course' AS category, c.name AS details, c.status
     FROM alumni a
     JOIN courses c ON a.user_id = c.user_id
     WHERE c.status = 'completed'
     UNION
-    SELECT a.first_name, a.middle_name, a.last_name, 'Volunteer' AS category, w.work_name AS details, w.status
+    SELECT a.first_name, a.middle_name, a.last_name, 'Volunteer' AS category, w.title AS details, w.status
     FROM alumni a
     JOIN works w ON a.user_id = w.user_id
     WHERE w.status = 'completed'
