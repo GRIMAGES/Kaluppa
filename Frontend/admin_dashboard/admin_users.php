@@ -111,6 +111,39 @@ if (isset($_POST['logout'])) {
     </div>
 </div>
 
+<!-- Add Work Modal -->
+<div class="modal fade" id="addWorkModal" tabindex="-1" aria-labelledby="addWorkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addWorkModalLabel" style="color:black;">Add Work</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color:black;">
+                <form id="addWorkForm">
+                    <div class="mb-3">
+                        <label for="workTitle" class="form-label">Work Title</label>
+                        <input type="text" class="form-control" id="workTitle" name="workTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="workDescription" class="form-label">Work Description</label>
+                        <textarea class="form-control" id="workDescription" name="workDescription" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="workStatus" class="form-label">Status</label>
+                        <select class="form-select" id="workStatus" name="workStatus" required>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="ongoing">Ongoing</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Work</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -136,6 +169,9 @@ if (isset($_POST['logout'])) {
         <h2 class="mb-4 text-center">User Management</h2>
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
             Add User
+        </button>
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addWorkModal">
+            Add Work
         </button>
 
         <!-- Dark Container Card -->
@@ -238,6 +274,22 @@ if (isset($_POST['logout'])) {
                     },
                     error: function(xhr, status, error) {
                         alert('Error adding user: ' + error);
+                    }
+                });
+            });
+
+            $('#addWorkForm').on('submit', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/Kaluppa/Backend/add_work.php',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        alert('Work added successfully');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error adding work: ' + error);
                     }
                 });
             });

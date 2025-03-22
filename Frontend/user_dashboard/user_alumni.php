@@ -13,6 +13,11 @@ $email = $_SESSION['email'];
 
 // Use prepared statements to prevent SQL injection
 $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
+if (!$stmt) {
+    error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    echo 'Error preparing statement: ' . $conn->error;
+    exit();
+}
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -23,20 +28,26 @@ if ($result->num_rows > 0) {
     $fullName = $user['first_name'] . ' ' . $user['middle_name'] . ' ' . $user['last_name'];
 } else {
     echo "User not found.";
+    exit();
 }
 
 // Fetch alumni data from the alumni table
 $alumni_stmt = $conn->prepare("
-    SELECT a.first_name, a.middle_name, a.last_name, 'Course' AS category, c.name AS details, c.status
+    SELECT a.first_name, a.middle_name, a.last_name, 'Course' AS category, c.name AS details, a.status
     FROM alumni a
     JOIN courses c ON a.user_id = (SELECT user_id FROM applications WHERE course_id = c.id)
-    WHERE c.status = 'completed'
+    WHERE a.status = 'completed'
     UNION
     SELECT a.first_name, a.middle_name, a.last_name, 'Volunteer' AS category, w.title AS details, w.status
     FROM alumni a
     JOIN works w ON a.user_id = (SELECT user_id FROM volunteer_application WHERE work_id = w.id)
-    WHERE w.status = 'completed'
+    WHERE a.status = 'completed'
 ");
+if (!$alumni_stmt) {
+    error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    echo 'Error preparing statement: ' . $conn->error;
+    exit();
+}
 $alumni_stmt->execute();
 $alumni_result = $alumni_stmt->get_result();
 
