@@ -147,7 +147,7 @@ $alumni_result = $alumni_stmt->get_result();
             <div class="card text-center" data-bs-toggle="modal" data-bs-target="#careerAssistanceModal">
                 <div class="card-body">
                     <i class="fas fa-briefcase card-icon"></i>
-                    <h5 class="card-title" style="color: white;">Career Assistance</h5>
+                    <h5 class="card-title" style="color: white;">Financial Assistance</h5>
                     <p class="card-text">Financial, Career and other assistances</p>
                 </div>
             </div>
@@ -157,7 +157,7 @@ $alumni_result = $alumni_stmt->get_result();
             <div class="card text-center" data-bs-toggle="modal" data-bs-target="#financialAssistanceModal">
                 <div class="card-body">
                     <i class="fas fa-dollar-sign card-icon"></i>
-                    <h5 class="card-title" style="color: white;">Financial Assistance</h5>
+                    <h5 class="card-title" style="color: white;">Carreer Assistance</h5>
                     <p class="card-text">Financial support and funding opportunities.</p>
                 </div>
             </div>
