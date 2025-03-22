@@ -71,6 +71,11 @@ $alumni_result = $alumni_stmt->get_result();
         .modal-title {
             color: white;
         }
+        table.dataTable thead {
+            background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
     </style>
 </head>
 <body style="background-color: #ddead1;">
