@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($stmt->execute()) {
         echo 'User added to alumni table successfully';
     } else {
-        echo 'Error adding user to alumni table';
+        echo 'Error adding user to alumni table: ' . $stmt->error;
     }
 }
 ?>
