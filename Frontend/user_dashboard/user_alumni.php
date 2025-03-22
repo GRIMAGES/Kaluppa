@@ -38,7 +38,7 @@ $alumni_stmt = $conn->prepare("
     JOIN courses c ON a.user_id = (SELECT user_id FROM applications WHERE course_id = c.id)
     WHERE a.status = 'completed'
     UNION
-    SELECT a.first_name, a.middle_name, a.last_name, 'Volunteer' AS category, w.title AS details, w.status
+    SELECT a.first_name, a.middle_name, a.last_name, 'Volunteer' AS category, w.title AS details, a.status
     FROM alumni a
     JOIN works w ON a.user_id = (SELECT user_id FROM volunteer_application WHERE work_id = w.id)
     WHERE a.status = 'completed'
