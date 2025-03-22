@@ -397,159 +397,110 @@ $alumni_result = $alumni_stmt->get_result();
             <div class="modal-body">
                 <form>
                     <h5 class="mb-3"><i class="fas fa-info-circle"></i> Career Assistance Form</h5>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="financialNameOfSchool" class="form-label"><i class="fas fa-school"></i> Name of School</label>
-                            <input type="text" class="form-control" id="financialNameOfSchool" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="financialContactPerson" class="form-label"><i class="fas fa-user"></i> Contact Person(s)</label>
-                            <input type="text" class="form-control" id="financialContactPerson" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="address" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="phone" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                    </div>
-                    <h5 class="mb-3">Project Description</h5>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="projectName" class="form-label">Project Name</label>
-                            <input type="text" class="form-control" id="projectName" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="projectSummary" class="form-label">Project Summary</label>
-                            <textarea class="form-control" id="projectSummary" rows="3" required></textarea>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="startDate" class="form-label">Start Date</label>
-                            <input type="date" class="form-control" id="startDate" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="endDate" class="form-label">End Date</label>
-                            <input type="date" class="form-control" id="endDate" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="targetAudience" class="form-label">Target Audience</label>
-                            <input type="text" class="form-control" id="targetAudience" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="goals" class="form-label">Goals</label>
-                            <textarea class="form-control" id="goals" rows="3" required></textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="evaluation" class="form-label">Evaluation</label>
-                            <textarea class="form-control" id="evaluation" rows="3" required></textarea>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="objectives" class="form-label">Objectives</label>
-                            <textarea class="form-control" id="objectives" rows="3" required></textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="acknowledgement" class="form-label">Acknowledgement</label>
-                            <textarea class="form-control" id="acknowledgement" rows="3" required></textarea>
-                        </div>
-                    </div>
-                    <h5 class="mb-3">Project Budget</h5>
-                    <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="needs" class="form-label">Needs</label>
-                            <input type="text" class="form-control" id="needs" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="cost" class="form-label">Cost</label>
-                            <input type="text" class="form-control" id="cost" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="sourceFunding" class="form-label">Source Funding</label>
-                            <input type="text" class="form-control" id="sourceFunding" required>
-                        </div>
-                    </div>
-                    <h5 class="mb-3">Eligibility</h5>
                     <div class="mb-3">
-                        <label class="form-label">Your project advocates for the following aspects of wellness. Check which apply to you:</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="healthyEating">
-                            <label class="form-check-label" for="healthyEating">Healthy eating</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="activeLifestyle">
-                            <label class="form-check-label" for="activeLifestyle">Active lifestyle</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="healthProtection">
-                            <label class="form-check-label" for="healthProtection">Health protection</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="pollutionFreeEnvironment">
-                            <label class="form-check-label" for="pollutionFreeEnvironment">Pollution-free environment</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="childDevelopment">
-                            <label class="form-check-label" for="childDevelopment">Child development</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="mentalHealth">
-                            <label class="form-check-label" for="mentalHealth">Mental health</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="other">
-                            <label class="form-check-label" for="other">Other:</label>
-                            <input type="text" class="form-control mt-2" id="otherText">
-                        </div>
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" required>
                     </div>
-                    <h5 class="mb-3">Authorization</h5>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="applicantSignature" class="form-label">Applicant's Signature</label>
-                            <input type="text" class="form-control" id="applicantSignature" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="contactInformation" class="form-label">Contact Information</label>
-                            <input type="text" class="form-control" id="contactInformation" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label>
+                        <input type="text" class="form-control" id="gender" required>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="date" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="date" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control" id="dob" required>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="witnessSignature" class="form-label">Signature of the Witness</label>
-                            <input type="text" class="form-control" id="witnessSignature" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="witnessTelephone" class="form-label">Telephone</label>
-                            <input type="text" class="form-control" id="witnessTelephone" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="currentAddress" class="form-label">Current Address</label>
+                        <input type="text" class="form-control" id="currentAddress" required>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="witnessDate" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="witnessDate" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="permanentAddress" class="form-label">Permanent Address</label>
+                        <input type="text" class="form-control" id="permanentAddress" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="number" class="form-control" id="age" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="occupation" class="form-label">Occupation</label>
+                        <input type="text" class="form-control" id="occupation" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="civilStatus" class="form-label">Civil Status</label>
+                        <input type="text" class="form-control" id="civilStatus" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="placeOfBirth" class="form-label">Place of Birth</label>
+                        <input type="text" class="form-control" id="placeOfBirth" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="height" class="form-label">Height</label>
+                        <input type="text" class="form-control" id="height" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Weight</label>
+                        <input type="text" class="form-control" id="weight" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fatherName" class="form-label">Father's Name</label>
+                        <input type="text" class="form-control" id="fatherName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="motherName" class="form-label">Mother's Name</label>
+                        <input type="text" class="form-control" id="motherName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="language" class="form-label">Language or dialect spoken</label>
+                        <input type="text" class="form-control" id="language" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emergencyContact" class="form-label">Person to be contacted in case of emergency</label>
+                        <input type="text" class="form-control" id="emergencyContact" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emergencyAddress" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="emergencyAddress" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emergencyContactNo" class="form-label">Contact No.</label>
+                        <input type="text" class="form-control" id="emergencyContactNo" required>
+                    </div>
+                    <h5 class="mb-3">Educational Background</h5>
+                    <div class="mb-3">
+                        <label for="elementary" class="form-label">Elementary</label>
+                        <input type="text" class="form-control" id="elementary" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="elementaryYear" class="form-label">Year Graduated</label>
+                        <input type="text" class="form-control" id="elementaryYear" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="highSchool" class="form-label">High School</label>
+                        <input type="text" class="form-control" id="highSchool" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="highSchoolYear" class="form-label">Year Graduated</label>
+                        <input type="text" class="form-control" id="highSchoolYear" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="college" class="form-label">College</label>
+                        <input type="text" class="form-control" id="college" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="collegeYear" class="form-label">Year Graduated</label>
+                        <input type="text" class="form-control" id="collegeYear" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="certification" class="form-label">Certification</label>
+                        <textarea class="form-control" id="certification" rows="3" required>I hereby certify that the facts contained in this bio-data are true and complete to the best of my knowledge.</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signature" class="form-label">Signature</label>
+                        <input type="text" class="form-control" id="signature" required>
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Career Assistance Request</button>
                 </form>
