@@ -19,11 +19,14 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Logout logic
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("Location: /Frontend/index.php");
-    exit();
+// Function to add user to alumni table if role is 'alumni'
+function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName) {
+    $stmt = $conn->prepare("INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $category = 'Course/Volunteer'; // Example category, adjust as needed
+    $details = 'Details about the course or volunteer work'; // Example details, adjust as needed
+    $status = 'completed'; // Example status, adjust as needed
+    $stmt->bind_param("issssss", $userId, $firstName, $middleName, $lastName, $category, $details, $status);
+    $stmt->execute();
 }
 
 ?>
@@ -268,6 +271,21 @@ if (isset($_POST['logout'])) {
                 data: { id: userId, role: newRole },
                 success: function(response) {
                     alert('Role updated successfully');
+                    if (newRole === 'alumni') {
+                        // Fetch user details and add to alumni table
+                        $.ajax({
+                            url: '/Kaluppa/Backend/get_user_details.php',
+                            type: 'POST',
+                            data: { id: userId },
+                            success: function(userDetails) {
+                                const user = JSON.parse(userDetails);
+                                addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name);
+                            },
+                            error: function() {
+                                alert('Error fetching user details');
+                            }
+                        });
+                    }
                 },
                 error: function() {
                     alert('Error updating role');
@@ -299,6 +317,20 @@ if (isset($_POST['logout'])) {
                 },
                 error: function() {
                     alert('Error deleting user');
+                }
+            });
+        }
+
+        function addToAlumniTable(userId, firstName, middleName, lastName) {
+            $.ajax({
+                url: '/Kaluppa/Backend/add_to_alumni.php',
+                type: 'POST',
+                data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName },
+                success: function(response) {
+                    alert('User added to alumni table successfully');
+                },
+                error: function() {
+                    alert('Error adding user to alumni table');
                 }
             });
         }
