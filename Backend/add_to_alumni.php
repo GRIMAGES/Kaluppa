@@ -6,10 +6,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = $_POST['first_name'];
     $middleName = $_POST['middle_name'];
     $lastName = $_POST['last_name'];
+    $category = $_POST['category'];
+    $details = $_POST['details'];
 
     $stmt = $conn->prepare("INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $category = 'Course/Volunteer'; // Example category, adjust as needed
-    $details = 'Details about the course or volunteer work'; // Example details, adjust as needed
     $status = 'completed'; // Example status, adjust as needed
     $stmt->bind_param("issssss", $userId, $firstName, $middleName, $lastName, $category, $details, $status);
 

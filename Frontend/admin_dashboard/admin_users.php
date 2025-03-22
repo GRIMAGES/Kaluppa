@@ -20,10 +20,8 @@ if (isset($_POST['logout'])) {
 }
 
 // Function to add user to alumni table if role is 'alumni'
-function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName) {
+function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName, $category, $details) {
     $stmt = $conn->prepare("INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $category = 'Course/Volunteer'; // Example category, adjust as needed
-    $details = 'Details about the course or volunteer work'; // Example details, adjust as needed
     $status = 'completed'; // Example status, adjust as needed
     $stmt->bind_param("issssss", $userId, $firstName, $middleName, $lastName, $category, $details, $status);
     $stmt->execute();
@@ -279,7 +277,10 @@ function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName) {
                             data: { id: userId },
                             success: function(userDetails) {
                                 const user = JSON.parse(userDetails);
-                                addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name);
+                                // Determine category and details
+                                const category = 'Course'; // or 'Volunteer', adjust as needed
+                                const details = 'Course Name'; // or 'Volunteer Name', adjust as needed
+                                addToAlumniTable(user.id, user.first_name, user.middle_name, user.last_name, category, details);
                             },
                             error: function() {
                                 alert('Error fetching user details');
@@ -321,11 +322,11 @@ function addToAlumniTable($conn, $userId, $firstName, $middleName, $lastName) {
             });
         }
 
-        function addToAlumniTable(userId, firstName, middleName, lastName) {
+        function addToAlumniTable(userId, firstName, middleName, lastName, category, details) {
             $.ajax({
                 url: '/Kaluppa/Backend/add_to_alumni.php',
                 type: 'POST',
-                data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName },
+                data: { user_id: userId, first_name: firstName, middle_name: middleName, last_name: lastName, category: category, details: details },
                 success: function(response) {
                     alert('User added to alumni table successfully');
                 },
