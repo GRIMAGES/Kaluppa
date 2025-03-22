@@ -114,8 +114,8 @@ $alumni_result = $alumni_stmt->get_result();
             <div class="card text-center">
                 <div class="card-body">
                     <i class="fas fa-user-graduate card-icon"></i>
-                    <h5 class="card-title" style="color: white;">Alumni Name 1</h5>
-                    <p class="card-text">Brief description about Alumni 1.</p>
+                    <h5 class="card-title" style="color: white;">Request Documents</h5>
+                    <p class="card-text">Requesting Documents, Certificates and etc.</p>
                 </div>
             </div>
         </div>
@@ -124,8 +124,8 @@ $alumni_result = $alumni_stmt->get_result();
             <div class="card text-center">
                 <div class="card-body">
                     <i class="fas fa-user-graduate card-icon"></i>
-                    <h5 class="card-title" style="color: white;">Alumni Name 2</h5>
-                    <p class="card-text">Brief description about Alumni 2.</p>
+                    <h5 class="card-title" style="color: white;">Carreer Assistance</h5>
+                    <p class="card-text">Financial, Carreer and other assistances</p>
                 </div>
             </div>
         </div>
