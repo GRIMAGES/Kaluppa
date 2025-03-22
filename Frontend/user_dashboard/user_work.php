@@ -159,9 +159,9 @@ if (!$workResult) {
                                                 <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
                                                 <p><?php echo htmlspecialchars($work['description']); ?></p>
                                             </div>
-                                            <div class="info-group mb-3">
+                                            <div class="info-group mb-3 d-flex align-items-center">
                                                 <strong><i class="fas fa-info-circle me-2"></i>Status:</strong>
-                                                <span><?php echo htmlspecialchars($work['status']); ?></span>
+                                                <span class="ms-2"><?php echo htmlspecialchars($work['status']); ?></span>
                                             </div>
                                         </div>
                                     </div>
