@@ -7,6 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $middleName = $_POST['middle_name'];
     $lastName = $_POST['last_name'];
     $category = $_POST['category'];
+    $details = $_POST['details'];
 
     // Fetch course name or volunteer work name based on category
     if ($category == 'Course') {
@@ -14,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
-        $details = $result->num_rows > 0 ? $result->fetch_assoc()['course_name'] : 'N/A';
+        $details = $result->num_rows > 0 ? $result->fetch_assoc()['name'] : 'N/A';
     } else {
         $stmt = $conn->prepare("SELECT title FROM works WHERE user_id = ? AND status = 'completed'");
         $stmt->bind_param("i", $userId);
