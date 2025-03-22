@@ -14,6 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Fetch course name or volunteer work title based on category
     if ($category == 'Course') {
         $stmt = $conn->prepare("SELECT name FROM courses WHERE user_id = ? AND status = 'completed'");
+        if (!$stmt) {
+            error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+        }
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -22,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Course details: " . $details);
     } else if ($category == 'Volunteer') {
         $stmt = $conn->prepare("SELECT title FROM works WHERE user_id = ? AND status = 'completed'");
+        if (!$stmt) {
+            error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+        }
         $stmt->bind_param("i", $userId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -37,6 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log("Details: " . $details);
 
     $stmt = $conn->prepare("INSERT INTO alumni (user_id, first_name, middle_name, last_name, category, details, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        error_log("Prepare failed: (" . $conn->errno . ") " . $conn->error);
+    }
     $status = 'completed'; // Example status, adjust as needed
     $stmt->bind_param("issssss", $userId, $firstName, $middleName, $lastName, $category, $details, $status);
 
