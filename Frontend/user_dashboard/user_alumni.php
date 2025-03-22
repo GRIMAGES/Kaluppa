@@ -219,12 +219,12 @@ $alumni_result = $alumni_stmt->get_result();
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="careerAssistanceModalLabel"><i class="fas fa-briefcase"></i> Career Assistance</h5>
+                <h5 class="modal-title" id="careerAssistanceModalLabel"><i class="fas fa-briefcase"></i> Financial Assistance</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form>
-                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Career Assistance Form</h5>
+                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Financial Assistance Form</h5>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="careerNameOfSchool" class="form-label"><i class="fas fa-school"></i> Name of School</label>
@@ -379,7 +379,7 @@ $alumni_result = $alumni_stmt->get_result();
                             <input type="date" class="form-control" id="witnessDate" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Career Assistance Request</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Financial Assistance Request</button>
                 </form>
             </div>
         </div>
@@ -391,12 +391,12 @@ $alumni_result = $alumni_stmt->get_result();
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="financialAssistanceModalLabel"><i class="fas fa-dollar-sign"></i> Financial Assistance</h5>
+                <h5 class="modal-title" id="financialAssistanceModalLabel"><i class="fas fa-dollar-sign"></i> Career Assistance</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form>
-                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Financial Assistance Form</h5>
+                    <h5 class="mb-3"><i class="fas fa-info-circle"></i> Career Assistance Form</h5>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="financialNameOfSchool" class="form-label"><i class="fas fa-school"></i> Name of School</label>
@@ -551,7 +551,7 @@ $alumni_result = $alumni_stmt->get_result();
                             <input type="date" class="form-control" id="witnessDate" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Financial Assistance Request</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Career Assistance Request</button>
                 </form>
             </div>
         </div>
