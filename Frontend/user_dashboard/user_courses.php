@@ -165,7 +165,7 @@ $categorizedCourses = categorizeCourses($courseResult);
                   <span id="courseInstructor"></span>
                 </div>
                 <div class="mb-2">
-                  <strong><i class="fas fa-users me-2"></i>Enrollment:</strong>
+                  <strong><i class="fas fa-users me-2"></i>Enrolled Students:</strong>
                   <span id="courseEnrollment" class="enrollment-status"></span>
                 </div>
                 <div class="mb-2">
