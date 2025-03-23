@@ -170,9 +170,7 @@ if (isset($_POST['logout'])) {
         <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">
             Add User
         </button>
-        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addWorkModal">
-            Add Work
-        </button>
+
 
         <!-- Dark Container Card -->
         <div class="card shadow-lg" style="background-color: #2c2f33; border-radius: 15px;">
