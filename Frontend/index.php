@@ -206,44 +206,61 @@ session_start();
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        const municipalitySelect = document.getElementById('municipality');
-        const barangaySelect = document.getElementById('barangay');
+    const municipalitySelect = document.getElementById("municipality");
+    const barangaySelect = document.getElementById("barangay");
+    const provinceSelect = document.getElementById("province");
 
-        // Step 1: Load municipalities under Marinduque (province code 1740)
-        fetch('https://psgc.gitlab.io/api/provinces/1740/cities-municipalities/')
+    // Only one province for now, but flexible in case more are added
+    provinceSelect.addEventListener("change", function () {
+        const provinceCode = this.value;
+
+        // Clear previous options
+        municipalitySelect.innerHTML = '<option value="">Loading...</option>';
+        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+        // Load municipalities under selected province
+        fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities/`)
             .then(response => response.json())
             .then(data => {
+                municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
                 data.forEach(municipality => {
-                    const option = document.createElement('option');
-                    option.value = municipality.code; // Use code for barangay fetch later
+                    const option = document.createElement("option");
+                    option.value = municipality.code;
                     option.textContent = municipality.name;
                     municipalitySelect.appendChild(option);
                 });
             })
-            .catch(error => console.error('Error loading municipalities:', error));
-
-        // Step 2: When a municipality is selected, load barangays
-        municipalitySelect.addEventListener('change', function () {
-            const selectedMunicipalityCode = this.value;
-            barangaySelect.innerHTML = '<option value="">Loading...</option>';
-
-            fetch(`https://psgc.gitlab.io/api/cities-municipalities/${selectedMunicipalityCode}/barangays/`)
-                .then(response => response.json())
-                .then(data => {
-                    barangaySelect.innerHTML = '';
-                    data.forEach(barangay => {
-                        const option = document.createElement('option');
-                        option.value = barangay.name;
-                        option.textContent = barangay.name;
-                        barangaySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    barangaySelect.innerHTML = '<option value="">Error loading barangays</option>';
-                    console.error('Error loading barangays:', error);
-                });
-        });
+            .catch(error => {
+                console.error("Error fetching municipalities:", error);
+                municipalitySelect.innerHTML = '<option value="">Failed to load</option>';
+            });
     });
+
+    // Load barangays based on selected municipality
+    municipalitySelect.addEventListener("change", function () {
+        const muniCode = this.value;
+        barangaySelect.innerHTML = '<option value="">Loading...</option>';
+
+        fetch(`https://psgc.gitlab.io/api/cities-municipalities/${muniCode}/barangays/`)
+            .then(response => response.json())
+            .then(data => {
+                barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+                data.forEach(barangay => {
+                    const option = document.createElement("option");
+                    option.value = barangay.name;
+                    option.textContent = barangay.name;
+                    barangaySelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching barangays:", error);
+                barangaySelect.innerHTML = '<option value="">Failed to load</option>';
+            });
+    });
+
+    // Trigger initial province change if preselected
+    provinceSelect.dispatchEvent(new Event('change'));
+});
 </script>
 
 </body>
