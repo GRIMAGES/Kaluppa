@@ -99,7 +99,7 @@ session_start();
                     <!-- Address dropdowns -->
                     <label for="province">Province:</label>
                     <select name="province" id="province" required>
-                        <option value="Marinduque">Marinduque</option>
+                        <option value="MIMAROPA">Marinduque</option>
                     </select>
                     <label for="municipality">Municipality:</label>
 <select name="municipality" id="municipality" required>
