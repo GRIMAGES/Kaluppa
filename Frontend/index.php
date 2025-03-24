@@ -102,13 +102,14 @@ session_start();
                         <option value="Marinduque">Marinduque</option>
                     </select>
                     <label for="municipality">Municipality:</label>
-                    <select name="municipality" id="municipality" required>
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
-                    <label for="barangay">Barangay:</label>
-                    <select name="barangay" id="barangay" required>
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
+<select name="municipality" id="municipality" required>
+    <option value="">Select Municipality</option>
+</select>
+
+<label for="barangay">Barangay:</label>
+<select name="barangay" id="barangay" required>
+    <option value="">Select Barangay</option>
+</select>
                     
                     <input type="checkbox" name="data_privacy" required />
                     <label for="data_privacy">I agree to the <a href="data_privacy_policy.php" target="_blank">Data Privacy Act</a></label>
@@ -204,37 +205,33 @@ session_start();
         strengthText.style.color = strength >= 3 ? "green" : "red";
     }
 
-    // Fetch Municipalities and Barangays based on selected Province (MARINDUQUE)
     document.addEventListener("DOMContentLoaded", function () {
         const municipalitySelect = document.getElementById('municipality');
         const barangaySelect = document.getElementById('barangay');
 
-        // Manually assign provinceCode for Marinduque
-        const marinduqueProvinceCode = '1740';
-
-        // Fetch municipalities in Marinduque
-        fetch(`https://psgc.gitlab.io/api/provinces/${marinduqueProvinceCode}/municipalities/`)
+        // Step 1: Load municipalities under Marinduque (province code 1740)
+        fetch('https://psgc.gitlab.io/api/provinces/1740/cities-municipalities/')
             .then(response => response.json())
-            .then(municipalities => {
-                municipalities.forEach(municipality => {
+            .then(data => {
+                data.forEach(municipality => {
                     const option = document.createElement('option');
-                    option.value = municipality.code;
+                    option.value = municipality.code; // Use code for barangay fetch later
                     option.textContent = municipality.name;
                     municipalitySelect.appendChild(option);
                 });
             })
-            .catch(error => console.error("Failed to fetch municipalities:", error));
+            .catch(error => console.error('Error loading municipalities:', error));
 
-        // When a municipality is selected, fetch its barangays
+        // Step 2: When a municipality is selected, load barangays
         municipalitySelect.addEventListener('change', function () {
             const selectedMunicipalityCode = this.value;
-            barangaySelect.innerHTML = '<option disabled selected>Loading barangays...</option>';
+            barangaySelect.innerHTML = '<option value="">Loading...</option>';
 
-            fetch(`https://psgc.gitlab.io/api/municipalities/${selectedMunicipalityCode}/barangays/`)
+            fetch(`https://psgc.gitlab.io/api/cities-municipalities/${selectedMunicipalityCode}/barangays/`)
                 .then(response => response.json())
-                .then(barangays => {
-                    barangaySelect.innerHTML = ''; // Clear loading option
-                    barangays.forEach(barangay => {
+                .then(data => {
+                    barangaySelect.innerHTML = '';
+                    data.forEach(barangay => {
                         const option = document.createElement('option');
                         option.value = barangay.name;
                         option.textContent = barangay.name;
@@ -242,8 +239,8 @@ session_start();
                     });
                 })
                 .catch(error => {
-                    barangaySelect.innerHTML = '';
-                    console.error("Failed to fetch barangays:", error);
+                    barangaySelect.innerHTML = '<option value="">Error loading barangays</option>';
+                    console.error('Error loading barangays:', error);
                 });
         });
     });
