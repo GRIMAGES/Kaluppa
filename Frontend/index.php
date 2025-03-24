@@ -159,107 +159,95 @@ session_start();
     <script src="JS/login_script.js"></script>
     <!-- Toast JS -->
     
-    <script>
-    
-        // Display popup on page load if it exists
-        document.addEventListener("DOMContentLoaded", function() {
-            if (document.getElementById('successModal')) {
-                document.getElementById('successModal').style.display = 'block';
-            }
-            if (document.getElementById('registrationSuccessModal')) {
-                document.getElementById('registrationSuccessModal').style.display = 'block';
-            }
-            if (document.getElementById('errorModal')) {
-                document.getElementById('errorModal').style.display = 'block';
-            }
-        });
+   <!-- Your original HTML structure remains intact -->
 
-        // Close modal function
-        function closeModal() {
-            if (document.getElementById('successModal')) {
-                document.getElementById('successModal').style.display = 'none';
-            }
-            if (document.getElementById('registrationSuccessModal')) {
-                document.getElementById('registrationSuccessModal').style.display = 'none';
-            }
-            if (document.getElementById('errorModal')) {
-                document.getElementById('errorModal').style.display = 'none';
-            }
-        }
+<!-- ADD THIS UPDATED SCRIPT BLOCK at the bottom just before the closing </body> tag -->
+<script>
+    // Switch between login and signup forms
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
 
-        // Switch between login and signup forms
-        const signUpButton = document.getElementById('signUp');
-        const signInButton = document.getElementById('signIn');
-        const container = document.getElementById('container');
+    signUpButton.addEventListener('click', () => {
+        container.classList.add("right-panel-active");
+    });
 
-        signUpButton.addEventListener('click', () => {
-            container.classList.add("right-panel-active");
-        });
+    signInButton.addEventListener('click', () => {
+        container.classList.remove("right-panel-active");
+    });
 
-        signInButton.addEventListener('click', () => {
-            container.classList.remove("right-panel-active");
-        });
-        
-        // Fetch municipalities and barangays from PSGC API
-        document.addEventListener("DOMContentLoaded", function() {
-            const municipalitySelect = document.getElementById('municipality');
-            const barangaySelect = document.getElementById('barangay');
+    // Password Strength Checker Function
+    function checkPasswordStrength() {
+        const password = document.querySelector('input[name="reg_password"]').value;
+        const strengthMeter = document.getElementById("strengthMeter");
+        const strengthText = document.getElementById("strengthText");
 
-            fetch('https://psgc-api-url-for-marinduque/municipalities') // Replace with actual PSGC API URL
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(municipality => {
-                        const option = document.createElement('option');
-                        option.value = municipality.name;
-                        option.textContent = municipality.name;
-                        municipalitySelect.appendChild(option);
-                    });
+        let strength = 0;
+        if (password.length >= 10 && password.length <= 16) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[@$!%*?&#^+=._-]/.test(password)) strength++;
+
+        strengthMeter.value = strength;
+
+        const strengthLabels = {
+            0: "Very Weak",
+            1: "Weak",
+            2: "Moderate",
+            3: "Good",
+            4: "Strong",
+            5: "Very Strong"
+        };
+
+        strengthText.textContent = strengthLabels[strength];
+        strengthText.style.color = strength >= 3 ? "green" : "red";
+    }
+
+    // Fetch Municipalities and Barangays based on selected Province (MARINDUQUE)
+    document.addEventListener("DOMContentLoaded", function () {
+        const municipalitySelect = document.getElementById('municipality');
+        const barangaySelect = document.getElementById('barangay');
+
+        // Manually assign provinceCode for Marinduque
+        const marinduqueProvinceCode = '1740';
+
+        // Fetch municipalities in Marinduque
+        fetch(`https://psgc.gitlab.io/api/provinces/${marinduqueProvinceCode}/municipalities/`)
+            .then(response => response.json())
+            .then(municipalities => {
+                municipalities.forEach(municipality => {
+                    const option = document.createElement('option');
+                    option.value = municipality.code;
+                    option.textContent = municipality.name;
+                    municipalitySelect.appendChild(option);
                 });
+            })
+            .catch(error => console.error("Failed to fetch municipalities:", error));
 
-            municipalitySelect.addEventListener('change', function() {
-                const selectedMunicipality = municipalitySelect.value;
-                barangaySelect.innerHTML = ''; // Clear previous options
+        // When a municipality is selected, fetch its barangays
+        municipalitySelect.addEventListener('change', function () {
+            const selectedMunicipalityCode = this.value;
+            barangaySelect.innerHTML = '<option disabled selected>Loading barangays...</option>';
 
-                fetch(`https://psgc-api-url-for-marinduque/municipalities/${selectedMunicipality}/barangays`) // Replace with actual PSGC API URL
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(barangay => {
-                            const option = document.createElement('option');
-                            option.value = barangay.name;
-                            option.textContent = barangay.name;
-                            barangaySelect.appendChild(option);
-                        });
+            fetch(`https://psgc.gitlab.io/api/municipalities/${selectedMunicipalityCode}/barangays/`)
+                .then(response => response.json())
+                .then(barangays => {
+                    barangaySelect.innerHTML = ''; // Clear loading option
+                    barangays.forEach(barangay => {
+                        const option = document.createElement('option');
+                        option.value = barangay.name;
+                        option.textContent = barangay.name;
+                        barangaySelect.appendChild(option);
                     });
-            });
+                })
+                .catch(error => {
+                    barangaySelect.innerHTML = '';
+                    console.error("Failed to fetch barangays:", error);
+                });
         });
+    });
+</script>
 
-        // Password Strength Checker Function
-        function checkPasswordStrength() {
-            const password = document.querySelector('input[name="reg_password"]').value;
-            const strengthMeter = document.getElementById("strengthMeter");
-            const strengthText = document.getElementById("strengthText");
-
-            let strength = 0;
-            if (password.length >= 10 && password.length <= 16) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[a-z]/.test(password)) strength++;
-            if (/\d/.test(password)) strength++;
-            if (/[@$!%*?&#^+=._-]/.test(password)) strength++;
-
-            strengthMeter.value = strength;
-
-            const strengthLabels = {
-                0: "Very Weak",
-                1: "Weak",
-                2: "Moderate",
-                3: "Good",
-                4: "Strong",
-                5: "Very Strong"
-            };
-
-            strengthText.textContent = strengthLabels[strength];
-            strengthText.style.color = strength >= 3 ? "green" : "red";
-        }
-    </script>
 </body>
 </html>
