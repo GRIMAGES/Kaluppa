@@ -99,7 +99,7 @@ session_start();
                     <!-- Address dropdowns -->
                     <label for="province">Province:</label>
                     <select name="province" id="province" required>
-                        <option value="MIMAROPA">Marinduque</option>
+                        <option value="Marinduque">Marinduque</option>
                     </select>
                     <label for="municipality">Municipality:</label>
 <select name="municipality" id="municipality" required>
@@ -206,61 +206,59 @@ session_start();
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-    const municipalitySelect = document.getElementById("municipality");
-    const barangaySelect = document.getElementById("barangay");
-    const provinceSelect = document.getElementById("province");
+        const municipalitySelect = document.getElementById("municipality");
+        const barangaySelect = document.getElementById("barangay");
+        const provinceSelect = document.getElementById("province");
 
-    // Only one province for now, but flexible in case more are added
-    provinceSelect.addEventListener("change", function () {
-        const provinceCode = this.value;
+        // Province change
+        provinceSelect.addEventListener("change", function () {
+            const provinceCode = this.value;
 
-        // Clear previous options
-        municipalitySelect.innerHTML = '<option value="">Loading...</option>';
-        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+            municipalitySelect.innerHTML = '<option value="">Loading...</option>';
+            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
 
-        // Load municipalities under selected province
-        fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities/`)
-            .then(response => response.json())
-            .then(data => {
-                municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
-                data.forEach(municipality => {
-                    const option = document.createElement("option");
-                    option.value = municipality.code;
-                    option.textContent = municipality.name;
-                    municipalitySelect.appendChild(option);
+            fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities/`)
+                .then(response => response.json())
+                .then(data => {
+                    municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
+                    data.forEach(municipality => {
+                        const option = document.createElement("option");
+                        option.value = municipality.code;
+                        option.textContent = municipality.name;
+                        municipalitySelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching municipalities:", error);
+                    municipalitySelect.innerHTML = '<option value="">Failed to load</option>';
                 });
-            })
-            .catch(error => {
-                console.error("Error fetching municipalities:", error);
-                municipalitySelect.innerHTML = '<option value="">Failed to load</option>';
-            });
-    });
+        });
 
-    // Load barangays based on selected municipality
-    municipalitySelect.addEventListener("change", function () {
-        const muniCode = this.value;
-        barangaySelect.innerHTML = '<option value="">Loading...</option>';
+        // Municipality change
+        municipalitySelect.addEventListener("change", function () {
+            const muniCode = this.value;
+            barangaySelect.innerHTML = '<option value="">Loading...</option>';
 
-        fetch(`https://psgc.gitlab.io/api/cities-municipalities/${muniCode}/barangays/`)
-            .then(response => response.json())
-            .then(data => {
-                barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-                data.forEach(barangay => {
-                    const option = document.createElement("option");
-                    option.value = barangay.name;
-                    option.textContent = barangay.name;
-                    barangaySelect.appendChild(option);
+            fetch(`https://psgc.gitlab.io/api/cities-municipalities/${muniCode}/barangays/`)
+                .then(response => response.json())
+                .then(data => {
+                    barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+                    data.forEach(barangay => {
+                        const option = document.createElement("option");
+                        option.value = barangay.name;
+                        option.textContent = barangay.name;
+                        barangaySelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching barangays:", error);
+                    barangaySelect.innerHTML = '<option value="">Failed to load</option>';
                 });
-            })
-            .catch(error => {
-                console.error("Error fetching barangays:", error);
-                barangaySelect.innerHTML = '<option value="">Failed to load</option>';
-            });
-    });
+        });
 
-    // Trigger initial province change if preselected
-    provinceSelect.dispatchEvent(new Event('change'));
-});
+        // Auto-trigger province load
+        provinceSelect.dispatchEvent(new Event('change'));
+    });
 </script>
 
 </body>

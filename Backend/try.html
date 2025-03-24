@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PSGC API Dropdown</title>
+</head>
+<body>
+
+  <h3>Dynamic Location Dropdowns</h3>
+
+  <label for="province">Province:</label>
+  <select id="province">
+    <option value="1740">Marinduque</option> <!-- Province code from PSGC -->
+  </select>
+
+  <br><br>
+
+  <label for="municipality">Municipality:</label>
+  <select id="municipality">
+    <option value="">Select Municipality</option>
+  </select>
+
+  <br><br>
+
+  <label for="barangay">Barangay:</label>
+  <select id="barangay">
+    <option value="">Select Barangay</option>
+  </select>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const provinceSelect = document.getElementById('province');
+      const municipalitySelect = document.getElementById('municipality');
+      const barangaySelect = document.getElementById('barangay');
+
+      // When province changes, load municipalities
+      provinceSelect.addEventListener('change', function () {
+        const provinceCode = this.value;
+
+        municipalitySelect.innerHTML = '<option>Loading...</option>';
+        barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+        fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities/`)
+          .then(res => res.json())
+          .then(data => {
+            municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
+            data.forEach(muni => {
+              const opt = document.createElement('option');
+              opt.value = muni.code;
+              opt.textContent = muni.name;
+              municipalitySelect.appendChild(opt);
+            });
+          })
+          .catch(err => {
+            console.error('Error fetching municipalities:', err);
+            municipalitySelect.innerHTML = '<option value="">Error loading municipalities</option>';
+          });
+      });
+
+      // When municipality changes, load barangays
+      municipalitySelect.addEventListener('change', function () {
+        const muniCode = this.value;
+
+        barangaySelect.innerHTML = '<option>Loading...</option>';
+
+        fetch(`https://psgc.gitlab.io/api/cities-municipalities/${muniCode}/barangays/`)
+          .then(res => res.json())
+          .then(data => {
+            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+            data.forEach(brgy => {
+              const opt = document.createElement('option');
+              opt.value = brgy.name;
+              opt.textContent = brgy.name;
+              barangaySelect.appendChild(opt);
+            });
+          })
+          .catch(err => {
+            console.error('Error fetching barangays:', err);
+            barangaySelect.innerHTML = '<option value="">Error loading barangays</option>';
+          });
+      });
+
+      // Trigger load municipalities on page load (optional)
+      provinceSelect.dispatchEvent(new Event('change'));
+    });
+  </script>
+</body>
+</html>
