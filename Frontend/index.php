@@ -44,9 +44,9 @@ session_start();
             <form action="../Backend/Multiuserlogins.php" method="POST">
                 <h1>Create Account</h1>
                 <div class="social-container">
-                <a href="register_facebook.php" class="social" title="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
-    <a href="register_google.php" class="social" title="Register with Google"><i class="fab fa-google"></i></a>
-    <a href="register_qr.php" class="social" title="Register with QR Code"><i class="fas fa-qrcode"></i></a>
+                    <a href="register_facebook.php" class="social" title="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="register_google.php" class="social" title="Register with Google"><i class="fab fa-google"></i></a>
+                    <a href="register_qr.php" class="social" title="Register with QR Code"><i class="fas fa-qrcode"></i></a>
                 </div>
                 <span>or use your email for registration</span>
                 
@@ -93,22 +93,20 @@ session_start();
                     
                     <input type="checkbox" name="data_privacy" required />
                     <label for="data_privacy">I agree to the <a href="data_privacy_policy.php" target="_blank">Data Privacy Act</a></label>
-                    
                 </div>
                 
                 <!-- Button always stays at the bottom -->
                 <button type="submit" class="signup-btn">Sign Up</button>
             </form>
-            
         </div>
 
         <div class="form-container sign-in-container">
             <form action="../Backend/Multiuserlogins.php" method="POST">
                 <h1>Sign in</h1>
                 <div class="social-container">
-                <a href="" class="social" title="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
-    <a href="login_google.php" class="social" title="Register with Google"><i class="fab fa-google"></i></a>
-    <a href="" class="social" title="Register with QR Code"><i class="fas fa-qrcode"></i></a>
+                    <a href="" class="social" title="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="login_google.php" class="social" title="Register with Google"><i class="fab fa-google"></i></a>
+                    <a href="" class="social" title="Register with QR Code"><i class="fas fa-qrcode"></i></a>
                 </div>
                 <span>or use your account</span>
                 <input type="email" name="email" placeholder="Email" required />
@@ -141,107 +139,95 @@ session_start();
     <!-- Toast JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     
-   <!-- Your original HTML structure remains intact -->
-
-<!-- ADD THIS UPDATED SCRIPT BLOCK at the bottom just before the closing </body> tag -->
-<script>
-
-      // Display popup on page load if it exists
-      document.addEventListener("DOMContentLoaded", function() {
-            if (document.getElementById('successModal')) {
-                document.getElementById('successModal').style.display = 'block';
-            }
-            if (document.getElementById('registrationSuccessModal')) {
-                document.getElementById('registrationSuccessModal').style.display = 'block';
-            }
-            if (document.getElementById('errorModal')) {
-                document.getElementById('errorModal').style.display = 'block';
-            }
-        });
-
-        // Close modal function
-        function closeModal() {
-            if (document.getElementById('successModal')) {
-                document.getElementById('successModal').style.display = 'none';
-            }
-            if (document.getElementById('registrationSuccessModal')) {
-                document.getElementById('registrationSuccessModal').style.display = 'none';
-            }
-            if (document.getElementById('errorModal')) {
-                document.getElementById('errorModal').style.display = 'none';
-            }
-        }
-    // Switch between login and signup forms
-    const signUpButton = document.getElementById('signUp');
-    const signInButton = document.getElementById('signIn');
-    const container = document.getElementById('container');
-
-    signUpButton.addEventListener('click', () => {
-        container.classList.add("right-panel-active");
-    });
-
-    signInButton.addEventListener('click', () => {
-        container.classList.remove("right-panel-active");
-    });
-
-    // Password Strength Checker Function
-    function checkPasswordStrength() {
-        const password = document.querySelector('input[name="reg_password"]').value;
-        const strengthMeter = document.getElementById("strengthMeter");
-        const strengthText = document.getElementById("strengthText");
-
-        let strength = 0;
-        if (password.length >= 10 && password.length <= 16) strength++;
-        if (/[A-Z]/.test(password)) strength++;
-        if (/[a-z]/.test(password)) strength++;
-        if (/\d/.test(password)) strength++;
-        if (/[@$!%*?&#^+=._-]/.test(password)) strength++;
-
-        strengthMeter.value = strength;
-
-        const strengthLabels = {
-            0: "Very Weak",
-            1: "Weak",
-            2: "Moderate",
-            3: "Good",
-            4: "Strong",
-            5: "Very Strong"
+    <script>
+        // Initialize Toastr options
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
         };
 
-        strengthText.textContent = strengthLabels[strength];
-        strengthText.style.color = strength >= 3 ? "green" : "red";
-    }
+        // Switch between login and signup forms
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const container = document.getElementById('container');
 
-    // Hardcoded barangays for each municipality
-    const barangays = {
-        "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban", "Bantad", "Batayang", "Binunga", "Caganhao", "Canat", "Catubugan", "Cawit", "Daig", "Duyay", "Hinapulan", "Isok I", "Isok II", "Laylay", "Lubang", "Malbog", "Maligaya", "Malusak", "Mansiwat", "Mogpog", "Murallon", "Paye", "Pili", "Poblacion", "Tabi", "Tabigue", "Tampus", "Tambunan", "Tanza", "Tugos"],
-        "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas", "Malbog", "Sihi", "Timbo", "Yook"],
-        "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo", "Bangbang", "Bognuyan", "Cabugao", "Dili", "Ipil", "Libtangin", "Mampaitan", "Mangiliol", "Pangi", "Pinggan", "Poblacion", "Tabionan", "Tapuyan", "Tiguion", "Tres Reyes", "Yook"],
-        "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc", "Bonga", "Butansapa", "Candahon", "Danao", "Dulong Bayan", "Gitnang Bayan", "Hinadharan", "Ino", "Janagdong", "Magapua", "Malayak", "Malusak", "Market Site", "Mataas na Bayan", "Nangka I", "Nangka II", "Paye", "Puting Buhangin", "Sayao", "Silangan", "Sumangga"],
-        "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin", "Balogo", "Banahaw", "Bangcuangan", "Biga", "Botilao", "Buyabod", "Dating Bayan", "Devilla", "Dolores", "Haguimit", "Haguimit", "Ipil", "Jolo", "Kalangkang", "Kaganhao", "Kasily", "Kilo-Kilo", "Kinyaman", "Lamesa", "Libjo", "Lipa", "Lusok", "Lyas", "Maharlika", "Maniwaya", "Marao", "Maribojoc", "Marlangga", "Masaguisi", "Masalukot", "Matalaba", "Nangka", "Pag-Asa", "Pantayin", "Pinamalayan", "Poblacion", "Poctoy", "San Antonio", "San Isidro", "San Lorenzo", "Tagum"],
-        "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo", "Dampulan", "Kay Duke", "Makawayan", "Malibago", "Marlangga", "Matuyatuya", "Nangka", "Paye", "Poblacion", "Sibuyao", "Suha", "Talawan", "Tiguion"]
-    };
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const municipalitySelect = document.getElementById("municipality");
-        const barangaySelect = document.getElementById("barangay");
-
-        municipalitySelect.addEventListener("change", function() {
-            const selectedMunicipality = municipalitySelect.value;
-            barangaySelect.innerHTML = '<option value="">Select Barangay</option>'; // Clear previous options
-
-            if (barangays[selectedMunicipality]) {
-                barangays[selectedMunicipality].forEach(barangay => {
-                    const option = document.createElement('option');
-                    option.value = barangay;
-                    option.textContent = barangay;
-                    barangaySelect.appendChild(option);
-                });
-            }
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
         });
-    });
-</script>
 
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
 
+        // Password Strength Checker Function
+        function checkPasswordStrength() {
+            const password = document.querySelector('input[name="reg_password"]').value;
+            const strengthMeter = document.getElementById("strengthMeter");
+            const strengthText = document.getElementById("strengthText");
+
+            let strength = 0;
+            if (password.length >= 10 && password.length <= 16) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[@$!%*?&#^+=._-]/.test(password)) strength++;
+
+            strengthMeter.value = strength;
+
+            const strengthLabels = {
+                0: "Very Weak",
+                1: "Weak",
+                2: "Moderate",
+                3: "Good",
+                4: "Strong",
+                5: "Very Strong"
+            };
+
+            strengthText.textContent = strengthLabels[strength];
+            strengthText.style.color = strength >= 3 ? "green" : "red";
+        }
+
+        // Hardcoded barangays for each municipality
+        const barangays = {
+            "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban", "Bantad", "Batayang", "Binunga", "Caganhao", "Canat", "Catubugan", "Cawit", "Daig", "Duyay", "Hinapulan", "Isok I", "Isok II", "Laylay", "Lubang", "Malbog", "Maligaya", "Malusak", "Mansiwat", "Mogpog", "Murallon", "Paye", "Pili", "Poblacion", "Tabi", "Tabigue", "Tampus", "Tambunan", "Tanza", "Tugos"],
+            "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas", "Malbog", "Sihi", "Timbo", "Yook"],
+            "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo", "Bangbang", "Bognuyan", "Cabugao", "Dili", "Ipil", "Libtangin", "Mampaitan", "Mangiliol", "Pangi", "Pinggan", "Poblacion", "Tabionan", "Tapuyan", "Tiguion", "Tres Reyes", "Yook"],
+            "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc", "Bonga", "Butansapa", "Candahon", "Danao", "Dulong Bayan", "Gitnang Bayan", "Hinadharan", "Ino", "Janagdong", "Magapua", "Malayak", "Malusak", "Market Site", "Mataas na Bayan", "Nangka I", "Nangka II", "Paye", "Puting Buhangin", "Sayao", "Silangan", "Sumangga"],
+            "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin", "Balogo", "Banahaw", "Bangcuangan", "Biga", "Botilao", "Buyabod", "Dating Bayan", "Devilla", "Dolores", "Haguimit", "Haguimit", "Ipil", "Jolo", "Kalangkang", "Kaganhao", "Kasily", "Kilo-Kilo", "Kinyaman", "Lamesa", "Libjo", "Lipa", "Lusok", "Lyas", "Maharlika", "Maniwaya", "Marao", "Maribojoc", "Marlangga", "Masaguisi", "Masalukot", "Matalaba", "Nangka", "Pag-Asa", "Pantayin", "Pinamalayan", "Poblacion", "Poctoy", "San Antonio", "San Isidro", "San Lorenzo", "Tagum"],
+            "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo", "Dampulan", "Kay Duke", "Makawayan", "Malibago", "Marlangga", "Matuyatuya", "Nangka", "Paye", "Poblacion", "Sibuyao", "Suha", "Talawan", "Tiguion"]
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const municipalitySelect = document.getElementById("municipality");
+            const barangaySelect = document.getElementById("barangay");
+
+            municipalitySelect.addEventListener("change", function() {
+                const selectedMunicipality = municipalitySelect.value;
+                barangaySelect.innerHTML = '<option value="">Select Barangay</option>'; // Clear previous options
+
+                if (barangays[selectedMunicipality]) {
+                    barangays[selectedMunicipality].forEach(barangay => {
+                        const option = document.createElement('option');
+                        option.value = barangay;
+                        option.textContent = barangay;
+                        barangaySelect.appendChild(option);
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
