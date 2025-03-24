@@ -157,6 +157,32 @@ session_start();
             <?php unset($_SESSION['error']); ?>
         <?php endif; ?>
 
+        // Display popup on page load if it exists
+        document.addEventListener("DOMContentLoaded", function() {
+            if (document.getElementById('successModal')) {
+                document.getElementById('successModal').style.display = 'block';
+            }
+            if (document.getElementById('registrationSuccessModal')) {
+                document.getElementById('registrationSuccessModal').style.display = 'block';
+            }
+            if (document.getElementById('errorModal')) {
+                document.getElementById('errorModal').style.display = 'block';
+            }
+        });
+
+        // Close modal function
+        function closeModal() {
+            if (document.getElementById('successModal')) {
+                document.getElementById('successModal').style.display = 'none';
+            }
+            if (document.getElementById('registrationSuccessModal')) {
+                document.getElementById('registrationSuccessModal').style.display = 'none';
+            }
+            if (document.getElementById('errorModal')) {
+                document.getElementById('errorModal').style.display = 'none';
+            }
+        }
+
         // Switch between login and signup forms
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
