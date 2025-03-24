@@ -95,6 +95,21 @@ session_start();
                         <option value="female">Female</option>
                     </select>
                     <input type="text" name="phone" placeholder="Phone Number" required />
+                    
+                    <!-- Address dropdowns -->
+                    <label for="province">Province:</label>
+                    <select name="province" id="province" required>
+                        <option value="Marinduque">Marinduque</option>
+                    </select>
+                    <label for="municipality">Municipality:</label>
+                    <select name="municipality" id="municipality" required>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    <label for="barangay">Barangay:</label>
+                    <select name="barangay" id="barangay" required>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    
                     <input type="checkbox" name="data_privacy" required />
                     <label for="data_privacy">I agree to the <a href="data_privacy_policy.php" target="_blank">Data Privacy Act</a></label>
                     
@@ -185,6 +200,39 @@ session_start();
             container.classList.remove("right-panel-active");
         });
         
+        // Fetch municipalities and barangays from PSGC API
+        document.addEventListener("DOMContentLoaded", function() {
+            const municipalitySelect = document.getElementById('municipality');
+            const barangaySelect = document.getElementById('barangay');
+
+            fetch('https://psgc-api-url-for-marinduque/municipalities') // Replace with actual PSGC API URL
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(municipality => {
+                        const option = document.createElement('option');
+                        option.value = municipality.name;
+                        option.textContent = municipality.name;
+                        municipalitySelect.appendChild(option);
+                    });
+                });
+
+            municipalitySelect.addEventListener('change', function() {
+                const selectedMunicipality = municipalitySelect.value;
+                barangaySelect.innerHTML = ''; // Clear previous options
+
+                fetch(`https://psgc-api-url-for-marinduque/municipalities/${selectedMunicipality}/barangays`) // Replace with actual PSGC API URL
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(barangay => {
+                            const option = document.createElement('option');
+                            option.value = barangay.name;
+                            option.textContent = barangay.name;
+                            barangaySelect.appendChild(option);
+                        });
+                    });
+            });
+        });
+
         // Password Strength Checker Function
         function checkPasswordStrength() {
             const password = document.querySelector('input[name="reg_password"]').value;
