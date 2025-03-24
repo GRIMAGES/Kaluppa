@@ -21,24 +21,6 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 <body>
-    <?php
-    // Check for session messages
-    if (isset($_SESSION['info'])) {
-        echo "<script>toastr.success('{$_SESSION['info']}');</script>";
-        unset($_SESSION['info']); // Clear the message after displaying it
-    }
-
-    if (isset($_SESSION['registration_success'])) {
-        echo "<script>toastr.success('{$_SESSION['registration_success']}');</script>";
-        unset($_SESSION['registration_success']); // Clear the message after displaying it
-    }
-
-    if (isset($_SESSION['error'])) {
-        echo "<script>toastr.error('{$_SESSION['error']}');</script>";
-        unset($_SESSION['error']); // Clear the message after displaying it
-    }
-    ?>
-
     <div class="container" id="container">
         <div class="form-container sign-up-container">
             <form action="../Backend/Multiuserlogins.php" method="POST">
@@ -158,6 +140,22 @@ session_start();
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
         };
+
+        // Display session messages
+        <?php if (isset($_SESSION['info'])): ?>
+            toastr.success("<?php echo $_SESSION['info']; ?>");
+            <?php unset($_SESSION['info']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['registration_success'])): ?>
+            toastr.success("<?php echo $_SESSION['registration_success']; ?>");
+            <?php unset($_SESSION['registration_success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            toastr.error("<?php echo $_SESSION['error']; ?>");
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
 
         // Switch between login and signup forms
         const signUpButton = document.getElementById('signUp');
