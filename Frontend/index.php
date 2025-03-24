@@ -96,20 +96,25 @@ session_start();
                     </select>
                     <input type="text" name="phone" placeholder="Phone Number" required />
                     
-                    <!-- Address dropdowns -->
-                    <label for="province">Province:</label>
-                    <select name="province" id="province" required>
-                        <option value="Marinduque">Marinduque</option>
-                    </select>
-                    <label for="municipality">Municipality:</label>
-<select name="municipality" id="municipality" required>
-    <option value="">Select Municipality</option>
-</select>
+                 <!-- Address dropdowns -->
+<div class="address-section">
+    <label for="province">Province:</label>
+    <select name="province" id="province" required>
+        <option value="">Select Province</option>
+        <option value="Marinduque">Marinduque</option>
+    </select>
 
-<label for="barangay">Barangay:</label>
-<select name="barangay" id="barangay" required>
-    <option value="">Select Barangay</option>
-</select>
+    <label for="municipality">Municipality:</label>
+    <select name="municipality" id="municipality" required>
+        <option value="">Select Municipality</option>
+    </select>
+
+    <label for="barangay">Barangay:</label>
+    <select name="barangay" id="barangay" required>
+        <option value="">Select Barangay</option>
+    </select>
+</div>
+
                     
                     <input type="checkbox" name="data_privacy" required />
                     <label for="data_privacy">I agree to the <a href="data_privacy_policy.php" target="_blank">Data Privacy Act</a></label>
@@ -205,61 +210,57 @@ session_start();
         strengthText.style.color = strength >= 3 ? "green" : "red";
     }
 
+    // Cascading dropdown logic for Municipality and Barangay
     document.addEventListener("DOMContentLoaded", function () {
         const municipalitySelect = document.getElementById("municipality");
         const barangaySelect = document.getElementById("barangay");
         const provinceSelect = document.getElementById("province");
 
-        // Province change
+        const data = {
+            "Marinduque": {
+                "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban", "Bantad", "Batayang", "Binunga", "Caganhao", "Canat", "Catubugan", "Cawit", "Daig", "Duyay", "Hinapulan", "Isok I", "Isok II", "Laylay", "Lubang", "Malbog", "Maligaya", "Malusak", "Mansiwat", "Mogpog", "Murallon", "Paye", "Pili", "Poblacion", "Tabi", "Tabigue", "Tampus", "Tambunan", "Tanza", "Tugos"],
+                "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo", "Bangbang", "Bognuyan", "Cabugao", "Dili", "Ipil", "Libtangin", "Mampaitan", "Mangiliol", "Pangi", "Pinggan", "Poblacion", "Tabionan", "Tapuyan", "Tiguion", "Tres Reyes", "Yook"],
+                "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc", "Bonga", "Butansapa", "Candahon", "Danao", "Dulong Bayan", "Gitnang Bayan", "Hinadharan", "Ino", "Janagdong", "Magapua", "Malayak", "Malusak", "Market Site", "Mataas na Bayan", "Nangka I", "Nangka II", "Paye", "Puting Buhangin", "Sayao", "Silangan", "Sumangga"],
+                "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin", "Balogo", "Banahaw", "Bangcuangan", "Biga", "Botilao", "Buyabod", "Dating Bayan", "Devilla", "Dolores", "Haguimit", "Haguimit", "Ipil", "Jolo", "Kalangkang", "Kaganhao", "Kasily", "Kilo-Kilo", "Kinyaman", "Lamesa", "Libjo", "Lipa", "Lusok", "Lyas", "Maharlika", "Maniwaya", "Marao", "Maribojoc", "Marlangga", "Masaguisi", "Masalukot", "Matalaba", "Nangka", "Pag-Asa", "Pantayin", "Pinamalayan", "Poblacion", "Poctoy", "San Antonio", "San Isidro", "San Lorenzo", "Tagum"],
+                "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo", "Dampulan", "Kay Duke", "Makawayan", "Malibago", "Marlangga", "Matuyatuya", "Nangka", "Paye", "Poblacion", "Sibuyao", "Suha", "Talawan", "Tiguion"],
+                "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas", "Malbog", "Sihi", "Timbo", "Yook"]
+            }
+        };
+
+        // Populate municipalities initially
         provinceSelect.addEventListener("change", function () {
-            const provinceCode = this.value;
+            const selectedProvince = this.value;
+            municipalitySelect.innerHTML = "<option value=''>Select Municipality</option>";
+            barangaySelect.innerHTML = "<option value=''>Select Barangay</option>";
 
-            municipalitySelect.innerHTML = '<option value="">Loading...</option>';
-            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-
-            fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities/`)
-                .then(response => response.json())
-                .then(data => {
-                    municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
-                    data.forEach(municipality => {
-                        const option = document.createElement("option");
-                        option.value = municipality.code;
-                        option.textContent = municipality.name;
-                        municipalitySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error fetching municipalities:", error);
-                    municipalitySelect.innerHTML = '<option value="">Failed to load</option>';
+            if (data[selectedProvince]) {
+                Object.keys(data[selectedProvince]).forEach(municipality => {
+                    const option = document.createElement("option");
+                    option.value = municipality;
+                    option.textContent = municipality;
+                    municipalitySelect.appendChild(option);
                 });
+            }
         });
 
-        // Municipality change
+        // Populate barangays based on selected municipality
         municipalitySelect.addEventListener("change", function () {
-            const muniCode = this.value;
-            barangaySelect.innerHTML = '<option value="">Loading...</option>';
+            const selectedProvince = provinceSelect.value;
+            const selectedMunicipality = this.value;
+            barangaySelect.innerHTML = "<option value=''>Select Barangay</option>";
 
-            fetch(`https://psgc.gitlab.io/api/cities-municipalities/${muniCode}/barangays/`)
-                .then(response => response.json())
-                .then(data => {
-                    barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
-                    data.forEach(barangay => {
-                        const option = document.createElement("option");
-                        option.value = barangay.name;
-                        option.textContent = barangay.name;
-                        barangaySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error("Error fetching barangays:", error);
-                    barangaySelect.innerHTML = '<option value="">Failed to load</option>';
+            if (data[selectedProvince] && data[selectedProvince][selectedMunicipality]) {
+                data[selectedProvince][selectedMunicipality].forEach(barangay => {
+                    const option = document.createElement("option");
+                    option.value = barangay;
+                    option.textContent = barangay;
+                    barangaySelect.appendChild(option);
                 });
+            }
         });
-
-        // Auto-trigger province load
-        provinceSelect.dispatchEvent(new Event('change'));
     });
 </script>
+
 
 </body>
 </html>
