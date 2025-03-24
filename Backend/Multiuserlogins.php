@@ -80,12 +80,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     $gender = $_POST['gender'];
     $birthday = $_POST['birthday']; // Capture birthday
     $phone = $_POST['phone'];
+    $province = $_POST['province'];
+    $municipality = $_POST['municipality'];
+    $barangay = $_POST['barangay'];
     $otp = generateOTP();
-
-    // Fetch address details from PSGC API
-    $psgc_url = "https://psgc-api-url-for-marinduque"; // Replace with actual PSGC API URL
-    $address_details = file_get_contents($psgc_url);
-    $address = json_decode($address_details, true);
 
     if (strlen($password) < 10 || 
     !preg_match('/[A-Z]/', $password) || 
@@ -110,12 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
 
     $stmt = $conn->prepare("INSERT INTO user (
         first_name, middle_name, last_name, email, password, role, gender,
-        birthday, house_number, street, barangay, district, city, region,
-        postal_code, phone, otp, otp_expiry, is_verified
-    ) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)");
+        birthday, province, municipality, barangay, phone, otp, otp_expiry, is_verified
+    ) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, 0)");
     
     $stmt->bind_param(
-        "sssssssssssssssss",  // 16 values (excluding hardcoded ones)
+        "ssssssssssssss",  // 14 values (excluding hardcoded ones)
         $first_name,
         $middle_name,
         $last_name,
@@ -123,35 +120,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
         $password_hashed,
         $gender,
         $birthday,
-        $address['house_number'],
-        $address['street'],
-        $address['barangay'],
-        $address['district'],
-        $address['city'],
-        $address['region'],
-        $address['postal_code'],
+        $province,
+        $municipality,
+        $barangay,
         $phone,
         $otp,
         $otp_expiry
     );
 
     if ($stmt->execute()) {
-        // Store address details in the database
-        $address_stmt = $conn->prepare("INSERT INTO address (user_id, house_number, street, barangay, district, city, region, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $user_id = $stmt->insert_id;
-        $address_stmt->bind_param(
-            "isssssss",
-            $user_id,
-            $address['house_number'],
-            $address['street'],
-            $address['barangay'],
-            $address['district'],
-            $address['city'],
-            $address['region'],
-            $address['postal_code']
-        );
-        $address_stmt->execute();
-
         $subject = "Verify Your Email";
         $message = "Click the link to verify your account: ";
         $message .= "https://kaluppa.online/Kaluppa/Backend/otpverification.php?email=$email&otp=$otp"; 
