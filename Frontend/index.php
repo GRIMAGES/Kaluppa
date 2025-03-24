@@ -17,58 +17,17 @@ session_start();
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Toast CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 <body>
-    <?php
-    // Check for session messages
-    if (isset($_SESSION['info'])) {
-        echo "<div id='successModal' class='modal'>
-                <div class='modal-content'>
-                    <span class='close' onclick='closeModal()'>&times;</span>
-                    <h4>Success!</h4>
-                    <p>{$_SESSION['info']}</p>
-                    <button onclick='closeModal()'>Close</button>
-                </div>
-              </div>";
-        unset($_SESSION['info']); // Clear the message after displaying it
-    }
-
-    if (isset($_SESSION['registration_success'])) {
-        echo "<div id='registrationSuccessModal' class='modal'>
-                <div class='modal-content'>
-                    <span class='close' onclick='closeModal()'>&times;</span>
-                    <h4>Registration Successful!</h4>
-                    <p>{$_SESSION['registration_success']}</p>
-                    <button onclick='closeModal()'>Close</button>
-                    <form action='../Backend/Multiuserlogins.php' method='POST'>
-                        <input type='hidden' name='resend_confirmation' value='1'>
-                        <button type='submit' class='resend-btn'>Resend Confirmation Link</button>
-                    </form>
-                </div>
-              </div>";
-        unset($_SESSION['registration_success']); // Clear the message after displaying it
-    }
-
-    if (isset($_SESSION['error'])) {
-        echo "<div id='errorModal' class='modal'>
-                <div class='modal-content'>
-                    <span class='close' onclick='closeModal()'>&times;</span>
-                    <h4>Error!</h4>
-                    <p>{$_SESSION['error']}</p>
-                    <button onclick='closeModal()'>Close</button>
-                </div>
-              </div>";
-        unset($_SESSION['error']); // Clear the message after displaying it
-    }
-    ?>
-
     <div class="container" id="container">
         <div class="form-container sign-up-container">
             <form action="../Backend/Multiuserlogins.php" method="POST">
                 <h1>Create Account</h1>
                 <div class="social-container">
                     <a href="register_facebook.php" class="social" title="Register with Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="register_google.php" class="social" title="Register with Google"><i class="fab fa-google'></i></a>
+                    <a href="register_google.php" class="social" title="Register with Google"><i class="fab fa-google"></i></a>
                     <a href="register_qr.php" class="social" title="Register with QR Code"><i class="fas fa-qrcode"></i></a>
                 </div>
                 <span>or use your email for registration</span>
@@ -159,8 +118,45 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="JS/login_script.js"></script>
+    <!-- Toast JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     
     <script>
+        // Initialize Toastr options
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Display session messages
+        <?php if (isset($_SESSION['info'])): ?>
+            toastr.success("<?php echo $_SESSION['info']; ?>");
+            <?php unset($_SESSION['info']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['registration_success'])): ?>
+            toastr.success("<?php echo $_SESSION['registration_success']; ?>");
+            <?php unset($_SESSION['registration_success']); ?>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            toastr.error("<?php echo $_SESSION['error']; ?>");
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
+
         // Display popup on page load if it exists
         document.addEventListener("DOMContentLoaded", function() {
             if (document.getElementById('successModal')) {
