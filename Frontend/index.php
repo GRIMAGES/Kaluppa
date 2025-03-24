@@ -24,42 +24,17 @@ session_start();
     <?php
     // Check for session messages
     if (isset($_SESSION['info'])) {
-        echo "<div id='successModal' class='modal'>
-                <div class='modal-content'>
-                    <span class='close' onclick='closeModal()'>&times;</span>
-                    <h4>Success!</h4>
-                    <p>{$_SESSION['info']}</p>
-                    <button onclick='closeModal()'>Close</button>
-                </div>
-              </div>";
+        echo "<script>toastr.success('{$_SESSION['info']}');</script>";
         unset($_SESSION['info']); // Clear the message after displaying it
     }
 
     if (isset($_SESSION['registration_success'])) {
-        echo "<div id='registrationSuccessModal' class='modal'>
-                <div class='modal-content'>
-                    <span class='close' onclick='closeModal()'>&times;</span>
-                    <h4>Registration Successful!</h4>
-                    <p>{$_SESSION['registration_success']}</p>
-                    <button onclick='closeModal()'>Close</button>
-                    <form action='../Backend/Multiuserlogins.php' method='POST'>
-                        <input type='hidden' name='resend_confirmation' value='1'>
-                        <button type='submit' class='resend-btn'>Resend Confirmation Link</button>
-                    </form>
-                </div>
-              </div>";
+        echo "<script>toastr.success('{$_SESSION['registration_success']}');</script>";
         unset($_SESSION['registration_success']); // Clear the message after displaying it
     }
 
     if (isset($_SESSION['error'])) {
-        echo "<div id='errorModal' class='modal'>
-                <div class='modal-content'>
-                    <span class='close' onclick='closeModal()'>&times;</span>
-                    <h4>Error!</h4>
-                    <p>{$_SESSION['error']}</p>
-                    <button onclick='closeModal()'>Close</button>
-                </div>
-              </div>";
+        echo "<script>toastr.error('{$_SESSION['error']}');</script>";
         unset($_SESSION['error']); // Clear the message after displaying it
     }
     ?>
@@ -164,6 +139,7 @@ session_start();
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="JS/login_script.js"></script>
     <!-- Toast JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     
    <!-- Your original HTML structure remains intact -->
 
