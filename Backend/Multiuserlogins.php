@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reg_first_name'], $_P
     ) VALUES (?, ?, ?, ?, ?, 'user', ?, ?, ?, ?, ?, ?, ?, ?, 0)");
     
     $stmt->bind_param(
-        "ssssssssssssss",  // 14 values (excluding hardcoded ones)
+        "sssssssssssss",  // 14 values (excluding hardcoded ones)
         $first_name,
         $middle_name,
         $last_name,
