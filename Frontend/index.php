@@ -139,12 +139,38 @@ session_start();
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="JS/login_script.js"></script>
     <!-- Toast JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     
    <!-- Your original HTML structure remains intact -->
 
 <!-- ADD THIS UPDATED SCRIPT BLOCK at the bottom just before the closing </body> tag -->
 <script>
+
+      // Display popup on page load if it exists
+      document.addEventListener("DOMContentLoaded", function() {
+            if (document.getElementById('successModal')) {
+                document.getElementById('successModal').style.display = 'block';
+            }
+            if (document.getElementById('registrationSuccessModal')) {
+                document.getElementById('registrationSuccessModal').style.display = 'block';
+            }
+            if (document.getElementById('errorModal')) {
+                document.getElementById('errorModal').style.display = 'block';
+            }
+        });
+
+        // Close modal function
+        function closeModal() {
+            if (document.getElementById('successModal')) {
+                document.getElementById('successModal').style.display = 'none';
+            }
+            if (document.getElementById('registrationSuccessModal')) {
+                document.getElementById('registrationSuccessModal').style.display = 'none';
+            }
+            if (document.getElementById('errorModal')) {
+                document.getElementById('errorModal').style.display = 'none';
+            }
+        }
     // Switch between login and signup forms
     const signUpButton = document.getElementById('signUp');
     const signInButton = document.getElementById('signIn');
