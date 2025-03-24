@@ -95,13 +95,6 @@ session_start();
                         <option value="female">Female</option>
                     </select>
                     <input type="text" name="phone" placeholder="Phone Number" required />
-                    <input type="text" name="house_number" placeholder="House Number" required />
-                    <input type="text" name="street" placeholder="Street" required />
-                    <input type="text" name="barangay" placeholder="Barangay" required />
-                    <input type="text" name="district" placeholder="District" required />
-                    <input type="text" name="city" placeholder="City" required />
-                    <input type="text" name="region" placeholder="Region" required />
-                    <input type="text" name="postal_code" placeholder="Postal Code" required />
                     <input type="checkbox" name="data_privacy" required />
                     <label for="data_privacy">I agree to the <a href="data_privacy_policy.php" target="_blank">Data Privacy Act</a></label>
                     
