@@ -96,25 +96,25 @@ session_start();
                     </select>
                     <input type="text" name="phone" placeholder="Phone Number" required />
                     
-                 <!-- Address dropdowns -->
-<div class="address-section">
-    <label for="province">Province:</label>
-    <select name="province" id="province" required>
-        <option value="">Select Province</option>
-        <option value="Marinduque">Marinduque</option>
-    </select>
-
-    <label for="municipality">Municipality:</label>
-    <select name="municipality" id="municipality" required>
-        <option value="">Select Municipality</option>
-    </select>
-
-    <label for="barangay">Barangay:</label>
-    <select name="barangay" id="barangay" required>
-        <option value="">Select Barangay</option>
-    </select>
-</div>
-
+                    <!-- Address dropdowns -->
+                    <label for="province">Province:</label>
+                    <select name="province" id="province" required>
+                        <option value="Marinduque">Marinduque</option>
+                    </select>
+                    <label for="municipality">Municipality:</label>
+                    <select name="municipality" id="municipality" required>
+                        <option value="">Select Municipality</option>
+                        <option value="Boac">Boac</option>
+                        <option value="Buenavista">Buenavista</option>
+                        <option value="Gasan">Gasan</option>
+                        <option value="Mogpog">Mogpog</option>
+                        <option value="Santa Cruz">Santa Cruz</option>
+                        <option value="Torrijos">Torrijos</option>
+                    </select>
+                    <label for="barangay">Barangay:</label>
+                    <select name="barangay" id="barangay" required>
+                        <option value="">Select Barangay</option>
+                    </select>
                     
                     <input type="checkbox" name="data_privacy" required />
                     <label for="data_privacy">I agree to the <a href="data_privacy_policy.php" target="_blank">Data Privacy Act</a></label>
@@ -210,48 +210,27 @@ session_start();
         strengthText.style.color = strength >= 3 ? "green" : "red";
     }
 
-    // Cascading dropdown logic for Municipality and Barangay
-    document.addEventListener("DOMContentLoaded", function () {
+    // Hardcoded barangays for each municipality
+    const barangays = {
+        "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban", "Bantad", "Batayang", "Binunga", "Caganhao", "Canat", "Catubugan", "Cawit", "Daig", "Duyay", "Hinapulan", "Isok I", "Isok II", "Laylay", "Lubang", "Malbog", "Maligaya", "Malusak", "Mansiwat", "Mogpog", "Murallon", "Paye", "Pili", "Poblacion", "Tabi", "Tabigue", "Tampus", "Tambunan", "Tanza", "Tugos"],
+        "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas", "Malbog", "Sihi", "Timbo", "Yook"],
+        "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo", "Bangbang", "Bognuyan", "Cabugao", "Dili", "Ipil", "Libtangin", "Mampaitan", "Mangiliol", "Pangi", "Pinggan", "Poblacion", "Tabionan", "Tapuyan", "Tiguion", "Tres Reyes", "Yook"],
+        "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc", "Bonga", "Butansapa", "Candahon", "Danao", "Dulong Bayan", "Gitnang Bayan", "Hinadharan", "Ino", "Janagdong", "Magapua", "Malayak", "Malusak", "Market Site", "Mataas na Bayan", "Nangka I", "Nangka II", "Paye", "Puting Buhangin", "Sayao", "Silangan", "Sumangga"],
+        "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin", "Balogo", "Banahaw", "Bangcuangan", "Biga", "Botilao", "Buyabod", "Dating Bayan", "Devilla", "Dolores", "Haguimit", "Haguimit", "Ipil", "Jolo", "Kalangkang", "Kaganhao", "Kasily", "Kilo-Kilo", "Kinyaman", "Lamesa", "Libjo", "Lipa", "Lusok", "Lyas", "Maharlika", "Maniwaya", "Marao", "Maribojoc", "Marlangga", "Masaguisi", "Masalukot", "Matalaba", "Nangka", "Pag-Asa", "Pantayin", "Pinamalayan", "Poblacion", "Poctoy", "San Antonio", "San Isidro", "San Lorenzo", "Tagum"],
+        "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo", "Dampulan", "Kay Duke", "Makawayan", "Malibago", "Marlangga", "Matuyatuya", "Nangka", "Paye", "Poblacion", "Sibuyao", "Suha", "Talawan", "Tiguion"]
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
         const municipalitySelect = document.getElementById("municipality");
         const barangaySelect = document.getElementById("barangay");
-        const provinceSelect = document.getElementById("province");
 
-        const data = {
-            "Marinduque": {
-                "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban", "Bantad", "Batayang", "Binunga", "Caganhao", "Canat", "Catubugan", "Cawit", "Daig", "Duyay", "Hinapulan", "Isok I", "Isok II", "Laylay", "Lubang", "Malbog", "Maligaya", "Malusak", "Mansiwat", "Mogpog", "Murallon", "Paye", "Pili", "Poblacion", "Tabi", "Tabigue", "Tampus", "Tambunan", "Tanza", "Tugos"],
-                "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo", "Bangbang", "Bognuyan", "Cabugao", "Dili", "Ipil", "Libtangin", "Mampaitan", "Mangiliol", "Pangi", "Pinggan", "Poblacion", "Tabionan", "Tapuyan", "Tiguion", "Tres Reyes", "Yook"],
-                "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc", "Bonga", "Butansapa", "Candahon", "Danao", "Dulong Bayan", "Gitnang Bayan", "Hinadharan", "Ino", "Janagdong", "Magapua", "Malayak", "Malusak", "Market Site", "Mataas na Bayan", "Nangka I", "Nangka II", "Paye", "Puting Buhangin", "Sayao", "Silangan", "Sumangga"],
-                "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin", "Balogo", "Banahaw", "Bangcuangan", "Biga", "Botilao", "Buyabod", "Dating Bayan", "Devilla", "Dolores", "Haguimit", "Haguimit", "Ipil", "Jolo", "Kalangkang", "Kaganhao", "Kasily", "Kilo-Kilo", "Kinyaman", "Lamesa", "Libjo", "Lipa", "Lusok", "Lyas", "Maharlika", "Maniwaya", "Marao", "Maribojoc", "Marlangga", "Masaguisi", "Masalukot", "Matalaba", "Nangka", "Pag-Asa", "Pantayin", "Pinamalayan", "Poblacion", "Poctoy", "San Antonio", "San Isidro", "San Lorenzo", "Tagum"],
-                "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo", "Dampulan", "Kay Duke", "Makawayan", "Malibago", "Marlangga", "Matuyatuya", "Nangka", "Paye", "Poblacion", "Sibuyao", "Suha", "Talawan", "Tiguion"],
-                "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas", "Malbog", "Sihi", "Timbo", "Yook"]
-            }
-        };
+        municipalitySelect.addEventListener("change", function() {
+            const selectedMunicipality = municipalitySelect.value;
+            barangaySelect.innerHTML = '<option value="">Select Barangay</option>'; // Clear previous options
 
-        // Populate municipalities initially
-        provinceSelect.addEventListener("change", function () {
-            const selectedProvince = this.value;
-            municipalitySelect.innerHTML = "<option value=''>Select Municipality</option>";
-            barangaySelect.innerHTML = "<option value=''>Select Barangay</option>";
-
-            if (data[selectedProvince]) {
-                Object.keys(data[selectedProvince]).forEach(municipality => {
-                    const option = document.createElement("option");
-                    option.value = municipality;
-                    option.textContent = municipality;
-                    municipalitySelect.appendChild(option);
-                });
-            }
-        });
-
-        // Populate barangays based on selected municipality
-        municipalitySelect.addEventListener("change", function () {
-            const selectedProvince = provinceSelect.value;
-            const selectedMunicipality = this.value;
-            barangaySelect.innerHTML = "<option value=''>Select Barangay</option>";
-
-            if (data[selectedProvince] && data[selectedProvince][selectedMunicipality]) {
-                data[selectedProvince][selectedMunicipality].forEach(barangay => {
-                    const option = document.createElement("option");
+            if (barangays[selectedMunicipality]) {
+                barangays[selectedMunicipality].forEach(barangay => {
+                    const option = document.createElement('option');
                     option.value = barangay;
                     option.textContent = barangay;
                     barangaySelect.appendChild(option);
