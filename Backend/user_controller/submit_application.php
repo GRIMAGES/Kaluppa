@@ -194,8 +194,10 @@ try {
                 exit();
             }
             
+            // Execute the query and handle errors
             if (!$insertStmt->execute()) {
                 error_log("Database Insert Error: " . $insertStmt->error); // Log detailed error
+                error_log("Query Parameters: id=$newId, user_id=$user_id, first_name=$firstName, middle_name=$middleName, last_name=$lastName, email=$email, barangay=$barangay, province=$province, municipality=$municipality, course_id=$courseId, documents=" . json_encode($documentData));
                 echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Failed to submit application.']);
                 exit();
             }
