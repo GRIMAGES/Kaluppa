@@ -1,4 +1,9 @@
 <?php
+// Error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', '../../Backend/logs/application_form_errors.log');
 require_once '../../Backend/connection.php';
 require_once '../../Backend/aes_key.php'; // AES_KEY and AES_IV defined here
 require '../../Backend/PHPMailer/PHPMailer.php';
@@ -10,11 +15,7 @@ use PHPMailer\PHPMailer\Exception;
 
 session_start();
 
-// Error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('log_errors', 1);
-ini_set('error_log', '../../Backend/logs/application_form_errors.log');
+
 
 // Check if user is logged in
 if (!isset($_SESSION['email'])) {
