@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         if (!$insertStmt) {
-            error_log("Database Prepare Error: " . $conn->error);
+            error_log("Database Prepare Error: " . $conn->error); // Log detailed error
             echo json_encode(['success' => false, 'error_code' => 8, 'message' => 'Failed to prepare SQL statement.']);
             exit();
         }
@@ -164,31 +164,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $courseId,
             $documentData
         )) {
-            error_log("Bind Param Error: " . $insertStmt->error);
+            error_log("Bind Param Error: " . $insertStmt->error); // Log detailed error
             echo json_encode(['success' => false, 'error_code' => 9, 'message' => 'Failed to bind parameters.']);
             exit();
         }
         
-        if ($insertStmt->execute()) {
-            // Fetch course name for the email
-            $courseStmt = $conn->prepare("SELECT name FROM courses WHERE id = ?");
-            $courseStmt->bind_param("i", $courseId);
-            $courseStmt->execute();
-            $courseResult = $courseStmt->get_result();
-            $course = $courseResult->fetch_assoc();
-            $courseName = $course['name'] ?? 'the course';
-
-            // Send notification email
-            $emailResult = sendApplicationNotification($email, $firstName, $courseName);
-
-            if ($emailResult) {
-                echo json_encode(['success' => true, 'message' => 'Application submitted successfully. Notification email sent.']);
-            } else {
-                echo json_encode(['success' => true, 'message' => 'Application submitted successfully, but failed to send notification email.']);
-            }
-        } else {
-            error_log("Database Insert Error: " . $insertStmt->error);
+        if (!$insertStmt->execute()) {
+            error_log("Database Insert Error: " . $insertStmt->error); // Log detailed error
             echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Failed to submit application.']);
+            exit();
+        }
+
+        // Fetch course name for the email
+        $courseStmt = $conn->prepare("SELECT name FROM courses WHERE id = ?");
+        if (!$courseStmt) {
+            error_log("Course Query Prepare Error: " . $conn->error); // Log detailed error
+            echo json_encode(['success' => false, 'error_code' => 11, 'message' => 'Failed to fetch course details.']);
+            exit();
+        }
+
+        if (!$courseStmt->bind_param("i", $courseId)) {
+            error_log("Course Query Bind Error: " . $courseStmt->error); // Log detailed error
+            echo json_encode(['success' => false, 'error_code' => 12, 'message' => 'Failed to bind course ID.']);
+            exit();
+        }
+
+        if (!$courseStmt->execute()) {
+            error_log("Course Query Execute Error: " . $courseStmt->error); // Log detailed error
+            echo json_encode(['success' => false, 'error_code' => 13, 'message' => 'Failed to execute course query.']);
+            exit();
+        }
+
+        $courseResult = $courseStmt->get_result();
+        if (!$courseResult) {
+            error_log("Course Query Result Error: " . $conn->error); // Log detailed error
+            echo json_encode(['success' => false, 'error_code' => 14, 'message' => 'Failed to fetch course result.']);
+            exit();
+        }
+
+        $course = $courseResult->fetch_assoc();
+        $courseName = $course['name'] ?? 'the course';
+
+        // Send notification email
+        $emailResult = sendApplicationNotification($email, $firstName, $courseName);
+
+        if ($emailResult) {
+            echo json_encode(['success' => true, 'message' => 'Application submitted successfully. Notification email sent.']);
+        } else {
+            echo json_encode(['success' => true, 'message' => 'Application submitted successfully, but failed to send notification email.']);
         }
 
         $insertStmt->close();
