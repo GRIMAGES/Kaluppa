@@ -24,9 +24,8 @@ if ($result->num_rows > 0) {
     $firstName = $user['first_name'];
     $middleName = $user['middle_name'];
     $lastName = $user['last_name'];
-    // Keep only barangay and city
+    // Keep only barangay
     $barangay = $user['barangay'];
-    $city = $user['city'];
 } else {
     echo "User not found.";
 }
@@ -208,10 +207,6 @@ $categorizedCourses = categorizeCourses($courseResult);
               <div class="mb-3">
                 <label for="barangay" class="form-label">Barangay</label>
                 <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay); ?>" required>
-              </div>
-              <div class="mb-3">
-                <label for="city" class="form-label">City</label>
-                <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($city); ?>" required>
               </div>
               <div class="mb-3">
                 <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>

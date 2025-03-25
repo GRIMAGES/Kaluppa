@@ -99,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Serialize the encrypted documents array for storage in DB
         $documentData = json_encode($encryptedDocuments);  // Store as JSON string
 
-        $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, barangay, city, course_id, documents)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, barangay, course_id, documents)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         if (!$insertStmt) {
             error_log("Database Prepare Error: " . $conn->error);
@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if (!$insertStmt->bind_param(
-            "sissssssss",
+            "sisssssss",
             $newId,
             $user_id,
             $firstName,
