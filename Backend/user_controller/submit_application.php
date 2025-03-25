@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
         $barangay = $_POST['barangay'] ?? '';
-        $city = $_POST['city'] ?? '';
+        $province = $_POST['province'] ?? '';
+        $municipality = $_POST['municipality'] ?? '';
         $courseId = intval($_POST['course_id']);
 
         // Check for duplicate application
@@ -99,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Serialize the encrypted documents array for storage in DB
         $documentData = json_encode($encryptedDocuments);  // Store as JSON string
 
-        $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, barangay, course_id, documents)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, barangay, province, municipality, course_id, documents)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         if (!$insertStmt) {
             error_log("Database Prepare Error: " . $conn->error);
@@ -109,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if (!$insertStmt->bind_param(
-            "sisssssss",
+            "sisssssssis",
             $newId,
             $user_id,
             $firstName,
@@ -117,7 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $lastName,
             $email,
             $barangay,
-            $city,
+            $province,
+            $municipality,
             $courseId,
             $documentData
         )) {

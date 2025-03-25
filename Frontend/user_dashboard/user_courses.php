@@ -24,8 +24,10 @@ if ($result->num_rows > 0) {
     $firstName = $user['first_name'];
     $middleName = $user['middle_name'];
     $lastName = $user['last_name'];
-    // Keep only barangay
+    // Include barangay, province, and municipality
     $barangay = $user['barangay'];
+    $province = $user['province'];
+    $municipality = $user['municipality'];
 } else {
     echo "User not found.";
 }
@@ -207,6 +209,14 @@ $categorizedCourses = categorizeCourses($courseResult);
               <div class="mb-3">
                 <label for="barangay" class="form-label">Barangay</label>
                 <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="province" class="form-label">Province</label>
+                <input type="text" class="form-control" id="province" name="province" value="<?php echo htmlspecialchars($province); ?>" required>
+              </div>
+              <div class="mb-3">
+                <label for="municipality" class="form-label">Municipality</label>
+                <input type="text" class="form-control" id="municipality" name="municipality" value="<?php echo htmlspecialchars($municipality); ?>" required>
               </div>
               <div class="mb-3">
                 <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>
