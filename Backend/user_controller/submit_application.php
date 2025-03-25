@@ -40,6 +40,20 @@ if ($row && isset($row['id'])) {
     $newId = 'APP-00001';
 }
 
+// Function to send notification email
+function sendApplicationNotification($email, $firstName, $courseName) {
+    $subject = "Course Application Successful";
+    $message = "Dear $firstName,\n\n";
+    $message .= "You have successfully applied for the course: $courseName.\n";
+    $message .= "We will review your application and notify you of the next steps.\n\n";
+    $message .= "Thank you for choosing Kaluppa.\n\n";
+    $message .= "Best regards,\n";
+    $message .= "The Kaluppa Team";
+
+    // Use PHP's mail function or a library like PHPMailer
+    return mail($email, $subject, $message);
+}
+
 // Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate required fields
@@ -131,7 +145,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if ($insertStmt->execute()) {
-            echo json_encode(['success' => true, 'message' => 'Application submitted successfully.']);
+            // Fetch course name for the email
+            $courseStmt = $conn->prepare("SELECT name FROM courses WHERE id = ?");
+            $courseStmt->bind_param("i", $courseId);
+            $courseStmt->execute();
+            $courseResult = $courseStmt->get_result();
+            $course = $courseResult->fetch_assoc();
+            $courseName = $course['name'] ?? 'the course';
+
+            // Send notification email
+            $emailResult = sendApplicationNotification($email, $firstName, $courseName);
+
+            if ($emailResult) {
+                echo json_encode(['success' => true, 'message' => 'Application submitted successfully. Notification email sent.']);
+            } else {
+                echo json_encode(['success' => true, 'message' => 'Application submitted successfully, but failed to send notification email.']);
+            }
         } else {
             error_log("Database Insert Error: " . $insertStmt->error);
             echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Failed to submit application.']);
