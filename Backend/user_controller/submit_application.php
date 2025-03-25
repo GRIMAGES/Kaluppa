@@ -36,17 +36,6 @@ if (!$user) {
 }
 $user_id = $user['id'];
 
-// Generate Application ID
-$res = $conn->query("SELECT id FROM applications ORDER BY id DESC LIMIT 1");
-$row = $res->fetch_assoc();
-if ($row && isset($row['id'])) {
-    $lastNumericId = (int)substr($row['id'], 4);
-    $newNumericId = $lastNumericId + 1;
-    $newId = 'APP-' . str_pad($newNumericId, 5, '0', STR_PAD_LEFT);
-} else {
-    $newId = 'APP-00001';
-}
-
 // Function to send notification email
 function sendApplicationNotification($email, $firstName, $courseName) {
     $mail = new PHPMailer(true);
@@ -77,6 +66,32 @@ function sendApplicationNotification($email, $firstName, $courseName) {
         error_log("Email could not be sent. Error: {$mail->ErrorInfo}");
         return false;
     }
+}
+
+// Generate a unique Application ID
+function generateUniqueApplicationId($conn) {
+    $prefix = 'APP-';
+    $maxAttempts = 5; // Limit the number of attempts to avoid infinite loops
+    $attempt = 0;
+
+    do {
+        $numericId = mt_rand(1, 99999); // Generate a random number
+        $newId = $prefix . str_pad($numericId, 5, '0', STR_PAD_LEFT);
+
+        // Check if the ID already exists in the database
+        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM applications WHERE id = ?");
+        $stmt->bind_param("s", $newId);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+
+        if ($result['total'] == 0) {
+            return $newId; // Return the unique ID
+        }
+
+        $attempt++;
+    } while ($attempt < $maxAttempts);
+
+    throw new Exception("Failed to generate a unique Application ID after $maxAttempts attempts.");
 }
 
 try {
@@ -140,7 +155,16 @@ try {
             // Serialize the encrypted documents array for storage in DB
             $documentData = json_encode($encryptedDocuments);  // Store as JSON string
 
-            // Correct the SQL query to match the number of columns and values
+            // Call the function to generate a unique ID
+            try {
+                $newId = generateUniqueApplicationId($conn);
+            } catch (Exception $e) {
+                error_log("Application ID Generation Error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'error_code' => 15, 'message' => 'Failed to generate a unique Application ID.']);
+                exit();
+            }
+
+            // Correct the SQL query to include the `id` column
             $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, barangay, province, municipality, course_id, documents)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
@@ -150,7 +174,7 @@ try {
                 exit();
             }
             
-            // Correct the bind_param statement to match the number of placeholders
+            // Correct the bind_param statement to include the `id` parameter
             if (!$insertStmt->bind_param(
                 "sisssssssis",
                 $newId,
