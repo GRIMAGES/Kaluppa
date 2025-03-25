@@ -24,14 +24,9 @@ if ($result->num_rows > 0) {
     $firstName = $user['first_name'];
     $middleName = $user['middle_name'];
     $lastName = $user['last_name'];
-    // Separate address into multiple parts
-    $houseNumber = $user['house_number'];
-    $street = $user['street'];
+    // Keep only barangay and city
     $barangay = $user['barangay'];
-    $district = $user['district'];
     $city = $user['city'];
-    $region = $user['region'];
-    $postalCode = $user['postal_code'];
 } else {
     echo "User not found.";
 }
@@ -211,32 +206,12 @@ $categorizedCourses = categorizeCourses($courseResult);
                 <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
               </div>
               <div class="mb-3">
-                <label for="house_number" class="form-label">House Number</label>
-                <input type="text" class="form-control" id="house_number" name="house_number" value="<?php echo htmlspecialchars($houseNumber); ?>" required>
-              </div>
-              <div class="mb-3">
-                <label for="street" class="form-label">Street</label>
-                <input type="text" class="form-control" id="street" name="street" value="<?php echo htmlspecialchars($street); ?>" required>
-              </div>
-              <div class="mb-3">
                 <label for="barangay" class="form-label">Barangay</label>
                 <input type="text" class="form-control" id="barangay" name="barangay" value="<?php echo htmlspecialchars($barangay); ?>" required>
               </div>
               <div class="mb-3">
-                <label for="district" class="form-label">District</label>
-                <input type="text" class="form-control" id="district" name="district" value="<?php echo htmlspecialchars($district); ?>" required>
-              </div>
-              <div class="mb-3">
                 <label for="city" class="form-label">City</label>
                 <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($city); ?>" required>
-              </div>
-              <div class="mb-3">
-                <label for="region" class="form-label">Region</label>
-                <input type="text" class="form-control" id="region" name="region" value="<?php echo htmlspecialchars($region); ?>" required>
-              </div>
-              <div class="mb-3">
-                <label for="postal_code" class="form-label">Postal Code</label>
-                <input type="text" class="form-control" id="postal_code" name="postal_code" value="<?php echo htmlspecialchars($postalCode); ?>" required>
               </div>
               <div class="mb-3">
                 <label for="documents" class="form-label fw-bold">Upload Documents (PDF only)</label>

@@ -43,21 +43,14 @@ if ($row && isset($row['id'])) {
 // Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate required fields
-    if (
-        isset($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['course_id'])
-    ) {
+    if (isset($_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['course_id'])) {
         // Collect data
         $firstName = $_POST['first_name'];
         $middleName = $_POST['middle_name'] ?? '';
         $lastName = $_POST['last_name'];
         $email = $_POST['email'];
-        $houseNumber = $_POST['house_number'] ?? '';
-        $street = $_POST['street'] ?? '';
         $barangay = $_POST['barangay'] ?? '';
-        $district = $_POST['district'] ?? '';
         $city = $_POST['city'] ?? '';
-        $region = $_POST['region'] ?? '';
-        $postalCode = $_POST['postal_code'] ?? '';
         $courseId = intval($_POST['course_id']);
 
         // Check for duplicate application
@@ -73,22 +66,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Handle File Upload with AES-256 Encryption
         $encryptedDocuments = [];
-
         if (isset($_FILES['documents']) && is_array($_FILES['documents']['name'])) {
             foreach ($_FILES['documents']['name'] as $key => $name) {
                 if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
                     $fileType = mime_content_type($_FILES['documents']['tmp_name'][$key]);
                     $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
-        
+
                     // ✅ Check for PDF only
                     if ($fileType !== 'application/pdf' || strtolower($fileExtension) !== 'pdf') {
                         echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Only PDF documents are allowed.']);
                         exit();
                     }
-        
+
                     // 🔒 Proceed with AES encryption
                     $originalContent = file_get_contents($_FILES['documents']['tmp_name'][$key]);
-        
                     $encryptedData = openssl_encrypt(
                         $originalContent,
                         'AES-256-CBC',
@@ -96,9 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         OPENSSL_RAW_DATA,
                         AES_IV
                     );
-        
                     $encodedData = base64_encode($encryptedData);
-        
                     $encryptedDocuments[] = [
                         'file_name' => $name,
                         'file_data' => $encodedData
@@ -106,12 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
-        
+
         // Serialize the encrypted documents array for storage in DB
         $documentData = json_encode($encryptedDocuments);  // Store as JSON string
 
-        $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, house_number, street, barangay, district, city, region, postal_code, course_id, documents)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, barangay, city, course_id, documents)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         if (!$insertStmt) {
             error_log("Database Prepare Error: " . $conn->error);
@@ -120,20 +109,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if (!$insertStmt->bind_param(
-            "sisssssssssssis",
+            "sissssssss",
             $newId,
             $user_id,
             $firstName,
             $middleName,
             $lastName,
             $email,
-            $houseNumber,
-            $street,
             $barangay,
-            $district,
             $city,
-            $region,
-            $postalCode,
             $courseId,
             $documentData
         )) {
