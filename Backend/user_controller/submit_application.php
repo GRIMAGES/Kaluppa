@@ -6,9 +6,10 @@ ini_set('log_errors', 1);
 ini_set('error_log', '../../Backend/logs/application_form_errors.log');
 require_once '../../Backend/connection.php';
 require_once '../../Backend/aes_key.php'; // AES_KEY and AES_IV defined here
-require '../../Backend/PHPMailer/PHPMailer.php';
-require '../../Backend/PHPMailer/SMTP.php';
-require '../../Backend/PHPMailer/Exception.php';
+require_once '../../Backend/PHPMailer/src/PHPMailer.php';
+require_once '../../Backend/PHPMailer/src/SMTP.php';
+require_once '../../Backend/PHPMailer/src/Exception.php';
+require_once '../../vendor/autoload.php';  // PHPMailer, PhpSpreadsheet, TCPDF should be in the Backend vendor folder.
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
