@@ -196,9 +196,24 @@ try {
             
             // Execute the query and handle errors
             if (!$insertStmt->execute()) {
-                error_log("Database Insert Error: " . $insertStmt->error); // Log detailed error
+                // Log detailed error information
+                error_log("Database Insert Error: " . $insertStmt->error); 
                 error_log("Query Parameters: id=$newId, user_id=$user_id, first_name=$firstName, middle_name=$middleName, last_name=$lastName, email=$email, barangay=$barangay, province=$province, municipality=$municipality, course_id=$courseId, documents=" . json_encode($documentData));
-                echo json_encode(['success' => false, 'error_code' => 7, 'message' => 'Failed to submit application.']);
+
+                // Check for specific MySQL errors
+                if ($conn->errno) {
+                    error_log("MySQL Error Code: " . $conn->errno);
+                    error_log("MySQL Error Message: " . $conn->error);
+                }
+
+                // Return a detailed error response
+                echo json_encode([
+                    'success' => false,
+                    'error_code' => 7,
+                    'message' => 'Failed to submit application.',
+                    'mysql_error' => $conn->error, // Include MySQL error in the response for debugging
+                    'mysql_error_code' => $conn->errno
+                ]);
                 exit();
             }
 
