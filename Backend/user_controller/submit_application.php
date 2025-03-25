@@ -1,6 +1,13 @@
 <?php
 require_once '../../Backend/connection.php';
 require_once '../../Backend/aes_key.php'; // AES_KEY and AES_IV defined here
+require '../../Backend/PHPMailer/PHPMailer.php';
+require '../../Backend/PHPMailer/SMTP.php';
+require '../../Backend/PHPMailer/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 session_start();
 
 // Error reporting
@@ -42,16 +49,34 @@ if ($row && isset($row['id'])) {
 
 // Function to send notification email
 function sendApplicationNotification($email, $firstName, $courseName) {
-    $subject = "Course Application Successful";
-    $message = "Dear $firstName,\n\n";
-    $message .= "You have successfully applied for the course: $courseName.\n";
-    $message .= "We will review your application and notify you of the next steps.\n\n";
-    $message .= "Thank you for choosing Kaluppa.\n\n";
-    $message .= "Best regards,\n";
-    $message .= "The Kaluppa Team";
+    $mail = new PHPMailer(true);
+    try {
+        // SMTP configuration
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'wgonzales@kaluppa.org';
+        $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with a secure password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
 
-    // Use PHP's mail function or a library like PHPMailer
-    return mail($email, $subject, $message);
+        // Email headers and content
+        $mail->setFrom('wgonzales@kaluppa.org', 'Kaluppa Team');
+        $mail->addAddress($email);
+        $mail->isHTML(true);
+        $mail->Subject = "Course Application Successful";
+        $mail->Body = "Dear $firstName,<br><br>
+                       You have successfully applied for the course: <strong>$courseName</strong>.<br>
+                       We will review your application and notify you of the next steps.<br><br>
+                       Thank you for choosing Kaluppa.<br><br>
+                       Best regards,<br>The Kaluppa Team";
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Email could not be sent. Error: {$mail->ErrorInfo}");
+        return false;
+    }
 }
 
 // Handle POST request
