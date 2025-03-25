@@ -100,8 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Serialize the encrypted documents array for storage in DB
         $documentData = json_encode($encryptedDocuments);  // Store as JSON string
 
+        // Correct the SQL query to match the number of columns and values
         $insertStmt = $conn->prepare("INSERT INTO applications (id, user_id, first_name, middle_name, last_name, email, barangay, province, municipality, course_id, documents)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         if (!$insertStmt) {
             error_log("Database Prepare Error: " . $conn->error);
@@ -109,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
         
+        // Correct the bind_param statement to match the number of placeholders
         if (!$insertStmt->bind_param(
             "sisssssssis",
             $newId,
