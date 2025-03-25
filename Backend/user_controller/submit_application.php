@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Correct the bind_param statement to match the number of placeholders
         if (!$insertStmt->bind_param(
-            "iisssssssis",
+            "sisssssssis",
             $newId,
             $user_id,
             $firstName,
