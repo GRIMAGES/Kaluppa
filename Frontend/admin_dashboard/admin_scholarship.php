@@ -77,6 +77,15 @@ $encodedDocument = isset($row['documents']) ? urlencode($row['documents']) : '';
 $sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents 
         FROM applications 
         JOIN courses ON applications.course_id = courses.id";
+
+// Fetch all courses for the dropdown filter
+$coursesResult = $conn->query("SELECT id, name FROM courses");
+$courses = [];
+if ($coursesResult->num_rows > 0) {
+    while ($courseRow = $coursesResult->fetch_assoc()) {
+        $courses[] = $courseRow;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -131,6 +140,20 @@ $sql = "SELECT applications.id, applications.first_name, applications.middle_nam
 <div class="content" style="margin-left: 250px; padding: 20px;">
     <div class="container mt-5">
         <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
+
+        <!-- Course Filter Dropdown -->
+        <div class="mb-3">
+            <label for="courseFilter" class="form-label" style="color: white;">Filter by Course:</label>
+            <select id="courseFilter" class="form-select" onchange="filterByCourse()">
+                <option value="">All Courses</option>
+                <?php foreach ($courses as $course): ?>
+                    <option value="<?php echo htmlspecialchars($course['id']); ?>">
+                        <?php echo htmlspecialchars($course['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
         <div class="table-responsive">
             <table id="scholarshipTable" class="display" style="color: black;">
                 <thead style="background-color: #f2f2f2; color: black;">
@@ -307,6 +330,14 @@ function showApplicationDetails(id, firstName, middleName, lastName, courseName,
     viewApplicationModal.show();
 
     console.log("Modal shown with ID:", id);
+}
+
+function filterByCourse() {
+    const courseId = document.getElementById('courseFilter').value;
+    const table = $('#scholarshipTable').DataTable();
+
+    // Apply filter to the table
+    table.column(4).search(courseId ? '^' + courseId + '$' : '', true, false).draw();
 }
 
 $(document).ready(function() {
