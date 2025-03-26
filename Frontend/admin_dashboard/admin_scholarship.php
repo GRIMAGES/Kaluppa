@@ -142,16 +142,22 @@ if ($coursesResult->num_rows > 0) {
         <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
 
         <!-- Course Filter Dropdown -->
-        <div class="mb-3">
-            <label for="courseFilter" class="form-label" style="color: white;">Filter by Course:</label>
-            <select id="courseFilter" class="form-select" onchange="filterByCourse()">
-                <option value="">All Courses</option>
-                <?php foreach ($courses as $course): ?>
-                    <option value="<?php echo htmlspecialchars($course['id']); ?>">
-                        <?php echo htmlspecialchars($course['name']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <label for="courseFilter" class="form-label" style="color: white;">Filter by Course:</label>
+                <select id="courseFilter" class="form-select form-select-sm" style="width: 200px;" onchange="filterByCourse()">
+                    <option value="">All Courses</option>
+                    <?php foreach ($courses as $course): ?>
+                        <option value="<?php echo htmlspecialchars($course['id']); ?>">
+                            <?php echo htmlspecialchars($course['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label for="maxApplications" class="form-label" style="color: white;">Max Applications:</label>
+                <input type="number" id="maxApplications" class="form-control form-control-sm" style="width: 100px;" min="1" value="10" onchange="limitApplications()">
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -340,20 +346,40 @@ function filterByCourse() {
     table.column(4).search(courseId ? '^' + courseId + '$' : '', true, false).draw();
 }
 
-$(document).ready(function() {
-    $('#scholarshipTable').DataTable({
-        "paging": true,        
-        "searching": true,     
-        "ordering": true,      
-        "info": true,          
-        "lengthChange": true,  
-        "pageLength": 10,      
-        "language": {
-            "search": "Search:",  
-            "lengthMenu": "Show _MENU_ entries", 
-            "info": "Showing _START_ to _END_ of _TOTAL_ entries" 
+function limitApplications() {
+    const maxApplications = parseInt(document.getElementById('maxApplications').value, 10);
+    const table = $('#scholarshipTable').DataTable();
+
+    // Reset all rows to visible
+    table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+        this.nodes().to$().removeClass('waitlist').show();
+    });
+
+    // Hide rows exceeding the limit and mark them as "Waitlist"
+    table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+        if (rowIdx >= maxApplications) {
+            this.nodes().to$().addClass('waitlist').hide();
         }
     });
+}
+
+$(document).ready(function() {
+    $('#scholarshipTable').DataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "lengthChange": true,
+        "pageLength": 10,
+        "language": {
+            "search": "Search:",
+            "lengthMenu": "Show _MENU_ entries",
+            "info": "Showing _START_ to _END_ of _TOTAL_ entries"
+        }
+    });
+
+    // Apply initial limit
+    limitApplications();
 });
 
 
