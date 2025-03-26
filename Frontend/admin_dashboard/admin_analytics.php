@@ -260,43 +260,43 @@ foreach ($periods as $period) {
         </div>
     </div>
     <div class="row mt-4">
-        <!-- Make filter dropdown smaller -->
+        <!-- Make filter dropdowns side by side -->
         <div class="col-md-12 mb-3">
-            <form method="GET" action="">
-                <label for="filter" class="form-label">Filter by:</label>
-                <select name="filter" id="filter" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+            <form method="GET" action="" class="d-inline-flex align-items-center">
+                <label for="filter" class="form-label me-2">Filter by:</label>
+                <select name="filter" id="filter" class="form-select form-select-sm me-3" onchange="this.form.submit()">
                     <option value="daily" <?= $filter === 'daily' ? 'selected' : '' ?>>Daily</option>
                     <option value="weekly" <?= $filter === 'weekly' ? 'selected' : '' ?>>Weekly</option>
                     <option value="monthly" <?= $filter === 'monthly' ? 'selected' : '' ?>>Monthly</option>
                     <option value="yearly" <?= $filter === 'yearly' ? 'selected' : '' ?>>Yearly</option>
                 </select>
                 <?php if ($filter === 'yearly' || $filter === 'monthly' || $filter === 'weekly'): ?>
-                    <label for="year" class="form-label ms-3">Year:</label>
-                    <select name="year" id="year" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                    <label for="year" class="form-label me-2">Year:</label>
+                    <select name="year" id="year" class="form-select form-select-sm me-3" onchange="this.form.submit()">
                         <?php for ($y = date('Y'); $y >= 2000; $y--): ?>
                             <option value="<?= $y ?>" <?= $selectedYear == $y ? 'selected' : '' ?>><?= $y ?></option>
                         <?php endfor; ?>
                     </select>
                 <?php endif; ?>
                 <?php if ($filter === 'monthly'): ?>
-                    <label for="month" class="form-label ms-3">Month:</label>
-                    <select name="month" id="month" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                    <label for="month" class="form-label me-2">Month:</label>
+                    <select name="month" id="month" class="form-select form-select-sm me-3" onchange="this.form.submit()">
                         <?php for ($m = 1; $m <= 12; $m++): ?>
                             <option value="<?= $m ?>" <?= $selectedMonth == $m ? 'selected' : '' ?>><?= date('F', mktime(0, 0, 0, $m, 1)) ?></option>
                         <?php endfor; ?>
                     </select>
                 <?php endif; ?>
                 <?php if ($filter === 'weekly'): ?>
-                    <label for="week" class="form-label ms-3">Week:</label>
-                    <select name="week" id="week" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                    <label for="week" class="form-label me-2">Week:</label>
+                    <select name="week" id="week" class="form-select form-select-sm me-3" onchange="this.form.submit()">
                         <?php for ($w = 1; $w <= 52; $w++): ?>
                             <option value="<?= $w ?>" <?= $selectedWeek == $w ? 'selected' : '' ?>>Week <?= $w ?></option>
                         <?php endfor; ?>
                     </select>
                 <?php endif; ?>
                 <?php if ($filter === 'daily'): ?>
-                    <label for="day" class="form-label ms-3">Day:</label>
-                    <input type="date" name="day" id="day" class="form-control form-control-sm w-auto d-inline" value="<?= $selectedDay ?>" onchange="this.form.submit()">
+                    <label for="day" class="form-label me-2">Day:</label>
+                    <input type="date" name="day" id="day" class="form-control form-control-sm me-3" value="<?= $selectedDay ?>" onchange="this.form.submit()">
                 <?php endif; ?>
             </form>
         </div>
@@ -362,7 +362,8 @@ foreach ($periods as $period) {
 
     // Prepare data for the scholarship applications chart
     var scholarshipPeriods = <?= json_encode($periods) ?>;
-    var scholarshipLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : scholarshipPeriods.map(String);
+    var filter = <?= json_encode($filter) ?>;
+    var scholarshipLabels = filter === 'yearly' ? getMonthNames() : scholarshipPeriods.map(String);
     var filteredScholarshipData = <?= json_encode($scholarshipCounts) ?>;
 
     var scholarshipApplicationsChart = new Chart(document.getElementById('scholarshipApplicationsChart').getContext('2d'), {
@@ -399,7 +400,7 @@ foreach ($periods as $period) {
 
     // Prepare data for the volunteer applications chart
     var volunteerPeriods = <?= json_encode($periods) ?>;
-    var volunteerLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : volunteerPeriods.map(String);
+    var volunteerLabels = filter === 'yearly' ? getMonthNames() : volunteerPeriods.map(String);
     var filteredVolunteerData = <?= json_encode($volunteerCounts) ?>;
 
     var volunteerApplicationsChart = new Chart(document.getElementById('volunteerApplicationsChart').getContext('2d'), {
