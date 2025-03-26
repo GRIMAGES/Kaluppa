@@ -74,7 +74,7 @@ $status = isset($row['status']) ? addslashes($row['status']) : '';
 $documents = isset($row['documents']) ? addslashes($row['documents']) : '';
 $encodedDocument = isset($row['documents']) ? urlencode($row['documents']) : '';
 // Define the SQL query with JOIN to get course name from courses table
-$sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents 
+$sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents, applications.course_id , applications.documents 
         FROM applications 
         JOIN courses ON applications.course_id = courses.id";
 
@@ -194,7 +194,7 @@ if ($coursesResult->num_rows > 0) {
                         // Check if 'documents' exists and is not empty before decoding
                         $documents = isset($row['documents']) && !empty($row['documents']) ? json_decode($row['documents'], true) : [];
 
-                        echo '<tr>
+                        echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
                         <td>' . htmlspecialchars($id) . '</td>
                         <td>' . htmlspecialchars($first_name) . '</td>
                         <td>' . htmlspecialchars($middle_name) . '</td>
@@ -339,14 +339,14 @@ function showApplicationDetails(id, firstName, middleName, lastName, courseName,
 }
 
 function filterByCourse() {
-    const courseName = document.getElementById('courseFilter').selectedOptions[0].text.trim(); // Get the selected course name
+    const courseName = document.getElementById('courseFilter').selectedOptions[0].text.trim().toLowerCase(); // Normalize selected course name
     const table = $('#scholarshipTable').DataTable();
 
     // Apply filter to the table
-    if (courseName === "All Courses") {
+    if (courseName === "all courses") {
         table.search('').draw(); // Show all rows if "All Courses" is selected
     } else {
-        table.column(4).search('^' + courseName + '$', true, false).draw(); // Filter by exact course name
+        table.column(4).search(courseName, true, false).draw(); // Filter by normalized course name ID
     }
 }
 
