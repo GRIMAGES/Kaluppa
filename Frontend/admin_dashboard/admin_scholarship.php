@@ -362,7 +362,7 @@ function filterByCourse() {
 }
 
 function limitApplications() {
-    const maxApplications = parseInt(document.getElementById('maxApplications').value, 10);
+    const selectedCourseId = document.getElementById('courseFilter').value; // Get the selected course ID
     const table = $('#scholarshipTable').DataTable();
 
     // Reset all rows to visible
@@ -370,10 +370,28 @@ function limitApplications() {
         this.nodes().to$().removeClass('waitlist').show();
     });
 
-    // Hide rows exceeding the limit and mark them as "Waitlist"
-    table.rows().every(function(rowIdx, tableLoop, rowLoop) {
-        if (rowIdx >= maxApplications) {
-            this.nodes().to$().addClass('waitlist').hide();
+    if (selectedCourseId === "") {
+        return; // If "All Courses" is selected, do not apply any limit
+    }
+
+    // Fetch the capacity for the selected course via an AJAX request
+    $.ajax({
+        url: '../../Backend/get_course_capacity.php', // Backend script to fetch course capacity
+        type: 'GET',
+        data: { course_id: selectedCourseId },
+        success: function(response) {
+            const capacity = parseInt(response, 10); // Parse the capacity from the response
+            if (!isNaN(capacity)) {
+                // Hide rows exceeding the capacity and mark them as "Waitlist"
+                table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+                    if (rowIdx >= capacity) {
+                        this.nodes().to$().addClass('waitlist').hide();
+                    }
+                });
+            }
+        },
+        error: function() {
+            console.error('Failed to fetch course capacity.');
         }
     });
 }
