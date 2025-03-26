@@ -339,11 +339,11 @@ function showApplicationDetails(id, firstName, middleName, lastName, courseName,
 }
 
 function filterByCourse() {
-    const courseId = document.getElementById('courseFilter').value;
+    const courseName = document.getElementById('courseFilter').selectedOptions[0].text; // Get the selected course name
     const table = $('#scholarshipTable').DataTable();
 
     // Apply filter to the table
-    table.column(4).search(courseId ? '^' + courseId + '$' : '', true, false).draw();
+    table.column(4).search(courseName === "All Courses" ? '' : courseName, true, false).draw();
 }
 
 function limitApplications() {
