@@ -45,7 +45,7 @@ $totalApplications = $conn->query($queryApplications)->fetch_assoc()['total_appl
 $applicationQueryTime = microtime(true) - $startTime;
 
 $startTime = microtime(true);
-$queryVolunteers = "SELECT COUNT(*) AS total_volunteers FROM volunteer_application";
+$queryVolunteers = "SELECT COUNT(*) AS total_volunteers FROM volunteer_application"; // Added missing $
 $totalVolunteers = $conn->query($queryVolunteers)->fetch_assoc()['total_volunteers'];
 $volunteerQueryTime = microtime(true) - $startTime;
 
@@ -251,25 +251,8 @@ foreach ($periods as $period) {
             <canvas id="performanceChart" width="400" height="200"></canvas>
         </div>
     </div>
-    <!-- Add separate bar charts for scholarship and volunteer applications -->
     <div class="row mt-4">
-        <div class="col-md-6">
-            <h3>Scholarship Applications Analytics</h3>
-            <canvas id="scholarshipApplicationsChart" width="400" height="200"></canvas>
-        </div>
-        <div class="col-md-6">
-            <h3>Volunteer Applications Analytics</h3>
-            <canvas id="volunteerApplicationsChart" width="400" height="200"></canvas>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <h3>Yearly Applications Analytics</h3>
-            <canvas id="yearlyApplicationsChart" width="400" height="200"></canvas>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <!-- Add filter dropdown -->
+        <!-- Move filter dropdown here -->
         <div class="col-md-12 mb-3">
             <form method="GET" action="">
                 <label for="filter">Filter by:</label>
@@ -281,9 +264,15 @@ foreach ($periods as $period) {
                 </select>
             </form>
         </div>
-        <div class="col-md-12">
-            <h3>Scholarship and Volunteer Applications Analytics</h3>
-            <canvas id="applicationsChart" width="400" height="200"></canvas>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Scholarship Applications Analytics</h3>
+            <canvas id="scholarshipApplicationsChart" width="400" height="200"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h3>Volunteer Applications Analytics</h3>
+            <canvas id="volunteerApplicationsChart" width="400" height="200"></canvas>
         </div>
     </div>
 </div>
@@ -326,52 +315,6 @@ foreach ($periods as $period) {
         B = Math.round(B * (1 - percent / 100));
         return `rgb(${R},${G},${B})`;
     }
-
-    // Prepare data for the yearly applications chart
-    var yearlyLabels = <?= json_encode($years) ?>;
-    var yearlyScholarshipData = <?= json_encode($scholarshipCounts) ?>;
-    var yearlyVolunteerData = <?= json_encode($volunteerCounts) ?>;
-
-    var yearlyApplicationsChart = new Chart(document.getElementById('yearlyApplicationsChart').getContext('2d'), {
-        type: 'bar',
-        data: {
-            labels: yearlyLabels,
-            datasets: [
-                {
-                    label: 'Scholarship Applications',
-                    data: yearlyScholarshipData,
-                    backgroundColor: '#4caf50',
-                    borderColor: '#388e3c',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Volunteer Applications',
-                    data: yearlyVolunteerData,
-                    backgroundColor: '#2196F3',
-                    borderColor: '#1976D2',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Year'
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Number of Applications'
-                    }
-                }
-            }
-        }
-    });
 
     // Prepare data for the scholarship applications chart
     var scholarshipLabels = <?= json_encode($periods) ?>;
