@@ -67,7 +67,7 @@ if (isset($_POST['update_status'])) {
 $first_name = isset($row['first_name']) ? addslashes($row['first_name']) : '';
 $middle_name = isset($row['middle_name']) ? addslashes($row['middle_name']) : '';
 $last_name = isset($row['last_name']) ? addslashes($row['last_name']) : '';
-$work_name = isset($row['name']) ? addslashes($row['name']) : '';
+$course_name = isset($row['name']) ? addslashes($row['name']) : ''; // Rename from $work_name
 $email = isset($row['email']) ? addslashes($row['email']) : '';
 $applied_at = isset($row['applied_at']) ? addslashes($row['applied_at']) : '';
 $status = isset($row['status']) ? addslashes($row['status']) : '';
@@ -186,7 +186,7 @@ if ($coursesResult->num_rows > 0) {
                         $first_name = htmlspecialchars($row['first_name'] ?? '', ENT_QUOTES);
                         $middle_name = htmlspecialchars($row['middle_name'] ?? '', ENT_QUOTES);
                         $last_name = htmlspecialchars($row['last_name'] ?? '', ENT_QUOTES);
-                        $work_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES);
+                        $course_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES); // Updated variable
                         $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
                         $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
                         $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
@@ -199,7 +199,7 @@ if ($coursesResult->num_rows > 0) {
                         <td>' . htmlspecialchars($first_name) . '</td>
                         <td>' . htmlspecialchars($middle_name) . '</td>
                         <td>' . htmlspecialchars($last_name) . '</td>
-                        <td>' . htmlspecialchars($work_name) . '</td>
+                        <td>' . htmlspecialchars($course_name) . '</td> <!-- Updated variable -->
                         <td>' . htmlspecialchars($email) . '</td>
                         <td>' . htmlspecialchars($status) . '</td>
                         <td>' . htmlspecialchars($applied_at) . '</td>
