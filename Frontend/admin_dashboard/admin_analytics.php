@@ -330,7 +330,8 @@ foreach ($months as $month) {
     }
 
     // Prepare data for the scholarship applications chart
-    var scholarshipLabels = <?= $filter === 'yearly' ? 'getMonthNames()' : json_encode($periods) ?>;
+    var scholarshipPeriods = <?= json_encode($periods) ?>;
+    var scholarshipLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : scholarshipPeriods;
     var filteredScholarshipData = <?= json_encode($scholarshipCounts) ?>;
 
     var scholarshipApplicationsChart = new Chart(document.getElementById('scholarshipApplicationsChart').getContext('2d'), {
@@ -366,7 +367,8 @@ foreach ($months as $month) {
     });
 
     // Prepare data for the volunteer applications chart
-    var volunteerLabels = <?= $filter === 'yearly' ? 'getMonthNames()' : json_encode($periods) ?>;
+    var volunteerPeriods = <?= json_encode($periods) ?>;
+    var volunteerLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : volunteerPeriods;
     var filteredVolunteerData = <?= json_encode($volunteerCounts) ?>;
 
     var volunteerApplicationsChart = new Chart(document.getElementById('volunteerApplicationsChart').getContext('2d'), {
