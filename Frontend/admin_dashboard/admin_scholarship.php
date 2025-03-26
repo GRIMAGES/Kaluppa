@@ -137,15 +137,15 @@ if ($coursesResult->num_rows > 0) {
     </div>
 </div>
 
-<div class="content" style="margin-left: 250px; padding: 20px;">
+<div class="content" style="margin-left: 250px; padding: 20px; color: black;">
     <div class="container mt-5">
-        <h2 class="mb-4 text-center" style="color: white;">Scholarship Applications</h2>
+        <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>
 
         <!-- Course Filter Dropdown -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <label for="courseFilter" class="form-label" style="color: white;">Filter by Course:</label>
-                <select id="courseFilter" class="form-select form-select-sm" style="width: 200px;" onchange="filterByCourse()">
+                <label for="courseFilter" class="form-label" style="color: black;">Filter by Course:</label>
+                <select id="courseFilter" class="form-select form-select-sm" style="width: 200px; color: black;" onchange="filterByCourse()">
                     <option value="">All Courses</option>
                     <?php foreach ($courses as $course): ?>
                         <option value="<?php echo htmlspecialchars($course['id']); ?>">
@@ -155,8 +155,8 @@ if ($coursesResult->num_rows > 0) {
                 </select>
             </div>
             <div>
-                <label for="maxApplications" class="form-label" style="color: white;">Max Applications:</label>
-                <input type="number" id="maxApplications" class="form-control form-control-sm" style="width: 100px;" min="1" value="10" onchange="limitApplications()">
+                <label for="maxApplications" class="form-label" style="color: black;">Max Applications:</label>
+                <input type="number" id="maxApplications" class="form-control form-control-sm" style="width: 100px; color: black;" min="1" value="10" onchange="limitApplications()">
             </div>
         </div>
 
