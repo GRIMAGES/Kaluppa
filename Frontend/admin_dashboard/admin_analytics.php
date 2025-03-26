@@ -227,9 +227,7 @@ foreach ($periods as $period) {
         </div>
     </div>
     <div class="row">
-        <!-- Scholarship Applications Table -->
         <div class="col-md-6">
-            <h3>Scholarship Applications</h3>
             <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
@@ -238,42 +236,29 @@ foreach ($periods as $period) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Total Scholarship Applications</td>
-                        <td><?= htmlspecialchars($totalApplications) ?></td>
-                    </tr>
+                    <?php foreach ($performanceData as $index => $row): ?>
+                        <?php if ($index === 0) continue; // Skip header row ?>
+                        <tr>
+                            <td><?= htmlspecialchars($row[0]) ?></td>
+                            <td><?= htmlspecialchars($row[1]) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
-        <!-- Volunteer Applications Table -->
         <div class="col-md-6">
-            <h3>Volunteer Applications</h3>
-            <table class="table table-bordered mt-3">
-                <thead>
-                    <tr>
-                        <th>Metric</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Total Volunteer Applications</td>
-                        <td><?= htmlspecialchars($totalVolunteers) ?></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- Performance Analytics Chart -->
+            <canvas id="performanceChart" width="400" height="200"></canvas>
         </div>
     </div>
+    <div class="export-btn">
+        <a href="?export=excel" class="btn btn-success">Export to Excel</a>
+    </div>
+    <!-- Add a new chart for yearly applications -->
     <div class="row mt-4">
-        <!-- Scholarship Applications Chart -->
-        <div class="col-md-6">
-            <h3>Scholarship Applications Analytics</h3>
-            <canvas id="scholarshipApplicationsChart" width="400" height="200"></canvas>
-        </div>
-        <!-- Volunteer Applications Chart -->
-        <div class="col-md-6">
-            <h3>Volunteer Applications Analytics</h3>
-            <canvas id="volunteerApplicationsChart" width="400" height="200"></canvas>
+        <div class="col-md-12">
+            <h3>Yearly Applications Analytics</h3>
+            <canvas id="yearlyApplicationsChart" width="400" height="200"></canvas>
         </div>
     </div>
     <div class="row mt-4">
@@ -288,6 +273,10 @@ foreach ($periods as $period) {
                     <option value="yearly" <?= $filter === 'yearly' ? 'selected' : '' ?>>Yearly</option>
                 </select>
             </form>
+        </div>
+        <div class="col-md-12">
+            <h3>Scholarship and Volunteer Applications Analytics</h3>
+            <canvas id="applicationsChart" width="400" height="200"></canvas>
         </div>
     </div>
 </div>
@@ -424,76 +413,6 @@ var applicationsChart = new Chart(document.getElementById('applicationsChart').g
         }
     }
 });
-
-// Prepare data for the scholarship applications chart
-var scholarshipLabels = <?= json_encode($periods) ?>;
-var scholarshipData = <?= json_encode($scholarshipCounts) ?>;
-
-var scholarshipApplicationsChart = new Chart(document.getElementById('scholarshipApplicationsChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: scholarshipLabels,
-        datasets: [{
-            label: 'Scholarship Applications',
-            data: scholarshipData,
-            backgroundColor: '#4caf50',
-            borderColor: '#388e3c',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Period'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Number of Applications'
-                }
-            }
-        }
-    });
-
-// Prepare data for the volunteer applications chart
-var volunteerLabels = <?= json_encode($periods) ?>;
-var volunteerData = <?= json_encode($volunteerCounts) ?>;
-
-var volunteerApplicationsChart = new Chart(document.getElementById('volunteerApplicationsChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: volunteerLabels,
-        datasets: [{
-            label: 'Volunteer Applications',
-            data: volunteerData,
-            backgroundColor: '#2196F3',
-            borderColor: '#1976D2',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Period'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Number of Applications'
-                }
-            }
-        }
-    });
 </script>
 </body>
 </html>
