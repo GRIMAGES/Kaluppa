@@ -37,7 +37,7 @@ $totalUsers = $conn->query($queryUsers)->fetch_assoc()['total_users'];
 $userQueryTime = microtime(true) - $startTime;
 
 $startTime = microtime(true);
-$queryApplications = "SELECT COUNT(*) AS total_applications FROM applications";
+$queryApplications = "SELECT COUNT(*) AS total_applications FROM applications"; // Added missing $
 $totalApplications = $conn->query($queryApplications)->fetch_assoc()['total_applications'];
 $applicationQueryTime = microtime(true) - $startTime;
 
@@ -45,6 +45,40 @@ $startTime = microtime(true);
 $queryVolunteers = "SELECT COUNT(*) AS total_volunteers FROM volunteer_application";
 $totalVolunteers = $conn->query($queryVolunteers)->fetch_assoc()['total_volunteers'];
 $volunteerQueryTime = microtime(true) - $startTime;
+
+// Fetch yearly data for scholarship applications
+$scholarshipYearlyData = [];
+$queryScholarshipYearly = "SELECT YEAR(application_date) AS year, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date)";
+$resultScholarshipYearly = $conn->query($queryScholarshipYearly);
+while ($row = $resultScholarshipYearly->fetch_assoc()) {
+    $scholarshipYearlyData[] = $row;
+}
+
+// Fetch yearly data for volunteer applications
+$volunteerYearlyData = [];
+$queryVolunteerYearly = "SELECT YEAR(application_date) AS year, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date)";
+$resultVolunteerYearly = $conn->query($queryVolunteerYearly);
+while ($row = $resultVolunteerYearly->fetch_assoc()) {
+    $volunteerYearlyData[] = $row;
+}
+
+// Prepare data for the chart
+$years = array_unique(array_merge(
+    array_column($scholarshipYearlyData, 'year'),
+    array_column($volunteerYearlyData, 'year')
+));
+sort($years);
+
+$scholarshipCounts = [];
+$volunteerCounts = [];
+foreach ($years as $year) {
+    $scholarshipCounts[] = array_reduce($scholarshipYearlyData, function ($carry, $item) use ($year) {
+        return $item['year'] == $year ? $item['total'] : $carry;
+    }, 0);
+    $volunteerCounts[] = array_reduce($volunteerYearlyData, function ($carry, $item) use ($year) {
+        return $item['year'] == $year ? $item['total'] : $carry;
+    }, 0);
+}
 
 $performanceData = [
     ['Metric', 'Value', 'Color'],
@@ -69,6 +103,53 @@ $values = array_map(function($item) {
 $colors = array_map(function($item) {
     return $item[2];
 }, array_slice($performanceData, 1)); // Exclude header row
+
+// Fetch filtered data for scholarship and volunteer applications
+$filter = $_GET['filter'] ?? 'yearly'; // Default to yearly
+$scholarshipFilteredData = [];
+$volunteerFilteredData = [];
+
+if ($filter === 'daily') {
+    $queryScholarshipFiltered = "SELECT DATE(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY DATE(application_date)";
+    $queryVolunteerFiltered = "SELECT DATE(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY DATE(application_date)";
+} elseif ($filter === 'weekly') {
+    $queryScholarshipFiltered = "SELECT YEAR(application_date) AS year, WEEK(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date), WEEK(application_date)";
+    $queryVolunteerFiltered = "SELECT YEAR(application_date) AS year, WEEK(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date), WEEK(application_date)";
+} elseif ($filter === 'monthly') {
+    $queryScholarshipFiltered = "SELECT YEAR(application_date) AS year, MONTH(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date), MONTH(application_date)";
+    $queryVolunteerFiltered = "SELECT YEAR(application_date) AS year, MONTH(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date), MONTH(application_date)";
+} else { // Default to yearly
+    $queryScholarshipFiltered = "SELECT YEAR(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date)";
+    $queryVolunteerFiltered = "SELECT YEAR(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date)";
+}
+
+$resultScholarshipFiltered = $conn->query($queryScholarshipFiltered);
+while ($row = $resultScholarshipFiltered->fetch_assoc()) {
+    $scholarshipFilteredData[] = $row;
+}
+
+$resultVolunteerFiltered = $conn->query($queryVolunteerFiltered);
+while ($row = $resultVolunteerFiltered->fetch_assoc()) {
+    $volunteerFilteredData[] = $row;
+}
+
+// Prepare data for the charts
+$periods = array_unique(array_merge(
+    array_column($scholarshipFilteredData, 'period'),
+    array_column($volunteerFilteredData, 'period')
+));
+sort($periods);
+
+$scholarshipCounts = [];
+$volunteerCounts = [];
+foreach ($periods as $period) {
+    $scholarshipCounts[] = array_reduce($scholarshipFilteredData, function ($carry, $item) use ($period) {
+        return $item['period'] == $period ? $item['total'] : $carry;
+    }, 0);
+    $volunteerCounts[] = array_reduce($volunteerFilteredData, function ($carry, $item) use ($period) {
+        return $item['period'] == $period ? $item['total'] : $carry;
+    }, 0);
+}
 ?>
 
 <!DOCTYPE html>
@@ -170,6 +251,31 @@ $colors = array_map(function($item) {
     <div class="export-btn">
         <a href="?export=excel" class="btn btn-success">Export to Excel</a>
     </div>
+    <!-- Add a new chart for yearly applications -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Yearly Applications Analytics</h3>
+            <canvas id="yearlyApplicationsChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <!-- Add filter dropdown -->
+        <div class="col-md-12 mb-3">
+            <form method="GET" action="">
+                <label for="filter">Filter by:</label>
+                <select name="filter" id="filter" class="form-select" onchange="this.form.submit()">
+                    <option value="daily" <?= $filter === 'daily' ? 'selected' : '' ?>>Daily</option>
+                    <option value="weekly" <?= $filter === 'weekly' ? 'selected' : '' ?>>Weekly</option>
+                    <option value="monthly" <?= $filter === 'monthly' ? 'selected' : '' ?>>Monthly</option>
+                    <option value="yearly" <?= $filter === 'yearly' ? 'selected' : '' ?>>Yearly</option>
+                </select>
+            </form>
+        </div>
+        <div class="col-md-12">
+            <h3>Scholarship and Volunteer Applications Analytics</h3>
+            <canvas id="applicationsChart" width="400" height="200"></canvas>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -212,6 +318,98 @@ function darken(color, percent) {
     B = Math.round(B * (1 - percent / 100));
     return `rgb(${R},${G},${B})`;
 }
+
+// Prepare data for the yearly applications chart
+var yearlyLabels = <?= json_encode($years) ?>;
+var scholarshipData = <?= json_encode($scholarshipCounts) ?>;
+var volunteerData = <?= json_encode($volunteerCounts) ?>;
+
+var yearlyApplicationsChart = new Chart(document.getElementById('yearlyApplicationsChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: yearlyLabels,
+        datasets: [
+            {
+                label: 'Scholarship Applications',
+                data: scholarshipData,
+                backgroundColor: '#4caf50',
+                borderColor: '#388e3c',
+                borderWidth: 1
+            },
+            {
+                label: 'Volunteer Applications',
+                data: volunteerData,
+                backgroundColor: '#2196F3',
+                borderColor: '#1976D2',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Year'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Applications'
+                }
+            }
+        }
+    }
+});
+
+// Prepare data for the applications chart
+var applicationLabels = <?= json_encode($periods) ?>;
+var scholarshipData = <?= json_encode($scholarshipCounts) ?>;
+var volunteerData = <?= json_encode($volunteerCounts) ?>;
+
+var applicationsChart = new Chart(document.getElementById('applicationsChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+        labels: applicationLabels,
+        datasets: [
+            {
+                label: 'Scholarship Applications',
+                data: scholarshipData,
+                backgroundColor: '#4caf50',
+                borderColor: '#388e3c',
+                borderWidth: 1
+            },
+            {
+                label: 'Volunteer Applications',
+                data: volunteerData,
+                backgroundColor: '#2196F3',
+                borderColor: '#1976D2',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Period'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Applications'
+                }
+            }
+        }
+    }
+});
 </script>
 </body>
 </html>
