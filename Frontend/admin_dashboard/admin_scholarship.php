@@ -161,91 +161,98 @@ if ($coursesResult->num_rows > 0) {
         </div>
 
         <div class="table-responsive">
-            <table id="scholarshipTable" class="display" style="color: black;">
-                <thead style="background-color: #f2f2f2; color: black;">
-                    <tr>
-                        <th>ID</th>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Last Name</th>
-                        <th>Course Name</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th>Applied At</th>
-                        <th>Actions</th>
-                        <th>Update Status</th>
-                        <th>Update</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                $result = $conn->query($sql);
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        $id = htmlspecialchars($row['id'] ?? '', ENT_QUOTES);
-                        $first_name = htmlspecialchars($row['first_name'] ?? '', ENT_QUOTES);
-                        $middle_name = htmlspecialchars($row['middle_name'] ?? '', ENT_QUOTES);
-                        $last_name = htmlspecialchars($row['last_name'] ?? '', ENT_QUOTES);
-                        $course_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES); // Updated variable
-                        $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
-                        $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
-                        $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
+            <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
+                <table id="scholarshipTable" class="display" style="color: black;">
+                    <thead style="background-color: #f2f2f2; color: black;">
+                        <tr>
+                            <th>Select</th>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Last Name</th>
+                            <th>Course Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Applied At</th>
+                            <th>Actions</th>
+                            <th>Update Status</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    $result = $conn->query($sql);
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            $id = htmlspecialchars($row['id'] ?? '', ENT_QUOTES);
+                            $first_name = htmlspecialchars($row['first_name'] ?? '', ENT_QUOTES);
+                            $middle_name = htmlspecialchars($row['middle_name'] ?? '', ENT_QUOTES);
+                            $last_name = htmlspecialchars($row['last_name'] ?? '', ENT_QUOTES);
+                            $course_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES); // Updated variable
+                            $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
+                            $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
+                            $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
 
-                        // Check if 'documents' exists and is not empty before decoding
-                        $documents = isset($row['documents']) && !empty($row['documents']) ? json_decode($row['documents'], true) : [];
+                            // Check if 'documents' exists and is not empty before decoding
+                            $documents = isset($row['documents']) && !empty($row['documents']) ? json_decode($row['documents'], true) : [];
 
-                        echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
-                        <td>' . htmlspecialchars($id) . '</td>
-                        <td>' . htmlspecialchars($first_name) . '</td>
-                        <td>' . htmlspecialchars($middle_name) . '</td>
-                        <td>' . htmlspecialchars($last_name) . '</td>
-                        <td>' . htmlspecialchars($course_name) . '</td> <!-- Updated variable -->
-                        <td>' . htmlspecialchars($email) . '</td>
-                        <td>' . htmlspecialchars($status) . '</td>
-                        <td>' . htmlspecialchars($applied_at) . '</td>
-                        <td>
-                            <div class="d-inline-flex gap-2">';
-                            
-                            // Loop through the documents to generate download buttons
-                            if (!empty($documents)) {
-                                foreach ($documents as $document) {
-                                    $fileName = $document['file_name'] ?? ''; // Extract the file name
-                                    $encodedFileName = urlencode($fileName);
+                            echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
+                            <td>
+                                <input type="checkbox" name="selected_students[]" value="' . htmlspecialchars($id) . '" class="select-student">
+                            </td>
+                            <td>' . htmlspecialchars($id) . '</td>
+                            <td>' . htmlspecialchars($first_name) . '</td>
+                            <td>' . htmlspecialchars($middle_name) . '</td>
+                            <td>' . htmlspecialchars($last_name) . '</td>
+                            <td>' . htmlspecialchars($course_name) . '</td> <!-- Updated variable -->
+                            <td>' . htmlspecialchars($email) . '</td>
+                            <td>' . htmlspecialchars($status) . '</td>
+                            <td>' . htmlspecialchars($applied_at) . '</td>
+                            <td>
+                                <div class="d-inline-flex gap-2">';
+                                
+                                // Loop through the documents to generate download buttons
+                                if (!empty($documents)) {
+                                    foreach ($documents as $document) {
+                                        $fileName = $document['file_name'] ?? ''; // Extract the file name
+                                        $encodedFileName = urlencode($fileName);
 
-                                    // Only show download button if the file name exists
-                                    if ($fileName) {
-                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-download"></i> Download
-                                        </a>';
+                                        // Only show download button if the file name exists
+                                        if ($fileName) {
+                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>';
+                                        }
                                     }
                                 }
-                            }
 
-                            echo '</div>
-                        </td>
-                        <td>
-                            <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
-                                <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
-                                <div class="input-group">
-                                    <select name="status" class="form-select form-select-sm">
-                                        <option value="Pending"' . ($status === 'Pending' ? ' selected' : '') . '>Pending</option>
-                                        <option value="Approved"' . ($status === 'Approved' ? ' selected' : '') . '>Approved</option>
-                                        <option value="Rejected"' . ($status === 'Rejected' ? ' selected' : '') . '>Rejected</option>
-                                        <option value="Under Review"' . ($status === 'Under Review' ? ' selected' : '') . '>Under Review</option>
-                                        <option value="Enrolled"' . ($status === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
-                                    </select>
-                                </div>
-                        </td>
-                        <td>
-                            <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
-                            </form>
-                        </td>
-                    </tr>';
+                                echo '</div>
+                            </td>
+                            <td>
+                                <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
+                                    <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
+                                    <div class="input-group">
+                                        <select name="status" class="form-select form-select-sm">
+                                            <option value="Pending"' . ($status === 'Pending' ? ' selected' : '') . '>Pending</option>
+                                            <option value="Approved"' . ($status === 'Approved' ? ' selected' : '') . '>Approved</option>
+                                            <option value="Rejected"' . ($status === 'Rejected' ? ' selected' : '') . '>Rejected</option>
+                                            <option value="Under Review"' . ($status === 'Under Review' ? ' selected' : '') . '>Under Review</option>
+                                            <option value="Enrolled"' . ($status === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
+                                        </select>
+                                    </div>
+                            </td>
+                            <td>
+                                <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
+                                </form>
+                            </td>
+                        </tr>';
+                        }
                     }
-                }
-                ?>
-                </tbody>
-            </table>
+                    ?>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary mt-3">Process Enrollment</button>
+            </form>
         </div>
     </div>
 </div>
