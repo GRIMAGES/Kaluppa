@@ -342,12 +342,23 @@ function filterByCourse() {
     const selectedCourseId = document.getElementById('courseFilter').value; // Get the selected course ID
     const table = $('#scholarshipTable').DataTable();
 
-    // Apply filter to the table
+    // Show all rows if "All Courses" is selected
     if (selectedCourseId === "") {
-        table.column(4).search('').draw(); // Show all rows if "All Courses" is selected
+        table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+            this.nodes().to$().show(); // Show all rows
+        });
     } else {
-        table.column(9).search('^' + selectedCourseId + '$', true, false).draw(); // Filter by course ID
+        table.rows().every(function(rowIdx, tableLoop, rowLoop) {
+            const row = this.nodes().to$();
+            const courseId = row.attr('data-course-id'); // Get the course ID from the row's data attribute
+            if (courseId === selectedCourseId) {
+                row.show(); // Show rows matching the selected course ID
+            } else {
+                row.hide(); // Hide rows not matching the selected course ID
+            }
+        });
     }
+    table.draw(); // Redraw the table
 }
 
 function limitApplications() {
