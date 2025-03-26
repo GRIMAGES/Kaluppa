@@ -110,18 +110,21 @@ $colors = array_map(function($item) {
 // Fetch filtered data for scholarship and volunteer applications
 $filter = $_GET['filter'] ?? 'yearly'; // Default to yearly
 $selectedYear = $_GET['year'] ?? date('Y'); // Default to the current year
+$selectedMonth = $_GET['month'] ?? date('m'); // Default to the current month
+$selectedWeek = $_GET['week'] ?? date('W'); // Default to the current week
+$selectedDay = $_GET['day'] ?? date('Y-m-d'); // Default to the current day
 $scholarshipFilteredData = [];
 $volunteerFilteredData = [];
 
 if ($filter === 'daily') {
-    $queryScholarshipFiltered = "SELECT DATE(applied_at) AS period, COUNT(*) AS total FROM applications GROUP BY DATE(applied_at)";
-    $queryVolunteerFiltered = "SELECT DATE(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY DATE(application_date)";
+    $queryScholarshipFiltered = "SELECT HOUR(applied_at) AS period, COUNT(*) AS total FROM applications WHERE DATE(applied_at) = '$selectedDay' GROUP BY HOUR(applied_at)";
+    $queryVolunteerFiltered = "SELECT HOUR(application_date) AS period, COUNT(*) AS total FROM volunteer_application WHERE DATE(application_date) = '$selectedDay' GROUP BY HOUR(application_date)";
 } elseif ($filter === 'weekly') {
-    $queryScholarshipFiltered = "SELECT YEAR(applied_at) AS year, WEEK(applied_at) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(applied_at), WEEK(applied_at)";
-    $queryVolunteerFiltered = "SELECT YEAR(application_date) AS year, WEEK(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date), WEEK(application_date)";
+    $queryScholarshipFiltered = "SELECT DAY(applied_at) AS period, COUNT(*) AS total FROM applications WHERE YEAR(applied_at) = $selectedYear AND WEEK(applied_at) = $selectedWeek GROUP BY DAY(applied_at)";
+    $queryVolunteerFiltered = "SELECT DAY(application_date) AS period, COUNT(*) AS total FROM volunteer_application WHERE YEAR(application_date) = $selectedYear AND WEEK(application_date) = $selectedWeek GROUP BY DAY(application_date)";
 } elseif ($filter === 'monthly') {
-    $queryScholarshipFiltered = "SELECT YEAR(applied_at) AS year, MONTH(applied_at) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(applied_at), MONTH(applied_at)";
-    $queryVolunteerFiltered = "SELECT YEAR(application_date) AS year, MONTH(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date), MONTH(application_date)";
+    $queryScholarshipFiltered = "SELECT DAY(applied_at) AS period, COUNT(*) AS total FROM applications WHERE YEAR(applied_at) = $selectedYear AND MONTH(applied_at) = $selectedMonth GROUP BY DAY(applied_at)";
+    $queryVolunteerFiltered = "SELECT DAY(application_date) AS period, COUNT(*) AS total FROM volunteer_application WHERE YEAR(application_date) = $selectedYear AND MONTH(application_date) = $selectedMonth GROUP BY DAY(application_date)";
 } elseif ($filter === 'yearly') {
     $queryScholarshipFiltered = "SELECT MONTH(applied_at) AS period, COUNT(*) AS total FROM applications WHERE YEAR(applied_at) = $selectedYear GROUP BY MONTH(applied_at)";
     $queryVolunteerFiltered = "SELECT MONTH(application_date) AS period, COUNT(*) AS total FROM volunteer_application WHERE YEAR(application_date) = $selectedYear GROUP BY MONTH(application_date)";
@@ -138,16 +141,24 @@ while ($row = $resultVolunteerFiltered->fetch_assoc()) {
 }
 
 // Prepare data for the charts
-$months = range(1, 12); // All months (1 to 12)
+$periods = [];
+if ($filter === 'yearly') {
+    $periods = range(1, 12); // Months (1 to 12)
+} elseif ($filter === 'monthly' || $filter === 'weekly') {
+    $periods = range(1, 31); // Days (1 to 31)
+} elseif ($filter === 'daily') {
+    $periods = range(0, 23); // Hours (0 to 23)
+}
+
 $scholarshipCounts = [];
 $volunteerCounts = [];
 
-foreach ($months as $month) {
-    $scholarshipCounts[] = array_reduce($scholarshipFilteredData, function ($carry, $item) use ($month) {
-        return $item['period'] == $month ? $item['total'] : $carry;
+foreach ($periods as $period) {
+    $scholarshipCounts[] = array_reduce($scholarshipFilteredData, function ($carry, $item) use ($period) {
+        return $item['period'] == $period ? $item['total'] : $carry;
     }, 0);
-    $volunteerCounts[] = array_reduce($volunteerFilteredData, function ($carry, $item) use ($month) {
-        return $item['period'] == $month ? $item['total'] : $carry;
+    $volunteerCounts[] = array_reduce($volunteerFilteredData, function ($carry, $item) use ($period) {
+        return $item['period'] == $period ? $item['total'] : $carry;
     }, 0);
 }
 ?>
@@ -259,13 +270,33 @@ foreach ($months as $month) {
                     <option value="monthly" <?= $filter === 'monthly' ? 'selected' : '' ?>>Monthly</option>
                     <option value="yearly" <?= $filter === 'yearly' ? 'selected' : '' ?>>Yearly</option>
                 </select>
-                <?php if ($filter === 'yearly'): ?>
+                <?php if ($filter === 'yearly' || $filter === 'monthly' || $filter === 'weekly'): ?>
                     <label for="year" class="form-label ms-3">Year:</label>
                     <select name="year" id="year" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
                         <?php for ($y = date('Y'); $y >= 2000; $y--): ?>
                             <option value="<?= $y ?>" <?= $selectedYear == $y ? 'selected' : '' ?>><?= $y ?></option>
                         <?php endfor; ?>
                     </select>
+                <?php endif; ?>
+                <?php if ($filter === 'monthly'): ?>
+                    <label for="month" class="form-label ms-3">Month:</label>
+                    <select name="month" id="month" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                        <?php for ($m = 1; $m <= 12; $m++): ?>
+                            <option value="<?= $m ?>" <?= $selectedMonth == $m ? 'selected' : '' ?>><?= date('F', mktime(0, 0, 0, $m, 1)) ?></option>
+                        <?php endfor; ?>
+                    </select>
+                <?php endif; ?>
+                <?php if ($filter === 'weekly'): ?>
+                    <label for="week" class="form-label ms-3">Week:</label>
+                    <select name="week" id="week" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                        <?php for ($w = 1; $w <= 52; $w++): ?>
+                            <option value="<?= $w ?>" <?= $selectedWeek == $w ? 'selected' : '' ?>>Week <?= $w ?></option>
+                        <?php endfor; ?>
+                    </select>
+                <?php endif; ?>
+                <?php if ($filter === 'daily'): ?>
+                    <label for="day" class="form-label ms-3">Day:</label>
+                    <input type="date" name="day" id="day" class="form-control form-control-sm w-auto d-inline" value="<?= $selectedDay ?>" onchange="this.form.submit()">
                 <?php endif; ?>
             </form>
         </div>
@@ -331,7 +362,7 @@ foreach ($months as $month) {
 
     // Prepare data for the scholarship applications chart
     var scholarshipPeriods = <?= json_encode($periods) ?>;
-    var scholarshipLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : scholarshipPeriods;
+    var scholarshipLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : scholarshipPeriods.map(String);
     var filteredScholarshipData = <?= json_encode($scholarshipCounts) ?>;
 
     var scholarshipApplicationsChart = new Chart(document.getElementById('scholarshipApplicationsChart').getContext('2d'), {
@@ -368,7 +399,7 @@ foreach ($months as $month) {
 
     // Prepare data for the volunteer applications chart
     var volunteerPeriods = <?= json_encode($periods) ?>;
-    var volunteerLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : volunteerPeriods;
+    var volunteerLabels = <?= json_encode($filter) ?> === 'yearly' ? getMonthNames() : volunteerPeriods.map(String);
     var filteredVolunteerData = <?= json_encode($volunteerCounts) ?>;
 
     var volunteerApplicationsChart = new Chart(document.getElementById('volunteerApplicationsChart').getContext('2d'), {
