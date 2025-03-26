@@ -339,14 +339,14 @@ function showApplicationDetails(id, firstName, middleName, lastName, courseName,
 }
 
 function filterByCourse() {
-    const courseName = document.getElementById('courseFilter').selectedOptions[0].text; // Get the selected course name
+    const courseName = document.getElementById('courseFilter').selectedOptions[0].text.trim(); // Get the selected course name
     const table = $('#scholarshipTable').DataTable();
 
     // Apply filter to the table
     if (courseName === "All Courses") {
         table.search('').draw(); // Show all rows if "All Courses" is selected
     } else {
-        table.column(4).search(courseName, true, false).draw(); // Filter by course name
+        table.column(4).search('^' + courseName + '$', true, false).draw(); // Filter by exact course name
     }
 }
 
