@@ -290,202 +290,156 @@ foreach ($periods as $period) {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    var ctx = document.getElementById('performanceChart').getContext('2d');
+    // Prepare data for the performance chart
+    var labels = <?= json_encode($labels) ?>; // Convert PHP array to JSON for Chart.js
+    var values = <?= json_encode($values) ?>;
+    var colors = <?= json_encode($colors) ?>;
 
-var labels = <?= json_encode($labels) ?>; // Convert PHP array to JSON for Chart.js
-var values = <?= json_encode($values) ?>;
-var colors = <?= json_encode($colors) ?>;
-
-var performanceChart = new Chart(ctx, {
-    type: 'line', // Change to 'line' or 'pie' if needed
-    data: {
-        labels: labels,
-        datasets: [{
-            label: 'Performance Metrics',
-            data: values,
-            backgroundColor: colors, // Apply different colors
-            borderColor: colors.map(color => darken(color, 20)), // Darken colors for border
-            borderWidth: 1
-        }]
-    },
-    
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-});
-
-// Helper function to darken a color
-function darken(color, percent) {
-    var R = parseInt(color.slice(1, 3), 16);
-    var G = parseInt(color.slice(3, 5), 16);
-    var B = parseInt(color.slice(5, 7), 16);
-    R = Math.round(R * (1 - percent / 100));
-    G = Math.round(G * (1 - percent / 100));
-    B = Math.round(B * (1 - percent / 100));
-    return `rgb(${R},${G},${B})`;
-}
-
-// Prepare data for the yearly applications chart
-var yearlyLabels = <?= json_encode($years) ?>;
-var scholarshipData = <?= json_encode($scholarshipCounts) ?>;
-var volunteerData = <?= json_encode($volunteerCounts) ?>;
-
-var yearlyApplicationsChart = new Chart(document.getElementById('yearlyApplicationsChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: yearlyLabels,
-        datasets: [
-            {
-                label: 'Scholarship Applications',
-                data: scholarshipData,
-                backgroundColor: '#4caf50',
-                borderColor: '#388e3c',
+    var performanceChart = new Chart(document.getElementById('performanceChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Performance Metrics',
+                data: values,
+                backgroundColor: colors,
+                borderColor: colors.map(color => darken(color, 20)),
                 borderWidth: 1
-            },
-            {
-                label: 'Volunteer Applications',
-                data: volunteerData,
-                backgroundColor: '#2196F3',
-                borderColor: '#1976D2',
-                borderWidth: 1
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Year'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Number of Applications'
-                }
-            }
-        }
-    }
-});
-
-// Prepare data for the applications chart
-var applicationLabels = <?= json_encode($periods) ?>;
-var scholarshipData = <?= json_encode($scholarshipCounts) ?>;
-var volunteerData = <?= json_encode($volunteerCounts) ?>;
-
-var applicationsChart = new Chart(document.getElementById('applicationsChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: applicationLabels,
-        datasets: [
-            {
-                label: 'Scholarship Applications',
-                data: scholarshipData,
-                backgroundColor: '#4caf50',
-                borderColor: '#388e3c',
-                borderWidth: 1
-            },
-            {
-                label: 'Volunteer Applications',
-                data: volunteerData,
-                backgroundColor: '#2196F3',
-                borderColor: '#1976D2',
-                borderWidth: 1
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Period'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Number of Applications'
-                }
-            }
-        }
-    }
-});
-
-// Prepare data for the scholarship applications chart
-var scholarshipLabels = <?= json_encode($periods) ?>;
-var scholarshipData = <?= json_encode($scholarshipCounts) ?>;
-
-var scholarshipApplicationsChart = new Chart(document.getElementById('scholarshipApplicationsChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: scholarshipLabels,
-        datasets: [{
-            label: 'Scholarship Applications',
-            data: scholarshipData,
-            backgroundColor: '#4caf50',
-            borderColor: '#388e3c',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Period'
-                }
-            },
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Number of Applications'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
         }
     });
 
-// Prepare data for the volunteer applications chart
-var volunteerLabels = <?= json_encode($periods) ?>;
-var volunteerData = <?= json_encode($volunteerCounts) ?>;
+    // Helper function to darken a color
+    function darken(color, percent) {
+        var R = parseInt(color.slice(1, 3), 16);
+        var G = parseInt(color.slice(3, 5), 16);
+        var B = parseInt(color.slice(5, 7), 16);
+        R = Math.round(R * (1 - percent / 100));
+        G = Math.round(G * (1 - percent / 100));
+        B = Math.round(B * (1 - percent / 100));
+        return `rgb(${R},${G},${B})`;
+    }
 
-var volunteerApplicationsChart = new Chart(document.getElementById('volunteerApplicationsChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: volunteerLabels,
-        datasets: [{
-            label: 'Volunteer Applications',
-            data: volunteerData,
-            backgroundColor: '#2196F3',
-            borderColor: '#1976D2',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Period'
+    // Prepare data for the yearly applications chart
+    var yearlyLabels = <?= json_encode($years) ?>;
+    var yearlyScholarshipData = <?= json_encode($scholarshipCounts) ?>;
+    var yearlyVolunteerData = <?= json_encode($volunteerCounts) ?>;
+
+    var yearlyApplicationsChart = new Chart(document.getElementById('yearlyApplicationsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: yearlyLabels,
+            datasets: [
+                {
+                    label: 'Scholarship Applications',
+                    data: yearlyScholarshipData,
+                    backgroundColor: '#4caf50',
+                    borderColor: '#388e3c',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Volunteer Applications',
+                    data: yearlyVolunteerData,
+                    backgroundColor: '#2196F3',
+                    borderColor: '#1976D2',
+                    borderWidth: 1
                 }
-            },
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Number of Applications'
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Year'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Applications'
+                    }
+                }
+            }
+        }
+    });
+
+    // Prepare data for the scholarship applications chart
+    var scholarshipLabels = <?= json_encode($periods) ?>;
+    var filteredScholarshipData = <?= json_encode($scholarshipCounts) ?>;
+
+    var scholarshipApplicationsChart = new Chart(document.getElementById('scholarshipApplicationsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: scholarshipLabels,
+            datasets: [{
+                label: 'Scholarship Applications',
+                data: filteredScholarshipData,
+                backgroundColor: '#4caf50',
+                borderColor: '#388e3c',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Period'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Applications'
+                    }
+                }
+            }
+        }
+    });
+
+    // Prepare data for the volunteer applications chart
+    var volunteerLabels = <?= json_encode($periods) ?>;
+    var filteredVolunteerData = <?= json_encode($volunteerCounts) ?>;
+
+    var volunteerApplicationsChart = new Chart(document.getElementById('volunteerApplicationsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: volunteerLabels,
+            datasets: [{
+                label: 'Volunteer Applications',
+                data: filteredVolunteerData,
+                backgroundColor: '#2196F3',
+                borderColor: '#1976D2',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Period'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Applications'
+                    }
                 }
             }
         }
