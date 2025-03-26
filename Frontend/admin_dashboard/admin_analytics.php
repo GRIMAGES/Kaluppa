@@ -227,7 +227,9 @@ foreach ($periods as $period) {
         </div>
     </div>
     <div class="row">
+        <!-- Scholarship Applications Table -->
         <div class="col-md-6">
+            <h3>Scholarship Applications</h3>
             <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
@@ -236,23 +238,31 @@ foreach ($periods as $period) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($performanceData as $index => $row): ?>
-                        <?php if ($index === 0) continue; // Skip header row ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row[0]) ?></td>
-                            <td><?= htmlspecialchars($row[1]) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
+                    <tr>
+                        <td>Total Scholarship Applications</td>
+                        <td><?= htmlspecialchars($totalApplications) ?></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
+        <!-- Volunteer Applications Table -->
         <div class="col-md-6">
-            <!-- Performance Analytics Chart -->
-            <canvas id="performanceChart" width="400" height="200"></canvas>
+            <h3>Volunteer Applications</h3>
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Volunteer Applications</td>
+                        <td><?= htmlspecialchars($totalVolunteers) ?></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div class="export-btn">
-        <a href="?export=excel" class="btn btn-success">Export to Excel</a>
     </div>
     <!-- Add a new chart for yearly applications -->
     <div class="row mt-4">
