@@ -51,7 +51,7 @@ $volunteerQueryTime = microtime(true) - $startTime;
 
 // Fetch yearly data for scholarship applications
 $scholarshipYearlyData = [];
-$queryScholarshipYearly = "SELECT YEAR(application_date) AS year, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date)";
+$queryScholarshipYearly = "SELECT YEAR(applied_at) AS year, COUNT(*) AS total FROM applications GROUP BY YEAR(applied_at)";
 $resultScholarshipYearly = $conn->query($queryScholarshipYearly);
 while ($row = $resultScholarshipYearly->fetch_assoc()) {
     $scholarshipYearlyData[] = $row;
@@ -113,16 +113,16 @@ $scholarshipFilteredData = [];
 $volunteerFilteredData = [];
 
 if ($filter === 'daily') {
-    $queryScholarshipFiltered = "SELECT DATE(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY DATE(application_date)";
+    $queryScholarshipFiltered = "SELECT DATE(applied_at) AS period, COUNT(*) AS total FROM applications GROUP BY DATE(applied_at)";
     $queryVolunteerFiltered = "SELECT DATE(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY DATE(application_date)";
 } elseif ($filter === 'weekly') {
-    $queryScholarshipFiltered = "SELECT YEAR(application_date) AS year, WEEK(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date), WEEK(application_date)";
+    $queryScholarshipFiltered = "SELECT YEAR(applied_at) AS year, WEEK(applied_at) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(applied_at), WEEK(applied_at)";
     $queryVolunteerFiltered = "SELECT YEAR(application_date) AS year, WEEK(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date), WEEK(application_date)";
 } elseif ($filter === 'monthly') {
-    $queryScholarshipFiltered = "SELECT YEAR(application_date) AS year, MONTH(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date), MONTH(application_date)";
+    $queryScholarshipFiltered = "SELECT YEAR(applied_at) AS year, MONTH(applied_at) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(applied_at), MONTH(applied_at)";
     $queryVolunteerFiltered = "SELECT YEAR(application_date) AS year, MONTH(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date), MONTH(application_date)";
 } else { // Default to yearly
-    $queryScholarshipFiltered = "SELECT YEAR(application_date) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(application_date)";
+    $queryScholarshipFiltered = "SELECT YEAR(applied_at) AS period, COUNT(*) AS total FROM applications GROUP BY YEAR(applied_at)";
     $queryVolunteerFiltered = "SELECT YEAR(application_date) AS period, COUNT(*) AS total FROM volunteer_application GROUP BY YEAR(application_date)";
 }
 
