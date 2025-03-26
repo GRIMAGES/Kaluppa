@@ -252,11 +252,11 @@ foreach ($periods as $period) {
         </div>
     </div>
     <div class="row mt-4">
-        <!-- Move filter dropdown here -->
+        <!-- Make filter dropdown smaller -->
         <div class="col-md-12 mb-3">
             <form method="GET" action="">
-                <label for="filter">Filter by:</label>
-                <select name="filter" id="filter" class="form-select" onchange="this.form.submit()">
+                <label for="filter" class="form-label">Filter by:</label>
+                <select name="filter" id="filter" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
                     <option value="daily" <?= $filter === 'daily' ? 'selected' : '' ?>>Daily</option>
                     <option value="weekly" <?= $filter === 'weekly' ? 'selected' : '' ?>>Weekly</option>
                     <option value="monthly" <?= $filter === 'monthly' ? 'selected' : '' ?>>Monthly</option>
@@ -316,8 +316,18 @@ foreach ($periods as $period) {
         return `rgb(${R},${G},${B})`;
     }
 
+    // Helper function to get month names
+    function getMonthNames(periods) {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        return periods.map(period => monthNames[parseInt(period) - 1] || period);
+    }
+
     // Prepare data for the scholarship applications chart
-    var scholarshipLabels = <?= json_encode($periods) ?>;
+    var scholarshipPeriods = <?= json_encode($periods) ?>;
+    var scholarshipLabels = <?= json_encode($filter) ?> === 'monthly' ? getMonthNames(scholarshipPeriods) : scholarshipPeriods;
     var filteredScholarshipData = <?= json_encode($scholarshipCounts) ?>;
 
     var scholarshipApplicationsChart = new Chart(document.getElementById('scholarshipApplicationsChart').getContext('2d'), {
@@ -353,7 +363,8 @@ foreach ($periods as $period) {
     });
 
     // Prepare data for the volunteer applications chart
-    var volunteerLabels = <?= json_encode($periods) ?>;
+    var volunteerPeriods = <?= json_encode($periods) ?>;
+    var volunteerLabels = <?= json_encode($filter) ?> === 'monthly' ? getMonthNames(volunteerPeriods) : volunteerPeriods;
     var filteredVolunteerData = <?= json_encode($volunteerCounts) ?>;
 
     var volunteerApplicationsChart = new Chart(document.getElementById('volunteerApplicationsChart').getContext('2d'), {
