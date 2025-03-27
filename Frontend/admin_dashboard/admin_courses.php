@@ -417,40 +417,36 @@ if ($scholarship_result->num_rows > 0) {
 <script>
     // Populate Edit Course Modal with existing course data
     const editButtons = document.querySelectorAll('.btn-warning');
-editButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const modal = new bootstrap.Modal(document.getElementById('editCourseModal'));
-        
-        const id = this.getAttribute('data-id');
-        const name = this.getAttribute('data-name');
-        const description = this.getAttribute('data-description');
-        const duration = this.getAttribute('data-duration');
-        const capacity = this.getAttribute('data-capacity');
-        const instructor = this.getAttribute('data-instructor');
-        const requisites = this.getAttribute('data-requisites');
-        const status = this.getAttribute('data-status');
-        const startDate = this.getAttribute('data-startdate');
-        const endDate = this.getAttribute('data-enddate');
-        const requirements= this.getAttribute('data-requirements');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = new bootstrap.Modal(document.getElementById('editCourseModal'));
+            
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const description = this.getAttribute('data-description');
+            const capacity = this.getAttribute('data-capacity');
+            const instructor = this.getAttribute('data-instructor');
+            const requisites = this.getAttribute('data-requisites');
+            const status = this.getAttribute('data-status');
+            const startDate = this.getAttribute('data-startdate');
+            const endDate = this.getAttribute('data-enddate');
+            const requirements = this.getAttribute('data-requirements');
 
-        document.getElementById('edit_course_id').value = id;
-        document.getElementById('edit_course_name').value = name;
-        document.getElementById('edit_course_description').value = description;
-        document.getElementById('edit_course_duration').value = duration;
-        document.getElementById('edit_course_capacity').value = capacity;
-        document.getElementById('edit_course_instructor').value = instructor;
-        document.getElementById('edit_course_requisites').value = requisites;
-        document.getElementById('edit_course_status').value = status;
+            // Populate modal fields with existing data
+            document.getElementById('edit_course_id').value = id;
+            document.getElementById('edit_course_name').value = name;
+            document.getElementById('edit_course_description').value = description;
+            document.getElementById('edit_course_capacity').value = capacity;
+            document.getElementById('edit_course_instructor').value = instructor;
+            document.getElementById('edit_course_requisites').value = requisites;
+            document.getElementById('edit_course_status').value = status;
+            document.getElementById('editCourseStartDate').value = startDate;
+            document.getElementById('editCourseEndDate').value = endDate;
+            document.getElementById('editcourseRequirements').value = requirements;
 
-        // Set start and end dates
-        document.getElementById('editCourseStartDate').value = startDate;
-        document.getElementById('editCourseEndDate').value = endDate;
-        document.getElementById('editcourseRequirements').value = requirements;
-
-        modal.show();
+            modal.show();
+        });
     });
-});
-
 
     function showApprovedUsers(courseId) {
     var approvedUsers = <?php echo json_encode($approvedApplications); ?>;
