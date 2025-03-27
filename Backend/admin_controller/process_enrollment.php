@@ -1,9 +1,18 @@
 <?php
 require_once '../connection.php';
 
+// Check database connection
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_students'])) {
     $selected_students = $_POST['selected_students'];
     $course_id = intval($_POST['course_id']); // Ensure course_id is passed in the form
+
+    if (!$course_id) {
+        die("Error: course_id is missing or invalid.");
+    }
 
     // Fetch the course capacity
     $stmt = $conn->prepare("SELECT capacity FROM courses WHERE id = ?");
