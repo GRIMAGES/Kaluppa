@@ -106,8 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
             if (move_uploaded_file($_FILES["courseImage"]["tmp_name"], $target_file)) {
                 $stmt = $conn->prepare("UPDATE courses SET name = ?, image = ?, start_date = ?, end_date = ?, instructor = ?, capacity = ?, requisites = ?, requirements = ?, description = ?, status = ? WHERE id = ?");
-$stmt->bind_param("ssssssssssi", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $requirements, $description, $status, $id);
-
+                $stmt->bind_param("ssssssssssi", $name, $imageName, $start_date, $end_date, $instructor, $capacity, $requisites, $requirements, $description, $status, $id);
             } else {
                 echo "Error uploading image.";
             }
@@ -120,18 +119,13 @@ $stmt->bind_param("ssssssssssi", $name, $imageName, $start_date, $end_date, $ins
     }
 
     if ($stmt->execute()) {
-        echo "<script>$('#successModal').modal('show');</script>";
+        $_SESSION['success_message'] = 'Course updated successfully!'; // Set success message
+        header("Location: admin_courses.php"); // Redirect to refresh the page
+        exit();
     } else {
         echo "<script>$('#errorModal').modal('show');</script>";
     }
-
-
-    } elseif (isset($_POST['deleteCourse'])) {
-        // Delete course logic
-        // ...
-        $_SESSION['success_message'] = 'Course deleted successfully!';
-    }
-
+}
 
 // Fetch the count of approved applications for each course
 $approvedApplicationsCountSql = "
