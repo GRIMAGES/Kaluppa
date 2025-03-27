@@ -261,9 +261,8 @@ if ($scholarship_result->num_rows > 0) {
         data-startdate="<?= $course['start_date'] ?>"
         data-enddate="<?= $course['end_date'] ?>"
         data-requirements="<?= $course['requirements'] ?>">
+        <i class="fas fa-edit"></i> <!-- Ensure the icon is inside the button -->
     </button>
-    <i class="fas fa-edit"></i>
-</button>
                     </div>
                 </div>
             </div>
