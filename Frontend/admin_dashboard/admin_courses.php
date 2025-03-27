@@ -415,6 +415,20 @@ if ($scholarship_result->num_rows > 0) {
 </div>
 
 <script>
+    // Ensure modal backdrop is removed when modal is closed
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('hidden.bs.modal', function () {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        });
+    });
+
     // Populate Edit Course Modal with existing course data
     const editButtons = document.querySelectorAll('.btn-warning');
     editButtons.forEach(button => {
