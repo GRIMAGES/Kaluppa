@@ -10,12 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_students']))
     $stmt->bind_param("i", $course_id);
     $stmt->execute();
     $stmt->bind_result($capacity);
-    $stmt->fetch();
-    $stmt->close();
-
-    if (!$capacity) {
-        die("Invalid course or capacity not found.");
+    if (!$stmt->fetch()) { // Check if a result is fetched
+        $stmt->close();
+        die("Invalid course or capacity not found."); // Handle invalid course ID
     }
+    $stmt->close();
 
     // Process enrollment
     $enrolled_count = 0;
