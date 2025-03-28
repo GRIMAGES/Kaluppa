@@ -9,7 +9,11 @@ if ($conn->connect_error) {
     die("Database connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_students'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['selected_students']) || empty($_POST['selected_students'])) {
+        die("Error: No students selected. Debug: " . print_r($_POST, true)); // Debugging message
+    }
+
     $selected_students = $_POST['selected_students'];
 
     // Fetch the course_id from the applications table using the first selected student
@@ -55,6 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_students']))
     header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?enrollment_success=1");
     exit();
 } else {
-    die("No students selected or invalid request.");
+    die("Invalid request method.");
 }
 ?>

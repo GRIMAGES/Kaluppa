@@ -240,9 +240,7 @@ if ($coursesResult->num_rows > 0) {
                                             <option value="Enrolled"' . ($status === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
                                         </select>
                                     </div>
-                            </td>
-                            <td>
-                                <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
+                                    <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
                                 </form>
                             </td>
                         </tr>';
