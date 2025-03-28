@@ -13,9 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_students']))
     $selected_students = $_POST['selected_students'];
 
     // Fetch the course_id from the applications table using the first selected student
-    $first_student_id = intval($selected_students[0]); // Use the first student ID to determine the course
+    $first_student_id = $selected_students[0]; // Use the first student ID to determine the course
     $stmt = $conn->prepare("SELECT course_id FROM applications WHERE id = ?");
-    $stmt->bind_param("i", $first_student_id);
+    $stmt->bind_param("s", $first_student_id); // Treat id as a string
     $stmt->execute();
     $stmt->bind_result($course_id);
     if (!$stmt->fetch()) { // Check if a result is fetched
@@ -38,20 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_students']))
     // Process enrollment
     $enrolled_count = 0;
     foreach ($selected_students as $student_id) {
+        // Ensure $student_id is treated as a string if it contains non-numeric values
+        $stmt = $conn->prepare("UPDATE applications SET status = ? WHERE id = ?");
         if ($enrolled_count < $capacity) {
-            // Enroll the student
-            $stmt = $conn->prepare("UPDATE applications SET status = 'Enrolled' WHERE id = ?");
-            $stmt->bind_param("i", $student_id);
-            $stmt->execute();
-            $stmt->close();
-            $enrolled_count++;
+            $status = 'Enrolled';
         } else {
-            // Move to waitlist
-            $stmt = $conn->prepare("UPDATE applications SET status = 'Waitlist' WHERE id = ?");
-            $stmt->bind_param("i", $student_id);
-            $stmt->execute();
-            $stmt->close();
+            $status = 'Waitlist';
         }
+        $stmt->bind_param("ss", $status, $student_id); // Use "ss" to bind both as strings
+        $stmt->execute();
+        $stmt->close();
+        $enrolled_count++;
     }
 
     // Redirect back with a success message
