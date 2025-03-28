@@ -8,11 +8,18 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_students'])) {
     $selected_students = $_POST['selected_students'];
-    $course_id = intval($_POST['course_id']); // Ensure course_id is passed in the form
 
-    if (!$course_id) {
-        die("Error: course_id is missing or invalid.");
+    // Fetch the course_id from the applications table using the first selected student
+    $first_student_id = intval($selected_students[0]); // Use the first student ID to determine the course
+    $stmt = $conn->prepare("SELECT course_id FROM applications WHERE id = ?");
+    $stmt->bind_param("i", $first_student_id);
+    $stmt->execute();
+    $stmt->bind_result($course_id);
+    if (!$stmt->fetch()) { // Check if a result is fetched
+        $stmt->close();
+        die("Error: course_id not found for the selected student.");
     }
+    $stmt->close();
 
     // Fetch the course capacity
     $stmt = $conn->prepare("SELECT capacity FROM courses WHERE id = ?");
