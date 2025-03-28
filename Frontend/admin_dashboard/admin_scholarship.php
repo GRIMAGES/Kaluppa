@@ -232,8 +232,10 @@ if ($coursesResult->num_rows > 0) {
                                     <div class="input-group">
                                         <select name="status" class="form-select form-select-sm">
                                             <?php
+                                            // Define the available statuses
                                             $statuses = ["Pending", "Approved", "Rejected", "Under Review", "Enrolled"];
                                             foreach ($statuses as $option) {
+                                                // Check if the current status matches the option
                                                 $selected = ($status === $option) ? " selected" : "";
                                                 echo "<option value=\"$option\"$selected>$option</option>";
                                             }
