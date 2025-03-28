@@ -13,7 +13,6 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-
 // Check if the user has timed out due to inactivity
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {
     // Last activity was more than 30 minutes ago
@@ -239,8 +238,8 @@ if ($coursesResult->num_rows > 0) {
                                             <option value="Under Review"' . ($status === 'Under Review' ? ' selected' : '') . '>Under Review</option>
                                             <option value="Enrolled"' . ($status === 'Enrolled' ? ' selected' : '') . '>Enrolled</option>
                                         </select>
+                                        <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
                                     </div>
-                                    <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
                                 </form>
                             </td>
                         </tr>';
