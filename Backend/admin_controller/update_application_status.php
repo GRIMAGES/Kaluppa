@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['application_id'], $_POST['status'])) {
