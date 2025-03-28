@@ -175,7 +175,6 @@ if ($coursesResult->num_rows > 0) {
                             <th>Applied At</th>
                             <th>Actions</th>
                             <th>Update Status</th>
-                            <th>Update</th>
                         </tr>
                     </thead>
                     <tbody>
