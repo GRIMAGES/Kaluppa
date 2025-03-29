@@ -97,6 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Send enrollment email
                     if (!sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
                         error_log("Failed to send enrollment email to $email for application ID $studentId");
+                    } else {
+                        error_log("Email sent successfully to $email for application ID $studentId");
                     }
                 }
                 $detailsStmt->close();
