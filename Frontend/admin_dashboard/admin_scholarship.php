@@ -206,6 +206,13 @@ document.getElementById('enrollmentForm').addEventListener('submit', function(ev
         alert('Please select at least one student to process enrollment.');
     }
 });
+
+// Ensure individual status update forms are not affected by the bulk enrollment validation
+document.querySelectorAll('form[action="../../Backend/admin_controller/update_application_status.php"]').forEach(form => {
+    form.addEventListener('submit', function(event) {
+        // No validation needed for individual status update forms
+    });
+});
 </script>
 </body>
 </html>
