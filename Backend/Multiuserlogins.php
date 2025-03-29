@@ -24,20 +24,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Debugging statement
-    error_log("Login attempt for email: $email");
-
-    $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
-    if (!$stmt) {
-        error_log("Prepare failed: " . $conn->error);
-    }
+    // Check if the email is locked
+    $query = "SELECT failed_attempts, locked_until FROM user WHERE email = ?";
+    $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+    if ($user) {
+        $failedAttempts = $user['failed_attempts'];
+        $lockedUntil = $user['locked_until'];
+
+        // Check if the account is locked
+        if ($lockedUntil && strtotime($lockedUntil) > time()) {
+            $_SESSION['error'] = "Your account is locked. Try again later.";
+            header("Location: ../Frontend/index.php");
+            exit();
+        }
+
+        // Verify password
         if (password_verify($password, $user['password'])) {
+            // Reset failed attempts on successful login
+            $query = "UPDATE user SET failed_attempts = 0, locked_until = NULL WHERE email = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+
             if ($user['is_verified'] == 1) {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $email;
@@ -59,14 +72,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
                 $_SESSION['error'] = "Account not verified. Please check your email for the verification link.";
             }
         } else {
-            $_SESSION['error'] = "Invalid password.";
+            // Increment failed attempts
+            $failedAttempts++;
+            $lockedUntil = null;
+
+            if ($failedAttempts >= 5) {
+                $lockedUntil = date("Y-m-d H:i:s", strtotime("+15 minutes")); // Lock for 15 minutes
+                $_SESSION['error'] = "Too many failed attempts. Your account is locked for 15 minutes.";
+            } else {
+                $_SESSION['error'] = "Invalid email or password.";
+            }
+
+            $query = "UPDATE user SET failed_attempts = ?, locked_until = ? WHERE email = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("iss", $failedAttempts, $lockedUntil, $email);
+            $stmt->execute();
+
+            header("Location: ../Frontend/index.php");
+            exit();
         }
     } else {
-        $_SESSION['error'] = "User not found.";
+        $_SESSION['error'] = "Invalid email or password.";
+        header("Location: ../Frontend/index.php");
+        exit();
     }
-    // Redirect to login page to show error message
-    header("Location: ../Frontend/index.php");
-    exit();
 }
 
 // Registration Handling
