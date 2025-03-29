@@ -306,13 +306,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && $_POST['
 
             // Send email using sendEnrollmentNotification function
             if (sendEnrollmentNotification($studentEmail, $studentName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
-                echo "<script>alert('Enrollment email sent successfully to $studentEmail');</script>";
+                echo "<script>alert('Status updated to Enrolled and email sent successfully to $studentEmail');</script>";
             } else {
                 error_log("Failed to send enrollment email to $studentEmail for application ID $applicationId");
-                echo "<script>alert('Failed to send enrollment email to $studentEmail');</script>";
+                echo "<script>alert('Status updated to Enrolled, but failed to send email to $studentEmail');</script>";
             }
         } else {
             error_log("No application found for ID $applicationId");
+            echo "<script>alert('Status updated to Enrolled, but no application details found.');</script>";
         }
 
         $stmt->close();
