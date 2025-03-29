@@ -180,7 +180,11 @@ if ($coursesResult->num_rows > 0) {
                     </tbody>
                 </table>
             </form>
-            <button type="submit" form="enrollmentForm" class="btn btn-primary mt-3">Process Enrollment</button>
+            <!-- Enrollment Processing Form -->
+<form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
+    <button type="submit" class="btn btn-primary mt-3">Process Enrollment</button>
+</form>
+
         </div>
     </div>
 </div>
@@ -203,11 +207,26 @@ function limitApplications() {
 // Add validation only for the "Process Enrollment" button
 document.getElementById('enrollmentForm').addEventListener('submit', function(event) {
     const checkboxes = document.querySelectorAll('.select-student:checked');
+    const form = document.getElementById('enrollmentForm');
+
     if (checkboxes.length === 0) {
         event.preventDefault();
         alert('Please select at least one student to process enrollment.');
+    } else {
+        // Clear any previous inputs
+        form.innerHTML = '<button type="submit" class="btn btn-primary mt-3">Process Enrollment</button>';
+
+        // Append selected student IDs to the form dynamically
+        checkboxes.forEach((checkbox) => {
+            let input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "selected_students[]";
+            input.value = checkbox.value;
+            form.appendChild(input);
+        });
     }
 });
+
 
 // Remove validation for the "Update Status" button
 document.querySelectorAll('form[action="../../Backend/admin_controller/update_application_status.php"]').forEach(function(form) {
