@@ -115,7 +115,6 @@ if ($coursesResult->num_rows > 0) {
                             <th>Status</th>
                             <th>Applied At</th>
                             <th>Actions</th>
-                            <th>Update Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -160,10 +159,6 @@ if ($coursesResult->num_rows > 0) {
                                     }
                             echo '</div>
                             </td>
-                            <td>
-                                <!-- Placeholder for Update Status -->
-                                <div id="updateStatusForm-' . $id . '"></div>
-                            </td>
                         </tr>';
                         }
                     }
@@ -182,10 +177,11 @@ if ($coursesResult->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 $id = htmlspecialchars($row['id']);
                 $status = htmlspecialchars($row['status']);
-                echo '<form method="POST" action="../../Backend/admin_controller/update_application_status.php" id="updateStatusForm-' . $id . '">
+                echo '<form method="POST" action="../../Backend/admin_controller/update_application_status.php" class="update-status-form">
                     <input type="hidden" name="application_id" value="' . $id . '">
-                    <div class="input-group">
-                        <select name="status" class="form-select form-select-sm">
+                    <div class="input-group mb-3">
+                        <label for="status-' . $id . '" class="form-label">Update Status for Application ID ' . $id . ':</label>
+                        <select id="status-' . $id . '" name="status" class="form-select form-select-sm">
                             <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
                             <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
                             <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
@@ -209,6 +205,20 @@ function limitApplications() {
 
     rows.forEach((row, index) => {
         if (index < maxApplications) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function filterByCourse() {
+    const courseFilter = document.getElementById('courseFilter').value;
+    const rows = document.querySelectorAll('#scholarshipTable tbody tr');
+
+    rows.forEach(row => {
+        const courseId = row.getAttribute('data-course-id');
+        if (courseFilter === '' || courseFilter === courseId) {
             row.style.display = '';
         } else {
             row.style.display = 'none';
