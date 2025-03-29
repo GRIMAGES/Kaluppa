@@ -190,11 +190,12 @@ if (isset($_POST['logout'])) {
                         <tbody>
                         <?php
                         require_once '../../Backend/connection.php';
-                        $sql = "SELECT id, CONCAT(first_name, ' ', middle_name, ' ', last_name) AS full_name, role, email, gender FROM user";
+                        $sql = "SELECT id, CONCAT(first_name, ' ', middle_name, ' ', last_name) AS full_name, role, email, gender, failed_attempts, locked_until FROM user";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
                             while ($row = $result->fetch_assoc()) {
+                                $isLocked = $row['locked_until'] && strtotime($row['locked_until']) > time();
                                 echo '<tr>
                                         <td>' . htmlspecialchars($row['id']) . '</td>
                                         <td>' . htmlspecialchars($row['full_name']) . '</td>
@@ -215,9 +216,14 @@ if (isset($_POST['logout'])) {
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete(' . htmlspecialchars($row['id']) . ')">
                                                     <i class="fas fa-trash"></i> Delete
-                                                </button>
-                                            </div>
-                                        </td>
+                                                </button>';
+                                if ($isLocked) {
+                                    echo '<button type="button" class="btn btn-sm btn-outline-warning" onclick="unlockAccount(' . htmlspecialchars($row['id']) . ')">
+                                            <i class="fas fa-unlock"></i> Unlock
+                                          </button>';
+                                }
+                                echo '</div>
+                                      </td>
                                       </tr>';
                             }
                         } else {
@@ -390,6 +396,23 @@ if (isset($_POST['logout'])) {
                     alert('Error deleting user');
                 }
             });
+        }
+
+        function unlockAccount(userId) {
+            if (confirm("Are you sure you want to unlock this account?")) {
+                $.ajax({
+                    url: '/Kaluppa/Backend/unlock_account.php',
+                    type: 'POST',
+                    data: { id: userId },
+                    success: function(response) {
+                        alert(response);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error unlocking account: ' + error);
+                    }
+                });
+            }
         }
     </script>
 </body>

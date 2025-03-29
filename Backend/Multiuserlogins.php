@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
     $password = $_POST['password'];
 
     // Check if the email is locked
-    $query = "SELECT failed_attempts, locked_until FROM user WHERE email = ?";
+    $query = "SELECT failed_attempts, locked_until, password, is_verified, role, username FROM user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
 
         // Check if the account is locked
         if ($lockedUntil && strtotime($lockedUntil) > time()) {
-            $_SESSION['error'] = "Your account is locked. Try again later.";
+            $_SESSION['error'] = "This email is locked. Try again after " . date("H:i:s", strtotime($lockedUntil));
             header("Location: ../Frontend/index.php");
             exit();
         }
@@ -56,15 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $user['role'];
 
-                // Debugging statement
-                error_log("User role: " . $user['role']);
-
+                // Redirect based on role
                 if ($user['role'] === 'superadmin' || $user['role'] === 'admin') {
-                    error_log("Redirecting to admin dashboard");
                     header("Location: ../Frontend/admin_dashboard/admin_dashboard.php");
                     exit();
                 } else if ($user['role'] === 'user' || $user['role'] === 'alumni') {
-                    error_log("Redirecting to user dashboard");
                     header("Location: ../Frontend/user_dashboard/user_dashboard.php");
                     exit();
                 }
@@ -78,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
 
             if ($failedAttempts >= 5) {
                 $lockedUntil = date("Y-m-d H:i:s", strtotime("+15 minutes")); // Lock for 15 minutes
-                $_SESSION['error'] = "Too many failed attempts. Your account is locked for 15 minutes.";
+                $_SESSION['error'] = "Too many failed attempts for this email. It is locked for 15 minutes.";
             } else {
                 $_SESSION['error'] = "Invalid email or password.";
             }
