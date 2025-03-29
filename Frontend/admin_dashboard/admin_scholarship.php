@@ -134,9 +134,7 @@ if ($coursesResult->num_rows > 0) {
 
                         echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
                         <td>
-                            <form id="enrollmentForm-' . $id . '" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
-                                <input type="checkbox" name="selected_students[]" value="' . $id . '" class="select-student">
-                            </form>
+                            <input type="checkbox" name="selected_students[]" value="' . $id . '" class="select-student">
                         </td>
                         <td>' . $id . '</td>
                         <td>' . $first_name . '</td>
@@ -146,7 +144,7 @@ if ($coursesResult->num_rows > 0) {
                         <td>' . $email . '</td>
                         <td>' . $status . '</td> <!-- Current Status Column -->
                         <td>
-                            <form id="updateStatusForm-' . $id . '" action="../../Backend/admin_controller/update_application_status.php" method="POST">
+                            <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
                                 <input type="hidden" name="application_id" value="' . $id . '">
                                 <select name="status" class="form-select form-select-sm"> <!-- Change Status Column -->
                                     <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>

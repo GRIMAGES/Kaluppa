@@ -4,26 +4,25 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../connection.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
-    // Debugging: Check if POST data is received
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate input
     if (!isset($_POST['application_id']) || !isset($_POST['status'])) {
         die("Error: Missing application_id or status in POST data.");
     }
 
-    $application_id = $_POST['application_id'];
-    $new_status = $_POST['status'];
+    $application_id = intval($_POST['application_id']);
+    $new_status = $conn->real_escape_string($_POST['status']);
 
-    // Debugging: Validate received data
-    if (empty($application_id) || empty($new_status)) {
-        die("Error: application_id or status is empty.");
-    }
+    // Debugging: Log received data
+    error_log("Updating application ID: $application_id to status: $new_status");
 
+    // Update the status in the database
     $stmt = $conn->prepare("UPDATE applications SET status = ? WHERE id = ?");
     if (!$stmt) {
         die("SQL error in preparation: " . $conn->error);
     }
 
-    $stmt->bind_param("ss", $new_status, $application_id); // Use "ss" since application_id is a string
+    $stmt->bind_param("si", $new_status, $application_id);
     if ($stmt->execute()) {
         $stmt->close();
         header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?status_updated=1");
