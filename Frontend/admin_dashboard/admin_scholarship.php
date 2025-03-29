@@ -101,7 +101,7 @@ if ($coursesResult->num_rows > 0) {
         </div>
 
         <div class="table-responsive">
-            <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
+            <form id="updateStatusForm" action="../../Backend/admin_controller/update_application_status.php" method="POST">
                 <table id="scholarshipTable" class="table table-striped table-bordered" style="color: black;">
                     <thead style="background-color: #f2f2f2; color: black;">
                         <tr>
@@ -142,7 +142,15 @@ if ($coursesResult->num_rows > 0) {
                             <td>' . $last_name . '</td>
                             <td>' . $course_name . '</td>
                             <td>' . $email . '</td>
-                            <td>' . $status . '</td>
+                            <td>
+                                <select name="status[' . $id . ']" class="form-select form-select-sm">
+                                    <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
+                                    <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
+                                    <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
+                                    <option value="Under Review" ' . ($status === "Under Review" ? "selected" : "") . '>Under Review</option>
+                                    <option value="Enrolled" ' . ($status === "Enrolled" ? "selected" : "") . '>Enrolled</option>
+                                </select>
+                            </td>
                             <td>' . $applied_at . '</td>
                             <td>
                                 <div class="d-inline-flex gap-2">';
@@ -165,35 +173,14 @@ if ($coursesResult->num_rows > 0) {
                     ?>
                     </tbody>
                 </table>
-                <button type="button" id="showCheckboxes" class="btn btn-primary mt-3">Process Enrollment</button>
-                <button type="submit" id="submitEnrollment" class="btn btn-success mt-3" style="display: none;">Submit Enrollment</button>
+                <button type="submit" class="btn btn-primary mt-3">Update Status</button>
             </form>
         </div>
 
-        <!-- Independent Update Status Forms -->
-        <?php
-        $result = $conn->query($sql);
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $id = htmlspecialchars($row['id']);
-                $status = htmlspecialchars($row['status']);
-                echo '<form method="POST" action="../../Backend/admin_controller/update_application_status.php" class="update-status-form">
-                    <input type="hidden" name="application_id" value="' . $id . '">
-                    <div class="input-group mb-3">
-                        <label for="status-' . $id . '" class="form-label">Update Status for Application ID ' . $id . ':</label>
-                        <select id="status-' . $id . '" name="status" class="form-select form-select-sm">
-                            <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
-                            <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
-                            <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
-                            <option value="Under Review" ' . ($status === "Under Review" ? "selected" : "") . '>Under Review</option>
-                            <option value="Enrolled" ' . ($status === "Enrolled" ? "selected" : "") . '>Enrolled</option>
-                        </select>
-                        <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
-                    </div>
-                </form>';
-            }
-        }
-        ?>
+        <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
+            <button type="button" id="showCheckboxes" class="btn btn-primary mt-3">Process Enrollment</button>
+            <button type="submit" id="submitEnrollment" class="btn btn-success mt-3" style="display: none;">Submit Enrollment</button>
+        </form>
     </div>
 </div>
 
