@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $bulkStatus = $_POST['bulk_status'];
 
         foreach ($selectedStudents as $studentId) {
-            // Check course capacity
+            // Get the course ID for the student
             $query = "SELECT course_id FROM applications WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->bind_param('i', $studentId);
@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->fetch();
             $stmt->close();
 
+            // Check the number of enrolled students for the course
             $capacityQuery = "SELECT COUNT(*) AS enrolled_count FROM applications WHERE course_id = ? AND status = 'Enrolled'";
             $capacityStmt = $conn->prepare($capacityQuery);
             $capacityStmt->bind_param('i', $courseId);
@@ -31,14 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Assume course capacity is 5 (can be fetched dynamically if stored in the database)
             $courseCapacity = 5;
 
+            // Automatically waitlist students if the course is full
             if ($bulkStatus === 'Enrolled' && $enrolledCount >= $courseCapacity) {
                 $bulkStatus = 'Waitlisted';
             }
 
-            // Update the status
+            // Update the student's status
             $updateQuery = "UPDATE applications SET status = ? WHERE id = ?";
             $updateStmt = $conn->prepare($updateQuery);
-            $updateStmt->bind_param('ss', $bulkStatus, $studentId);
+            $updateStmt->bind_param('si', $bulkStatus, $studentId);
             $updateStmt->execute();
             $updateStmt->close();
         }
