@@ -142,6 +142,16 @@ $alumni_result = $alumni_stmt->get_result();
                 </div>
             </div>
         </div>
+        <!-- New Card for Inquiries -->
+        <div class="col-md-4">
+            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#inquiriesModal">
+                <div class="card-body">
+                    <i class="fas fa-question-circle card-icon"></i>
+                    <h5 class="card-title" style="color: white;">Inquiries</h5>
+                    <p class="card-text">Submit your questions or concerns.</p>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -188,6 +198,31 @@ $alumni_result = $alumni_stmt->get_result();
                         <textarea class="form-control" id="reason" rows="3" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inquiries Modal -->
+<div class="modal fade" id="inquiriesModal" tabindex="-1" aria-labelledby="inquiriesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inquiriesModalLabel">Inquiries</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="inquirySubject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="inquirySubject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inquiryMessage" class="form-label">Message</label>
+                        <textarea class="form-control" id="inquiryMessage" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Inquiry</button>
                 </form>
             </div>
         </div>
