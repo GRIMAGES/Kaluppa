@@ -10,45 +10,31 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['selected_students']) || empty($_POST['selected_students'])) {
-        header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?error=no_students_selected");
-        exit();
+        die("Error: No students selected for enrollment.");
     }
 
     $selected_students = $_POST['selected_students'];
 
-    $stmt = $conn->prepare("SELECT course_id FROM applications WHERE id = ?");
-    $stmt->bind_param("s", $selected_students[0]); // Use "s" since application_id is a string
-    $stmt->execute();
-    $stmt->bind_result($course_id);
-    if (!$stmt->fetch()) {
-        $stmt->close();
-        die("Error: course_id not found for the selected student.");
-    }
-    $stmt->close();
-
-    $stmt = $conn->prepare("SELECT capacity FROM courses WHERE id = ?");
-    $stmt->bind_param("i", $course_id);
-    $stmt->execute();
-    $stmt->bind_result($capacity);
-    if (!$stmt->fetch()) {
-        $stmt->close();
-        die("Invalid course or capacity not found.");
-    }
-    $stmt->close();
-
-    $enrolled_count = 0;
     foreach ($selected_students as $student_id) {
-        $stmt = $conn->prepare("UPDATE applications SET status = ? WHERE id = ?");
-        $status = ($enrolled_count < $capacity) ? 'Enrolled' : 'Waitlist';
-        $stmt->bind_param("ss", $status, $student_id); // Use "ss" since application_id is a string
-        $stmt->execute();
+        $student_id = $conn->real_escape_string($student_id);
+
+        // Process enrollment logic (e.g., update status to "Enrolled")
+        $stmt = $conn->prepare("UPDATE applications SET status = 'Enrolled' WHERE id = ?");
+        if (!$stmt) {
+            die("SQL error in preparation: " . $conn->error);
+        }
+
+        $stmt->bind_param("s", $student_id); // Treat student_id as a string
+        if (!$stmt->execute()) {
+            die("SQL error during execution: " . $stmt->error);
+        }
         $stmt->close();
-        $enrolled_count++;
     }
 
     header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?enrollment_success=1");
     exit();
 } else {
-    die("Invalid request method.");
+    header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?error=invalid_request");
+    exit();
 }
 ?>
