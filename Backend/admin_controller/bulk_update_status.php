@@ -31,9 +31,11 @@ function sendEnrollmentNotification($email, $firstName, $courseName, $courseStar
                        Best regards,<br>Course Administration Team";
 
         $mail->send();
+        error_log("Email sent successfully to $email for course $courseName.");
         return true;
     } catch (Exception $e) {
-        error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        error_log("Email could not be sent to $email. Mailer Error: {$mail->ErrorInfo}");
+        error_log("Exception Message: {$e->getMessage()}");
         return false;
     }
 }
