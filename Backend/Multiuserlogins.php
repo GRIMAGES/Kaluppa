@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
     $password = $_POST['password'];
 
     // Check if the email is locked
-    $query = "SELECT failed_attempts, locked_until, password, is_verified, role, username FROM user WHERE email = ?";
+    $query = "SELECT failed_attempts, locked_until, password, is_verified, role FROM user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -52,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
             $stmt->execute();
 
             if ($user['is_verified'] == 1) {
-                $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $user['role'];
 
