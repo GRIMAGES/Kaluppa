@@ -12,7 +12,7 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
 
     try {
         // Server settings
-        $mail->SMTPDebug = 2; // Replace SMTP::DEBUG_SERVER with 2 for verbose debug output
+        $mail->SMTPDebug = 2; // Enable verbose debug output
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
@@ -35,14 +35,14 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
         $mail->Body = "Hello $username,<br><br>Please click the link below to verify your account:<br><a href='$verificationLink'>$verificationLink</a><br><br>Or use the OTP code: $otp";
         $mail->AltBody = "Hello $username,\n\nPlease use this OTP code to verify your account: $otp\n\nOr visit: $verificationLink";
 
-        if (!$mail->send()) {
-            error_log("Mailer Error: " . $mail->ErrorInfo);
-            return false;
-        }
+        // Send email
+        $mail->send();
         return true;
 
     } catch (Exception $e) {
-        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        // Log detailed error information
+        error_log("Mailer Error: {$mail->ErrorInfo}");
+        error_log("Exception Message: {$e->getMessage()}");
         return false;
     }
 }
@@ -322,8 +322,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && $_POST['
         if (sendOTPByEmail($studentEmail, $studentName, $otp, $subject)) {
             echo "<script>alert('Enrollment email sent successfully to $studentEmail');</script>";
         } else {
+            error_log("Failed to send email to $studentEmail for application ID $applicationId");
             echo "<script>alert('Failed to send enrollment email to $studentEmail');</script>";
         }
+    } else {
+        error_log("No application found for ID $applicationId");
     }
 
     $stmt->close();
