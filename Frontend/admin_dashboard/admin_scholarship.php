@@ -234,5 +234,59 @@ function toggleSelectAll(checkbox) {
     checkboxes.forEach(cb => cb.checked = checkbox.checked);
 }
 </script>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && $_POST['status'] === 'Enrolled') {
+    $applicationId = $_POST['application_id'];
+
+    // Fetch student and course details
+    $query = "SELECT applications.first_name, applications.last_name, applications.email, courses.name AS course_name, courses.start_date, courses.end_date, courses.instructor 
+              FROM applications 
+              JOIN courses ON applications.course_id = courses.id 
+              WHERE applications.id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $applicationId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $studentName = $row['first_name'] . ' ' . $row['last_name'];
+        $studentEmail = $row['email'];
+        $courseName = $row['course_name'];
+        $courseStartDate = $row['start_date'];
+        $courseEndDate = $row['end_date'];
+        $courseInstructor = $row['instructor'];
+
+        // Email content
+        $subject = "Enrollment Confirmation for $courseName";
+        $message = "
+            Dear $studentName,
+
+            Congratulations! You have been successfully enrolled in the course '$courseName'.
+
+            Course Details:
+            - Instructor: $courseInstructor
+            - Start Date: $courseStartDate
+            - End Date: $courseEndDate
+
+            Please feel free to reach out if you have any questions.
+
+            Best regards,
+            Admin Team
+        ";
+        $headers = "From: admin@kaluppa.com";
+
+        // Send email
+        if (mail($studentEmail, $subject, $message, $headers)) {
+            echo "<script>alert('Enrollment email sent successfully to $studentEmail');</script>";
+        } else {
+            echo "<script>alert('Failed to send enrollment email to $studentEmail');</script>";
+        }
+    }
+
+    $stmt->close();
+}
+?>
 </body>
 </html>
