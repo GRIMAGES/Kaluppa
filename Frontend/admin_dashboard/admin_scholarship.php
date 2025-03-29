@@ -69,6 +69,9 @@ if ($coursesResult->num_rows > 0) {
         .table-responsive {
             overflow: visible;
         }
+        .select-student {
+            display: none; /* Hide checkboxes initially */
+        }
     </style>
 </head>
 <body>
@@ -98,7 +101,7 @@ if ($coursesResult->num_rows > 0) {
         </div>
 
         <div class="table-responsive">
-            <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="GET">
+            <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
                 <table id="scholarshipTable" class="table table-striped table-bordered" style="color: black;">
                     <thead style="background-color: #f2f2f2; color: black;">
                         <tr>
@@ -179,7 +182,8 @@ if ($coursesResult->num_rows > 0) {
                     ?>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary mt-3">Process Enrollment</button>
+                <button type="button" id="showCheckboxes" class="btn btn-primary mt-3">Process Enrollment</button>
+                <button type="submit" id="submitEnrollment" class="btn btn-success mt-3" style="display: none;">Submit Enrollment</button>
             </form>
         </div>
     </div>
@@ -200,7 +204,17 @@ function limitApplications() {
     });
 }
 
-// Add validation only for the "Process Enrollment" button
+// Show checkboxes when "Process Enrollment" is clicked
+document.getElementById('showCheckboxes').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('.select-student');
+    checkboxes.forEach(checkbox => {
+        checkbox.style.display = 'inline-block';
+    });
+    document.getElementById('showCheckboxes').style.display = 'none';
+    document.getElementById('submitEnrollment').style.display = 'inline-block';
+});
+
+// Add validation only for the "Submit Enrollment" button
 document.getElementById('enrollmentForm').addEventListener('submit', function(event) {
     const checkboxes = document.querySelectorAll('.select-student:checked');
     if (checkboxes.length === 0) {
