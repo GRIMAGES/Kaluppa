@@ -119,7 +119,7 @@ if ($coursesResult->num_rows > 0) {
 
         <div class="table-responsive">
             <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
-                <table id="scholarshipTable" class="display" style="color: black;">
+                <table id="scholarshipTable" class="table table-striped table-bordered" style="color: black;">
                     <thead style="background-color: #f2f2f2; color: black;">
                         <tr>
                             <th>Select</th>
