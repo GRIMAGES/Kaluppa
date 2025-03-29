@@ -183,34 +183,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
 <body>
 <?php include 'sidebar.php'; ?>
 
-<!-- Success Message Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="successModalLabel">Success</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php if (isset($_SESSION['status_message']) && !empty($_SESSION['status_message'])): ?>
-                    <?php 
-                    echo htmlspecialchars($_SESSION['status_message']); 
-                    unset($_SESSION['status_message']); // Unset the message after displaying it
-                    ?>
-                <?php else: ?>
-                    <p>No message available.</p> <!-- Fallback text if the session message is empty -->
-                <?php endif; ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="content" style="margin-left: 250px; padding: 20px; color: black;">
     <div class="container mt-5">
         <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>
+
+        <!-- Display success message -->
+        <?php if (isset($_SESSION['status_message']) && !empty($_SESSION['status_message'])): ?>
+            <div class="alert alert-success">
+                <?php 
+                echo htmlspecialchars($_SESSION['status_message']); 
+                unset($_SESSION['status_message']); // Unset the message after displaying it
+                ?>
+            </div>
+        <?php endif; ?>
 
         <!-- Course Filter Dropdown -->
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -331,14 +316,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const successModalElement = document.getElementById('successModal');
-    if (successModalElement) {
-        const successModal = new bootstrap.Modal(successModalElement);
-        successModal.show();
-    }
-});
-
 function limitApplications() {
     const maxApplications = document.getElementById('maxApplications').value;
     const table = document.getElementById('scholarshipTable');
