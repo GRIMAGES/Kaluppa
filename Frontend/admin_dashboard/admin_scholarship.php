@@ -98,13 +98,29 @@ if ($coursesResult->num_rows > 0) {
                 <label for="maxApplications" class="form-label" style="color: black;">Max Applications:</label>
                 <input type="number" id="maxApplications" class="form-control form-control-sm" style="width: 100px; color: black;" min="1" value="10" onchange="limitApplications()">
             </div>
+            <div>
+                <form id="bulkUpdateForm" action="../../Backend/admin_controller/bulk_update_status.php" method="POST" class="d-flex align-items-center gap-2">
+                    <select name="bulk_status" class="form-select form-select-sm" style="width: 150px;" required>
+                        <option value="" disabled selected>Change Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Enrolled">Enrolled</option>
+                        <option value="Waitlisted">Waitlisted</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm btn-primary">Apply to Selected</button>
+                </form>
+            </div>
         </div>
 
         <div class="table-responsive">
             <table id="scholarshipTable" class="table table-striped table-bordered" style="color: black;">
                 <thead style="background-color: #f2f2f2; color: black;">
                     <tr>
-                        <th>Select</th>
+                        <th>
+                            <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)">
+                        </th>
                         <th>ID</th>
                         <th>First Name</th>
                         <th>Middle Name</th>
@@ -134,7 +150,7 @@ if ($coursesResult->num_rows > 0) {
 
                         echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
                         <td>
-                            <input type="checkbox" name="selected_students[]" value="' . $id . '" class="select-student">
+                            <input type="checkbox" name="selected_students[]" value="' . $id . '" form="bulkUpdateForm" class="select-student">
                         </td>
                         <td>' . $id . '</td>
                         <td>' . $first_name . '</td>
@@ -152,6 +168,7 @@ if ($coursesResult->num_rows > 0) {
                                     <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
                                     <option value="Under Review" ' . ($status === "Under Review" ? "selected" : "") . '>Under Review</option>
                                     <option value="Enrolled" ' . ($status === "Enrolled" ? "selected" : "") . '>Enrolled</option>
+                                    <option value="Waitlisted" ' . ($status === "Waitlisted" ? "selected" : "") . '>Waitlisted</option>
                                 </select>
                                 <button type="submit" class="btn btn-sm btn-primary mt-2">Update</button>
                             </form>
@@ -209,6 +226,11 @@ function filterByCourse() {
             row.style.display = 'none';
         }
     });
+}
+
+function toggleSelectAll(checkbox) {
+    const checkboxes = document.querySelectorAll('.select-student');
+    checkboxes.forEach(cb => cb.checked = checkbox.checked);
 }
 </script>
 </body>
