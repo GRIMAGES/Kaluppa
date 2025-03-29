@@ -29,8 +29,10 @@ function sendEnrollmentNotification($email, $firstName, $courseName, $courseStar
                        Best regards,<br>Your Team";
 
         $mail->send();
+        return true;
     } catch (Exception $e) {
         error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        return false;
     }
 }
 
@@ -75,7 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $courseInstructor = $row['instructor'];
 
                 // Send enrollment email
-                sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor);
+                if (!sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
+                    error_log("Failed to send enrollment email to $email for application ID $application_id");
+                }
             }
             $detailsStmt->close();
 
