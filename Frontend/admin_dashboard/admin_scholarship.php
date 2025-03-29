@@ -2,6 +2,51 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require '../../vendor/autoload.php'; // Ensure PHPMailer is installed via Composer
+
+function sendOTPByEmail($toEmail, $username, $otp, $subject) {
+    $mail = new PHPMailer(true);
+
+    try {
+        // Server settings
+        $mail->SMTPDebug = 2; // Replace SMTP::DEBUG_SERVER with 2 for verbose debug output
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'wgonzales@kaluppa.org';
+        $mail->Password = 'qfsp ihop mdqg ngoy';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        // Recipients
+        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA');
+        $mail->addAddress($toEmail, $username);
+        $mail->addReplyTo('wgonzales@kaluppa.org', 'KALUPPA');
+
+        // Generate verification link
+        $verificationLink = "https://kaluppa.online/Kaluppa/Backend/otpverification.php?email=" . urlencode($toEmail) . "&otp=" . urlencode($otp);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = "Hello $username,<br><br>Please click the link below to verify your account:<br><a href='$verificationLink'>$verificationLink</a><br><br>Or use the OTP code: $otp";
+        $mail->AltBody = "Hello $username,\n\nPlease use this OTP code to verify your account: $otp\n\nOr visit: $verificationLink";
+
+        if (!$mail->send()) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+            return false;
+        }
+        return true;
+
+    } catch (Exception $e) {
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        return false;
+    }
+}
+
 require_once '../../Backend/connection.php';
 session_start();
 
@@ -260,25 +305,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && $_POST['
 
         // Email content
         $subject = "Enrollment Confirmation for $courseName";
-        $message = "
-            Dear $studentName,
-
-            Congratulations! You have been successfully enrolled in the course '$courseName'.
-
-            Course Details:
-            - Instructor: $courseInstructor
-            - Start Date: $courseStartDate
-            - End Date: $courseEndDate
-
-            Please feel free to reach out if you have any questions.
-
-            Best regards,
+        $otp = rand(100000, 999999); // Generate a random OTP (optional, can be removed if not needed)
+        $emailBody = "
+            Dear $studentName,<br><br>
+            Congratulations! You have been successfully enrolled in the course <strong>'$courseName'</strong>.<br><br>
+            <strong>Course Details:</strong><br>
+            - Instructor: $courseInstructor<br>
+            - Start Date: $courseStartDate<br>
+            - End Date: $courseEndDate<br><br>
+            Please feel free to reach out if you have any questions.<br><br>
+            Best regards,<br>
             Admin Team
         ";
-        $headers = "From: admin@kaluppa.com";
 
-        // Send email
-        if (mail($studentEmail, $subject, $message, $headers)) {
+        // Send email using sendOTPByEmail function
+        if (sendOTPByEmail($studentEmail, $studentName, $otp, $subject)) {
             echo "<script>alert('Enrollment email sent successfully to $studentEmail');</script>";
         } else {
             echo "<script>alert('Failed to send enrollment email to $studentEmail');</script>";
