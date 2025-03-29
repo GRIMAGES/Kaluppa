@@ -101,90 +101,91 @@ if ($coursesResult->num_rows > 0) {
         </div>
 
         <div class="table-responsive">
-            <form id="updateStatusForm" action="../../Backend/admin_controller/update_application_status.php" method="POST">
-                <table id="scholarshipTable" class="table table-striped table-bordered" style="color: black;">
-                    <thead style="background-color: #f2f2f2; color: black;">
-                        <tr>
-                            <th>Select</th>
-                            <th>ID</th>
-                            <th>First Name</th>
-                            <th>Middle Name</th>
-                            <th>Last Name</th>
-                            <th>Course Name</th>
-                            <th>Email</th>
-                            <th>Current Status</th>
-                            <th>Change Status</th>
-                            <th>Applied At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    $result = $conn->query($sql);
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            $id = htmlspecialchars($row['id']);
-                            $first_name = htmlspecialchars($row['first_name']);
-                            $middle_name = htmlspecialchars($row['middle_name']);
-                            $last_name = htmlspecialchars($row['last_name']);
-                            $course_name = htmlspecialchars($row['name']);
-                            $email = htmlspecialchars($row['email']);
-                            $status = htmlspecialchars($row['status']);
-                            $applied_at = htmlspecialchars($row['applied_at']);
-                            $documents = json_decode($row['documents'], true); // Decode documents JSON
+            <table id="scholarshipTable" class="table table-striped table-bordered" style="color: black;">
+                <thead style="background-color: #f2f2f2; color: black;">
+                    <tr>
+                        <th>Select</th>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Last Name</th>
+                        <th>Course Name</th>
+                        <th>Email</th>
+                        <th>Current Status</th>
+                        <th>Change Status</th>
+                        <th>Applied At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        $id = htmlspecialchars($row['id']);
+                        $first_name = htmlspecialchars($row['first_name']);
+                        $middle_name = htmlspecialchars($row['middle_name']);
+                        $last_name = htmlspecialchars($row['last_name']);
+                        $course_name = htmlspecialchars($row['name']);
+                        $email = htmlspecialchars($row['email']);
+                        $status = htmlspecialchars($row['status']);
+                        $applied_at = htmlspecialchars($row['applied_at']);
+                        $documents = json_decode($row['documents'], true); // Decode documents JSON
 
-                            echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
-                            <td>
+                        echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
+                        <td>
+                            <form id="enrollmentForm-' . $id . '" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
                                 <input type="checkbox" name="selected_students[]" value="' . $id . '" class="select-student">
-                            </td>
-                            <td>' . $id . '</td>
-                            <td>' . $first_name . '</td>
-                            <td>' . $middle_name . '</td>
-                            <td>' . $last_name . '</td>
-                            <td>' . $course_name . '</td>
-                            <td>' . $email . '</td>
-                            <td>' . $status . '</td> <!-- Current Status Column -->
-                            <td>
-                                <select name="statuses[' . $id . ']" class="form-select form-select-sm"> <!-- Change Status Column -->
+                            </form>
+                        </td>
+                        <td>' . $id . '</td>
+                        <td>' . $first_name . '</td>
+                        <td>' . $middle_name . '</td>
+                        <td>' . $last_name . '</td>
+                        <td>' . $course_name . '</td>
+                        <td>' . $email . '</td>
+                        <td>' . $status . '</td> <!-- Current Status Column -->
+                        <td>
+                            <form id="updateStatusForm-' . $id . '" action="../../Backend/admin_controller/update_application_status.php" method="POST">
+                                <input type="hidden" name="application_id" value="' . $id . '">
+                                <select name="status" class="form-select form-select-sm"> <!-- Change Status Column -->
                                     <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
                                     <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
                                     <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
                                     <option value="Under Review" ' . ($status === "Under Review" ? "selected" : "") . '>Under Review</option>
                                     <option value="Enrolled" ' . ($status === "Enrolled" ? "selected" : "") . '>Enrolled</option>
                                 </select>
-                            </td>
-                            <td>' . $applied_at . '</td>
-                            <td>
-                                <div class="d-inline-flex gap-2">';
-                                    if (!empty($documents)) {
-                                        foreach ($documents as $document) {
-                                            $file_name = htmlspecialchars($document['file_name']);
-                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=view" class="btn btn-sm btn-outline-primary" target="_blank">
-                                                View ' . htmlspecialchars($file_name) . '
-                                            </a>';
-                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=download" class="btn btn-sm btn-outline-success">
-                                                Download ' . htmlspecialchars($file_name) . '
-                                            </a>';
-                                        }
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">Update</button>
+                            </form>
+                        </td>
+                        <td>' . $applied_at . '</td>
+                        <td>
+                            <div class="d-inline-flex gap-2">';
+                                if (!empty($documents)) {
+                                    foreach ($documents as $document) {
+                                        $file_name = htmlspecialchars($document['file_name']);
+                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=view" class="btn btn-sm btn-outline-primary" target="_blank">
+                                            View ' . htmlspecialchars($file_name) . '
+                                        </a>';
+                                        echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=download" class="btn btn-sm btn-outline-success">
+                                            Download ' . htmlspecialchars($file_name) . '
+                                        </a>';
                                     }
-                            echo '</div>
-                            </td>
-                        </tr>';
-                        }
+                                }
+                        echo '</div>
+                        </td>
+                    </tr>';
                     }
-                    ?>
-                    </tbody>
-                </table>
-                <button type="submit" class="btn btn-primary mt-3">Update Status</button>
-            </form>
+                }
+                ?>
+                </tbody>
+            </table>
         </div>
 
-        <!-- Process Enrollment Form -->
+        <!-- Buttons for Process Enrollment -->
         <div class="d-flex justify-content-end mt-3">
-            <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
-                <button type="button" id="showCheckboxes" class="btn btn-primary me-2">Process Enrollment</button>
-                <button type="submit" id="submitEnrollment" class="btn btn-success" style="display: none;">Submit Enrollment</button>
-            </form>
+            <button type="button" id="showCheckboxes" class="btn btn-primary me-2">Process Enrollment</button>
+            <button type="submit" form="enrollmentForm" id="submitEnrollment" class="btn btn-success" style="display: none;">Submit Enrollment</button>
         </div>
     </div>
 </div>
@@ -229,7 +230,7 @@ document.getElementById('showCheckboxes').addEventListener('click', function() {
 });
 
 // Add validation only for the "Submit Enrollment" button
-document.getElementById('enrollmentForm').addEventListener('submit', function(event) {
+document.getElementById('submitEnrollment').addEventListener('click', function(event) {
     const checkboxes = document.querySelectorAll('.select-student:checked');
     if (checkboxes.length === 0) {
         event.preventDefault();
