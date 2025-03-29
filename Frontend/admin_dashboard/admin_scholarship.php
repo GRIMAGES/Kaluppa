@@ -31,21 +31,12 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Logout logic
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("Location: /Frontend/index.php");
-    exit();
-}
-
 // Update application status logic
 if (isset($_POST['update_status'])) {
     $application_id = $_POST['application_id'];
     $new_status = $_POST['status'];
 
-    $update_sql = "UPDATE applications SET status = ? WHERE id = ?";
-    $stmt = $conn->prepare($update_sql);
-
+    $stmt = $conn->prepare("UPDATE applications SET status = ? WHERE id = ?");
     if (!$stmt) {
         die("SQL error in preparation: " . $conn->error);
     }
@@ -54,10 +45,9 @@ if (isset($_POST['update_status'])) {
 
     if ($stmt->execute()) {
         $stmt->close();
-        $_SESSION['status_updated'] = true; // ✅ Add this line
-        header("Location:https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_scholarship.php");
+        $_SESSION['status_updated'] = true;
+        header("Location: admin_scholarship.php?status_updated=1");
         exit();
-    
     } else {
         die("SQL error during execution: " . $stmt->error);
     }
@@ -227,7 +217,7 @@ if ($coursesResult->num_rows > 0) {
                                 echo '</div>
                             </td>
                             <td>
-                                <form action="../../Backend/admin_controller/update_application_status.php" method="POST">
+                                <form method="POST" action="">
                                     <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
                                     <div class="input-group">
                                         <select name="status" class="form-select form-select-sm">
