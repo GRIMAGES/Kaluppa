@@ -77,12 +77,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor);
             }
             $detailsStmt->close();
+
+            $_SESSION['status_message'] = "Application ID $application_id successfully updated to 'Enrolled'.";
+        } else {
+            $_SESSION['status_message'] = "Application ID $application_id successfully updated to '$new_status'.";
         }
         $stmt->close();
-        header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?status_updated=1");
+        header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php");
         exit();
     } else {
-        die("SQL error during execution: " . $stmt->error);
+        $_SESSION['status_message'] = "Failed to update application ID $application_id.";
+        header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php");
+        exit();
     }
 } else {
     header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?error=invalid_request");

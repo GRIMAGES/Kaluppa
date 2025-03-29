@@ -41,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['selected_students'], $_POST['bulk_status'])) {
         $selectedStudents = $_POST['selected_students'];
         $bulkStatus = $_POST['bulk_status'];
+        $successCount = 0;
+        $failureCount = 0;
 
         foreach ($selectedStudents as $studentId) {
             // Get the course ID for the student
@@ -100,10 +102,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $updateStmt = $conn->prepare($updateQuery);
             $updateStmt->bind_param('ss', $bulkStatus, $studentId);
             $updateStmt->execute();
+
+            if ($updateStmt->affected_rows > 0) {
+                $successCount++;
+            } else {
+                $failureCount++;
+            }
+
             $updateStmt->close();
         }
 
-        $_SESSION['message'] = "Status updated for selected students.";
+        // Set session message
+        $_SESSION['status_message'] = "Status updated for $successCount students. Failed for $failureCount students.";
+    } else {
+        $_SESSION['status_message'] = "No students selected for status update.";
     }
 }
 header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php");

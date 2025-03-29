@@ -194,11 +194,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <?php if (isset($_SESSION['status_message'])): ?>
+                <?php if (isset($_SESSION['status_message']) && !empty($_SESSION['status_message'])): ?>
                     <?php 
                     echo htmlspecialchars($_SESSION['status_message']); 
                     unset($_SESSION['status_message']); // Unset the message after displaying it
                     ?>
+                <?php else: ?>
+                    <p>No message available.</p> <!-- Fallback text if the session message is empty -->
                 <?php endif; ?>
             </div>
             <div class="modal-footer">
