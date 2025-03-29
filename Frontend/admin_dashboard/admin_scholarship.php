@@ -2,7 +2,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
+require_once '../../Backend/connection.php';
+session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require '../../vendor/autoload.php'; // Ensure PHPMailer is installed via Composer
@@ -44,9 +45,6 @@ function sendEnrollmentNotification($email, $firstName, $courseName, $courseStar
         return false;
     }
 }
-
-require_once '../../Backend/connection.php';
-session_start();
 
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000;
