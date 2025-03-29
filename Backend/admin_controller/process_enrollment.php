@@ -11,7 +11,8 @@ if ($conn->connect_error) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['selected_students']) || empty($_POST['selected_students'])) {
-        die("Error: No students selected. Debug: " . print_r($_POST, true)); // Debugging message
+        header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?error=no_students_selected");
+        exit();
     }
 
     $selected_students = $_POST['selected_students'];

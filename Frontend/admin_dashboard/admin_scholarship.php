@@ -196,7 +196,7 @@ if ($coursesResult->num_rows > 0) {
 
                             echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
                             <td>
-                                <input type="checkbox" name="selected_students[]" value="' . htmlspecialchars($id) . '" class="select-student">
+                                <input type="checkbox" name="selected_students[]" value="' . htmlspecialchars($id) . '" class="select-student" form="enrollmentForm">
                             </td>
                             <td>' . htmlspecialchars($id) . '</td>
                             <td>' . htmlspecialchars($first_name) . '</td>
