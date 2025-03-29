@@ -161,20 +161,8 @@ if ($coursesResult->num_rows > 0) {
                             echo '</div>
                             </td>
                             <td>
-                                <!-- Individual status update form -->
-                                <form method="POST" action="../../Backend/admin_controller/update_application_status.php">
-                                    <input type="hidden" name="application_id" value="' . $id . '">
-                                    <div class="input-group">
-                                        <select name="status" class="form-select form-select-sm">
-                                            <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
-                                            <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
-                                            <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
-                                            <option value="Under Review" ' . ($status === "Under Review" ? "selected" : "") . '>Under Review</option>
-                                            <option value="Enrolled" ' . ($status === "Enrolled" ? "selected" : "") . '>Enrolled</option>
-                                        </select>
-                                        <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
-                                    </div>
-                                </form>
+                                <!-- Placeholder for Update Status -->
+                                <div id="updateStatusForm-' . $id . '"></div>
                             </td>
                         </tr>';
                         }
@@ -186,6 +174,30 @@ if ($coursesResult->num_rows > 0) {
                 <button type="submit" id="submitEnrollment" class="btn btn-success mt-3" style="display: none;">Submit Enrollment</button>
             </form>
         </div>
+
+        <!-- Independent Update Status Forms -->
+        <?php
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $id = htmlspecialchars($row['id']);
+                $status = htmlspecialchars($row['status']);
+                echo '<form method="POST" action="../../Backend/admin_controller/update_application_status.php" id="updateStatusForm-' . $id . '">
+                    <input type="hidden" name="application_id" value="' . $id . '">
+                    <div class="input-group">
+                        <select name="status" class="form-select form-select-sm">
+                            <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
+                            <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
+                            <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
+                            <option value="Under Review" ' . ($status === "Under Review" ? "selected" : "") . '>Under Review</option>
+                            <option value="Enrolled" ' . ($status === "Enrolled" ? "selected" : "") . '>Enrolled</option>
+                        </select>
+                        <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
+                    </div>
+                </form>';
+            }
+        }
+        ?>
     </div>
 </div>
 
