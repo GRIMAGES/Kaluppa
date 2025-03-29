@@ -4,8 +4,9 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 session_start();
+
 // Set session timeout duration (in seconds)
-$timeout_duration = 1000; // 30 minutes
+$timeout_duration = 1000;
 
 // Redirect to login page if not logged in
 if (!isset($_SESSION['email'])) {
@@ -15,7 +16,6 @@ if (!isset($_SESSION['email'])) {
 
 // Check if the user has timed out due to inactivity
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {
-    // Last activity was more than 30 minutes ago
     session_unset();     // unset $_SESSION variable for the run-time
     session_destroy();   // destroy session data
     header("Location: /Frontend/index.php");
@@ -24,6 +24,7 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
 
 // Update last activity time stamp
 $_SESSION['LAST_ACTIVITY'] = time();
+
 // Logout logic
 if (isset($_POST['logout'])) {
     session_destroy();
@@ -53,17 +54,8 @@ if (isset($_POST['update_status'])) {
     }
 }
 
-$first_name = isset($row['first_name']) ? addslashes($row['first_name']) : '';
-$middle_name = isset($row['middle_name']) ? addslashes($row['middle_name']) : '';
-$last_name = isset($row['last_name']) ? addslashes($row['last_name']) : '';
-$course_name = isset($row['name']) ? addslashes($row['name']) : ''; // Rename from $work_name
-$email = isset($row['email']) ? addslashes($row['email']) : '';
-$applied_at = isset($row['applied_at']) ? addslashes($row['applied_at']) : '';
-$status = isset($row['status']) ? addslashes($row['status']) : '';
-$documents = isset($row['documents']) ? addslashes($row['documents']) : '';
-$encodedDocument = isset($row['documents']) ? urlencode($row['documents']) : '';
 // Define the SQL query with JOIN to get course name from courses table
-$sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents, applications.course_id , applications.documents 
+$sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents, applications.course_id 
         FROM applications 
         JOIN courses ON applications.course_id = courses.id";
 
@@ -172,53 +164,30 @@ if ($coursesResult->num_rows > 0) {
                     $result = $conn->query($sql);
                     if ($result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
-                            $id = htmlspecialchars($row['id'] ?? '', ENT_QUOTES);
-                            $first_name = htmlspecialchars($row['first_name'] ?? '', ENT_QUOTES);
-                            $middle_name = htmlspecialchars($row['middle_name'] ?? '', ENT_QUOTES);
-                            $last_name = htmlspecialchars($row['last_name'] ?? '', ENT_QUOTES);
-                            $course_name = htmlspecialchars($row['name'] ?? '', ENT_QUOTES); // Updated variable
-                            $email = htmlspecialchars($row['email'] ?? '', ENT_QUOTES);
-                            $status = htmlspecialchars($row['status'] ?? '', ENT_QUOTES);
-                            $applied_at = htmlspecialchars($row['applied_at'] ?? '', ENT_QUOTES);
-
-                            // Check if 'documents' exists and is not empty before decoding
-                            $documents = isset($row['documents']) && !empty($row['documents']) ? json_decode($row['documents'], true) : [];
+                            $id = htmlspecialchars($row['id']);
+                            $first_name = htmlspecialchars($row['first_name']);
+                            $middle_name = htmlspecialchars($row['middle_name']);
+                            $last_name = htmlspecialchars($row['last_name']);
+                            $course_name = htmlspecialchars($row['name']);
+                            $email = htmlspecialchars($row['email']);
+                            $status = htmlspecialchars($row['status']);
+                            $applied_at = htmlspecialchars($row['applied_at']);
 
                             echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
                             <td>
-                                <input type="checkbox" name="selected_students[]" value="' . htmlspecialchars($id) . '" class="select-student" form="enrollmentForm">
+                                <input type="checkbox" name="selected_students[]" value="' . $id . '" class="select-student" form="enrollmentForm">
                             </td>
-                            <td>' . htmlspecialchars($id) . '</td>
-                            <td>' . htmlspecialchars($first_name) . '</td>
-                            <td>' . htmlspecialchars($middle_name) . '</td>
-                            <td>' . htmlspecialchars($last_name) . '</td>
-                            <td>' . htmlspecialchars($course_name) . '</td> <!-- Updated variable -->
-                            <td>' . htmlspecialchars($email) . '</td>
-                            <td>' . htmlspecialchars($status) . '</td>
-                            <td>' . htmlspecialchars($applied_at) . '</td>
-                            <td>
-                                <div class="d-inline-flex gap-2">';
-                                
-                                // Loop through the documents to generate download buttons
-                                if (!empty($documents)) {
-                                    foreach ($documents as $document) {
-                                        $fileName = $document['file_name'] ?? ''; // Extract the file name
-                                        $encodedFileName = urlencode($fileName);
-
-                                        // Only show download button if the file name exists
-                                        if ($fileName) {
-                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&download=' . $encodedFileName . '" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-download"></i> Download
-                                            </a>';
-                                        }
-                                    }
-                                }
-
-                                echo '</div>
-                            </td>
+                            <td>' . $id . '</td>
+                            <td>' . $first_name . '</td>
+                            <td>' . $middle_name . '</td>
+                            <td>' . $last_name . '</td>
+                            <td>' . $course_name . '</td>
+                            <td>' . $email . '</td>
+                            <td>' . $status . '</td>
+                            <td>' . $applied_at . '</td>
                             <td>
                                 <form method="POST" action="">
-                                    <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
+                                    <input type="hidden" name="application_id" value="' . $id . '">
                                     <div class="input-group">
                                         <select name="status" class="form-select form-select-sm">
                                             <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
@@ -242,7 +211,6 @@ if ($coursesResult->num_rows > 0) {
         </div>
     </div>
 </div>
-
 
 <!-- Application Details Modal -->
 <div class="modal fade" id="viewApplicationModal" tabindex="-1" aria-labelledby="viewApplicationModalLabel" aria-hidden="true">
@@ -407,9 +375,6 @@ $(document).ready(function() {
     // Apply initial limit
     limitApplications();
 });
-
-
-
 </script>
 </body>
 </html>
