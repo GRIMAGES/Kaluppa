@@ -11,15 +11,15 @@ use PHPMailer\PHPMailer\Exception;
 function sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor) {
     $mail = new PHPMailer(true);
     try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.example.com';
+        $mail->isSMTP(); // Use Gmail's SMTP server
+        $mail->Host = 'smtp.gmail.com'; // Use Gmail's SMTP server
         $mail->SMTPAuth = true;
-        $mail->Username = 'wgonzales@kaluppa.org';
-        $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with a secure password
+        $mail->Username = 'wgonzales@kaluppa.org'; // Your Gmail address
+        $mail->Password = 'qfsp ihop mdqg ngoy'; // Your Gmail App Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        $mail->setFrom('your_email@example.com', 'Course Admin');
+        $mail->setFrom('wgonzales@kaluppa.org', 'Kaluppa Team');
         $mail->addAddress($email, $firstName);
 
         $mail->isHTML(true);
