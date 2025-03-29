@@ -85,6 +85,70 @@ if ($coursesResult->num_rows > 0) {
         $courses[] = $courseRow;
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_POST['bulk_status'] === 'Enrolled') {
+    $selectedStudents = $_POST['selected_students'] ?? [];
+
+    if (!empty($selectedStudents)) {
+        $successCount = 0;
+        $failureCount = 0;
+
+        foreach ($selectedStudents as $applicationId) {
+            // Update the application status to "Enrolled"
+            $updateQuery = "UPDATE applications SET status = 'Enrolled' WHERE id = ?";
+            $updateStmt = $conn->prepare($updateQuery);
+            $updateStmt->bind_param('i', $applicationId);
+
+            if ($updateStmt->execute() && $updateStmt->affected_rows > 0) {
+                // Fetch student and course details
+                $query = "SELECT applications.first_name, applications.last_name, applications.email, courses.name AS course_name, courses.start_date, courses.end_date, courses.instructor 
+                          FROM applications 
+                          JOIN courses ON applications.course_id = courses.id 
+                          WHERE applications.id = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param('i', $applicationId);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    $studentName = $row['first_name'] . ' ' . $row['last_name'];
+                    $studentEmail = $row['email'];
+                    $courseName = $row['course_name'];
+                    $courseStartDate = $row['start_date'];
+                    $courseEndDate = $row['end_date'];
+                    $courseInstructor = $row['instructor'];
+
+                    // Send email using sendEnrollmentNotification function
+                    if (sendEnrollmentNotification($studentEmail, $studentName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
+                        $successCount++;
+                    } else {
+                        $failureCount++;
+                        error_log("Failed to send enrollment email to $studentEmail for application ID $applicationId");
+                    }
+                } else {
+                    error_log("No application found for ID $applicationId");
+                }
+
+                $stmt->close();
+            } else {
+                $failureCount++;
+                error_log("Failed to update status to 'Enrolled' for application ID $applicationId");
+            }
+
+            $updateStmt->close();
+        }
+
+        // Set a success message to display after the page reloads
+        $_SESSION['status_message'] = "Status updated to 'Enrolled' for $successCount students. Failed for $failureCount students.";
+    } else {
+        $_SESSION['status_message'] = "No students selected for status update.";
+    }
+
+    // Redirect to the same page to show the message
+    header("Location: admin_scholarship.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,6 +185,14 @@ if ($coursesResult->num_rows > 0) {
 <div class="content" style="margin-left: 250px; padding: 20px; color: black;">
     <div class="container mt-5">
         <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>
+
+        <!-- Display success message -->
+        <?php if (isset($_SESSION['status_message'])): ?>
+            <div class="alert alert-success">
+                <?php echo htmlspecialchars($_SESSION['status_message']); ?>
+            </div>
+            <?php unset($_SESSION['status_message']); ?>
+        <?php endif; ?>
 
         <!-- Course Filter Dropdown -->
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -274,56 +346,5 @@ function toggleSelectAll(checkbox) {
     checkboxes.forEach(cb => cb.checked = checkbox.checked);
 }
 </script>
-
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && $_POST['status'] === 'Enrolled') {
-    $applicationId = $_POST['application_id'];
-
-    // Update the application status to "Enrolled"
-    $updateQuery = "UPDATE applications SET status = 'Enrolled' WHERE id = ?";
-    $updateStmt = $conn->prepare($updateQuery);
-    $updateStmt->bind_param('i', $applicationId);
-
-    if ($updateStmt->execute() && $updateStmt->affected_rows > 0) {
-        // Fetch student and course details
-        $query = "SELECT applications.first_name, applications.last_name, applications.email, courses.name AS course_name, courses.start_date, courses.end_date, courses.instructor 
-                  FROM applications 
-                  JOIN courses ON applications.course_id = courses.id 
-                  WHERE applications.id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('i', $applicationId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            $studentName = $row['first_name'] . ' ' . $row['last_name'];
-            $studentEmail = $row['email'];
-            $courseName = $row['course_name'];
-            $courseStartDate = $row['start_date'];
-            $courseEndDate = $row['end_date'];
-            $courseInstructor = $row['instructor'];
-
-            // Send email using sendEnrollmentNotification function
-            if (sendEnrollmentNotification($studentEmail, $studentName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
-                echo "<script>alert('Status updated to Enrolled and email sent successfully to $studentEmail');</script>";
-            } else {
-                error_log("Failed to send enrollment email to $studentEmail for application ID $applicationId");
-                echo "<script>alert('Status updated to Enrolled, but failed to send email to $studentEmail');</script>";
-            }
-        } else {
-            error_log("No application found for ID $applicationId");
-            echo "<script>alert('Status updated to Enrolled, but no application details found.');</script>";
-        }
-
-        $stmt->close();
-    } else {
-        error_log("Failed to update status to 'Enrolled' for application ID $applicationId");
-        echo "<script>alert('Failed to update status to Enrolled');</script>";
-    }
-
-    $updateStmt->close();
-}
-?>
 </body>
 </html>
