@@ -70,7 +70,8 @@ if ($coursesResult->num_rows > 0) {
             overflow: visible;
         }
         .select-student {
-            display: none; /* Hide checkboxes initially */
+            display: inline-block; /* Make checkboxes visible */
+            margin: 0; /* Optional: Adjust spacing */
         }
     </style>
 </head>
