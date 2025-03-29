@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update the status
             $updateQuery = "UPDATE applications SET status = ? WHERE id = ?";
             $updateStmt = $conn->prepare($updateQuery);
-            $updateStmt->bind_param('si', $bulkStatus, $studentId);
+            $updateStmt->bind_param('ss', $bulkStatus, $studentId);
             $updateStmt->execute();
             $updateStmt->close();
         }
