@@ -41,7 +41,7 @@ if (isset($_POST['update_status'])) {
     if (!$stmt) {
         die("SQL error in preparation: " . $conn->error);
     }
-    $stmt->bind_param("si", $new_status, $application_id);
+    $stmt->bind_param("ss", $new_status, $application_id); // Use "ss" since application_id is a string
     if ($stmt->execute()) {
         $stmt->close();
         $_SESSION['status_updated'] = true;
@@ -148,6 +148,7 @@ if ($coursesResult->num_rows > 0) {
                             $email = htmlspecialchars($row['email']);
                             $status = htmlspecialchars($row['status']);
                             $applied_at = htmlspecialchars($row['applied_at']);
+                            $documents = json_decode($row['documents'], true); // Decode documents JSON
 
                             echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
                             <td>
@@ -162,11 +163,16 @@ if ($coursesResult->num_rows > 0) {
                             <td>' . $status . '</td>
                             <td>' . $applied_at . '</td>
                             <td>
-                                <div class="d-inline-flex gap-2">
-                                    <a href="../../Backend/admin_controller/view_document.php?application_id=' . $id . '" class="btn btn-sm btn-outline-primary">
-                                        View Documents
-                                    </a>
-                                </div>
+                                <div class="d-inline-flex gap-2">';
+                                    if (!empty($documents)) {
+                                        foreach ($documents as $document) {
+                                            $file_name = htmlspecialchars($document['file_name']);
+                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=download" class="btn btn-sm btn-outline-primary">
+                                                Download ' . htmlspecialchars($file_name) . '
+                                            </a>';
+                                        }
+                                    }
+                            echo '</div>
                             </td>
                             <td>
                                 <form method="POST" action="">

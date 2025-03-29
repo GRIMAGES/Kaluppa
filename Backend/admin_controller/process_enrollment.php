@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $selected_students = $_POST['selected_students'];
 
     $stmt = $conn->prepare("SELECT course_id FROM applications WHERE id = ?");
-    $stmt->bind_param("i", $selected_students[0]);
+    $stmt->bind_param("s", $selected_students[0]); // Use "s" since application_id is a string
     $stmt->execute();
     $stmt->bind_result($course_id);
     if (!$stmt->fetch()) {
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($selected_students as $student_id) {
         $stmt = $conn->prepare("UPDATE applications SET status = ? WHERE id = ?");
         $status = ($enrolled_count < $capacity) ? 'Enrolled' : 'Waitlist';
-        $stmt->bind_param("si", $status, $student_id);
+        $stmt->bind_param("ss", $status, $student_id); // Use "ss" since application_id is a string
         $stmt->execute();
         $stmt->close();
         $enrolled_count++;
