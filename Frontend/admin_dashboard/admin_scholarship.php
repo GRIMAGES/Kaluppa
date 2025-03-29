@@ -37,7 +37,10 @@ function sendEnrollmentNotification($email, $firstName, $courseName, $courseStar
         error_log("Enrollment email sent successfully to $email");
         return true;
     } catch (Exception $e) {
+        // Log detailed error information
         error_log("Enrollment email could not be sent. Error: {$mail->ErrorInfo}");
+        error_log("Exception Message: {$e->getMessage()}");
+        echo "<script>alert('Mailer Error: {$mail->ErrorInfo}');</script>"; // Display error in the browser
         return false;
     }
 }
@@ -157,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Scholarship</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../CSS/admin css/dashboard.css">
+    <link rel="stylesheet" href="../CSS/admin_css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -31,5 +31,6 @@ try {
 } catch (Exception $e) {
     echo "Mailer Error: {$mail->ErrorInfo}";
     error_log("Mailer Error: {$mail->ErrorInfo}");
+    error_log("Exception Message: {$e->getMessage()}");
 }
 ?>
