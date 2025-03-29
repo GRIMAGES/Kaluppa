@@ -179,8 +179,8 @@ if ($coursesResult->num_rows > 0) {
                     ?>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary mt-3">Process Enrollment</button>
             </form>
+            <button type="submit" form="enrollmentForm" class="btn btn-primary mt-3">Process Enrollment</button>
         </div>
     </div>
 </div>
