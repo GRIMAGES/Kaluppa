@@ -196,6 +196,20 @@ if ($coursesResult->num_rows > 0) {
 </div>
 
 <script>
+function limitApplications() {
+    const maxApplications = document.getElementById('maxApplications').value;
+    const table = document.getElementById('scholarshipTable');
+    const rows = table.querySelectorAll('tbody tr');
+
+    rows.forEach((row, index) => {
+        if (index < maxApplications) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
 document.getElementById('enrollmentForm').addEventListener('submit', function(event) {
     const checkboxes = document.querySelectorAll('.select-student:checked');
     if (checkboxes.length === 0) {
