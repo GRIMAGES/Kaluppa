@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Error: Missing application_id or status in POST data.");
     }
 
-    $application_id = intval($_POST['application_id']);
+    $application_id = $conn->real_escape_string($_POST['application_id']); // Treat as string
     $new_status = $conn->real_escape_string($_POST['status']);
 
     // Debugging: Log received data
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("SQL error in preparation: " . $conn->error);
     }
 
-    $stmt->bind_param("si", $new_status, $application_id);
+    $stmt->bind_param("ss", $new_status, $application_id); // Use "ss" since both are strings
     if ($stmt->execute()) {
         $stmt->close();
         header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?status_updated=1");
