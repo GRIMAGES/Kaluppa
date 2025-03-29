@@ -175,14 +175,19 @@ if ($coursesResult->num_rows > 0) {
                     ?>
                     </tbody>
                 </table>
-                <button type="submit" class="btn btn-primary mt-3">Update Status</button>
             </form>
         </div>
 
-        <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
-            <button type="button" id="showCheckboxes" class="btn btn-primary mt-3">Process Enrollment</button>
-            <button type="submit" id="submitEnrollment" class="btn btn-success mt-3" style="display: none;">Submit Enrollment</button>
-        </form>
+        <!-- Buttons for Update Status and Process Enrollment -->
+        <div class="d-flex justify-content-end mt-3">
+            <form id="updateStatusForm" action="../../Backend/admin_controller/update_application_status.php" method="POST">
+                <button type="submit" class="btn btn-primary me-2">Update Status</button>
+            </form>
+            <form id="enrollmentForm" action="../../Backend/admin_controller/process_enrollment.php" method="POST">
+                <button type="button" id="showCheckboxes" class="btn btn-primary me-2">Process Enrollment</button>
+                <button type="submit" id="submitEnrollment" class="btn btn-success" style="display: none;">Submit Enrollment</button>
+            </form>
+        </div>
     </div>
 </div>
 
