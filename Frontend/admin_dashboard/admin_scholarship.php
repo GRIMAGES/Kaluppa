@@ -231,15 +231,11 @@ if ($coursesResult->num_rows > 0) {
                                     <input type="hidden" name="application_id" value="' . htmlspecialchars($id) . '">
                                     <div class="input-group">
                                         <select name="status" class="form-select form-select-sm">
-                                            <?php
-                                            // Define the available statuses
-                                            $statuses = ["Pending", "Approved", "Rejected", "Under Review", "Enrolled"];
-                                            foreach ($statuses as $option) {
-                                                // Check if the current status matches the option
-                                                $selected = ($status === $option) ? " selected" : "";
-                                                echo "<option value=\"$option\"$selected>$option</option>";
-                                            }
-                                            ?>
+                                            <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
+                                            <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
+                                            <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
+                                            <option value="Under Review" ' . ($status === "Under Review" ? "selected" : "") . '>Under Review</option>
+                                            <option value="Enrolled" ' . ($status === "Enrolled" ? "selected" : "") . '>Enrolled</option>
                                         </select>
                                         <button type="submit" name="update_status" class="btn btn-sm btn-primary">Update</button>
                                     </div>
