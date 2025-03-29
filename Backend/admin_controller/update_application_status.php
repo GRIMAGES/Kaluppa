@@ -3,6 +3,35 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../connection.php';
+require '../../vendor/autoload.php'; // Ensure PHPMailer is included
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+function sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor) {
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.example.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'wgonzales@kaluppa.org';
+        $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with a secure password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+
+        $mail->setFrom('your_email@example.com', 'Your Name');
+        $mail->addAddress($email);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Enrollment Notification';
+        $mail->Body = "Dear $firstName,<br><br>You have been enrolled in the course: $courseName.<br>
+                       Start Date: $courseStartDate<br>End Date: $courseEndDate<br>Instructor: $courseInstructor<br><br>
+                       Best regards,<br>Your Team";
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log("Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate input
@@ -24,6 +53,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->bind_param("ss", $new_status, $application_id); // Use "ss" since both are strings
     if ($stmt->execute()) {
+        if ($new_status === 'Enrolled') {
+            // Fetch student and course details for email
+            $detailsQuery = "SELECT applications.first_name, applications.email, courses.name AS course_name, courses.start_date, courses.end_date, courses.instructor 
+                             FROM applications 
+                             JOIN courses ON applications.course_id = courses.id 
+                             WHERE applications.id = ?";
+            $detailsStmt = $conn->prepare($detailsQuery);
+            $detailsStmt->bind_param('i', $application_id);
+            $detailsStmt->execute();
+            $detailsResult = $detailsStmt->get_result();
+
+            if ($detailsResult->num_rows > 0) {
+                $row = $detailsResult->fetch_assoc();
+                $firstName = $row['first_name'];
+                $email = $row['email'];
+                $courseName = $row['course_name'];
+                $courseStartDate = $row['start_date'];
+                $courseEndDate = $row['end_date'];
+                $courseInstructor = $row['instructor'];
+
+                // Send enrollment email
+                sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor);
+            }
+            $detailsStmt->close();
+        }
         $stmt->close();
         header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?status_updated=1");
         exit();

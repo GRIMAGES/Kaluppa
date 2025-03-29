@@ -331,11 +331,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
 </div>
 
 <script>
-<?php if (isset($_SESSION['status_message'])): ?>
-    // Show the success modal if the message exists
-    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-    successModal.show();
-<?php endif; ?>
+document.addEventListener('DOMContentLoaded', () => {
+    <?php if (isset($_SESSION['status_message'])): ?>
+        // Show the success modal if the message exists
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    <?php endif; ?>
+});
 
 function limitApplications() {
     const maxApplications = document.getElementById('maxApplications').value;
