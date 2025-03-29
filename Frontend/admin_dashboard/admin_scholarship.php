@@ -186,7 +186,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
 <?php include 'sidebar.php'; ?>
 
 <!-- Success Message Modal -->
-<?php if (isset($_SESSION['status_message'])): ?>
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -195,10 +194,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <?php 
-                echo htmlspecialchars($_SESSION['status_message']); 
-                unset($_SESSION['status_message']); // Unset the message after displaying it
-                ?>
+                <?php if (isset($_SESSION['status_message'])): ?>
+                    <?php 
+                    echo htmlspecialchars($_SESSION['status_message']); 
+                    unset($_SESSION['status_message']); // Unset the message after displaying it
+                    ?>
+                <?php endif; ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
@@ -206,7 +207,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
         </div>
     </div>
 </div>
-<?php endif; ?>
 
 <div class="content" style="margin-left: 250px; padding: 20px; color: black;">
     <div class="container mt-5">
@@ -332,11 +332,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    <?php if (isset($_SESSION['status_message'])): ?>
-        // Show the success modal if the message exists
-        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+    const successModalElement = document.getElementById('successModal');
+    if (successModalElement) {
+        const successModal = new bootstrap.Modal(successModalElement);
         successModal.show();
-    <?php endif; ?>
+    }
 });
 
 function limitApplications() {
