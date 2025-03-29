@@ -7,100 +7,37 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require '../../vendor/autoload.php'; // Ensure PHPMailer is installed via Composer
 
-function sendOTPByEmail($toEmail, $username, $otp, $subject) {
+function sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor) {
     $mail = new PHPMailer(true);
-
     try {
-        // Server settings
-        $mail->SMTPDebug = 2; // Enable verbose debug output
+        // SMTP configuration
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'wgonzales@kaluppa.org';
-        $mail->Password = 'qfsp ihop mdqg ngoy';
-        $mail->SMTPSecure = 'tls';
+        $mail->Username = 'wgonzales@kaluppa.org'; // Replace with your Gmail address
+        $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with your Gmail password or App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        // Recipients
-        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA');
-        $mail->addAddress($toEmail, $username);
-        $mail->addReplyTo('wgonzales@kaluppa.org', 'KALUPPA');
-
-        // Generate verification link
-        $verificationLink = "https://kaluppa.online/Kaluppa/Backend/otpverification.php?email=" . urlencode($toEmail) . "&otp=" . urlencode($otp);
-
-        // Content
+        // Email headers and content
+        $mail->setFrom('wgonzales@kaluppa.org', 'Kaluppa Team');
+        $mail->addAddress($email);
         $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body = "Hello $username,<br><br>Please click the link below to verify your account:<br><a href='$verificationLink'>$verificationLink</a><br><br>Or use the OTP code: $otp";
-        $mail->AltBody = "Hello $username,\n\nPlease use this OTP code to verify your account: $otp\n\nOr visit: $verificationLink";
+        $mail->Subject = "Enrollment Confirmation for $courseName";
+        $mail->Body = "Dear $firstName,<br><br>
+                       Congratulations! You have been successfully enrolled in the course: <strong>$courseName</strong>.<br><br>
+                       <strong>Course Details:</strong><br>
+                       - Instructor: $courseInstructor<br>
+                       - Start Date: $courseStartDate<br>
+                       - End Date: $courseEndDate<br><br>
+                       Thank you for choosing Kaluppa.<br><br>
+                       Best regards,<br>The Kaluppa Team";
 
-        // Send email
         $mail->send();
+        error_log("Enrollment email sent successfully to $email");
         return true;
-
     } catch (Exception $e) {
-        // Log detailed error information
-        error_log("Mailer Error: {$mail->ErrorInfo}");
-        error_log("Exception Message: {$e->getMessage()}");
-        return false;
-    }
-}
-
-function sendEnrollmentEmail($toEmail, $username, $courseName, $courseStartDate, $courseEndDate, $courseInstructor) {
-    $mail = new PHPMailer(true);
-
-    try {
-        // Server settings
-        $mail->SMTPDebug = 2; // Enable verbose debug output
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'wgonzales@kaluppa.org';
-        $mail->Password = 'qfsp ihop mdqg ngoy';
-        $mail->SMTPSecure = 'tls';
-        $mail->Port = 587;
-
-        // Recipients
-        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA');
-        $mail->addAddress($toEmail, $username);
-        $mail->addReplyTo('wgonzales@kaluppa.org', 'KALUPPA');
-
-        // Email content
-        $subject = "Enrollment Confirmation for $courseName";
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body = "
-            Dear $username,<br><br>
-            Congratulations! You have been successfully enrolled in the course <strong>'$courseName'</strong>.<br><br>
-            <strong>Course Details:</strong><br>
-            - Instructor: $courseInstructor<br>
-            - Start Date: $courseStartDate<br>
-            - End Date: $courseEndDate<br><br>
-            Please feel free to reach out if you have any questions.<br><br>
-            Best regards,<br>
-            Admin Team
-        ";
-        $mail->AltBody = "
-            Dear $username,\n\n
-            Congratulations! You have been successfully enrolled in the course '$courseName'.\n\n
-            Course Details:\n
-            - Instructor: $courseInstructor\n
-            - Start Date: $courseStartDate\n
-            - End Date: $courseEndDate\n\n
-            Please feel free to reach out if you have any questions.\n\n
-            Best regards,\n
-            Admin Team
-        ";
-
-        // Send email
-        $mail->send();
-        return true;
-
-    } catch (Exception $e) {
-        // Log detailed error information
-        error_log("Mailer Error: {$mail->ErrorInfo}");
-        error_log("Exception Message: {$e->getMessage()}");
+        error_log("Enrollment email could not be sent. Error: {$mail->ErrorInfo}");
         return false;
     }
 }
@@ -367,11 +304,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && $_POST['
             $courseEndDate = $row['end_date'];
             $courseInstructor = $row['instructor'];
 
-            // Send email using sendEnrollmentEmail function
-            if (sendEnrollmentEmail($studentEmail, $studentName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
+            // Send email using sendEnrollmentNotification function
+            if (sendEnrollmentNotification($studentEmail, $studentName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
                 echo "<script>alert('Enrollment email sent successfully to $studentEmail');</script>";
             } else {
-                error_log("Failed to send email to $studentEmail for application ID $applicationId");
+                error_log("Failed to send enrollment email to $studentEmail for application ID $applicationId");
                 echo "<script>alert('Failed to send enrollment email to $studentEmail');</script>";
             }
         } else {
