@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
         die("SQL error in preparation: " . $conn->error);
     }
 
-    $stmt->bind_param("si", $new_status, $application_id);
+    $stmt->bind_param("ss", $new_status, $application_id); // Use "ss" since application_id is a string
     if ($stmt->execute()) {
         $stmt->close();
         header("Location: ../../Frontend/admin_dashboard/admin_scholarship.php?status_updated=1");

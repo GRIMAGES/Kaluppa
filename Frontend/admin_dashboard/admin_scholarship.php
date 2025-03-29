@@ -32,26 +32,6 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Update application status logic
-if (isset($_POST['update_status'])) {
-    $application_id = $_POST['application_id'];
-    $new_status = $_POST['status'];
-
-    $stmt = $conn->prepare("UPDATE applications SET status = ? WHERE id = ?");
-    if (!$stmt) {
-        die("SQL error in preparation: " . $conn->error);
-    }
-    $stmt->bind_param("ss", $new_status, $application_id); // Use "ss" since application_id is a string
-    if ($stmt->execute()) {
-        $stmt->close();
-        $_SESSION['status_updated'] = true;
-        header("Location: admin_scholarship.php?status_updated=1");
-        exit();
-    } else {
-        die("SQL error during execution: " . $stmt->error);
-    }
-}
-
 // Define the SQL query with JOIN to get course name from courses table
 $sql = "SELECT applications.id, applications.first_name, applications.middle_name, applications.last_name, courses.name, applications.email, applications.status, applications.applied_at, applications.documents, applications.course_id 
         FROM applications 
@@ -167,7 +147,10 @@ if ($coursesResult->num_rows > 0) {
                                     if (!empty($documents)) {
                                         foreach ($documents as $document) {
                                             $file_name = htmlspecialchars($document['file_name']);
-                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=download" class="btn btn-sm btn-outline-primary">
+                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=view" class="btn btn-sm btn-outline-primary" target="_blank">
+                                                View ' . htmlspecialchars($file_name) . '
+                                            </a>';
+                                            echo '<a href="../../Backend/admin_controller/view_document.php?application_id=' . urlencode($id) . '&file=' . urlencode($file_name) . '&action=download" class="btn btn-sm btn-outline-success">
                                                 Download ' . htmlspecialchars($file_name) . '
                                             </a>';
                                         }
@@ -175,7 +158,7 @@ if ($coursesResult->num_rows > 0) {
                             echo '</div>
                             </td>
                             <td>
-                                <form method="POST" action="">
+                                <form method="POST" action="../../Backend/admin_controller/update_application_status.php">
                                     <input type="hidden" name="application_id" value="' . $id . '">
                                     <div class="input-group">
                                         <select name="status" class="form-select form-select-sm">
