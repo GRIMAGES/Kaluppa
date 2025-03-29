@@ -47,6 +47,64 @@ function sendOTPByEmail($toEmail, $username, $otp, $subject) {
     }
 }
 
+function sendEnrollmentEmail($toEmail, $username, $courseName, $courseStartDate, $courseEndDate, $courseInstructor) {
+    $mail = new PHPMailer(true);
+
+    try {
+        // Server settings
+        $mail->SMTPDebug = 2; // Enable verbose debug output
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'wgonzales@kaluppa.org';
+        $mail->Password = 'qfsp ihop mdqg ngoy';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        // Recipients
+        $mail->setFrom('wgonzales@kaluppa.org', 'KALUPPA');
+        $mail->addAddress($toEmail, $username);
+        $mail->addReplyTo('wgonzales@kaluppa.org', 'KALUPPA');
+
+        // Email content
+        $subject = "Enrollment Confirmation for $courseName";
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = "
+            Dear $username,<br><br>
+            Congratulations! You have been successfully enrolled in the course <strong>'$courseName'</strong>.<br><br>
+            <strong>Course Details:</strong><br>
+            - Instructor: $courseInstructor<br>
+            - Start Date: $courseStartDate<br>
+            - End Date: $courseEndDate<br><br>
+            Please feel free to reach out if you have any questions.<br><br>
+            Best regards,<br>
+            Admin Team
+        ";
+        $mail->AltBody = "
+            Dear $username,\n\n
+            Congratulations! You have been successfully enrolled in the course '$courseName'.\n\n
+            Course Details:\n
+            - Instructor: $courseInstructor\n
+            - Start Date: $courseStartDate\n
+            - End Date: $courseEndDate\n\n
+            Please feel free to reach out if you have any questions.\n\n
+            Best regards,\n
+            Admin Team
+        ";
+
+        // Send email
+        $mail->send();
+        return true;
+
+    } catch (Exception $e) {
+        // Log detailed error information
+        error_log("Mailer Error: {$mail->ErrorInfo}");
+        error_log("Exception Message: {$e->getMessage()}");
+        return false;
+    }
+}
+
 require_once '../../Backend/connection.php';
 session_start();
 
@@ -284,52 +342,49 @@ function toggleSelectAll(checkbox) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && $_POST['status'] === 'Enrolled') {
     $applicationId = $_POST['application_id'];
 
-    // Fetch student and course details
-    $query = "SELECT applications.first_name, applications.last_name, applications.email, courses.name AS course_name, courses.start_date, courses.end_date, courses.instructor 
-              FROM applications 
-              JOIN courses ON applications.course_id = courses.id 
-              WHERE applications.id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('i', $applicationId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Update the application status to "Enrolled"
+    $updateQuery = "UPDATE applications SET status = 'Enrolled' WHERE id = ?";
+    $updateStmt = $conn->prepare($updateQuery);
+    $updateStmt->bind_param('i', $applicationId);
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $studentName = $row['first_name'] . ' ' . $row['last_name'];
-        $studentEmail = $row['email'];
-        $courseName = $row['course_name'];
-        $courseStartDate = $row['start_date'];
-        $courseEndDate = $row['end_date'];
-        $courseInstructor = $row['instructor'];
+    if ($updateStmt->execute() && $updateStmt->affected_rows > 0) {
+        // Fetch student and course details
+        $query = "SELECT applications.first_name, applications.last_name, applications.email, courses.name AS course_name, courses.start_date, courses.end_date, courses.instructor 
+                  FROM applications 
+                  JOIN courses ON applications.course_id = courses.id 
+                  WHERE applications.id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $applicationId);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        // Email content
-        $subject = "Enrollment Confirmation for $courseName";
-        $otp = rand(100000, 999999); // Generate a random OTP (optional, can be removed if not needed)
-        $emailBody = "
-            Dear $studentName,<br><br>
-            Congratulations! You have been successfully enrolled in the course <strong>'$courseName'</strong>.<br><br>
-            <strong>Course Details:</strong><br>
-            - Instructor: $courseInstructor<br>
-            - Start Date: $courseStartDate<br>
-            - End Date: $courseEndDate<br><br>
-            Please feel free to reach out if you have any questions.<br><br>
-            Best regards,<br>
-            Admin Team
-        ";
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $studentName = $row['first_name'] . ' ' . $row['last_name'];
+            $studentEmail = $row['email'];
+            $courseName = $row['course_name'];
+            $courseStartDate = $row['start_date'];
+            $courseEndDate = $row['end_date'];
+            $courseInstructor = $row['instructor'];
 
-        // Send email using sendOTPByEmail function
-        if (sendOTPByEmail($studentEmail, $studentName, $otp, $subject)) {
-            echo "<script>alert('Enrollment email sent successfully to $studentEmail');</script>";
+            // Send email using sendEnrollmentEmail function
+            if (sendEnrollmentEmail($studentEmail, $studentName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor)) {
+                echo "<script>alert('Enrollment email sent successfully to $studentEmail');</script>";
+            } else {
+                error_log("Failed to send email to $studentEmail for application ID $applicationId");
+                echo "<script>alert('Failed to send enrollment email to $studentEmail');</script>";
+            }
         } else {
-            error_log("Failed to send email to $studentEmail for application ID $applicationId");
-            echo "<script>alert('Failed to send enrollment email to $studentEmail');</script>";
+            error_log("No application found for ID $applicationId");
         }
+
+        $stmt->close();
     } else {
-        error_log("No application found for ID $applicationId");
+        error_log("Failed to update status to 'Enrolled' for application ID $applicationId");
+        echo "<script>alert('Failed to update status to Enrolled');</script>";
     }
 
-    $stmt->close();
+    $updateStmt->close();
 }
 ?>
 </body>
