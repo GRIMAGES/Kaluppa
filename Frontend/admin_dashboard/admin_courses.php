@@ -247,25 +247,12 @@ if ($scholarship_result->num_rows > 0) {
                         <p><strong>End Date:</strong> <?php echo htmlspecialchars($course['end_date']); ?></p>
                         <p><strong>Capacity:</strong> <?php echo htmlspecialchars($course['capacity']); ?></p>
                         <p><strong>Enrolled Students:</strong> <?php echo htmlspecialchars($course['enrolled_students']); ?></p>
-                        <p><strong>Requisites:</strong> <?php echo htmlspecialchars($course['requisites']); ?></p>
-                        <p><strong>Requirements:</strong> <?php echo htmlspecialchars($course['requirements']); ?></p>
                         <p><strong>Status:</strong> <?php echo htmlspecialchars($course['status']); ?></p>
 
-                        <!-- Enrolled Students -->
-                        <p><strong>Enrolled Students:</strong></p>
-                        <ul>
-                            <?php while ($enrolled = $enrolledResult->fetch_assoc()): ?>
-                                <li><?php echo htmlspecialchars($enrolled['first_name'] . ' ' . $enrolled['last_name']); ?></li>
-                            <?php endwhile; ?>
-                        </ul>
-
-                        <!-- Waitlisted Students -->
-                        <p><strong>Waitlisted Students:</strong></p>
-                        <ul>
-                            <?php while ($waitlisted = $waitlistedResult->fetch_assoc()): ?>
-                                <li><?php echo htmlspecialchars($waitlisted['first_name'] . ' ' . $waitlisted['last_name']); ?></li>
-                            <?php endwhile; ?>
-                        </ul>
+                        <!-- Button to trigger modal -->
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#courseModal<?php echo $course['id']; ?>">
+                            View Students
+                        </button>
                     </div>
                     <div class="actions">
                         <a href="admin_courses.php?delete_course=<?= $course['id'] ?>" class="btn btn-danger btn-icon"><i class="fas fa-trash-alt"></i></a>
@@ -284,6 +271,37 @@ if ($scholarship_result->num_rows > 0) {
                             data-requirements="<?= $course['requirements'] ?>">
                             <i class="fas fa-edit"></i>
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for displaying enrolled and waitlisted students -->
+            <div class="modal fade" id="courseModal<?php echo $course['id']; ?>" tabindex="-1" aria-labelledby="courseModalLabel<?php echo $course['id']; ?>" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="courseModalLabel<?php echo $course['id']; ?>" style="color:black;">
+                                Students for <?php echo htmlspecialchars($course['name']); ?>
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="color:black;">
+                            <p><strong>Enrolled Students:</strong></p>
+                            <ul>
+                                <?php while ($enrolled = $enrolledResult->fetch_assoc()): ?>
+                                    <li><?php echo htmlspecialchars($enrolled['first_name'] . ' ' . $enrolled['last_name']); ?></li>
+                                <?php endwhile; ?>
+                            </ul>
+                            <p><strong>Waitlisted Students:</strong></p>
+                            <ul>
+                                <?php while ($waitlisted = $waitlistedResult->fetch_assoc()): ?>
+                                    <li><?php echo htmlspecialchars($waitlisted['first_name'] . ' ' . $waitlisted['last_name']); ?></li>
+                                <?php endwhile; ?>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
