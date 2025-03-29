@@ -145,7 +145,7 @@ if ($coursesResult->num_rows > 0) {
                             <td>' . $email . '</td>
                             <td>' . $status . '</td> <!-- Current Status Column -->
                             <td>
-                                <select name="status[' . $id . ']" class="form-select form-select-sm"> <!-- Change Status Column -->
+                                <select name="statuses[' . $id . ']" class="form-select form-select-sm"> <!-- Change Status Column -->
                                     <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
                                     <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
                                     <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
