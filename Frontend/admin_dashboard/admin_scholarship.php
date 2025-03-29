@@ -200,12 +200,20 @@ function limitApplications() {
     });
 }
 
+// Add validation only for the "Process Enrollment" button
 document.getElementById('enrollmentForm').addEventListener('submit', function(event) {
     const checkboxes = document.querySelectorAll('.select-student:checked');
     if (checkboxes.length === 0) {
         event.preventDefault();
         alert('Please select at least one student to process enrollment.');
     }
+});
+
+// Remove validation for the "Update Status" button
+document.querySelectorAll('form[action="../../Backend/admin_controller/update_application_status.php"]').forEach(function(form) {
+    form.addEventListener('submit', function(event) {
+        // No checkbox validation for status update
+    });
 });
 </script>
 </body>
