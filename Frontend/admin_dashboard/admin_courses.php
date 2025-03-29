@@ -220,6 +220,20 @@ if ($scholarship_result->num_rows > 0) {
             <?php
                 $isFull = $course['enrolled_students'] >= $course['capacity'];
                 $cardClass = $isFull ? 'course-card full' : 'course-card';
+
+                // Fetch enrolled and waitlisted students for the course
+                $enrolledQuery = "SELECT first_name, last_name FROM applications WHERE course_id = ? AND status = 'Enrolled'";
+                $waitlistedQuery = "SELECT first_name, last_name FROM applications WHERE course_id = ? AND status = 'Waitlisted'";
+
+                $enrolledStmt = $conn->prepare($enrolledQuery);
+                $enrolledStmt->bind_param('i', $course['id']);
+                $enrolledStmt->execute();
+                $enrolledResult = $enrolledStmt->get_result();
+
+                $waitlistedStmt = $conn->prepare($waitlistedQuery);
+                $waitlistedStmt->bind_param('i', $course['id']);
+                $waitlistedStmt->execute();
+                $waitlistedResult = $waitlistedStmt->get_result();
             ?>
             <div class="col-md-4">
                 <div class="<?php echo $cardClass; ?>">
@@ -236,27 +250,40 @@ if ($scholarship_result->num_rows > 0) {
                         <p><strong>Requisites:</strong> <?php echo htmlspecialchars($course['requisites']); ?></p>
                         <p><strong>Requirements:</strong> <?php echo htmlspecialchars($course['requirements']); ?></p>
                         <p><strong>Status:</strong> <?php echo htmlspecialchars($course['status']); ?></p>
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#approvedUsersModal" onclick="showApprovedUsers(<?php echo $course['id']; ?>)">
-                            View Enrolled Users
-                        </button>
+
+                        <!-- Enrolled Students -->
+                        <p><strong>Enrolled Students:</strong></p>
+                        <ul>
+                            <?php while ($enrolled = $enrolledResult->fetch_assoc()): ?>
+                                <li><?php echo htmlspecialchars($enrolled['first_name'] . ' ' . $enrolled['last_name']); ?></li>
+                            <?php endwhile; ?>
+                        </ul>
+
+                        <!-- Waitlisted Students -->
+                        <p><strong>Waitlisted Students:</strong></p>
+                        <ul>
+                            <?php while ($waitlisted = $waitlistedResult->fetch_assoc()): ?>
+                                <li><?php echo htmlspecialchars($waitlisted['first_name'] . ' ' . $waitlisted['last_name']); ?></li>
+                            <?php endwhile; ?>
+                        </ul>
                     </div>
                     <div class="actions">
                         <a href="admin_courses.php?delete_course=<?= $course['id'] ?>" class="btn btn-danger btn-icon"><i class="fas fa-trash-alt"></i></a>
                         <button class="btn btn-warning btn-icon"
-        data-bs-toggle="modal"
-        data-bs-target="#editCourseModal"
-        data-id="<?= $course['id'] ?>"
-        data-name="<?= $course['name'] ?>"
-        data-description="<?= $course['description'] ?>"
-        data-capacity="<?= $course['capacity'] ?>"
-        data-instructor="<?= $course['instructor'] ?>"
-        data-requisites="<?= $course['requisites'] ?>"
-        data-status="<?= $course['status'] ?>"
-        data-startdate="<?= $course['start_date'] ?>"
-        data-enddate="<?= $course['end_date'] ?>"
-        data-requirements="<?= $course['requirements'] ?>">
-        <i class="fas fa-edit"></i> <!-- Ensure the icon is inside the button -->
-    </button>
+                            data-bs-toggle="modal"
+                            data-bs-target="#editCourseModal"
+                            data-id="<?= $course['id'] ?>"
+                            data-name="<?= $course['name'] ?>"
+                            data-description="<?= $course['description'] ?>"
+                            data-capacity="<?= $course['capacity'] ?>"
+                            data-instructor="<?= $course['instructor'] ?>"
+                            data-requisites="<?= $course['requisites'] ?>"
+                            data-status="<?= $course['status'] ?>"
+                            data-startdate="<?= $course['start_date'] ?>"
+                            data-enddate="<?= $course['end_date'] ?>"
+                            data-requirements="<?= $course['requirements'] ?>">
+                            <i class="fas fa-edit"></i>
+                        </button>
                     </div>
                 </div>
             </div>
