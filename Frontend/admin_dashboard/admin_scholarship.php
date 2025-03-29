@@ -112,7 +112,8 @@ if ($coursesResult->num_rows > 0) {
                             <th>Last Name</th>
                             <th>Course Name</th>
                             <th>Email</th>
-                            <th>Status</th>
+                            <th>Current Status</th>
+                            <th>Change Status</th>
                             <th>Applied At</th>
                             <th>Actions</th>
                         </tr>
@@ -142,8 +143,9 @@ if ($coursesResult->num_rows > 0) {
                             <td>' . $last_name . '</td>
                             <td>' . $course_name . '</td>
                             <td>' . $email . '</td>
+                            <td>' . $status . '</td> <!-- Current Status Column -->
                             <td>
-                                <select name="status[' . $id . ']" class="form-select form-select-sm">
+                                <select name="status[' . $id . ']" class="form-select form-select-sm"> <!-- Change Status Column -->
                                     <option value="Pending" ' . ($status === "Pending" ? "selected" : "") . '>Pending</option>
                                     <option value="Approved" ' . ($status === "Approved" ? "selected" : "") . '>Approved</option>
                                     <option value="Rejected" ' . ($status === "Rejected" ? "selected" : "") . '>Rejected</option>
