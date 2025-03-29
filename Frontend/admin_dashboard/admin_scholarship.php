@@ -162,6 +162,13 @@ if ($coursesResult->num_rows > 0) {
                             <td>' . $status . '</td>
                             <td>' . $applied_at . '</td>
                             <td>
+                                <div class="d-inline-flex gap-2">
+                                    <a href="../../Backend/admin_controller/view_document.php?application_id=' . $id . '" class="btn btn-sm btn-outline-primary">
+                                        View Documents
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
                                 <form method="POST" action="">
                                     <input type="hidden" name="application_id" value="' . $id . '">
                                     <div class="input-group">
