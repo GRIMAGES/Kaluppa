@@ -4,8 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once  __DIR__ . '/connection.php';
+require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoloader
+require_once __DIR__ . '/connection.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -52,8 +52,8 @@ $birthdate = $user['birthday']; // Use birthdate as the password
 $stmt->close();
 
 // Generate a password-protected PDF
-require_once '../../vendor/setasign/fpdf/fpdf.php'; // Correct path to FPDF
-require_once '../../vendor/setasign/fpdi/src/autoload.php'; // Correct path to FPDI
+require_once __DIR__ . '/../vendor/setasign/fpdf/fpdf.php'; // Correct path to FPDF
+require_once __DIR__ . '/../vendor/setasign/fpdi/src/autoload.php'; // Correct path to FPDI
 $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
 $pdf->AddPage();
 $pdf->SetFont('Arial', '', 12);
