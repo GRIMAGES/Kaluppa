@@ -54,12 +54,17 @@ $stmt->close();
 $uploadedFilePath = $documentFile['tmp_name'];
 
 // Preprocess the uploaded file using Ghostscript
-$preprocessedFilePath = sys_get_temp_dir() . '/' . uniqid('preprocessed_', true) . '.pdf';
-$gsCommand = '"C:\\xampp\\htdocs\\Kaluppa\\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . escapeshellarg($preprocessedFilePath) . ' ' . escapeshellarg($uploadedFilePath);
-exec($gsCommand, $output, $returnVar);
+$tempDir = __DIR__ . '/temp';
+if (!is_dir($tempDir)) {
+    mkdir($tempDir, 0755, true);
+}
+$preprocessedFilePath = $tempDir . '/' . uniqid('preprocessed_', true) . '.pdf';
+
+$gsCommand = '/usr/bin/gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . escapeshellarg($preprocessedFilePath) . ' ' . escapeshellarg($uploadedFilePath);
+exec($gsCommand . ' 2>&1', $output, $returnVar);
 
 if ($returnVar !== 0) {
-    error_log('Ghostscript Error: ' . implode("\n", $output)); // Log the Ghostscript error output
+    error_log('Ghostscript Error: ' . implode("\n", $output)); // Log detailed error output
     echo json_encode(['success' => false, 'message' => 'Failed to preprocess the uploaded file.']);
     exit();
 }
