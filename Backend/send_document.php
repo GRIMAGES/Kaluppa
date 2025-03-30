@@ -56,7 +56,10 @@ $stmt->close();
 $uploadedFilePath = $documentFile['tmp_name'];
 
 // Preprocess the uploaded file using Ghostscript
-$tempDir = sys_get_temp_dir(); // Use system's temporary directory
+$tempDir = __DIR__ . '/temp';
+if (!is_dir($tempDir)) {
+    mkdir($tempDir, 0755, true);
+}
 $preprocessedFilePath = $tempDir . '/' . uniqid('preprocessed_', true) . '.pdf';
 
 $gsCommand = '/usr/bin/gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . escapeshellarg($preprocessedFilePath) . ' ' . escapeshellarg($uploadedFilePath);
@@ -95,7 +98,10 @@ try {
 // Send the document via email
 try {
     $mail = new PHPMailer(true);
-    $mail->SMTPDebug = 0; // Disable verbose debug output
+    $mail->SMTPDebug = 2; // Enable verbose debug output
+    $mail->Debugoutput = function ($str, $level) {
+        error_log("PHPMailer Debug [$level]: $str");
+    };
     $mail->isSMTP();
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
