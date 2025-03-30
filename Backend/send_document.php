@@ -130,7 +130,7 @@ try {
         // Content
         $mail->isHTML(true);
         $mail->Subject = 'Your Document is Ready';
-        $mail->Body = "Dear Alumni,<br><br>Your requested document has been processed and is available for download.<br><br><a href='" . $publicFileUrl . "'>Download Your Document</a><br><br>Best regards,<br>Your Team";
+        $mail->Body = "Dear Alumni,<br><br>Your requested document has been processed and is available for download.<br><br><a href='" . $publicFileUrl . "'>Download Your Document</a><br><br><strong>Note:</strong> The password to open the file is your birthday in the format YYYY-MM-DD.<br><br>Best regards,<br>Your Team";
 
         $mail->send();
         echo json_encode(['success' => true, 'message' => 'Document saved and email sent successfully.', 'file_url' => $publicFileUrl]);
