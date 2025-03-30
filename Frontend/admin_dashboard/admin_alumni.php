@@ -181,13 +181,17 @@ if (isset($_POST['logout'])) {
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    const res = JSON.parse(response);
-                    if (res.success) {
-                        alert('Document sent successfully.');
-                        $('#sendDocumentModal').modal('hide');
-                        $('#sendDocumentForm')[0].reset();
-                    } else {
-                        alert('Failed to send document: ' + res.message);
+                    try {
+                        const res = JSON.parse(response);
+                        if (res.success) {
+                            alert('Document sent successfully.');
+                            $('#sendDocumentModal').modal('hide');
+                            $('#sendDocumentForm')[0].reset();
+                        } else {
+                            alert('Failed to send document: ' + res.message);
+                        }
+                    } catch (e) {
+                        alert('Unexpected response from the server.');
                     }
                 },
                 error: function(xhr, status, error) {

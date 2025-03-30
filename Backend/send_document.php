@@ -36,7 +36,7 @@ try {
     $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP server
     $mail->SMTPAuth = true;
     $mail->Username = 'wgonzales@kaluppa.org';
-        $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with your email password
+    $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with your email password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
@@ -53,6 +53,7 @@ try {
     $mail->send();
     echo json_encode(['success' => true, 'message' => 'Document sent successfully.']);
 } catch (Exception $e) {
+    error_log('PHPMailer Error: ' . $mail->ErrorInfo); // Log the error
     echo json_encode(['success' => false, 'message' => 'Failed to send email: ' . $mail->ErrorInfo]);
 }
 ?>
