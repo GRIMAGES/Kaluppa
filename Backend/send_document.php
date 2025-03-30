@@ -53,8 +53,11 @@ $stmt->close();
 // Process the uploaded file and apply password protection
 $uploadedFilePath = $documentFile['tmp_name'];
 
-// Use a writable directory for temporary files
-$tempDir = '/tmp'; // Use the system's temporary directory
+// Preprocess the uploaded file using Ghostscript
+$tempDir = __DIR__ . '/temp';
+if (!is_dir($tempDir)) {
+    mkdir($tempDir, 0755, true);
+}
 $preprocessedFilePath = $tempDir . '/' . uniqid('preprocessed_', true) . '.pdf';
 
 $gsCommand = '/usr/bin/gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . escapeshellarg($preprocessedFilePath) . ' ' . escapeshellarg($uploadedFilePath);
