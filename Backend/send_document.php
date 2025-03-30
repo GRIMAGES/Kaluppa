@@ -7,8 +7,7 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoloader
 require_once __DIR__ . '/connection.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
 header('Content-Type: application/json'); // Ensure the response is JSON
 
@@ -51,33 +50,27 @@ $user = $result->fetch_assoc();
 $birthdate = $user['birthday']; // Use birthdate as the password
 $stmt->close();
 
-// Use the uploaded file as the attachment
+// Process the uploaded file and apply password protection
 $uploadedFilePath = $documentFile['tmp_name'];
-$uploadedFileName = $documentFile['name'];
+$protectedFilePath = __DIR__ . '/Documents/' . uniqid('protected_', true) . '.pdf';
 
-// Send the email with the uploaded file
 try {
-    $mail = new PHPMailer(true);
-    $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
-    $mail->SMTPAuth = true;
-    $mail->Username = 'wgonzales@kaluppa.org';
-    $mail->Password = 'qfsp ihop mdqg ngoy';
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port = 587;
+    $pdf = new Fpdi();
+    $pdf->SetProtection(['print', 'copy'], $birthdate);
+    $pdf->AddPage();
 
-    $mail->setFrom('wgonzales@kaluppa.org', 'Admin Team');
-    $mail->addAddress($alumniEmail);
-    $mail->Subject = 'Your Requested Document';
-    $mail->Body = "Dear Alumni,\n\nPlease find your requested document attached. The password to open the document is your birthdate (YYYY-MM-DD).\n\nBest regards,\nAdmin Team";
+    // Import the uploaded file
+    $pageCount = $pdf->setSourceFile($uploadedFilePath);
+    for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+        $templateId = $pdf->importPage($pageNo);
+        $pdf->useTemplate($templateId);
+    }
 
-    // Attach the uploaded file
-    $mail->addAttachment($uploadedFilePath, $uploadedFileName);
-    $mail->send();
-
-    echo json_encode(['success' => true, 'message' => 'Document sent successfully.']);
+    // Save the password-protected file
+    $pdf->Output($protectedFilePath, 'F');
+    echo json_encode(['success' => true, 'message' => 'Document saved successfully.', 'file_path' => $protectedFilePath]);
 } catch (Exception $e) {
-    error_log('PHPMailer Error: ' . $mail->ErrorInfo);
-    echo json_encode(['success' => false, 'message' => 'Failed to send email: ' . $mail->ErrorInfo]);
+    echo json_encode(['success' => false, 'message' => 'Failed to process the uploaded file: ' . $e->getMessage()]);
+    exit();
 }
 ?>
