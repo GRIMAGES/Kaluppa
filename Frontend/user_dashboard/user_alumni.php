@@ -276,7 +276,7 @@ $alumni_result = $alumni_stmt->get_result();
             $.ajax({
                 url: '/Kaluppa/Backend/get_user_details.php', // Backend endpoint to fetch user details
                 method: 'GET',
-                dataType: 'json',
+                dataType: 'json', // Ensure the response is parsed as JSON
                 success: function(response) {
                     console.log(response); // Log the response for debugging
                     if (response.success) {
@@ -307,12 +307,15 @@ $alumni_result = $alumni_stmt->get_result();
                 url: '/Kaluppa/Backend/submit_request.php', // Backend endpoint to handle form submission
                 method: 'POST',
                 data: formData,
+                dataType: 'json', // Ensure the response is parsed as JSON
                 success: function(response) {
                     console.log(response); // Log the response for debugging
-                    alert(response.message);
                     if (response.success) {
+                        alert(response.message); // Display the success message
                         $('#requestDocumentsModal').modal('hide');
                         $('#requestForm')[0].reset();
+                    } else {
+                        alert('Failed to submit request: ' + response.message);
                     }
                 },
                 error: function(xhr, status, error) {
