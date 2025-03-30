@@ -70,12 +70,14 @@ if (isset($_POST['logout'])) {
                 <th>Document Type</th>
                 <th>Reason</th>
                 <th>Date Submitted</th>
+                <th>Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             <?php
             // Fetch document requests from the database
-            $stmt = $conn->prepare("SELECT full_name, email, document_type, reason, requested_at FROM document_requests ORDER BY requested_at DESC");
+            $stmt = $conn->prepare("SELECT id, full_name, email, document_type, reason, requested_at, status FROM document_requests ORDER BY requested_at DESC");
             $stmt->execute();
             $result = $stmt->get_result();
 
@@ -86,6 +88,16 @@ if (isset($_POST['logout'])) {
                         <td>" . htmlspecialchars($row['document_type']) . "</td>
                         <td>" . htmlspecialchars($row['reason']) . "</td>
                         <td>" . htmlspecialchars($row['requested_at']) . "</td>
+                        <td>
+                            <select class='form-select status-select' data-id='" . htmlspecialchars($row['id']) . "'>
+                                <option value='pending'" . ($row['status'] === 'pending' ? ' selected' : '') . ">Pending</option>
+                                <option value='approved'" . ($row['status'] === 'approved' ? ' selected' : '') . ">Approved</option>
+                                <option value='rejected'" . ($row['status'] === 'rejected' ? ' selected' : '') . ">Rejected</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class='btn btn-primary btn-sm save-status' data-id='" . htmlspecialchars($row['id']) . "'>Save</button>
+                        </td>
                       </tr>";
             }
 
@@ -100,6 +112,29 @@ if (isset($_POST['logout'])) {
 <script>
     $(document).ready(function() {
         $('#documentRequestsTable').DataTable();
+
+        // Handle status change
+        $('.save-status').on('click', function() {
+            const requestId = $(this).data('id');
+            const newStatus = $(`.status-select[data-id="${requestId}"]`).val();
+
+            $.ajax({
+                url: '/Kaluppa/Backend/update_request_status.php',
+                method: 'POST',
+                data: { id: requestId, status: newStatus },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        alert('Status updated successfully.');
+                    } else {
+                        alert('Failed to update status: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while updating the status.');
+                }
+            });
+        });
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
