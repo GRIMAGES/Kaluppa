@@ -6,7 +6,6 @@ require_once '../../Backend/connection.php';
 session_start();
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
-
 // Redirect to login page if not logged in
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -167,6 +166,10 @@ if (isset($_POST['logout'])) {
             const alumniEmail = $(this).data('email');
             $('#requestId').val(requestId);
             $('#alumniEmail').val(alumniEmail);
+
+            // Add inert attribute to the rest of the page
+            $('body > *').not('#sendDocumentModal').attr('inert', 'true');
+
             $('#sendDocumentModal').modal('show');
         });
 
@@ -196,6 +199,11 @@ if (isset($_POST['logout'])) {
                     alert('An error occurred while sending the document.');
                 }
             });
+        });
+
+        // Remove inert attribute when modal is hidden
+        $('#sendDocumentModal').on('hidden.bs.modal', function() {
+            $('body > *').removeAttr('inert');
         });
     });
 </script>
