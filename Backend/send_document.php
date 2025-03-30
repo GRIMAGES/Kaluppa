@@ -52,6 +52,20 @@ $stmt->close();
 
 // Process the uploaded file and apply password protection
 $uploadedFilePath = $documentFile['tmp_name'];
+
+// Preprocess the uploaded file using Ghostscript
+$preprocessedFilePath = sys_get_temp_dir() . '/' . uniqid('preprocessed_', true) . '.pdf';
+$gsCommand = "gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=" . escapeshellarg($preprocessedFilePath) . " " . escapeshellarg($uploadedFilePath);
+exec($gsCommand, $output, $returnVar);
+
+if ($returnVar !== 0) {
+    echo json_encode(['success' => false, 'message' => 'Failed to preprocess the uploaded file.']);
+    exit();
+}
+
+// Use the preprocessed file for FPDI
+$uploadedFilePath = $preprocessedFilePath;
+
 $protectedFilePath = __DIR__ . '/Documents/' . uniqid('protected_', true) . '.pdf';
 
 try {
