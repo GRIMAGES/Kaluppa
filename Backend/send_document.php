@@ -56,7 +56,7 @@ require_once __DIR__ . '/../vendor/setasign/fpdf/fpdf.php'; // Correct path to F
 require_once __DIR__ . '/../vendor/setasign/fpdi/src/autoload.php'; // Correct path to FPDI
 $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
 $pdf->AddPage();
-$pdf->SetFont('Arial', '', 12);
+$pdf->SetFont('helvetica', '', 12); // Replace 'Arial' with 'helvetica'
 $pdf->Write(10, "This is your requested document.");
 
 // Set password protection
