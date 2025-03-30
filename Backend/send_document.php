@@ -56,7 +56,11 @@ $uploadedFilePath = $documentFile['tmp_name'];
 // Preprocess the uploaded file using Ghostscript
 $tempDir = __DIR__ . '/temp';
 if (!is_dir($tempDir)) {
-    mkdir($tempDir, 0755, true);
+    if (!mkdir($tempDir, 0755, true) && !is_dir($tempDir)) {
+        error_log('Failed to create temp directory: ' . $tempDir);
+        echo json_encode(['success' => false, 'message' => 'Server error: Unable to create temporary directory.']);
+        exit();
+    }
 }
 $preprocessedFilePath = $tempDir . '/' . uniqid('preprocessed_', true) . '.pdf';
 
