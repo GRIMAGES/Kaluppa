@@ -88,7 +88,17 @@ try {
 
     // Save the password-protected file
     $pdf->Output($protectedFilePath, 'F');
-    echo json_encode(['success' => true, 'message' => 'Document saved successfully.', 'file_path' => $protectedFilePath]);
+
+    // Send email to the alumni
+    $subject = "Your Document is Ready";
+    $message = "Dear Alumni,\n\nYour requested document has been processed and is available for download.\n\nFile Path: " . $protectedFilePath . "\n\nBest regards,\nYour Team";
+    $headers = "From: no-reply@yourdomain.com";
+
+    if (mail($alumniEmail, $subject, $message, $headers)) {
+        echo json_encode(['success' => true, 'message' => 'Document saved and email sent successfully.', 'file_path' => $protectedFilePath]);
+    } else {
+        echo json_encode(['success' => true, 'message' => 'Document saved successfully, but failed to send email.', 'file_path' => $protectedFilePath]);
+    }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Failed to process the uploaded file: ' . $e->getMessage()]);
     exit();
