@@ -4,6 +4,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once 'connection.php';
+require '../../vendor/autoload.php'; // Ensure PHPMailer is installed via Composer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
@@ -25,38 +29,30 @@ if ($documentFile['error'] !== UPLOAD_ERR_OK) {
     exit();
 }
 
-// Prepare email with attachment
-$subject = "Your Requested Document";
-$message = "Dear Alumni,\n\nPlease find your requested document attached.\n\nBest regards,\nAdmin Team";
+try {
+    // Initialize PHPMailer
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP server
+    $mail->SMTPAuth = true;
+    $mail->Username = 'wgonzales@kaluppa.org';
+        $mail->Password = 'qfsp ihop mdqg ngoy'; // Replace with your email password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587;
 
-// Boundary for the email
-$boundary = md5(time());
+    // Email settings
+    $mail->setFrom('wgonzales@kaluppa.org', 'Admin Team'); // Replace with your email
+    $mail->addAddress($alumniEmail);
+    $mail->Subject = 'Your Requested Document';
+    $mail->Body = "Dear Alumni,\n\nPlease find your requested document attached.\n\nBest regards,\nAdmin Team";
 
-// Email headers
-$headers = "From: admin@kaluppa.com\r\n";
-$headers .= "MIME-Version: 1.0\r\n";
-$headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
+    // Attach the uploaded file
+    $mail->addAttachment($documentFile['tmp_name'], $documentFile['name']);
 
-// Email body
-$emailBody = "--$boundary\r\n";
-$emailBody .= "Content-Type: text/plain; charset=UTF-8\r\n";
-$emailBody .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-$emailBody .= $message . "\r\n\r\n";
-
-// Attachment
-$fileContent = file_get_contents($documentFile['tmp_name']);
-$fileName = $documentFile['name'];
-$emailBody .= "--$boundary\r\n";
-$emailBody .= "Content-Type: application/octet-stream; name=\"$fileName\"\r\n";
-$emailBody .= "Content-Transfer-Encoding: base64\r\n";
-$emailBody .= "Content-Disposition: attachment; filename=\"$fileName\"\r\n\r\n";
-$emailBody .= chunk_split(base64_encode($fileContent)) . "\r\n";
-$emailBody .= "--$boundary--";
-
-// Send the email
-if (mail($alumniEmail, $subject, $emailBody, $headers)) {
+    // Send the email
+    $mail->send();
     echo json_encode(['success' => true, 'message' => 'Document sent successfully.']);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Failed to send email.']);
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Failed to send email: ' . $mail->ErrorInfo]);
 }
 ?>
