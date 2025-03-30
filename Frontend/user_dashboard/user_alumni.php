@@ -184,21 +184,37 @@ $alumni_result = $alumni_stmt->get_result();
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="requestDocumentsModalLabel">Request Documents</h5>
+                <h5 class="modal-title" id="requestDocumentsModalLabel">Request a Document</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="documentType" class="form-label">Document Type</label>
-                        <input type="text" class="form-control" id="documentType" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="reason" class="form-label">Reason</label>
-                        <textarea class="form-control" id="reason" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Request</button>
-                </form>
+                <div class="container">
+                    <form id="requestForm">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name:</label>
+                            <input type="text" class="form-control" id="fullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="documentType" class="form-label">Document Type:</label>
+                            <select class="form-select" id="documentType" required>
+                                <option value="">Select a document</option>
+                                <option value="birth_certificate">Birth Certificate</option>
+                                <option value="transcript_records">Transcript of Records</option>
+                                <option value="certificate_completion">Certificate of Completion</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reason" class="form-label">Reason for Request:</label>
+                            <textarea class="form-control" id="reason" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -254,6 +270,53 @@ $alumni_result = $alumni_stmt->get_result();
 <script>
     $(document).ready(function() {
         $('#alumniTable').DataTable();
+
+        // Fetch user details and autofill the form
+        $('#requestDocumentsModal').on('show.bs.modal', function() {
+            $.ajax({
+                url: '/Kaluppa/Backend/get_user_details.php', // Backend endpoint to fetch user details
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#fullName').val(response.full_name);
+                        $('#email').val(response.email);
+                    } else {
+                        alert('Failed to fetch user details.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while fetching user details.');
+                }
+            });
+        });
+
+        // Handle form submission
+        $('#requestForm').on('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                fullName: $('#fullName').val(),
+                email: $('#email').val(),
+                documentType: $('#documentType').val(),
+                reason: $('#reason').val()
+            };
+
+            $.ajax({
+                url: '/Kaluppa/Backend/submit_request.php', // Backend endpoint to handle form submission
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    alert(response.message);
+                    if (response.success) {
+                        $('#requestDocumentsModal').modal('hide');
+                        $('#requestForm')[0].reset();
+                    }
+                },
+                error: function() {
+                    alert('An error occurred while submitting the request.');
+                }
+            });
+        });
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

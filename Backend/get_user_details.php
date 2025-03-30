@@ -1,30 +1,31 @@
 <?php
 require_once 'connection.php';
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $userId = $_POST['id'];
-
-    // Debugging statements to log received POST data
-    error_log("Received POST data: id=$userId");
-
-    $stmt = $conn->prepare("SELECT id, first_name, middle_name, last_name FROM user WHERE id = ?");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Debugging statement to log the SQL query and parameters
-    error_log("SQL Query: SELECT id, first_name, middle_name, last_name FROM user WHERE id = ?");
-    error_log("Parameters: id=$userId");
-
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        echo json_encode($user);
-        // Debugging statement to log fetched user details
-        error_log("Fetched user details: " . json_encode($user));
-    } else {
-        echo 'Error fetching user details';
-        // Debugging statement to log error
-        error_log("Error: No user found with id=$userId");
-    }
+if (!isset($_SESSION['email'])) {
+    echo json_encode(['success' => false, 'message' => 'User not logged in.']);
+    exit();
 }
+
+$email = $_SESSION['email'];
+
+$stmt = $conn->prepare("SELECT first_name, middle_name, last_name, email FROM user WHERE email = ?");
+if (!$stmt) {
+    echo json_encode(['success' => false, 'message' => 'Database error.']);
+    exit();
+}
+
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    $fullName = $user['first_name'] . ' ' . $user['middle_name'] . ' ' . $user['last_name'];
+    echo json_encode(['success' => true, 'full_name' => $fullName, 'email' => $user['email']]);
+} else {
+    echo json_encode(['success' => false, 'message' => 'User not found.']);
+}
+$stmt->close();
+$conn->close();
 ?>
