@@ -8,6 +8,8 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoloader
 require_once __DIR__ . '/connection.php';
 
 use setasign\Fpdi\Tcpdf\Fpdi;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json'); // Ensure the response is JSON
 
@@ -54,10 +56,7 @@ $stmt->close();
 $uploadedFilePath = $documentFile['tmp_name'];
 
 // Preprocess the uploaded file using Ghostscript
-$tempDir = __DIR__ . '/temp';
-if (!is_dir($tempDir)) {
-    mkdir($tempDir, 0755, true);
-}
+$tempDir = sys_get_temp_dir(); // Use system's temporary directory
 $preprocessedFilePath = $tempDir . '/' . uniqid('preprocessed_', true) . '.pdf';
 
 $gsCommand = '/usr/bin/gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . escapeshellarg($preprocessedFilePath) . ' ' . escapeshellarg($uploadedFilePath);
@@ -88,9 +87,35 @@ try {
 
     // Save the password-protected file
     $pdf->Output($protectedFilePath, 'F');
-    echo json_encode(['success' => true, 'message' => 'Document saved successfully.', 'file_path' => $protectedFilePath]);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Failed to process the uploaded file: ' . $e->getMessage()]);
     exit();
+}
+
+// Send the document via email
+try {
+    $mail = new PHPMailer(true);
+    $mail->SMTPDebug = 0; // Disable verbose debug output
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'wgonzales@kaluppa.org';
+    $mail->Password = 'qfsp ihop mdqg ngoy';
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port = 587;
+
+    $mail->setFrom('wgonzales@kaluppa.org', 'Admin Team');
+    $mail->addAddress($alumniEmail);
+    $mail->Subject = 'Your Requested Document';
+    $mail->Body = "Dear Alumni,\n\nPlease find your requested document attached. The password to open the document is your birthdate (YYYY-MM-DD).\n\nBest regards,\nAdmin Team";
+
+    // Attach the password-protected file
+    $mail->addAttachment($protectedFilePath, basename($protectedFilePath));
+    $mail->send();
+
+    echo json_encode(['success' => true, 'message' => 'Document sent successfully.']);
+} catch (Exception $e) {
+    error_log('PHPMailer Error: ' . $mail->ErrorInfo);
+    echo json_encode(['success' => false, 'message' => 'Failed to send email: ' . $mail->ErrorInfo]);
 }
 ?>
