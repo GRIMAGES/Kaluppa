@@ -71,7 +71,7 @@ if (isset($_POST['logout'])) {
                 <th>Reason</th>
                 <th>Date Submitted</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -97,6 +97,7 @@ if (isset($_POST['logout'])) {
                         </td>
                         <td>
                             <button class='btn btn-primary btn-sm save-status' data-id='" . htmlspecialchars($row['id']) . "'>Save</button>
+                            <button class='btn btn-success btn-sm send-document' data-id='" . htmlspecialchars($row['id']) . "' data-email='" . htmlspecialchars($row['email']) . "' data-name='" . htmlspecialchars($row['full_name']) . "'>Send Document</button>
                         </td>
                       </tr>";
             }
@@ -105,6 +106,29 @@ if (isset($_POST['logout'])) {
             ?>
         </tbody>
     </table>
+</div>
+
+<!-- Send Document Modal -->
+<div class="modal fade" id="sendDocumentModal" tabindex="-1" aria-labelledby="sendDocumentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sendDocumentModalLabel">Send Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="sendDocumentForm" enctype="multipart/form-data">
+                    <input type="hidden" id="requestId" name="requestId">
+                    <input type="hidden" id="alumniEmail" name="alumniEmail">
+                    <div class="mb-3">
+                        <label for="documentFile" class="form-label">Upload Document</label>
+                        <input type="file" class="form-control" id="documentFile" name="documentFile" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -132,6 +156,42 @@ if (isset($_POST['logout'])) {
                 },
                 error: function(xhr, status, error) {
                     alert('An error occurred while updating the status.');
+                }
+            });
+        });
+
+        // Open Send Document Modal
+        $('.send-document').on('click', function() {
+            const requestId = $(this).data('id');
+            const alumniEmail = $(this).data('email');
+            $('#requestId').val(requestId);
+            $('#alumniEmail').val(alumniEmail);
+            $('#sendDocumentModal').modal('show');
+        });
+
+        // Handle Send Document Form Submission
+        $('#sendDocumentForm').on('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            $.ajax({
+                url: '/Kaluppa/Backend/send_document.php',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    const res = JSON.parse(response);
+                    if (res.success) {
+                        alert('Document sent successfully.');
+                        $('#sendDocumentModal').modal('hide');
+                        $('#sendDocumentForm')[0].reset();
+                    } else {
+                        alert('Failed to send document: ' + res.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while sending the document.');
                 }
             });
         });
