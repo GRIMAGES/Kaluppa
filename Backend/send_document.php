@@ -59,6 +59,7 @@ $gsCommand = "gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -d
 exec($gsCommand, $output, $returnVar);
 
 if ($returnVar !== 0) {
+    error_log('Ghostscript Error: ' . implode("\n", $output)); // Log the Ghostscript error output
     echo json_encode(['success' => false, 'message' => 'Failed to preprocess the uploaded file.']);
     exit();
 }
