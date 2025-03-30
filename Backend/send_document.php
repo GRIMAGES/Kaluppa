@@ -55,7 +55,7 @@ $uploadedFilePath = $documentFile['tmp_name'];
 
 // Preprocess the uploaded file using Ghostscript
 $preprocessedFilePath = sys_get_temp_dir() . '/' . uniqid('preprocessed_', true) . '.pdf';
-$gsCommand = "gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=" . escapeshellarg($preprocessedFilePath) . " " . escapeshellarg($uploadedFilePath);
+$gsCommand = '"C:\\xampp\\htdocs\\Kaluppa\\gswin64c.exe" -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -sOutputFile=' . escapeshellarg($preprocessedFilePath) . ' ' . escapeshellarg($uploadedFilePath);
 exec($gsCommand, $output, $returnVar);
 
 if ($returnVar !== 0) {
