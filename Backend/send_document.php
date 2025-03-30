@@ -9,6 +9,8 @@ require '../../vendor/autoload.php'; // Ensure PHPMailer is installed via Compos
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+header('Content-Type: application/json'); // Ensure the response is JSON
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
     exit();

@@ -155,6 +155,7 @@ if (isset($_POST['logout'])) {
                     }
                 },
                 error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText); // Log the error response
                     alert('An error occurred while updating the status.');
                 }
             });
@@ -181,20 +182,17 @@ if (isset($_POST['logout'])) {
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    try {
-                        const res = JSON.parse(response);
-                        if (res.success) {
-                            alert('Document sent successfully.');
-                            $('#sendDocumentModal').modal('hide');
-                            $('#sendDocumentForm')[0].reset();
-                        } else {
-                            alert('Failed to send document: ' + res.message);
-                        }
-                    } catch (e) {
-                        alert('Unexpected response from the server.');
+                    console.log('Response:', response); // Log the response for debugging
+                    if (response.success) {
+                        alert('Document sent successfully.');
+                        $('#sendDocumentModal').modal('hide');
+                        $('#sendDocumentForm')[0].reset();
+                    } else {
+                        alert('Failed to send document: ' + response.message);
                     }
                 },
                 error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText); // Log the error response
                     alert('An error occurred while sending the document.');
                 }
             });
