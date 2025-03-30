@@ -47,6 +47,7 @@ $navLinks = [
     ['href' => '#', 'icon' => 'fas fa-tasks', 'text' => 'Application Manager', 'dropdown' => [
         ['href' => 'admin_scholarship.php', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship'],
         ['href' => 'admin_volunteer.php', 'icon' => 'fas fa-handshake', 'text' => 'Volunteer'],
+        ['href' => 'admin_alumni.php', 'icon' => 'fas fa-user-graduate', 'text' => 'Alumni'],
     ]],
     ['href' => 'admin_analytics.php', 'icon' => 'fas fa-chart-line', 'text' => 'Analytics'],
     ['href' => 'reports.php', 'icon' => 'fas fa-chart-bar', 'text' => 'Reports'],
