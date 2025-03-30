@@ -129,6 +129,18 @@ $alumni_result = $alumni_stmt->get_result();
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Request submitted successfully.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <!-- Alumni Section -->
 <div class="container alumni-section">
     <div class="row justify-content-center">
@@ -274,11 +286,10 @@ $alumni_result = $alumni_stmt->get_result();
         // Fetch user details and autofill the form
         $('#requestDocumentsModal').on('show.bs.modal', function() {
             $.ajax({
-                url: '/Kaluppa/Backend/get_user_details.php', // Backend endpoint to fetch user details
+                url: '/Kaluppa/Backend/get_user_details.php',
                 method: 'GET',
-                dataType: 'json', // Ensure the response is parsed as JSON
+                dataType: 'json',
                 success: function(response) {
-                    console.log(response); // Log the response for debugging
                     if (response.success) {
                         $('#fullName').val(response.full_name);
                         $('#email').val(response.email);
@@ -287,7 +298,6 @@ $alumni_result = $alumni_stmt->get_result();
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX Error:', status, error); // Log AJAX errors
                     alert('An error occurred while fetching user details.');
                 }
             });
@@ -304,25 +314,30 @@ $alumni_result = $alumni_stmt->get_result();
             };
 
             $.ajax({
-                url: '/Kaluppa/Backend/submit_request.php', // Backend endpoint to handle form submission
+                url: '/Kaluppa/Backend/submit_request.php',
                 method: 'POST',
                 data: formData,
-                dataType: 'json', // Ensure the response is parsed as JSON
+                dataType: 'json',
                 success: function(response) {
-                    console.log(response); // Log the response for debugging
                     if (response.success) {
-                        alert(response.message); // Display the success message
                         $('#requestDocumentsModal').modal('hide');
                         $('#requestForm')[0].reset();
+                        // Show toast notification
+                        const toast = new bootstrap.Toast(document.getElementById('successToast'));
+                        toast.show();
                     } else {
                         alert('Failed to submit request: ' + response.message);
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('AJAX Error:', status, error); // Log AJAX errors
                     alert('An error occurred while submitting the request.');
                 }
             });
+        });
+
+        // Ensure modal backdrop is removed properly
+        $('#requestDocumentsModal').on('hidden.bs.modal', function() {
+            $('.modal-backdrop').remove();
         });
     });
 </script>
