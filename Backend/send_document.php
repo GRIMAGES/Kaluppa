@@ -90,11 +90,15 @@ if (!is_dir($documentsDir)) {
         exit();
     }
 }
-$protectedFilePath = $documentsDir . '/' . uniqid('protected_', true) . '.pdf';
+$protectedFileName = uniqid('protected_', true) . '.pdf';
+$protectedFilePath = $documentsDir . '/' . $protectedFileName;
+
+// Generate public URL for the file
+$publicFileUrl = 'https://www.kaluppa.online/Kaluppa/Backend/Documents/' . $protectedFileName;
 
 try {
     $pdf = new Fpdi();
-    $pdf->SetProtection(['print', 'copy'], $birthdate);
+    $pdf->SetProtection(['print', 'copy'], $birthdate); // Password protection using the user's birthday
     $pdf->AddPage();
 
     // Import the uploaded file
@@ -115,7 +119,7 @@ try {
         $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP server
         $mail->SMTPAuth = true;
         $mail->Username = 'wgonzales@kaluppa.org';
-    $mail->Password = 'qfsp ihop mdqg ngoy';
+        $mail->Password = 'qfsp ihop mdqg ngoy';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
@@ -126,13 +130,13 @@ try {
         // Content
         $mail->isHTML(true);
         $mail->Subject = 'Your Document is Ready';
-        $mail->Body = "Dear Alumni,<br><br>Your requested document has been processed and is available for download.<br><br>File Path: " . $protectedFilePath . "<br><br>Best regards,<br>Your Team";
+        $mail->Body = "Dear Alumni,<br><br>Your requested document has been processed and is available for download.<br><br><a href='" . $publicFileUrl . "'>Download Your Document</a><br><br>Best regards,<br>Your Team";
 
         $mail->send();
-        echo json_encode(['success' => true, 'message' => 'Document saved and email sent successfully.', 'file_path' => $protectedFilePath]);
+        echo json_encode(['success' => true, 'message' => 'Document saved and email sent successfully.', 'file_url' => $publicFileUrl]);
     } catch (Exception $e) {
         error_log('Mailer Error: ' . $mail->ErrorInfo);
-        echo json_encode(['success' => true, 'message' => 'Document saved successfully, but failed to send email.', 'file_path' => $protectedFilePath]);
+        echo json_encode(['success' => true, 'message' => 'Document saved successfully, but failed to send email.', 'file_url' => $publicFileUrl]);
     }
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Failed to process the uploaded file: ' . $e->getMessage()]);
