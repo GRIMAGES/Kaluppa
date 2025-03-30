@@ -33,7 +33,7 @@ if ($documentFile['error'] !== UPLOAD_ERR_OK) {
 }
 
 // Fetch the user's birthdate from the database
-$stmt = $conn->prepare("SELECT birthdate FROM user WHERE email = ?");
+$stmt = $conn->prepare("SELECT birthday FROM user WHERE email = ?");
 if (!$stmt) {
     echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
     exit();
@@ -48,7 +48,7 @@ if ($result->num_rows === 0) {
 }
 
 $user = $result->fetch_assoc();
-$birthdate = $user['birthdate']; // Use birthdate as the password
+$birthdate = $user['birthday']; // Use birthdate as the password
 $stmt->close();
 
 // Generate a password-protected PDF
