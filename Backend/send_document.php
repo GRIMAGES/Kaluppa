@@ -51,22 +51,11 @@ $user = $result->fetch_assoc();
 $birthdate = $user['birthday']; // Use birthdate as the password
 $stmt->close();
 
-// Generate a password-protected PDF
-require_once __DIR__ . '/../vendor/setasign/fpdf/fpdf.php'; // Correct path to FPDF
-require_once __DIR__ . '/../vendor/setasign/fpdi/src/autoload.php'; // Correct path to FPDI
-$pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
-$pdf->AddPage();
-$pdf->SetFont('helvetica', '', 12); // Replace 'Arial' with 'helvetica'
-$pdf->Write(10, "This is your requested document.");
+// Use the uploaded file as the attachment
+$uploadedFilePath = $documentFile['tmp_name'];
+$uploadedFileName = $documentFile['name'];
 
-// Set password protection
-$pdf->SetProtection(['print', 'copy'], $birthdate);
-
-// Save the PDF to a temporary file
-$pdfFilePath = sys_get_temp_dir() . '/' . uniqid('document_', true) . '.pdf';
-$pdf->Output($pdfFilePath, 'F');
-
-// Send the email with the encrypted PDF
+// Send the email with the uploaded file
 try {
     $mail = new PHPMailer(true);
     $mail->isSMTP();
@@ -82,11 +71,9 @@ try {
     $mail->Subject = 'Your Requested Document';
     $mail->Body = "Dear Alumni,\n\nPlease find your requested document attached. The password to open the document is your birthdate (YYYY-MM-DD).\n\nBest regards,\nAdmin Team";
 
-    $mail->addAttachment($pdfFilePath, 'Requested_Document.pdf');
+    // Attach the uploaded file
+    $mail->addAttachment($uploadedFilePath, $uploadedFileName);
     $mail->send();
-
-    // Clean up the temporary file
-    unlink($pdfFilePath);
 
     echo json_encode(['success' => true, 'message' => 'Document sent successfully.']);
 } catch (Exception $e) {
