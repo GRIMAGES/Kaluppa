@@ -278,14 +278,16 @@ $alumni_result = $alumni_stmt->get_result();
                 method: 'GET',
                 dataType: 'json',
                 success: function(response) {
+                    console.log(response); // Log the response for debugging
                     if (response.success) {
                         $('#fullName').val(response.full_name);
                         $('#email').val(response.email);
                     } else {
-                        alert('Failed to fetch user details.');
+                        alert('Failed to fetch user details: ' + response.message);
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', status, error); // Log AJAX errors
                     alert('An error occurred while fetching user details.');
                 }
             });
@@ -306,13 +308,15 @@ $alumni_result = $alumni_stmt->get_result();
                 method: 'POST',
                 data: formData,
                 success: function(response) {
+                    console.log(response); // Log the response for debugging
                     alert(response.message);
                     if (response.success) {
                         $('#requestDocumentsModal').modal('hide');
                         $('#requestForm')[0].reset();
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', status, error); // Log AJAX errors
                     alert('An error occurred while submitting the request.');
                 }
             });

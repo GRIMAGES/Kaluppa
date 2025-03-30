@@ -1,6 +1,9 @@
 <?php
-require_once 'connection.php';
 session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+require_once 'connection.php';
 
 if (!isset($_SESSION['email'])) {
     echo json_encode(['success' => false, 'message' => 'User not logged in.']);
@@ -9,9 +12,15 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
+// Check if the database connection is successful
+if ($conn->connect_error) {
+    echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . $conn->connect_error]);
+    exit();
+}
+
 $stmt = $conn->prepare("SELECT first_name, middle_name, last_name, email FROM user WHERE email = ?");
 if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Database error.']);
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $conn->error]);
     exit();
 }
 
