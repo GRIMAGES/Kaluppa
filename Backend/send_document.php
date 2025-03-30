@@ -8,6 +8,8 @@ require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoloader
 require_once __DIR__ . '/connection.php';
 
 use setasign\Fpdi\Tcpdf\Fpdi;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 header('Content-Type: application/json'); // Ensure the response is JSON
 
@@ -105,14 +107,31 @@ try {
     // Save the password-protected file
     $pdf->Output($protectedFilePath, 'F');
 
-    // Send email to the alumni
-    $subject = "Your Document is Ready";
-    $message = "Dear Alumni,\n\nYour requested document has been processed and is available for download.\n\nFile Path: " . $protectedFilePath . "\n\nBest regards,\nYour Team";
-    $headers = "From: no-reply@yourdomain.com";
+    // Send email to the alumni using PHPMailer
+    $mail = new PHPMailer(true);
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP server
+        $mail->SMTPAuth = true;
+        $mail->Username = 'wgonzales@kaluppa.org';
+    $mail->Password = 'qfsp ihop mdqg ngoy';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
 
-    if (mail($alumniEmail, $subject, $message, $headers)) {
+        // Recipients
+        $mail->setFrom('wgonzales@kaluppa.org', 'Your Team');
+        $mail->addAddress($alumniEmail);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Your Document is Ready';
+        $mail->Body = "Dear Alumni,<br><br>Your requested document has been processed and is available for download.<br><br>File Path: " . $protectedFilePath . "<br><br>Best regards,<br>Your Team";
+
+        $mail->send();
         echo json_encode(['success' => true, 'message' => 'Document saved and email sent successfully.', 'file_path' => $protectedFilePath]);
-    } else {
+    } catch (Exception $e) {
+        error_log('Mailer Error: ' . $mail->ErrorInfo);
         echo json_encode(['success' => true, 'message' => 'Document saved successfully, but failed to send email.', 'file_path' => $protectedFilePath]);
     }
 } catch (Exception $e) {
