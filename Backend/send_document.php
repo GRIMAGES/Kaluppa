@@ -80,7 +80,15 @@ if ($returnVar !== 0) {
 // Use the preprocessed file for FPDI
 $uploadedFilePath = $preprocessedFilePath;
 
-$protectedFilePath = __DIR__ . '/Documents/' . uniqid('protected_', true) . '.pdf';
+$documentsDir = __DIR__ . '/Documents';
+if (!is_dir($documentsDir)) {
+    if (!mkdir($documentsDir, 0755, true) && !is_dir($documentsDir)) {
+        error_log('Failed to create documents directory: ' . $documentsDir);
+        echo json_encode(['success' => false, 'message' => 'Server error: Unable to create documents directory.']);
+        exit();
+    }
+}
+$protectedFilePath = $documentsDir . '/' . uniqid('protected_', true) . '.pdf';
 
 try {
     $pdf = new Fpdi();
