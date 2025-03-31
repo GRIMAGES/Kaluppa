@@ -92,6 +92,17 @@ if (isset($_POST['update_address'])) {
     $stmt->execute();
     $stmt->close();
 
+    // Fetch updated address
+    $query = "SELECT barangay, province, municipality FROM user WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('s', $adminEmail);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $updatedAddress = $result->fetch_assoc();
+    $stmt->close();
+
+    $_SESSION['updated_address'] = $updatedAddress;
+
     header("Location: admin_settings.php?address=success");
     exit();
 }
@@ -277,6 +288,16 @@ if (isset($_POST['change_password'])) {
             </div>
         </div>
     </div>
+
+    <?php if (isset($_SESSION['updated_address'])): ?>
+        <div class="alert alert-success mt-3">
+            Address updated successfully! <br>
+            Province: <?php echo htmlspecialchars($_SESSION['updated_address']['province']); ?> <br>
+            Municipality: <?php echo htmlspecialchars($_SESSION['updated_address']['municipality']); ?> <br>
+            Barangay: <?php echo htmlspecialchars($_SESSION['updated_address']['barangay']); ?>
+        </div>
+        <?php unset($_SESSION['updated_address']); ?>
+    <?php endif; ?>
 
     <!-- Change Password -->
     <div class="row mt-4">
