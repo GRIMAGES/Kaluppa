@@ -138,6 +138,55 @@ if (isset($_POST['change_password'])) {
     <title>Admin Settings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/admin_css/admin_settings.css">
+    <script>
+        const municipalities = {
+            "Marinduque": ["Boac", "Buenavista", "Gasan", "Mogpog", "Santa Cruz", "Torrijos"]
+        };
+
+        const barangays = {
+            "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban"],
+            "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas"],
+            "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo"],
+            "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc"],
+            "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin"],
+            "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo"]
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const provinceSelect = document.getElementById("province");
+            const municipalitySelect = document.getElementById("municipality");
+            const barangaySelect = document.getElementById("barangay");
+
+            provinceSelect.addEventListener("change", function () {
+                const selectedProvince = provinceSelect.value;
+                municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
+                barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+                if (municipalities[selectedProvince]) {
+                    municipalities[selectedProvince].forEach(municipality => {
+                        const option = document.createElement("option");
+                        option.value = municipality;
+                        option.textContent = municipality;
+                        municipalitySelect.appendChild(option);
+                    });
+                }
+            });
+
+            municipalitySelect.addEventListener("change", function () {
+                const selectedMunicipality = municipalitySelect.value;
+                barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+                if (barangays[selectedMunicipality]) {
+                    barangays[selectedMunicipality].forEach(barangay => {
+                        const option = document.createElement("option");
+                        option.value = barangay;
+                        option.textContent = barangay;
+                        barangaySelect.appendChild(option);
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 
@@ -201,16 +250,25 @@ if (isset($_POST['change_password'])) {
                     <form method="POST" action="admin_settings.php">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label>Barangay</label>
-                                <input type="text" class="form-control" name="barangay" value="<?php echo htmlspecialchars($admin['barangay']); ?>">
-                            </div>
-                            <div class="col-md-4 mb-3">
                                 <label>Province</label>
-                                <input type="text" class="form-control" name="province" value="<?php echo htmlspecialchars($admin['province'] ?? ''); ?>">
+                                <select id="province" name="province" class="form-control" required>
+                                    <option value="">Select Province</option>
+                                    <option value="Marinduque" <?php echo ($admin['province'] ?? '') === 'Marinduque' ? 'selected' : ''; ?>>Marinduque</option>
+                                </select>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label>Municipality</label>
-                                <input type="text" class="form-control" name="municipality" value="<?php echo htmlspecialchars($admin['municipality'] ?? ''); ?>">
+                                <select id="municipality" name="municipality" class="form-control" required>
+                                    <option value="">Select Municipality</option>
+                                    <!-- Dynamically populated -->
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Barangay</label>
+                                <select id="barangay" name="barangay" class="form-control" required>
+                                    <option value="">Select Barangay</option>
+                                    <!-- Dynamically populated -->
+                                </select>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-info w-100" name="update_address">Update Address</button>
