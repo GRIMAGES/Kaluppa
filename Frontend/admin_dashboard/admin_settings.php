@@ -30,7 +30,7 @@ if (isset($_POST['logout'])) {
 $adminEmail = $_SESSION['email'] ?? '';
 
 // Fetch admin info
-$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, house_number, region, street, barangay, district, phone, profile_picture FROM user WHERE email = ?";
+$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, barangay, province, municipality, phone, profile_picture FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $adminEmail);
 $stmt->execute();
@@ -82,15 +82,13 @@ if (isset($_POST['update_profile_picture'])) {
 
 // Update Address
 if (isset($_POST['update_address'])) {
-    $houseNumber = $_POST['house_number'];
-    $region = $_POST['region'];
-    $street = $_POST['street'];
     $barangay = $_POST['barangay'];
-    $district = $_POST['district'];
+    $province = $_POST['province'];
+    $municipality = $_POST['municipality'];
 
-    $query = "UPDATE user SET house_number = ?, region = ?, street = ?, barangay = ?, district = ? WHERE email = ?";
+    $query = "UPDATE user SET barangay = ?, province = ?, municipality = ? WHERE email = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssssss', $houseNumber, $region, $street, $barangay, $district, $adminEmail);
+    $stmt->bind_param('ssss', $barangay, $province, $municipality, $adminEmail);
     $stmt->execute();
     $stmt->close();
 
@@ -203,24 +201,16 @@ if (isset($_POST['change_password'])) {
                     <form method="POST" action="admin_settings.php">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label>House Number</label>
-                                <input type="text" class="form-control" name="house_number" value="<?php echo htmlspecialchars($admin['house_number']); ?>">
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label>Street</label>
-                                <input type="text" class="form-control" name="street" value="<?php echo htmlspecialchars($admin['street']); ?>">
-                            </div>
-                            <div class="col-md-4 mb-3">
                                 <label>Barangay</label>
                                 <input type="text" class="form-control" name="barangay" value="<?php echo htmlspecialchars($admin['barangay']); ?>">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label>District</label>
-                                <input type="text" class="form-control" name="district" value="<?php echo htmlspecialchars($admin['district']); ?>">
+                                <label>Province</label>
+                                <input type="text" class="form-control" name="province" value="<?php echo htmlspecialchars($admin['province'] ?? ''); ?>">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label>Region</label>
-                                <input type="text" class="form-control" name="region" value="<?php echo htmlspecialchars($admin['region']); ?>">
+                                <label>Municipality</label>
+                                <input type="text" class="form-control" name="municipality" value="<?php echo htmlspecialchars($admin['municipality'] ?? ''); ?>">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-info w-100" name="update_address">Update Address</button>
