@@ -144,12 +144,12 @@ if (isset($_POST['change_password'])) {
         };
 
         const barangays = {
-            "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban"],
-            "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas"],
-            "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo"],
-            "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc"],
-            "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin"],
-            "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo"]
+            "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban", "Bantad", "Batayang", "Binunga", "Caganhao", "Canat", "Catubugan", "Cawit", "Daig", "Duyay", "Hinapulan", "Isok I", "Isok II", "Laylay", "Lubang", "Malbog", "Maligaya", "Malusak", "Mansiwat", "Mogpog", "Murallon", "Paye", "Pili", "Poblacion", "Tabi", "Tabigue", "Tampus", "Tambunan", "Tanza", "Tugos"],
+            "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas", "Malbog", "Sihi", "Timbo", "Yook"],
+            "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo", "Bangbang", "Bognuyan", "Cabugao", "Dili", "Ipil", "Libtangin", "Mampaitan", "Mangiliol", "Pangi", "Pinggan", "Poblacion", "Tabionan", "Tapuyan", "Tiguion", "Tres Reyes", "Yook"],
+            "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc", "Bonga", "Butansapa", "Candahon", "Danao", "Dulong Bayan", "Gitnang Bayan", "Hinadharan", "Ino", "Janagdong", "Magapua", "Malayak", "Malusak", "Market Site", "Mataas na Bayan", "Nangka I", "Nangka II", "Paye", "Puting Buhangin", "Sayao", "Silangan", "Sumangga"],
+            "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin", "Balogo", "Banahaw", "Bangcuangan", "Biga", "Botilao", "Buyabod", "Dating Bayan", "Devilla", "Dolores", "Haguimit", "Haguimit", "Ipil", "Jolo", "Kalangkang", "Kaganhao", "Kasily", "Kilo-Kilo", "Kinyaman", "Lamesa", "Libjo", "Lipa", "Lusok", "Lyas", "Maharlika", "Maniwaya", "Marao", "Maribojoc", "Marlangga", "Masaguisi", "Masalukot", "Matalaba", "Nangka", "Pag-Asa", "Pantayin", "Pinamalayan", "Poblacion", "Poctoy", "San Antonio", "San Isidro", "San Lorenzo", "Tagum"],
+            "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo", "Dampulan", "Kay Duke", "Makawayan", "Malibago", "Marlangga", "Matuyatuya", "Nangka", "Paye", "Poblacion", "Sibuyao", "Suha", "Talawan", "Tiguion"]
         };
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -265,7 +265,7 @@ if (isset($_POST['change_password'])) {
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label>Barangay</label>
-                                <select id="barangay" name="barangay" class="form-control" size="5" required>
+                                <select id="barangay" name="barangay" class="form-control" required>
                                     <option value="">Select Barangay</option>
                                     <!-- Dynamically populated -->
                                 </select>
