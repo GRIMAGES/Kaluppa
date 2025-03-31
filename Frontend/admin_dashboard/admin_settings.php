@@ -265,7 +265,7 @@ if (isset($_POST['change_password'])) {
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label>Barangay</label>
-                                <select id="barangay" name="barangay" class="form-control" required>
+                                <select id="barangay" name="barangay" class="form-control" size="5" required>
                                     <option value="">Select Barangay</option>
                                     <!-- Dynamically populated -->
                                 </select>
