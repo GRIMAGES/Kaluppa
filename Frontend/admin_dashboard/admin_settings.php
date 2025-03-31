@@ -37,6 +37,11 @@ $stmt->execute();
 $result = $stmt->get_result();
 $admin = $result->fetch_assoc();
 $adminName = $admin['admin_name'] ?? '';
+$currentAddress = [
+    'province' => $admin['province'] ?? '',
+    'municipality' => $admin['municipality'] ?? '',
+    'barangay' => $admin['barangay'] ?? ''
+];
 $stmt->close();
 
 // Update Profile Info
@@ -52,7 +57,8 @@ if (isset($_POST['update_profile'])) {
     $stmt->execute();
     $stmt->close();
 
-    header("Location: admin_settings.php?update=success");
+    $_SESSION['success_message'] = "Profile updated successfully!";
+    header("Location: admin_settings.php");
     exit();
 }
 
@@ -75,7 +81,8 @@ if (isset($_POST['update_profile_picture'])) {
             $stmt->close();
         }
 
-        header("Location: admin_settings.php?upload=success");
+        $_SESSION['success_message'] = "Profile picture updated successfully!";
+        header("Location: admin_settings.php");
         exit();
     }
 }
@@ -92,18 +99,8 @@ if (isset($_POST['update_address'])) {
     $stmt->execute();
     $stmt->close();
 
-    // Fetch updated address
-    $query = "SELECT barangay, province, municipality FROM user WHERE email = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('s', $adminEmail);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $updatedAddress = $result->fetch_assoc();
-    $stmt->close();
-
-    $_SESSION['updated_address'] = $updatedAddress;
-
-    header("Location: admin_settings.php?address=success");
+    $_SESSION['success_message'] = "Address updated successfully!";
+    header("Location: admin_settings.php");
     exit();
 }
 
@@ -289,14 +286,21 @@ if (isset($_POST['change_password'])) {
         </div>
     </div>
 
-    <?php if (isset($_SESSION['updated_address'])): ?>
-        <div class="alert alert-success mt-3">
-            Address updated successfully! <br>
-            Province: <?php echo htmlspecialchars($_SESSION['updated_address']['province']); ?> <br>
-            Municipality: <?php echo htmlspecialchars($_SESSION['updated_address']['municipality']); ?> <br>
-            Barangay: <?php echo htmlspecialchars($_SESSION['updated_address']['barangay']); ?>
+    <!-- Display Current Address -->
+    <div class="card mt-4">
+        <div class="card-header"><h4>Current Address</h4></div>
+        <div class="card-body">
+            <p><strong>Province:</strong> <?php echo htmlspecialchars($currentAddress['province']); ?></p>
+            <p><strong>Municipality:</strong> <?php echo htmlspecialchars($currentAddress['municipality']); ?></p>
+            <p><strong>Barangay:</strong> <?php echo htmlspecialchars($currentAddress['barangay']); ?></p>
         </div>
-        <?php unset($_SESSION['updated_address']); ?>
+    </div>
+
+    <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="alert alert-success mt-3">
+            <?php echo htmlspecialchars($_SESSION['success_message']); ?>
+        </div>
+        <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
 
     <!-- Change Password -->
