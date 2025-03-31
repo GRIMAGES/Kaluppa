@@ -30,7 +30,7 @@ if (isset($_POST['logout'])) {
 $adminEmail = $_SESSION['email'] ?? '';
 
 // Fetch admin info
-$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, barangay, province, municipality, phone, profile_picture FROM user WHERE email = ?";
+$query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name, first_name, middle_name, last_name, barangay, province, municipality, phone, profile_picture, birthday FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $adminEmail);
 $stmt->execute();
@@ -42,6 +42,7 @@ $currentAddress = [
     'municipality' => $admin['municipality'] ?? '',
     'barangay' => $admin['barangay'] ?? ''
 ];
+$currentBirthday = $admin['birthday'] ?? '';
 $stmt->close();
 
 // Update Profile Info
@@ -100,6 +101,21 @@ if (isset($_POST['update_address'])) {
     $stmt->close();
 
     $_SESSION['success_message'] = "Address updated successfully!";
+    header("Location: admin_settings.php");
+    exit();
+}
+
+// Update Birthday
+if (isset($_POST['update_birthday'])) {
+    $birthday = $_POST['birthday'];
+
+    $query = "UPDATE user SET birthday = ? WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ss', $birthday, $adminEmail);
+    $stmt->execute();
+    $stmt->close();
+
+    $_SESSION['success_message'] = "Birthday updated successfully!";
     header("Location: admin_settings.php");
     exit();
 }
@@ -296,12 +312,34 @@ if (isset($_POST['change_password'])) {
         </div>
     </div>
 
+    <!-- Display Current Birthday -->
+    <div class="card mt-4">
+        <div class="card-header"><h4>Current Birthday</h4></div>
+        <div class="card-body">
+            <p><strong>Birthday:</strong> <?php echo htmlspecialchars($currentBirthday); ?></p>
+        </div>
+    </div>
+
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="alert alert-success mt-3">
             <?php echo htmlspecialchars($_SESSION['success_message']); ?>
         </div>
         <?php unset($_SESSION['success_message']); ?>
     <?php endif; ?>
+
+    <!-- Update Birthday -->
+    <div class="card mt-4">
+        <div class="card-header"><h4>Update Birthday</h4></div>
+        <div class="card-body">
+            <form method="POST" action="admin_settings.php">
+                <div class="mb-3">
+                    <label for="birthday">New Birthday</label>
+                    <input type="date" class="form-control" name="birthday" value="<?php echo htmlspecialchars($currentBirthday); ?>" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100" name="update_birthday">Update Birthday</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Change Password -->
     <div class="row mt-4">

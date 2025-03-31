@@ -71,18 +71,19 @@
 
     // Update address
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_address'])) {
-        $house_number = $_POST['house_number'];
-        $street = $_POST['street'];
         $barangay = $_POST['barangay'];
-        $district = $_POST['district'];
-        $city = $_POST['city'];
-        $region = $_POST['region'];
-        $postal_code = $_POST['postal_code'];
+        $province = $_POST['province'];
+        $municipality = $_POST['municipality'];
 
-        $query = "UPDATE user SET house_number = ?, street = ?, barangay = ?, district = ?, city = ?, region = ?, postal_code = ? WHERE id = ?";
+        $query = "UPDATE user SET barangay = ?, province = ?, municipality = ? WHERE id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('sssssssi', $house_number, $street, $barangay, $district, $city, $region, $postal_code, $user_id);
-        $message = $stmt->execute() ? 'Address updated successfully.' : 'Error updating address.';
+        $stmt->bind_param('sssi', $barangay, $province, $municipality, $user_id);
+        $stmt->execute();
+        $stmt->close();
+
+        $_SESSION['success_message'] = "Address updated successfully!";
+        header("Location: user_settings.php");
+        exit();
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
@@ -129,6 +130,55 @@
                 margin-top: 80px; /* Adjust this value to move the cards lower */
             }
         </style>
+        <script>
+            const municipalities = {
+                "Marinduque": ["Boac", "Buenavista", "Gasan", "Mogpog", "Santa Cruz", "Torrijos"]
+            };
+
+            const barangays = {
+                "Boac": ["Agot", "Agumaymayan", "Apitong", "Balagasan", "Bamban", "Bantad", "Batayang", "Binunga", "Caganhao", "Canat", "Catubugan", "Cawit", "Daig", "Duyay", "Hinapulan", "Isok I", "Isok II", "Laylay", "Lubang", "Malbog", "Maligaya", "Malusak", "Mansiwat", "Mogpog", "Murallon", "Paye", "Pili", "Poblacion", "Tabi", "Tabigue", "Tampus", "Tambunan", "Tanza", "Tugos"],
+                "Buenavista": ["Bagacay", "Bagtingon", "Bicas-bicas", "Daykitin", "Libas", "Malbog", "Sihi", "Timbo", "Yook"],
+                "Gasan": ["Antipolo", "Bacong-Bacong", "Bahi", "Banot", "Banuyo", "Bangbang", "Bognuyan", "Cabugao", "Dili", "Ipil", "Libtangin", "Mampaitan", "Mangiliol", "Pangi", "Pinggan", "Poblacion", "Tabionan", "Tapuyan", "Tiguion", "Tres Reyes", "Yook"],
+                "Mogpog": ["Argao", "Balanacan", "Banto", "Bintakay", "Bocboc", "Bonga", "Butansapa", "Candahon", "Danao", "Dulong Bayan", "Gitnang Bayan", "Hinadharan", "Ino", "Janagdong", "Magapua", "Malayak", "Malusak", "Market Site", "Mataas na Bayan", "Nangka I", "Nangka II", "Paye", "Puting Buhangin", "Sayao", "Silangan", "Sumangga"],
+                "Santa Cruz": ["Alobo", "Angas", "Aturan", "Bagong Silang", "Baguidbirin", "Balogo", "Banahaw", "Bangcuangan", "Biga", "Botilao", "Buyabod", "Dating Bayan", "Devilla", "Dolores", "Haguimit", "Haguimit", "Ipil", "Jolo", "Kalangkang", "Kaganhao", "Kasily", "Kilo-Kilo", "Kinyaman", "Lamesa", "Libjo", "Lipa", "Lusok", "Lyas", "Maharlika", "Maniwaya", "Marao", "Maribojoc", "Marlangga", "Masaguisi", "Masalukot", "Matalaba", "Nangka", "Pag-Asa", "Pantayin", "Pinamalayan", "Poblacion", "Poctoy", "San Antonio", "San Isidro", "San Lorenzo", "Tagum"],
+                "Torrijos": ["Bangwayin", "Bayakbakin", "Bolo", "Buangan", "Cagpo", "Dampulan", "Kay Duke", "Makawayan", "Malibago", "Marlangga", "Matuyatuya", "Nangka", "Paye", "Poblacion", "Sibuyao", "Suha", "Talawan", "Tiguion"]
+            };
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const provinceSelect = document.getElementById("province");
+                const municipalitySelect = document.getElementById("municipality");
+                const barangaySelect = document.getElementById("barangay");
+
+                provinceSelect.addEventListener("change", function () {
+                    const selectedProvince = provinceSelect.value;
+                    municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
+                    barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+                    if (municipalities[selectedProvince]) {
+                        municipalities[selectedProvince].forEach(municipality => {
+                            const option = document.createElement("option");
+                            option.value = municipality;
+                            option.textContent = municipality;
+                            municipalitySelect.appendChild(option);
+                        });
+                    }
+                });
+
+                municipalitySelect.addEventListener("change", function () {
+                    const selectedMunicipality = municipalitySelect.value;
+                    barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+
+                    if (barangays[selectedMunicipality]) {
+                        barangays[selectedMunicipality].forEach(barangay => {
+                            const option = document.createElement("option");
+                            option.value = barangay;
+                            option.textContent = barangay;
+                            barangaySelect.appendChild(option);
+                        });
+                    }
+                });
+            });
+        </script>
     </head>
     <body style="background-color: #ddead1;">
     <?php include 'sidebar.php'; ?>
@@ -228,32 +278,25 @@
             <form method="POST">
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">House Number:</label>
-                        <input type="text" name="house_number" class="form-control" value="<?php echo $house_number; ?>" required>
+                        <label class="form-label">Province:</label>
+                        <select id="province" name="province" class="form-control" required>
+                            <option value="">Select Province</option>
+                            <option value="Marinduque" <?php echo ($region ?? '') === 'Marinduque' ? 'selected' : ''; ?>>Marinduque</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Street:</label>
-                        <input type="text" name="street" class="form-control" value="<?php echo $street; ?>" required>
+                        <label class="form-label">Municipality:</label>
+                        <select id="municipality" name="municipality" class="form-control" required>
+                            <option value="">Select Municipality</option>
+                            <!-- Dynamically populated -->
+                        </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Barangay:</label>
-                        <input type="text" name="barangay" class="form-control" value="<?php echo $barangay; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">District:</label>
-                        <input type="text" name="district" class="form-control" value="<?php echo $district; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">City:</label>
-                        <input type="text" name="city" class="form-control" value="<?php echo $city; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Region:</label>
-                        <input type="text" name="region" class="form-control" value="<?php echo $region; ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Postal Code:</label>
-                        <input type="text" name="postal_code" class="form-control" value="<?php echo $postal_code; ?>" required>
+                        <select id="barangay" name="barangay" class="form-control" required>
+                            <option value="">Select Barangay</option>
+                            <!-- Dynamically populated -->
+                        </select>
                     </div>
                 </div>
                 <button type="submit" name="update_address" class="btn btn-info mt-3">Update Address</button>
