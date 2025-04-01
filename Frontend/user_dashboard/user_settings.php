@@ -15,11 +15,11 @@ error_reporting(E_ALL);
     $message = '';
 
     // Fetch user details
-    $query = "SELECT id, first_name, middle_name, last_name, email, profile_picture, password, house_number, street, barangay, district, city, region, postal_code FROM user WHERE email = ?";
+    $query = "SELECT id, first_name, middle_name, last_name, email, profile_picture, password, barangay, province, municipality FROM user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $email);
     $stmt->execute();
-    $stmt->bind_result($user_id, $first_name, $middle_name, $last_name, $email, $profile_picture, $password, $house_number, $street, $barangay, $district, $city, $region, $postal_code);
+    $stmt->bind_result($user_id, $first_name, $middle_name, $last_name, $email, $profile_picture, $password, $barangay, $province, $municipality);
     $stmt->fetch();
     $stmt->close();
 
@@ -284,7 +284,7 @@ error_reporting(E_ALL);
                         <label class="form-label">Province:</label>
                         <select id="province" name="province" class="form-control" required>
                             <option value="">Select Province</option>
-                            <option value="Marinduque" <?php echo ($region ?? '') === 'Marinduque' ? 'selected' : ''; ?>>Marinduque</option>
+                            <option value="Marinduque" <?php echo ($province ?? '') === 'Marinduque' ? 'selected' : ''; ?>>Marinduque</option>
                         </select>
                     </div>
                     <div class="form-group">
