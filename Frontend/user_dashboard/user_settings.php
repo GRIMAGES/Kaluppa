@@ -26,8 +26,8 @@ error_reporting(E_ALL);
     $upload_dir = __DIR__ . "/../admin_dashboard/uploads/profile_pics/";
 
     // Ensure directory exists
-    if (!is_dir($target_dir)) {
-        mkdir($target_dir, 0777, true);
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload_picture'])) {
