@@ -70,6 +70,8 @@ if (isset($_POST['update_profile_picture'])) {
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
         }
+        chmod($targetDir, 0777); // Ensure the directory has the correct permissions
+
         $profilePicture = basename($_FILES['profile_picture']['name']);
         $targetFile = $targetDir . $profilePicture;
 
@@ -80,9 +82,12 @@ if (isset($_POST['update_profile_picture'])) {
             $stmt->bind_param('ss', $profilePicture, $adminEmail);
             $stmt->execute();
             $stmt->close();
+
+            $_SESSION['success_message'] = "Profile picture updated successfully!";
+        } else {
+            $_SESSION['error_message'] = "Failed to upload profile picture. Please check directory permissions.";
         }
 
-        $_SESSION['success_message'] = "Profile picture updated successfully!";
         header("Location: admin_settings.php");
         exit();
     }

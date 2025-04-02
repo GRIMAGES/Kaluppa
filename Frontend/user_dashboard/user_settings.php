@@ -32,12 +32,16 @@ error_reporting(E_ALL);
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload_picture'])) {
         if (isset($_FILES["profile_picture"]) && $_FILES["profile_picture"]["error"] === UPLOAD_ERR_OK) {
-    
             $upload_dir = __DIR__ . "/../admin_dashboard/uploads/profile_pics/";
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0777, true);
+            }
+            chmod($upload_dir, 0777); // Ensure the directory has the correct permissions
+
             $file_tmp = $_FILES["profile_picture"]["tmp_name"];
             $file_name = basename($_FILES["profile_picture"]["name"]);
             $target_file = $upload_dir . $file_name;
-    
+
             // Validate file
             $check = getimagesize($file_tmp);
             if ($check === false) {
@@ -51,7 +55,7 @@ error_reporting(E_ALL);
                     $stmt->execute();
                     $message = "Profile picture updated successfully.";
                 } else {
-                    $message = "Error: Failed to move uploaded file.";
+                    $message = "Failed to upload profile picture. Please check directory permissions.";
                 }
             }
         } else {
@@ -108,6 +112,27 @@ error_reporting(E_ALL);
             $message = 'Current password is incorrect.';
         }
     }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_birthday'])) {
+        $birthday = $_POST['birthday'];
+
+        $query = "UPDATE user SET birthday = ? WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('si', $birthday, $user_id);
+        $stmt->execute();
+        $stmt->close();
+
+        $_SESSION['success_message'] = "Birthday updated successfully!";
+        header("Location: user_settings.php");
+        exit();
+    }
+
+    $currentAddress = [
+        'province' => $province ?? '',
+        'municipality' => $municipality ?? '',
+        'barangay' => $barangay ?? ''
+    ];
+    $currentBirthday = $_POST['birthday'] ?? '';
     ?>
 
     <!DOCTYPE html>
@@ -303,6 +328,29 @@ error_reporting(E_ALL);
                     </div>
                 </div>
                 <button type="submit" name="update_address" class="btn btn-info mt-3">Update Address</button>
+            </form>
+        </div>
+
+        <div class="card shadow mt-4 p-3">
+            <h4 class="mb-3">Current Address</h4>
+            <p><strong>Province:</strong> <?php echo htmlspecialchars($currentAddress['province']); ?></p>
+            <p><strong>Municipality:</strong> <?php echo htmlspecialchars($currentAddress['municipality']); ?></p>
+            <p><strong>Barangay:</strong> <?php echo htmlspecialchars($currentAddress['barangay']); ?></p>
+        </div>
+
+        <div class="card shadow mt-4 p-3">
+            <h4 class="mb-3">Current Birthday</h4>
+            <p><strong>Birthday:</strong> <?php echo htmlspecialchars($currentBirthday); ?></p>
+        </div>
+
+        <div class="card shadow mt-4 p-3">
+            <h4 class="mb-3">Update Birthday</h4>
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="birthday">New Birthday:</label>
+                    <input type="date" class="form-control" name="birthday" value="<?php echo htmlspecialchars($currentBirthday); ?>" required>
+                </div>
+                <button type="submit" name="update_birthday" class="btn btn-primary w-100">Update Birthday</button>
             </form>
         </div>
     </div>
