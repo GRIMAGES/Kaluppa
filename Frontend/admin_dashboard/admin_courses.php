@@ -18,7 +18,7 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
     // Last activity was more than 30 minutes ago
     session_unset();     // unset $_SESSION variable for the run-time
     session_destroy();   // destroy session data
-    header("Location: /Frontend/indexn.php");
+    header("Location: /Frontend/index.php");
     exit();
 }
 

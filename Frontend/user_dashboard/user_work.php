@@ -33,13 +33,9 @@ if ($result->num_rows > 0) {
     $middleName = $user['middle_name'];
     $lastName = $user['last_name'];
     // Separate address into multiple parts
-    $houseNumber = $user['house_number'];
-    $street = $user['street'];
-    $barangay = $user['barangay'];
-    $district = $user['district'];
-    $city = $user['city'];
-    $region = $user['region'];
-    $postalCode = $user['postal_code'];
+    $barangay = isset($user['barangay']) ? $user['barangay'] : '';
+    $province = isset($user['province']) ? $user['province'] : '';
+    $municipality = isset($user['municipality']) ? $user['municipality'] : '';
 } else {
     echo "User not found.";
 }
@@ -191,32 +187,16 @@ if (!$workResult) {
                                                 <input type="tel" class="form-control" name="phone" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">House Number</label>
-                                                <input type="text" class="form-control" name="house_number" value="<?php echo htmlspecialchars($houseNumber ?? ''); ?>" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Street</label>
-                                                <input type="text" class="form-control" name="street" value="<?php echo htmlspecialchars($street ?? ''); ?>" required>
-                                            </div>
-                                            <div class="mb-3">
                                                 <label class="form-label">Barangay</label>
                                                 <input type="text" class="form-control" name="barangay" value="<?php echo htmlspecialchars($barangay ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">District</label>
-                                                <input type="text" class="form-control" name="district" value="<?php echo htmlspecialchars($district ?? ''); ?>" required>
+                                                <label class="form-label">Province</label>
+                                                <input type="text" class="form-control" name="province" value="<?php echo htmlspecialchars($province ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">City</label>
-                                                <input type="text" class="form-control" name="city" value="<?php echo htmlspecialchars($city ?? ''); ?>" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Region</label>
-                                                <input type="text" class="form-control" name="region" value="<?php echo htmlspecialchars($region ?? ''); ?>" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Postal Code</label>
-                                                <input type="text" class="form-control" name="postal_code" value="<?php echo htmlspecialchars($postalCode ?? ''); ?>" required>
+                                                <label class="form-label">Municipality</label>
+                                                <input type="text" class="form-control" name="municipality" value="<?php echo htmlspecialchars($municipality ?? ''); ?>" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Upload Resume</label>
