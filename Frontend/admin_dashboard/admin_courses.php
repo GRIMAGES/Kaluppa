@@ -410,7 +410,7 @@ if ($scholarship_result->num_rows > 0) {
                     </div>
                     <div class="mb-3">
                         <label for="editcourseRequirements" class="form-label" style="color:black;">Requirements</label>
-                        <textarea class="form-control" id="editcourseRequirements" name="editcourseRequirements" rows="3" required></textarea>
+                        <textarea class="form-control" id="editcourseRequirements" name="courseRequirements" rows="3" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="edit_course_requisites" class="form-label" style="color:black;">Requisites</label>
