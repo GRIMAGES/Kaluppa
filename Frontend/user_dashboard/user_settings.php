@@ -15,11 +15,11 @@ error_reporting(E_ALL);
     $message = '';
 
     // Fetch user details
-    $query = "SELECT id, first_name, middle_name, last_name, email, profile_picture, password, barangay, province, municipality FROM user WHERE email = ?";
+    $query = "SELECT id, first_name, middle_name, last_name, email, profile_picture, password, barangay, province, municipality, birthday FROM user WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $email);
     $stmt->execute();
-    $stmt->bind_result($user_id, $first_name, $middle_name, $last_name, $email, $profile_picture, $password, $barangay, $province, $municipality);
+    $stmt->bind_result($user_id, $first_name, $middle_name, $last_name, $email, $profile_picture, $password, $barangay, $province, $municipality, $birthday);
     $stmt->fetch();
     $stmt->close();
 
@@ -116,13 +116,21 @@ error_reporting(E_ALL);
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_birthday'])) {
         $birthday = $_POST['birthday'];
 
-        $query = "UPDATE user SET birthday = ? WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('si', $birthday, $user_id);
-        $stmt->execute();
-        $stmt->close();
+        // Validate the birthday format (optional)
+        if (DateTime::createFromFormat('Y-m-d', $birthday) !== false) {
+            $query = "UPDATE user SET birthday = ? WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('si', $birthday, $user_id);
+            if ($stmt->execute()) {
+                $_SESSION['success_message'] = "Birthday updated successfully!";
+            } else {
+                $_SESSION['error_message'] = "Failed to update birthday. Please try again.";
+            }
+            $stmt->close();
+        } else {
+            $_SESSION['error_message'] = "Invalid birthday format.";
+        }
 
-        $_SESSION['success_message'] = "Birthday updated successfully!";
         header("Location: user_settings.php");
         exit();
     }
@@ -132,7 +140,7 @@ error_reporting(E_ALL);
         'municipality' => $municipality ?? '',
         'barangay' => $barangay ?? ''
     ];
-    $currentBirthday = $_POST['birthday'] ?? '';
+    $currentBirthday = $birthday ?? ''; // Ensure the birthday is fetched correctly
     ?>
 
     <!DOCTYPE html>

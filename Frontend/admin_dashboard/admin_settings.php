@@ -42,7 +42,7 @@ $currentAddress = [
     'municipality' => $admin['municipality'] ?? '',
     'barangay' => $admin['barangay'] ?? ''
 ];
-$currentBirthday = $admin['birthday'] ?? '';
+$currentBirthday = $admin['birthday'] ?? ''; // Ensure the birthday is fetched correctly
 $stmt->close();
 
 // Update Profile Info
@@ -114,13 +114,21 @@ if (isset($_POST['update_address'])) {
 if (isset($_POST['update_birthday'])) {
     $birthday = $_POST['birthday'];
 
-    $query = "UPDATE user SET birthday = ? WHERE email = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('ss', $birthday, $adminEmail);
-    $stmt->execute();
-    $stmt->close();
+    // Validate the birthday format (optional)
+    if (DateTime::createFromFormat('Y-m-d', $birthday) !== false) {
+        $query = "UPDATE user SET birthday = ? WHERE email = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ss', $birthday, $adminEmail);
+        if ($stmt->execute()) {
+            $_SESSION['success_message'] = "Birthday updated successfully!";
+        } else {
+            $_SESSION['error_message'] = "Failed to update birthday. Please try again.";
+        }
+        $stmt->close();
+    } else {
+        $_SESSION['error_message'] = "Invalid birthday format.";
+    }
 
-    $_SESSION['success_message'] = "Birthday updated successfully!";
     header("Location: admin_settings.php");
     exit();
 }
