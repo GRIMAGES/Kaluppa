@@ -125,7 +125,7 @@ $stmt->close();
             modal.style.display = "block";
             setTimeout(function() {
                 modal.style.display = "none";
-                window.location.href = '../Frontend/multiuserlogin.php';
+                window.location.href = '../Frontend/index.php';
             }, 3000);
         }
 
