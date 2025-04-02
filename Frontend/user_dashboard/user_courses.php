@@ -177,7 +177,7 @@ $categorizedCourses = categorizeCourses($courseResult);
 
               <div class="info-group mb-3">
                 <strong><i class="fas fa-list-ul me-2"></i>Requirements:</strong>
-                <p id="courseRequirements" class="mt-1 mb-3"></p>
+                <p id="courseRequirements" class="mt-1 mb-3" style="white-space: pre-line;"></p>
               </div>
 
               <div class="info-group mb-3">

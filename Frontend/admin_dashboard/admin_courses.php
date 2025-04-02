@@ -248,6 +248,7 @@ if ($scholarship_result->num_rows > 0) {
                         <p><strong>Capacity:</strong> <?php echo htmlspecialchars($course['capacity']); ?></p>
                         <p><strong>Enrolled Students:</strong> <?php echo htmlspecialchars($course['enrolled_students']); ?></p>
                         <p><strong>Status:</strong> <?php echo htmlspecialchars($course['status']); ?></p>
+                        <p><strong>Requirements:</strong> <span style="white-space: pre-line;"><?php echo htmlspecialchars($course['requirements']); ?></span></p>
 
                         <!-- Button to trigger modal -->
                         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#courseModal<?php echo $course['id']; ?>">
