@@ -17,7 +17,7 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // Log admin's access to the scholarship page
-// Log admin's access to the settings page
+$adminEmail = $_SESSION['email']; // Ensure $adminEmail is set from the session
 $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?"); // Corrected table name from 'admin' to 'user'
 $stmt->bind_param("s", $adminEmail);
 $stmt->execute();
