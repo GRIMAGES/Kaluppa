@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 
 require_once 'google_config.php';
 require_once '../Backend/connection.php'; // DB connection
+require_once '../Backend/log_helper.php'; // Include log helper
 
 session_start(); // Start session at the top
 
@@ -40,6 +41,9 @@ if (isset($_GET['code'])) {
         $_SESSION['email'] = $user['email'];
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['role'] = $user['role'];
+
+        // Log the login event for existing user
+        insertLog($user['id'], 'LOGIN', 'User logged in using Google', 'INFO');
     } else {
         // New user registration
         $role = 'user'; // Default role
@@ -55,6 +59,9 @@ if (isset($_GET['code'])) {
         $_SESSION['email'] = $email;
         $_SESSION['first_name'] = $first_name;
         $_SESSION['role'] = $role;
+
+        // Log the login event for new user
+        insertLog($newUserId, 'LOGIN', 'New user registered and logged in using Google', 'INFO');
     }
 
     // ✅ ROLE-BASED REDIRECTION
