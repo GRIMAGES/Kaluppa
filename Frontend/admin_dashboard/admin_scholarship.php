@@ -24,7 +24,7 @@ $stmt->execute();
 $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
     $stmt->close(); // Ensure the result set is closed before calling insertLog
-    insertLog($admin_id, 'View', 'Admin accessed the settings page', 'info'); // Log admin action
+    insertLog($admin_id, 'View', 'Admin accessed the scholarship page', 'info'); // Log admin action
 } else {
     $stmt->close(); // Close the statement even if no result is fetched
 }
