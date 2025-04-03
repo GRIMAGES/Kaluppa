@@ -43,7 +43,9 @@ if (isset($_GET['code'])) {
         $_SESSION['role'] = $user['role'];
 
         // Log the login event for existing user
-        insertLog($user['id'], 'LOGIN', 'User logged in using Google', 'INFO');
+        $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
+        $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
+        insertLog($user['id'], 'LOGIN', 'User logged in using Google', 'INFO', $ipAddress, $userAgent);
     } else {
         // New user registration
         $role = 'user'; // Default role
@@ -61,7 +63,9 @@ if (isset($_GET['code'])) {
         $_SESSION['role'] = $role;
 
         // Log the login event for new user
-        insertLog($newUserId, 'LOGIN', 'New user registered and logged in using Google', 'INFO');
+        $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
+        $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
+        insertLog($newUserId, 'LOGIN', 'New user registered and logged in using Google', 'INFO', $ipAddress, $userAgent);
     }
 
     // ✅ ROLE-BASED REDIRECTION
