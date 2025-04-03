@@ -64,7 +64,7 @@ $totalVolunteers = $conn->query($queryVolunteers)->fetch_assoc()['total_voluntee
 $volunteerQueryTime = microtime(true) - $startTime;
 
 $startTime = microtime(true);
-$queryDocumentRequests = "SELECT COUNT(*) AS total_document_requests FROM document_request";
+$queryDocumentRequests = "SELECT COUNT(*) AS total_document_requests FROM document_requests";
 $totalDocumentRequests = $conn->query($queryDocumentRequests)->fetch_assoc()['total_document_requests'];
 $documentRequestQueryTime = microtime(true) - $startTime;
 
