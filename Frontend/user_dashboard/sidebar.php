@@ -34,7 +34,6 @@ if ($stmt->fetch()) {
         error_log("Profile picture found: " . $fullPath);
     }
 
-    insertLog($email, 'View', 'User accessed the sidebar', 'info'); // Log user action
 }
 
 $stmt->close();

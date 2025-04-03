@@ -1,6 +1,12 @@
 <?php
 require_once '../../Backend/connection.php';
 require_once '../../Backend/log_helper.php'; // Include log_helper.php
+
+if (!function_exists('insertLog')) {
+    error_log("insertLog function is not defined. Please check log_helper.php.");
+    die("Error: insertLog function is missing. Contact the administrator.");
+}
+
 session_start();
 
 if (!isset($_SESSION['email'])) {
@@ -16,7 +22,9 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
-    insertLog($admin_id, 'View', 'Admin accessed the reports page', 'info'); // Log admin action
+    $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
+    $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
+    insertLog($admin_id, 'View', 'Admin accessed the reports page', 'info', $ipAddress, $userAgent); // Log admin action
 }
 $stmt->close();
 

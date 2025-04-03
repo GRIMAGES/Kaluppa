@@ -1,7 +1,7 @@
 <?php
 require_once 'connection.php';
 
-function insertLog($userId, $action, $description, $level) {
+function insertLog($userId, $action, $description, $logType, $ipAddress, $userAgent) {
     global $conn;
 
     // Clear any unprocessed results from the connection
@@ -9,7 +9,7 @@ function insertLog($userId, $action, $description, $level) {
         $conn->store_result();
     }
 
-    $query = "INSERT INTO logs (user_id, action, description, level, created_at) VALUES (?, ?, ?, ?, NOW())";
+    $query = "INSERT INTO logs (user_id, action, description, ip_address, user_agent, log_type, timestamp) VALUES (?, ?, ?, ?, ?, ?, NOW())";
     $stmt = $conn->prepare($query);
 
     if (!$stmt) {
@@ -17,7 +17,7 @@ function insertLog($userId, $action, $description, $level) {
         return false;
     }
 
-    $stmt->bind_param("isss", $userId, $action, $description, $level);
+    $stmt->bind_param("isssss", $userId, $action, $description, $ipAddress, $userAgent, $logType);
 
     if (!$stmt->execute()) {
         error_log("Failed to execute statement: " . $stmt->error);

@@ -16,7 +16,9 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
-    insertLog($admin_id, 'View', 'Admin accessed the featured card page', 'info'); // Log admin action
+    $ipAddress = $_SERVER['REMOTE_ADDR'];
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    insertLog($admin_id, 'View', 'Admin accessed the featured card page', 'info', $ipAddress, $userAgent); // Log admin action
 }
 $stmt->close();
 
