@@ -351,6 +351,12 @@ foreach ($periods as $period) {
             </table>
         </div>
     </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Document Requests Analytics</h3>
+            <canvas id="documentRequestsChart" width="400" height="200"></canvas>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -469,6 +475,42 @@ foreach ($periods as $period) {
                     title: {
                         display: true,
                         text: 'Number of Applications'
+                    }
+                }
+            }
+        }
+    });
+
+    // Prepare data for the document requests chart
+    var documentRequestsLabel = ['Total Document Requests']; // Static label for now
+    var documentRequestsData = [<?= json_encode($totalDocumentRequests) ?>]; // Total document requests
+
+    var documentRequestsChart = new Chart(document.getElementById('documentRequestsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: documentRequestsLabel,
+            datasets: [{
+                label: 'Document Requests',
+                data: documentRequestsData,
+                backgroundColor: '#FF9800', // Orange
+                borderColor: '#F57C00', // Darker Orange
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Metric'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Requests'
                     }
                 }
             }
