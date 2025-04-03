@@ -1,6 +1,6 @@
 <?php
 require_once '../../Backend/connection.php';
-require_once '../../Backend/log_helper.php'; // Include log_helper.php
+
 
 // Redirect if not logged in
 if (!isset($_SESSION['email'])) {
