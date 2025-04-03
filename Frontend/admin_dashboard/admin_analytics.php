@@ -332,6 +332,25 @@ foreach ($periods as $period) {
             <canvas id="volunteerApplicationsChart" width="400" height="200"></canvas>
         </div>
     </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>Document Requests</h3>
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Document Requests</td>
+                        <td><?= htmlspecialchars($totalDocumentRequests) ?></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
