@@ -15,14 +15,15 @@ $email = $_SESSION['email'];
 
 // Log admin's access to the users page
 $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?"); // Corrected table name from 'admin' to 'user'
-
-$stmt->bind_param("s", $email);
+$stmt->bind_param("s", $adminEmail);
 $stmt->execute();
 $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
+    $stmt->close(); // Ensure the result set is closed before calling insertLog
     insertLog($admin_id, 'View', 'Admin accessed the users page', 'info'); // Log admin action
+} else {
+    $stmt->close(); // Close the statement even if no result is fetched
 }
-$stmt->close();
 
 // Update last activity time stamp
 $_SESSION['LAST_ACTIVITY'] = time();

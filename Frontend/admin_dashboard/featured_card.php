@@ -12,16 +12,15 @@ $email = $_SESSION['email'];
 
 // Log admin's access to the featured card page
 $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?"); // Corrected table name from 'admin' to 'user'
-
-$stmt->bind_param("s", $email);
+$stmt->bind_param("s", $adminEmail);
 $stmt->execute();
 $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
-    $ipAddress = $_SERVER['REMOTE_ADDR'];
-    $userAgent = $_SERVER['HTTP_USER_AGENT'];
-    insertLog($admin_id, 'View', 'Admin accessed the certificate page', 'info'); // Log admin action
+    $stmt->close(); // Ensure the result set is closed before calling insertLog
+    insertLog($admin_id, 'View', 'Admin accessed the featured card page', 'info'); // Log admin action
+} else {
+    $stmt->close(); // Close the statement even if no result is fetched
 }
-$stmt->close();
 
 // Get featured cards
 $cards = $conn->query("SELECT * FROM featured_cards ORDER BY id ASC")->fetch_all(MYSQLI_ASSOC);

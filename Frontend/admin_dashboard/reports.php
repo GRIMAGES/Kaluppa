@@ -16,18 +16,17 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 
-// Log admin's access to the reports page
 $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?"); // Corrected table name from 'admin' to 'user'
-
-$stmt->bind_param("s", $email);
+$stmt->bind_param("s", $adminEmail);
 $stmt->execute();
 $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
-    $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
-    $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
-    insertLog($admin_id, 'View', 'Admin accessed the certificate page', 'info'); // Log admin action
+    $stmt->close(); // Ensure the result set is closed before calling insertLog
+    insertLog($admin_id, 'View', 'Admin accessed the reports page', 'info'); // Log admin action
+} else {
+    $stmt->close(); // Close the statement even if no result is fetched
 }
-$stmt->close();
+
 
 // Logout logic
 if (isset($_POST['logout'])) {
