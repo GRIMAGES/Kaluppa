@@ -17,7 +17,7 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // Log admin's access to the dashboard page
-$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($admin_id);
