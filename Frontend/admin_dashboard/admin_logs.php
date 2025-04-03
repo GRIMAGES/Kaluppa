@@ -70,6 +70,22 @@ $result = $conn->query($query);
 
 <div class="container mt-4">
     <h2>Admin Logs</h2>
+    <div class="mb-3">
+        <label for="logTypeFilter" class="form-label">Filter by Log Type:</label>
+        <select id="logTypeFilter" class="form-select">
+            <option value="">All</option>
+            <?php
+            // Fetch distinct log types from the database
+            $logTypeQuery = "SELECT DISTINCT log_type FROM logs";
+            $logTypeResult = $conn->query($logTypeQuery);
+            while ($logType = $logTypeResult->fetch_assoc()):
+            ?>
+                <option value="<?php echo htmlspecialchars($logType['log_type']); ?>">
+                    <?php echo htmlspecialchars($logType['log_type']); ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
     <table id="logsTable" class="table table-striped table-bordered">
         <thead>
             <tr>
@@ -102,7 +118,13 @@ $result = $conn->query($query);
 
 <script>
     $(document).ready(function() {
-        $('#logsTable').DataTable();
+        var table = $('#logsTable').DataTable();
+
+        // Filter table based on log type
+        $('#logTypeFilter').on('change', function() {
+            var selectedType = $(this).val();
+            table.column(7).search(selectedType).draw();
+        });
     });
 </script>
 
