@@ -15,7 +15,7 @@ if (!isset($_SESSION['email'])) {
 $adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
 
 // Log admin's access to the alumni page
-$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?"); // Corrected table name from 'admin' to 'user'
 $stmt->bind_param("s", $adminEmail);
 $stmt->execute();
 $stmt->bind_result($admin_id);
