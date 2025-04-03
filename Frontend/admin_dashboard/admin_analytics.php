@@ -182,6 +182,23 @@ foreach ($periods as $period) {
         return $item['period'] == $period ? $item['total'] : $carry;
     }, 0);
 }
+
+// Fetch monthly data for document requests
+$documentRequestsMonthlyData = [];
+$queryDocumentRequestsMonthly = "SELECT MONTH(request_date) AS month, COUNT(*) AS total FROM document_requests WHERE YEAR(request_date) = $selectedYear GROUP BY MONTH(request_date)";
+$resultDocumentRequestsMonthly = $conn->query($queryDocumentRequestsMonthly);
+while ($row = $resultDocumentRequestsMonthly->fetch_assoc()) {
+    $documentRequestsMonthlyData[] = $row;
+}
+
+// Prepare data for the document requests chart
+$documentRequestMonths = range(1, 12); // Months (1 to 12)
+$documentRequestCounts = [];
+foreach ($documentRequestMonths as $month) {
+    $documentRequestCounts[] = array_reduce($documentRequestsMonthlyData, function ($carry, $item) use ($month) {
+        return $item['month'] == $month ? $item['total'] : $carry;
+    }, 0);
+}
 ?>
 
 <!DOCTYPE html>
@@ -332,25 +349,7 @@ foreach ($periods as $period) {
             <canvas id="volunteerApplicationsChart" width="400" height="200"></canvas>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <h3>Document Requests</h3>
-            <table class="table table-bordered mt-3">
-                <thead>
-                    <tr>
-                        <th>Metric</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Total Document Requests</td>
-                        <td><?= htmlspecialchars($totalDocumentRequests) ?></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+  
     <div class="row mt-4">
         <div class="col-md-6">
             <h3>Document Requests Analytics</h3>
@@ -482,16 +481,16 @@ foreach ($periods as $period) {
     });
 
     // Prepare data for the document requests chart
-    var documentRequestsLabel = ['Total Document Requests']; // Static label for now
-    var documentRequestsData = [<?= json_encode($totalDocumentRequests) ?>]; // Total document requests
+    var documentRequestLabels = getMonthNames(); // Use helper function to get month names
+    var documentRequestData = <?= json_encode($documentRequestCounts) ?>;
 
     var documentRequestsChart = new Chart(document.getElementById('documentRequestsChart').getContext('2d'), {
         type: 'bar',
         data: {
-            labels: documentRequestsLabel,
+            labels: documentRequestLabels,
             datasets: [{
                 label: 'Document Requests',
-                data: documentRequestsData,
+                data: documentRequestData,
                 backgroundColor: '#FF9800', // Orange
                 borderColor: '#F57C00', // Darker Orange
                 borderWidth: 1
@@ -503,7 +502,7 @@ foreach ($periods as $period) {
                 x: {
                     title: {
                         display: true,
-                        text: 'Metric'
+                        text: 'Months'
                     }
                 },
                 y: {
