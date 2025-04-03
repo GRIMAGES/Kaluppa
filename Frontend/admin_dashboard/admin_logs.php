@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php';
 session_start();
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
@@ -39,6 +40,10 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
+// Example usage of insertLog function
+// insertLog($userId, $action, $description, $logType);
+// Example: insertLog(1, 'LOGIN', 'Admin logged in', 'INFO');
+
 // Fetch logs from the database
 $query = "SELECT logs.id, user.email AS user_email, logs.action, logs.description, logs.ip_address, 
                  logs.user_agent, logs.timestamp, logs.log_type 
@@ -72,18 +77,13 @@ $result = $conn->query($query);
     <h2>Admin Logs</h2>
     <div class="mb-3">
         <label for="logTypeFilter" class="form-label">Filter by Log Type:</label>
-        <select id="logTypeFilter" class="form-select">
+        <select id="logTypeFilter" class="form-select" style="width: 300px; display: inline-block;">
             <option value="">All</option>
-            <?php
-            // Fetch distinct log types from the database
-            $logTypeQuery = "SELECT DISTINCT log_type FROM logs";
-            $logTypeResult = $conn->query($logTypeQuery);
-            while ($logType = $logTypeResult->fetch_assoc()):
-            ?>
-                <option value="<?php echo htmlspecialchars($logType['log_type']); ?>">
-                    <?php echo htmlspecialchars($logType['log_type']); ?>
-                </option>
-            <?php endwhile; ?>
+            <option value="INFO">INFO</option>
+            <option value="WARNING">WARNING</option>
+            <option value="ERROR">ERROR</option>
+            <option value="SECURITY">SECURITY</option>
+            <option value="DEBUG">DEBUG</option>
         </select>
     </div>
     <table id="logsTable" class="table table-striped table-bordered">
