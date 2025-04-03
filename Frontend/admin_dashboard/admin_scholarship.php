@@ -109,6 +109,9 @@ if ($coursesResult->num_rows > 0) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_POST['bulk_status'] === 'Enrolled') {
+    // Log bulk status update action
+    insertLog($admin_id, 'Bulk Update', 'Admin updated status to Enrolled for selected students', 'info');
+
     $selectedStudents = $_POST['selected_students'] ?? [];
 
     if (!empty($selectedStudents)) {
@@ -170,6 +173,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
     // Redirect to the same page to show the message
     header("Location: admin_scholarship.php");
     exit();
+}
+
+// Add logging for individual status updates
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status']) && isset($_POST['application_id'])) {
+    $applicationId = $_POST['application_id'];
+    $newStatus = $_POST['status'];
+
+    // Update the application status
+    $updateQuery = "UPDATE applications SET status = ? WHERE id = ?";
+    $updateStmt = $conn->prepare($updateQuery);
+    $updateStmt->bind_param('si', $newStatus, $applicationId);
+
+    if ($updateStmt->execute() && $updateStmt->affected_rows > 0) {
+        insertLog($admin_id, 'Update Status', "Admin updated application ID $applicationId to status $newStatus", 'info');
+    } else {
+        insertLog($admin_id, 'Update Status Failed', "Failed to update application ID $applicationId to status $newStatus", 'error');
+    }
+    $updateStmt->close();
+}
+
+// Add logging for document downloads
+if (isset($_GET['action']) && ($_GET['action'] === 'view' || $_GET['action'] === 'download') && isset($_GET['file']) && isset($_GET['application_id'])) {
+    $action = $_GET['action'];
+    $fileName = $_GET['file'];
+    $applicationId = $_GET['application_id'];
+
+    insertLog($admin_id, ucfirst($action) . ' Document', "Admin $action document $fileName for application ID $applicationId", 'info');
 }
 ?>
 <!DOCTYPE html>
