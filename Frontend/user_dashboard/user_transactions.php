@@ -5,6 +5,7 @@ ini_set('display_errors', 1);
 ini_set("log_errors", 1);
 require_once '../../Backend/connection.php';
 require_once '../../Backend/aes_key.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -12,6 +13,16 @@ if (!isset($_SESSION['email'])) {
 }
 
 $email = $_SESSION['email'];
+
+// Log user's access to the transactions page
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($user_id);
+if ($stmt->fetch()) {
+    insertLog($user_id, 'View', 'User accessed the transactions page', 'info'); // Log user action
+}
+$stmt->close();
 
 // Fetch all applications for the logged-in user
 $query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 

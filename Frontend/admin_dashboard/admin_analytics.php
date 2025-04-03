@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 require_once '../../Frontend/vendor/autoload.php'; // PhpSpreadsheet autoload
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -16,7 +17,17 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+$email = $_SESSION['email'];
 
+// Log admin's access to the analytics page
+$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    insertLog($admin_id, 'View', 'Admin accessed the analytics page', 'info'); // Log admin action
+}
+$stmt->close();
 
 // Calculate load time
 $loadTime = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];

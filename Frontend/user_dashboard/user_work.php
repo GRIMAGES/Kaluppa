@@ -1,5 +1,6 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -36,6 +37,7 @@ if ($result->num_rows > 0) {
     $barangay = isset($user['barangay']) ? $user['barangay'] : '';
     $province = isset($user['province']) ? $user['province'] : '';
     $municipality = isset($user['municipality']) ? $user['municipality'] : '';
+    insertLog($user['id'], 'View', 'User accessed the work page', 'info'); // Log user action
 } else {
     echo "User not found.";
 }

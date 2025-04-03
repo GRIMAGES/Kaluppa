@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 
 session_start();
 if (!isset($_SESSION['email'])) {
@@ -28,6 +29,7 @@ if ($result->num_rows > 0) {
     $barangay = $user['barangay'];
     $province = $user['province'];
     $municipality = $user['municipality'];
+    insertLog($user['id'], 'View', 'User accessed the courses page', 'info'); // Log user action
 } else {
     echo "User not found.";
 }

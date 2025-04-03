@@ -1,5 +1,7 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
+
 // Redirect if not logged in
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -14,25 +16,28 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $email);
 $stmt->execute();
 $stmt->bind_result($first_name, $middle_name, $last_name, $profile_picture);
-$stmt->fetch();
-$stmt->close();
 
-// Construct full name
-$fullName = trim("$first_name $middle_name $last_name");
+if ($stmt->fetch()) {
+    // Construct full name
+    $fullName = trim("$first_name $middle_name $last_name");
 
-$profilePic = !empty($profile_picture) 
-    ? "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture 
-    : "/Frontend/assets/default-profile.png";
+    $profilePic = !empty($profile_picture) 
+        ? "/Frontend/admin_dashboard/uploads/profile_pics/" . $profile_picture 
+        : "/Frontend/assets/default-profile.png";
 
-// Debugging: Log profile picture file existence
-$fullPath = $_SERVER['DOCUMENT_ROOT'] . $profilePic;
-if (!file_exists($fullPath)) {
-    error_log("Profile picture not found at: " . $fullPath);
-    $profilePic = "/Frontend/assets/default-profile.png";
-} else {
-    error_log("Profile picture found: " . $fullPath);
+    // Debugging: Log profile picture file existence
+    $fullPath = $_SERVER['DOCUMENT_ROOT'] . $profilePic;
+    if (!file_exists($fullPath)) {
+        error_log("Profile picture not found at: " . $fullPath);
+        $profilePic = "/Frontend/assets/default-profile.png";
+    } else {
+        error_log("Profile picture found: " . $fullPath);
+    }
+
+    insertLog($email, 'View', 'User accessed the sidebar', 'info'); // Log user action
 }
 
+$stmt->close();
 
 // Get the current page filename
 $current_page = basename($_SERVER['PHP_SELF']);

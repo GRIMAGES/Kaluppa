@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
@@ -13,6 +14,17 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 $adminEmail = $_SESSION['email'] ?? ''; // Handle undefined array key
+
+// Log admin's access to the volunteer page
+$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt->bind_param("s", $adminEmail);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    insertLog($admin_id, 'View', 'Admin accessed the volunteer page', 'info'); // Log admin action
+}
+$stmt->close();
+
 // Fetch the admin's full name from the user table
 $query = "SELECT CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name) AS admin_name FROM user WHERE email = ?";
 $stmt = $conn->prepare($query);

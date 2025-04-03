@@ -1,5 +1,6 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -16,6 +17,18 @@ if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
     exit();
 }
+
+$email = $_SESSION['email'];
+
+// Log admin's access to the announcements page
+$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    insertLog($admin_id, 'View', 'Admin accessed the announcements page', 'info'); // Log admin action
+}
+$stmt->close();
 
 // Check if the user has timed out due to inactivity
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {

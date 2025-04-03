@@ -5,11 +5,9 @@ error_reporting(E_ALL);
 
 // Include the connection file
 include('../../Backend/connection.php'); // Ensure the connection is included
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 
 session_start();
-
-
-
 
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
@@ -19,6 +17,18 @@ if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
     exit();
 }
+
+$email = $_SESSION['email'];
+
+// Log admin's access to the works page
+$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    insertLog($admin_id, 'View', 'Admin accessed the works page', 'info'); // Log admin action
+}
+$stmt->close();
 
 // Check if the user has timed out due to inactivity
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {

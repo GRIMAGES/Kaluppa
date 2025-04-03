@@ -3,10 +3,28 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require_once '../../Backend/connection.php';;
+require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require '../../vendor/autoload.php'; // Ensure PHPMailer is installed via Composer
+
+if (!isset($_SESSION['email'])) {
+    header("Location: /Frontend/index.php");
+    exit();
+}
+
+$email = $_SESSION['email'];
+
+// Log admin's access to the scholarship page
+$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    insertLog($admin_id, 'View', 'Admin accessed the scholarship page', 'info'); // Log admin action
+}
+$stmt->close();
 
 function sendEnrollmentNotification($email, $firstName, $courseName, $courseStartDate, $courseEndDate, $courseInstructor) {
     $mail = new PHPMailer(true);

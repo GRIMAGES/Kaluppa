@@ -1,5 +1,6 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
@@ -9,6 +10,18 @@ if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
     exit();
 }
+
+$email = $_SESSION['email'];
+
+// Log admin's access to the users page
+$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    insertLog($admin_id, 'View', 'Admin accessed the users page', 'info'); // Log admin action
+}
+$stmt->close();
 
 // Update last activity time stamp
 $_SESSION['LAST_ACTIVITY'] = time();

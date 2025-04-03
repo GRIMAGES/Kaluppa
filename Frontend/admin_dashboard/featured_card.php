@@ -1,5 +1,6 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
 
 if (!isset($_SESSION['email'])) {
@@ -7,6 +8,17 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+$email = $_SESSION['email'];
+
+// Log admin's access to the featured card page
+$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    insertLog($admin_id, 'View', 'Admin accessed the featured card page', 'info'); // Log admin action
+}
+$stmt->close();
 
 // Get featured cards
 $cards = $conn->query("SELECT * FROM featured_cards ORDER BY id ASC")->fetch_all(MYSQLI_ASSOC);

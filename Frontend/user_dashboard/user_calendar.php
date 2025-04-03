@@ -1,5 +1,6 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -7,6 +8,15 @@ if (!isset($_SESSION['email'])) {
 }
 
 $email = $_SESSION['email'];
+
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($user_id);
+if ($stmt->fetch()) {
+    insertLog($user_id, 'View', 'User accessed the calendar page', 'info'); // Log user action
+}
+$stmt->close();
 
 $events = [];
 $eventsQuery = "SELECT event_time, title FROM events ORDER BY event_time ASC";
