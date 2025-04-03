@@ -24,9 +24,11 @@ $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
     $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
     $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
+    $stmt->close(); // Ensure the result set is closed before calling insertLog
     insertLog($admin_id, 'View', 'Admin accessed the certificate page', 'info'); // Log admin action
+} else {
+    $stmt->close(); // Close the statement even if no result is fetched
 }
-$stmt->close(); // Ensure the statement is closed only once
 
 // Check if the user has timed out due to inactivity
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration)) {
