@@ -146,7 +146,7 @@ $show_captcha = $_SESSION['failed_attempts'] >= 3;
                 <input type="email" name="email" placeholder="Email" required />
                 <input type="password" name="password" placeholder="Password" required />
                 <?php if ($show_captcha): ?>
-                    <div class="g-recaptcha" data-sitekey="6LdZEQkrAAAAABtlZIhg8PkKXq1XiwO3vPGKJYt3"></div>
+                    <div class="g-recaptcha" data-sitekey="6LcFFwkrAAAAAE82FjoF1LGwQjGjArXbrFn8r6hc"></div>
                 <?php endif; ?>
                 <a href="forgots.php">Forgot your password?</a>
                 <button type="submit">Sign In</button>
