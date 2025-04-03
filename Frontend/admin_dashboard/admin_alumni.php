@@ -196,7 +196,7 @@ if (isset($_POST['logout'])) {
                 success: function(response) {
                     console.log('Response:', response); // Log the response for debugging
                     if (response.success) {
-                        alert('Document sent successfully.');
+                        alert(`Document sent successfully to ${$('#alumniEmail').val()} for request ID: ${$('#requestId').val()}.`);
                         $('#sendDocumentModal').modal('hide');
                         $('#sendDocumentForm')[0].reset();
                     } else {
