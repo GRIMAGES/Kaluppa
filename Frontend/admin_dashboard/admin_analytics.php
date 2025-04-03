@@ -63,6 +63,11 @@ $queryVolunteers = "SELECT COUNT(*) AS total_volunteers FROM volunteer_applicati
 $totalVolunteers = $conn->query($queryVolunteers)->fetch_assoc()['total_volunteers'];
 $volunteerQueryTime = microtime(true) - $startTime;
 
+$startTime = microtime(true);
+$queryDocumentRequests = "SELECT COUNT(*) AS total_document_requests FROM document_request";
+$totalDocumentRequests = $conn->query($queryDocumentRequests)->fetch_assoc()['total_document_requests'];
+$documentRequestQueryTime = microtime(true) - $startTime;
+
 // Fetch yearly data for scholarship applications
 $scholarshipYearlyData = [];
 $queryScholarshipYearly = "SELECT YEAR(applied_at) AS year, COUNT(*) AS total FROM applications GROUP BY YEAR(applied_at)";
@@ -102,9 +107,11 @@ $performanceData = [
     ['Total Users', $totalUsers, '#2196F3'], // Blue for total users
     ['Total Applications', $totalApplications, '#4caf50'], // Green for total applications
     ['Total Volunteers', $totalVolunteers, '#FFC107'], // Yellow for total volunteers
+    ['Total Document Requests', $totalDocumentRequests, '#FF9800'], // Orange for document requests
     ['User Query Time (s)', $userQueryTime, '#FF5722'], // Orange for query times
     ['Application Query Time (s)', $applicationQueryTime, '#009688'], // Teal for query times
     ['Volunteer Query Time (s)', $volunteerQueryTime, '#673AB7'], // Purple for query times
+    ['Document Request Query Time (s)', $documentRequestQueryTime, '#795548'], // Brown for query times
     ['Total Load Time (s)', $loadTime, '#FFEB3B'], // Light Yellow for load time
 ];
 
