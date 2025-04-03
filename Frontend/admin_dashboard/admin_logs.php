@@ -43,7 +43,7 @@ if (isset($_POST['logout'])) {
 $query = "SELECT logs.id, users.email AS user_email, logs.action, logs.description, logs.ip_address, 
                  logs.user_agent, logs.timestamp, logs.log_type 
           FROM logs 
-          LEFT JOIN users ON logs.user_id = users.id 
+          LEFT JOIN user ON logs.user_id = users.id 
           ORDER BY logs.timestamp DESC";
 $result = $conn->query($query);
 
