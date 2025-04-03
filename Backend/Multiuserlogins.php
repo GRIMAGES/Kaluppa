@@ -24,6 +24,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    // Check if CAPTCHA is required
+    if ($_SESSION['failed_attempts'] >= 3) {
+        $captcha_response = $_POST['g-recaptcha-response'] ?? '';
+        $captcha_secret = '6LdZEQkrAAAAALfnRm7XCwL9TDnRTOErw4wAxthL';
+        $captcha_verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$captcha_secret&response=$captcha_response");
+        $captcha_result = json_decode($captcha_verify, true);
+
+        if (!$captcha_result['success']) {
+            $_SESSION['error'] = 'CAPTCHA verification failed. Please try again.';
+            header('Location: ../Frontend/index.php');
+            exit;
+        }
+    }
+
     // Check if the email is locked
     $query = "SELECT failed_attempts, locked_until, password, is_verified, role FROM user WHERE email = ?";
     $stmt = $conn->prepare($query);
@@ -51,6 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
             $stmt->bind_param("s", $email);
             $stmt->execute();
 
+            $_SESSION['failed_attempts'] = 0;
+
             if ($user['is_verified'] == 1) {
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $user['role'];
@@ -69,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
         } else {
             // Increment failed attempts
             $failedAttempts++;
+            $_SESSION['failed_attempts']++;
             $lockedUntil = null;
 
             if ($failedAttempts >= 5) {
@@ -87,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
             exit();
         }
     } else {
+        $_SESSION['failed_attempts']++;
         $_SESSION['error'] = "Invalid email or password.";
         header("Location: ../Frontend/index.php");
         exit();

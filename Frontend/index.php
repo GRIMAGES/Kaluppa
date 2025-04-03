@@ -4,6 +4,14 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../Backend/connection.php';
 session_start();
+
+// Initialize failed login attempts
+if (!isset($_SESSION['failed_attempts'])) {
+    $_SESSION['failed_attempts'] = 0;
+}
+
+// Check if CAPTCHA is required
+$show_captcha = $_SESSION['failed_attempts'] >= 3;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +27,7 @@ session_start();
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Toast CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
     <?php
@@ -136,6 +145,9 @@ session_start();
                 <span>or use your account</span>
                 <input type="email" name="email" placeholder="Email" required />
                 <input type="password" name="password" placeholder="Password" required />
+                <?php if ($show_captcha): ?>
+                    <div class="g-recaptcha" data-sitekey="6LdZEQkrAAAAABtlZIhg8PkKXq1XiwO3vPGKJYt3"></div>
+                <?php endif; ?>
                 <a href="forgots.php">Forgot your password?</a>
                 <button type="submit">Sign In</button>
             </form>
