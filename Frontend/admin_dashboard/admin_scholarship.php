@@ -183,6 +183,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_status']) && $_P
 <body>
 <?php include 'sidebar.php'; ?>
 
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel" style="color:black;">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color:black;">
+                Are you sure you want to log out?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="content" style="margin-left: 250px; padding: 20px; color: black;">
     <div class="container mt-5">
         <h2 class="mb-4 text-center" style="color: black;">Scholarship Applications</h2>

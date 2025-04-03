@@ -55,6 +55,7 @@ $navLinks = [
     ['href' => '#', 'icon' => 'fas fa-certificate', 'text' => 'Certificates', 'dropdown' => [
         ['href' => 'admin_certificate.php?type=scholarship', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship'],
     ]],
+    ['href' => 'admin_logs.php', 'icon' => 'fas fa-file-alt', 'text' => 'Admin Logs'],
 ];
 ?>
 
