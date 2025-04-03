@@ -40,10 +40,10 @@ if (isset($_POST['logout'])) {
 }
 
 // Fetch logs from the database
-$query = "SELECT logs.id, users.email AS user_email, logs.action, logs.description, logs.ip_address, 
+$query = "SELECT logs.id, user.email AS user_email, logs.action, logs.description, logs.ip_address, 
                  logs.user_agent, logs.timestamp, logs.log_type 
           FROM logs 
-          LEFT JOIN user ON logs.user_id = users.id 
+          LEFT JOIN user ON logs.user_id = user.id 
           ORDER BY logs.timestamp DESC";
 $result = $conn->query($query);
 
