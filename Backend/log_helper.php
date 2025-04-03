@@ -1,17 +1,31 @@
 <?php
 require_once 'connection.php';
 
-function insertLog($userId, $action, $description, $logType) {
+function insertLog($userId, $action, $description, $level) {
     global $conn;
 
-    $ipAddress = $_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN';
-    $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'UNKNOWN';
+    // Ensure any previous results are cleared
+    while ($conn->more_results() && $conn->next_result()) {
+        $conn->use_result();
+    }
 
-    $query = "INSERT INTO logs (user_id, action, description, ip_address, user_agent, log_type, timestamp) 
-              VALUES (?, ?, ?, ?, ?, ?, NOW())";
+    $query = "INSERT INTO logs (user_id, action, description, level, created_at) VALUES (?, ?, ?, ?, NOW())";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('isssss', $userId, $action, $description, $ipAddress, $userAgent, $logType);
-    $stmt->execute();
+
+    if (!$stmt) {
+        error_log("Failed to prepare statement: " . $conn->error);
+        return false;
+    }
+
+    $stmt->bind_param("isss", $userId, $action, $description, $level);
+
+    if (!$stmt->execute()) {
+        error_log("Failed to execute statement: " . $stmt->error);
+        $stmt->close();
+        return false;
+    }
+
     $stmt->close();
+    return true;
 }
 ?>
