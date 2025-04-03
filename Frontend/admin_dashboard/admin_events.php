@@ -14,7 +14,8 @@ if (!isset($_SESSION['email'])) {
 $email = $_SESSION['email'];
 
 // Log admin's access to the events page
-$stmt = $conn->prepare("SELECT id FROM admin WHERE email = ?");
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?"); // Corrected table name from 'admin' to 'user'
+
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($admin_id);
