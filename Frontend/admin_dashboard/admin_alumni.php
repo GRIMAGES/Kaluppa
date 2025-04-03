@@ -125,6 +125,12 @@ if (isset($_POST['logout'])) {
                     </div>
                     <button type="submit" class="btn btn-success">Send</button>
                 </form>
+                <div id="loadingSpinner" class="text-center mt-3" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Please wait while the document is being sent...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -178,6 +184,9 @@ if (isset($_POST['logout'])) {
             e.preventDefault();
             const formData = new FormData(this);
 
+            // Show loading spinner
+            $('#loadingSpinner').show();
+
             $.ajax({
                 url: '/Kaluppa/Backend/send_document.php',
                 method: 'POST',
@@ -197,6 +206,10 @@ if (isset($_POST['logout'])) {
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText); // Log the error response
                     alert('An error occurred while sending the document.');
+                },
+                complete: function() {
+                    // Hide loading spinner
+                    $('#loadingSpinner').hide();
                 }
             });
         });
