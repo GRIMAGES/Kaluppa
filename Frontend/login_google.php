@@ -45,7 +45,7 @@ if (isset($_GET['code'])) {
         // Log the login event for existing user
         $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
         $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
-        insertLog($user['id'], 'LOGIN', 'User logged in using Google', 'INFO', $ipAddress, $userAgent);
+        insertLog($admin_id, 'View', 'Admin accessed the certificate page', 'info'); // Log admin action
     } else {
         // New user registration
         $role = 'user'; // Default role
@@ -65,7 +65,7 @@ if (isset($_GET['code'])) {
         // Log the login event for new user
         $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
         $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
-        insertLog($newUserId, 'LOGIN', 'New user registered and logged in using Google', 'INFO', $ipAddress, $userAgent);
+        insertLog($admin_id, 'View', 'Admin accessed the certificate page', 'info'); // Log admin action
     }
 
     // ✅ ROLE-BASED REDIRECTION

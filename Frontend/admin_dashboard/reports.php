@@ -24,7 +24,7 @@ $stmt->bind_result($admin_id);
 if ($stmt->fetch()) {
     $ipAddress = $_SERVER['REMOTE_ADDR']; // Get the user's IP address
     $userAgent = $_SERVER['HTTP_USER_AGENT']; // Get the user's browser information
-    insertLog($admin_id, 'View', 'Admin accessed the reports page', 'info', $ipAddress, $userAgent); // Log admin action
+    insertLog($admin_id, 'View', 'Admin accessed the certificate page', 'info'); // Log admin action
 }
 $stmt->close();
 
