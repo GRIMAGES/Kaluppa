@@ -4,9 +4,9 @@ require_once 'connection.php';
 function insertLog($userId, $action, $description, $level) {
     global $conn;
 
-    // Ensure any previous results are cleared
+    // Clear any unprocessed results from the connection
     while ($conn->more_results() && $conn->next_result()) {
-        $conn->use_result();
+        $conn->store_result();
     }
 
     $query = "INSERT INTO logs (user_id, action, description, level, created_at) VALUES (?, ?, ?, ?, NOW())";
