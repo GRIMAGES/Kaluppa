@@ -185,7 +185,7 @@ foreach ($periods as $period) {
 
 // Fetch monthly data for document requests
 $documentRequestsMonthlyData = [];
-$queryDocumentRequestsMonthly = "SELECT MONTH(request_date) AS month, COUNT(*) AS total FROM document_requests WHERE YEAR(request_date) = $selectedYear GROUP BY MONTH(request_date)";
+$queryDocumentRequestsMonthly = "SELECT MONTH(requested_at) AS month, COUNT(*) AS total FROM document_requests WHERE YEAR(requested_at) = $selectedYear GROUP BY MONTH(requested_at)";
 $resultDocumentRequestsMonthly = $conn->query($queryDocumentRequestsMonthly);
 while ($row = $resultDocumentRequestsMonthly->fetch_assoc()) {
     $documentRequestsMonthlyData[] = $row;
