@@ -210,15 +210,48 @@ if (!$workResult) {
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Days of the Week</label>
-                                                <select class="form-control" name="available_days[]" multiple required>
-                                                    <option value="Monday">Monday</option>
-                                                    <option value="Tuesday">Tuesday</option>
-                                                    <option value="Wednesday">Wednesday</option>
-                                                    <option value="Thursday">Thursday</option>
-                                                    <option value="Friday">Friday</option>
-                                                    <option value="Saturday">Saturday</option>
-                                                    <option value="Sunday">Sunday</option>
-                                                </select>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="daysDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Select Days
+                                                    </button>
+                                                    <ul class="dropdown-menu w-100" aria-labelledby="daysDropdown">
+                                                        <li>
+                                                            <label class="dropdown-item">
+                                                                <input type="checkbox" name="available_days[]" value="Monday"> Monday
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label class="dropdown-item">
+                                                                <input type="checkbox" name="available_days[]" value="Tuesday"> Tuesday
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label class="dropdown-item">
+                                                                <input type="checkbox" name="available_days[]" value="Wednesday"> Wednesday
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label class="dropdown-item">
+                                                                <input type="checkbox" name="available_days[]" value="Thursday"> Thursday
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label class="dropdown-item">
+                                                                <input type="checkbox" name="available_days[]" value="Friday"> Friday
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label class="dropdown-item">
+                                                                <input type="checkbox" name="available_days[]" value="Saturday"> Saturday
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label class="dropdown-item">
+                                                                <input type="checkbox" name="available_days[]" value="Sunday"> Sunday
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Hours per Week</label>
