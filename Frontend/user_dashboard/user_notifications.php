@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
@@ -15,10 +18,12 @@ $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($user_id);
-if ($stmt->fetch()) {
-    insertLog($user_id, 'View', 'User accessed the notifications page', 'info'); // Log user action
-}
-$stmt->close();
+    if ($stmt->fetch()) {
+        $stmt->close(); // Close the statement before calling insertLog
+        insertLog($user_id, 'View', 'User accessed the notifications page', 'info'); // Log user action
+    } else {
+        $stmt->close(); // Ensure the statement is closed even if no user is found
+    }
 
 // Fetch notifications for the logged-in user categorized as "application"
 $query = "SELECT * FROM notifications WHERE email = ? AND category = 'application' ORDER BY created_at DESC";
