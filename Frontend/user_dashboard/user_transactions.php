@@ -20,9 +20,11 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($user_id);
 if ($stmt->fetch()) {
+    $stmt->close(); // Close the statement before calling insertLog
     insertLog($user_id, 'View', 'User accessed the transactions page', 'info'); // Log user action
+} else {
+    $stmt->close(); // Ensure the statement is closed even if no user is found
 }
-$stmt->close();
 
 // Fetch all applications for the logged-in user
 $query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
@@ -124,6 +126,10 @@ unset($_SESSION['success_message']);
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editDocumentModal" data-application-id="<?php echo $application['id']; ?>" data-document="<?php echo htmlspecialchars($application['documents']); ?>">
                                         Edit Document
                                     </button>
+                                    <form method="POST" action="/Kaluppa/Backend/user_controller/delete_application.php" style="display:inline;">
+                                        <input type="hidden" name="application_id" value="<?php echo $application['id']; ?>">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this application?');">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
