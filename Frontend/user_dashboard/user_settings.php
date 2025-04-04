@@ -22,9 +22,11 @@ $stmt->bind_param('s', $email);
 $stmt->execute();
 $stmt->bind_result($user_id, $first_name, $middle_name, $last_name, $email, $profile_picture, $password, $barangay, $province, $municipality, $birthday);
 if ($stmt->fetch()) {
+    $stmt->close(); // Close the statement before calling insertLog
     insertLog($user_id, 'View', 'User accessed the settings page', 'info'); // Log user action
+} else {
+    $stmt->close(); // Ensure the statement is closed even if no user is found
 }
-$stmt->close();
 
 $upload_dir = __DIR__ . "/../admin_dashboard/uploads/profile_pics/";
 
