@@ -120,7 +120,7 @@ try {
                 exit();
             }
 
-            // Handle File Upload
+            // Handle File Upload with AES-256 Encryption
             $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Scholarship/');
             if (!is_dir($uploadDir)) {
                 error_log("Upload directory does not exist: $uploadDir");
@@ -137,17 +137,35 @@ try {
                         $safeFileName = uniqid() . '_' . basename($name); // Generate a unique file name
                         $destinationPath = $uploadDir . DIRECTORY_SEPARATOR . $safeFileName;
 
-                        // Move the uploaded file to the destination directory
-                        if (move_uploaded_file($tmpFilePath, $destinationPath)) {
-                            $uploadedDocuments[] = [
-                                'file_name' => $safeFileName,
-                                'file_path' => $destinationPath
-                            ];
-                        } else {
-                            error_log("Failed to move uploaded file: $name");
-                            echo json_encode(['success' => false, 'error_code' => 17, 'message' => 'Failed to save uploaded documents.']);
+                        // Read file content
+                        $fileContent = file_get_contents($tmpFilePath);
+
+                        // Encrypt the file content
+                        $encryptedData = openssl_encrypt(
+                            $fileContent,
+                            'AES-256-CBC',
+                            AES_KEY,
+                            OPENSSL_RAW_DATA,
+                            AES_IV
+                        );
+
+                        if ($encryptedData === false) {
+                            error_log("Failed to encrypt file: $name");
+                            echo json_encode(['success' => false, 'error_code' => 18, 'message' => 'Failed to encrypt uploaded documents.']);
                             exit();
                         }
+
+                        // Save the encrypted file
+                        if (file_put_contents($destinationPath, $encryptedData) === false) {
+                            error_log("Failed to save encrypted file: $name");
+                            echo json_encode(['success' => false, 'error_code' => 19, 'message' => 'Failed to save encrypted documents.']);
+                            exit();
+                        }
+
+                        $uploadedDocuments[] = [
+                            'file_name' => $safeFileName,
+                            'file_path' => $destinationPath
+                        ];
                     }
                 }
             }
