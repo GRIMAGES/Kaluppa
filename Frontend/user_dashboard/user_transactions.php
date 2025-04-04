@@ -1,15 +1,11 @@
 <?php
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 // Log errors to a file inside the Backend/logs folder
 ini_set("log_errors", 1);
-
 require_once '../../Backend/connection.php';
 require_once '../../Backend/aes_key.php';
 require_once '../../Backend/log_helper.php'; // Include log_helper.php
-
 session_start();
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -24,29 +20,16 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($user_id);
 if ($stmt->fetch()) {
-    $stmt->close(); // Close the statement before calling insertLog
     insertLog($user_id, 'View', 'User accessed the transactions page', 'info'); // Log user action
-} else {
-    $stmt->close(); // Ensure the statement is closed even if no user is found
 }
+$stmt->close();
 
 // Fetch all applications for the logged-in user
-$filter = isset($_GET['filter']) ? $_GET['filter'] : 'applications';
-
-if ($filter === 'volunteer_applications') {
-    $query = "SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, works.title AS work_title, volunteer_application.documents 
-              FROM volunteer_application 
-              JOIN works ON volunteer_application.work_id = works.id 
-              WHERE volunteer_application.email = ? 
-              ORDER BY volunteer_application.applied_at DESC";
-} else {
-    $query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
-              FROM applications 
-              JOIN courses ON applications.course_id = courses.id 
-              WHERE applications.email = ? 
-              ORDER BY applications.applied_at DESC";
-}
-
+$query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
+          FROM applications 
+          JOIN courses ON applications.course_id = courses.id 
+          WHERE applications.email = ? 
+          ORDER BY applications.applied_at DESC";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $email);
 $stmt->execute();
@@ -70,8 +53,11 @@ unset($_SESSION['success_message']);
     <title>Transactions</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_transaction.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <!-- New CSS for smooth animations -->
     <link rel="stylesheet" href="../CSS/user_css/animations.css">
     <style>
         .floating-alert {
@@ -87,8 +73,8 @@ unset($_SESSION['success_message']);
 <?php include 'topbar.php'; ?>
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-theme text-white">
+        <div class="modal-content"> <!-- Add custom-modal class -->
+            <div class="modal-header bg-theme text-white"> <!-- Add bg-theme and text-white classes -->
                 <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -98,6 +84,7 @@ unset($_SESSION['success_message']);
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+
             </div>
         </div>
     </div>
@@ -112,15 +99,11 @@ unset($_SESSION['success_message']);
     <?php endif; ?>
     <div class="table-container p-4 bg-light rounded shadow-sm">
         <h2 class="mb-4">Applications</h2>
-        <div class="mb-3">
-            <a href="?filter=applications" class="btn btn-outline-primary <?php echo $filter === 'applications' ? 'active' : ''; ?>">Course Applications</a>
-            <a href="?filter=volunteer_applications" class="btn btn-outline-primary <?php echo $filter === 'volunteer_applications' ? 'active' : ''; ?>">Volunteer Applications</a>
-        </div>
         <div class="table-responsive">
             <table id="applicationsTable" class="display table table-bordered">
                 <thead style="background-color: #f2f2f2; color: black;">
                     <tr>
-                        <th><?php echo $filter === 'volunteer_applications' ? 'Title' : 'Course Name'; ?></th>
+                        <th>Course Name</th>
                         <th>Status</th>
                         <th>Applied At</th>
                         <th>Document</th>
@@ -131,28 +114,16 @@ unset($_SESSION['success_message']);
                     <?php if (!empty($applications)): ?>
                         <?php foreach ($applications as $application): ?>
                             <tr>
-                                <td>
-                                    <?php 
-                                    if ($filter === 'volunteer_applications') {
-                                        echo htmlspecialchars($application['work_title'] ?? 'N/A');
-                                    } else {
-                                        echo htmlspecialchars($application['course_name']);
-                                    }
-                                    ?>
-                                </td>
+                                <td><?php echo htmlspecialchars($application['course_name']); ?></td>
                                 <td><?php echo htmlspecialchars($application['status']); ?></td>
                                 <td><?php echo htmlspecialchars($application['applied_at']); ?></td>
                                 <td>
-                                    <a href="/Kaluppa/Backend/admin_controller/view_document.php?file=<?php echo urlencode($application['documents']); ?>&action=view" target="_blank">View</a>
+                                <a href="/Kaluppa/Backend/admin_controller/view_document.php?file=<?php echo urlencode($application['documents']); ?>&action=view" target="_blank">View</a>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editDocumentModal" data-application-id="<?php echo $application['id']; ?>" data-document="<?php echo htmlspecialchars($application['documents']); ?>">
                                         Edit Document
                                     </button>
-                                    <form method="POST" action="/Kaluppa/Backend/user_controller/delete_application.php" style="display:inline;">
-                                        <input type="hidden" name="application_id" value="<?php echo $application['id']; ?>">
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this application?');">Delete</button>
-                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
