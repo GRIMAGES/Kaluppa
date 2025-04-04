@@ -34,8 +34,9 @@ $query = "
     JOIN courses ON applications.course_id = courses.id
     WHERE applications.email = ?
     UNION
-    SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, volunteer_application.title AS course_name, volunteer_application.documents, 'Volunteer' AS type
+    SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, works.title AS course_name, volunteer_application.documents, 'Volunteer' AS type
     FROM volunteer_application
+    JOIN works ON volunteer_application.work_id = works.id
     WHERE volunteer_application.email = ?
     ORDER BY applied_at DESC";
 
