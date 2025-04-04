@@ -93,6 +93,15 @@ unset($_SESSION['success_message']);
     <?php endif; ?>
     <div class="table-container p-4 bg-light rounded shadow-sm">
         <h2 class="mb-4">Applications</h2>
+        <!-- Filter Dropdown -->
+        <div class="mb-3">
+            <label for="filterType" class="form-label">Filter by Type:</label>
+            <select id="filterType" class="form-select">
+                <option value="all">All</option>
+                <option value="Application">Courses</option>
+                <option value="Volunteer">Volunteer</option>
+            </select>
+        </div>
         <div class="table-responsive">
             <table id="applicationsTable" class="display table table-bordered">
                 <thead style="background-color: #f2f2f2; color: black;">
@@ -108,7 +117,7 @@ unset($_SESSION['success_message']);
                 <tbody>
                     <?php if (!empty($applications)): ?>
                         <?php foreach ($applications as $application): ?>
-                            <tr>
+                            <tr data-type="<?php echo htmlspecialchars($application['type']); ?>">
                                 <td><?php echo htmlspecialchars($application['type']); ?></td>
                                 <td><?php echo htmlspecialchars($application['course_name']); ?></td>
                                 <td><?php echo htmlspecialchars($application['status']); ?></td>
@@ -163,7 +172,24 @@ unset($_SESSION['success_message']);
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#applicationsTable').DataTable();
+        var table = $('#applicationsTable').DataTable();
+
+        // Filter functionality
+        $('#filterType').on('change', function() {
+            var filterValue = $(this).val();
+            if (filterValue === 'all') {
+                table.rows().show();
+            } else {
+                table.rows().every(function() {
+                    var rowType = $(this.node()).data('type');
+                    if (rowType === filterValue) {
+                        $(this.node()).show();
+                    } else {
+                        $(this.node()).hide();
+                    }
+                });
+            }
+        });
     });
 
     document.addEventListener('DOMContentLoaded', function () {
