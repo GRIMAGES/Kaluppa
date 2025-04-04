@@ -142,7 +142,7 @@ $categorizedCourses = categorizeCourses($courseResult);
       <div class="modal-body">
         <div class="row">
           <!-- Left Column: Course Details -->
-          <div class="col-md-6 border-end">
+          <div class="col-md-6 border-end" style="max-height: 500px; overflow-y: auto;">
             <div class="course-info-section">
               <h4 class="mb-3" id="courseName"></h4>
               
