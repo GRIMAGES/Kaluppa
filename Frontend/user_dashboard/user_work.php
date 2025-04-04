@@ -155,7 +155,7 @@ if (!$workResult) {
                                             </div>
                                             <div class="info-group mb-3">
                                                 <strong><i class="fas fa-align-left me-2"></i>Description:</strong>
-                                                <p><?php echo htmlspecialchars($work['description']); ?></p>
+                                                <p style="white-space: pre-line; line-height: 1.6;"><?php echo nl2br(htmlspecialchars($work['description'])); ?></p>
                                             </div>
                                             <div class="info-group mb-3">
                                                 <strong><i class="fas fa-info-circle me-2"></i>Status:</strong>
