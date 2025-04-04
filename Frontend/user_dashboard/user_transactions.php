@@ -97,7 +97,6 @@ unset($_SESSION['success_message']);
         <div class="mb-3">
             <button id="filterCourses" class="btn btn-primary">Courses</button>
             <button id="filterVolunteer" class="btn btn-secondary">Volunteer</button>
-            <button id="filterAll" class="btn btn-outline-dark">All</button>
         </div>
         <div class="table-responsive">
             <table id="applicationsTable" class="display table table-bordered">
@@ -192,10 +191,6 @@ unset($_SESSION['success_message']);
                     $(this.node()).hide();
                 }
             });
-        });
-
-        $('#filterAll').on('click', function() {
-            table.rows().show();
         });
     });
 
