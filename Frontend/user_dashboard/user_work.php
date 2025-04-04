@@ -136,7 +136,7 @@ if (!$workResult) {
                             <div class="modal-body">
                                 <div class="row">
                                     <!-- Left Column: Work Details -->
-                                    <div class="col-md-6 border-end">
+                                    <div class="col-md-6 border-end" style="max-height: 500px; overflow-y: auto;">
                                         <div class="work-info-section">
                                             <h4 class="mb-3"><?php echo htmlspecialchars($work['title']); ?></h4>
                                             <div class="info-group mb-3">
