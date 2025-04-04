@@ -27,11 +27,22 @@ if ($stmt->fetch()) {
 }
 
 // Fetch all applications for the logged-in user
-$query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
-          FROM applications 
-          JOIN courses ON applications.course_id = courses.id 
-          WHERE applications.email = ? 
-          ORDER BY applications.applied_at DESC";
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'applications';
+
+if ($filter === 'volunteer_applications') {
+    $query = "SELECT volunteer_applications.id, volunteer_applications.status, volunteer_applications.applied_at, events.name AS event_name, volunteer_applications.documents 
+              FROM volunteer_applications 
+              JOIN events ON volunteer_applications.event_id = events.id 
+              WHERE volunteer_applications.email = ? 
+              ORDER BY volunteer_applications.applied_at DESC";
+} else {
+    $query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
+              FROM applications 
+              JOIN courses ON applications.course_id = courses.id 
+              WHERE applications.email = ? 
+              ORDER BY applications.applied_at DESC";
+}
+
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $email);
 $stmt->execute();
@@ -101,11 +112,15 @@ unset($_SESSION['success_message']);
     <?php endif; ?>
     <div class="table-container p-4 bg-light rounded shadow-sm">
         <h2 class="mb-4">Applications</h2>
+        <div class="mb-3">
+            <a href="?filter=applications" class="btn btn-outline-primary <?php echo $filter === 'applications' ? 'active' : ''; ?>">Course Applications</a>
+            <a href="?filter=volunteer_applications" class="btn btn-outline-primary <?php echo $filter === 'volunteer_applications' ? 'active' : ''; ?>">Volunteer Applications</a>
+        </div>
         <div class="table-responsive">
             <table id="applicationsTable" class="display table table-bordered">
                 <thead style="background-color: #f2f2f2; color: black;">
                     <tr>
-                        <th>Course Name</th>
+                        <th><?php echo $filter === 'volunteer_applications' ? 'Event Name' : 'Course Name'; ?></th>
                         <th>Status</th>
                         <th>Applied At</th>
                         <th>Document</th>
@@ -116,11 +131,11 @@ unset($_SESSION['success_message']);
                     <?php if (!empty($applications)): ?>
                         <?php foreach ($applications as $application): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($application['course_name']); ?></td>
+                                <td><?php echo htmlspecialchars($filter === 'volunteer_applications' ? $application['event_name'] : $application['course_name']); ?></td>
                                 <td><?php echo htmlspecialchars($application['status']); ?></td>
                                 <td><?php echo htmlspecialchars($application['applied_at']); ?></td>
                                 <td>
-                                <a href="/Kaluppa/Backend/admin_controller/view_document.php?file=<?php echo urlencode($application['documents']); ?>&action=view" target="_blank">View</a>
+                                    <a href="/Kaluppa/Backend/admin_controller/view_document.php?file=<?php echo urlencode($application['documents']); ?>&action=view" target="_blank">View</a>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editDocumentModal" data-application-id="<?php echo $application['id']; ?>" data-document="<?php echo htmlspecialchars($application['documents']); ?>">
