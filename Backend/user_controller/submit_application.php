@@ -120,47 +120,40 @@ try {
                 exit();
             }
 
-            // Handle File Upload with AES-256 Encryption
-            $encryptedDocuments = [];
+            // Handle File Upload
+            $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Scholarship/');
+            if (!is_dir($uploadDir)) {
+                error_log("Upload directory does not exist: $uploadDir");
+                echo json_encode(['success' => false, 'error_code' => 16, 'message' => 'Upload directory not found.']);
+                exit();
+            }
+
+            $uploadedDocuments = [];
             if (isset($_FILES['documents']) && is_array($_FILES['documents']['name'])) {
                 foreach ($_FILES['documents']['name'] as $key => $name) {
                     if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
                         $tmpFilePath = $_FILES['documents']['tmp_name'][$key];
                         $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
+                        $safeFileName = uniqid() . '_' . basename($name); // Generate a unique file name
+                        $destinationPath = $uploadDir . DIRECTORY_SEPARATOR . $safeFileName;
 
-                        // Convert file to PDF
-                        $pdfContent = '';
-                        if (strtolower($fileExtension) !== 'pdf') {
-                            // Use TCPDF to create a PDF from the uploaded file
-                            $pdf = new \TCPDF();
-                            $pdf->AddPage();
-                            $pdf->SetFont('helvetica', '', 12);
-                            $fileContent = file_get_contents($tmpFilePath);
-                            $pdf->Write(0, $fileContent);
-                            $pdfContent = $pdf->Output('', 'S'); // Get PDF content as a string
+                        // Move the uploaded file to the destination directory
+                        if (move_uploaded_file($tmpFilePath, $destinationPath)) {
+                            $uploadedDocuments[] = [
+                                'file_name' => $safeFileName,
+                                'file_path' => $destinationPath
+                            ];
                         } else {
-                            $pdfContent = file_get_contents($tmpFilePath); // Use the original PDF content
+                            error_log("Failed to move uploaded file: $name");
+                            echo json_encode(['success' => false, 'error_code' => 17, 'message' => 'Failed to save uploaded documents.']);
+                            exit();
                         }
-
-                        // 🔒 Proceed with AES encryption
-                        $encryptedData = openssl_encrypt(
-                            $pdfContent,
-                            'AES-256-CBC',
-                            AES_KEY,
-                            OPENSSL_RAW_DATA,
-                            AES_IV
-                        );
-                        $encodedData = base64_encode($encryptedData);
-                        $encryptedDocuments[] = [
-                            'file_name' => pathinfo($name, PATHINFO_FILENAME) . '.pdf', // Ensure the file name ends with .pdf
-                            'file_data' => $encodedData
-                        ];
                     }
                 }
             }
 
-            // Serialize the encrypted documents array for storage in DB
-            $documentData = json_encode($encryptedDocuments); // Store as JSON string
+            // Serialize the uploaded documents array for storage in DB
+            $documentData = json_encode($uploadedDocuments); // Store as JSON string
 
             // Call the function to generate a unique ID
             try {
