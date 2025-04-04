@@ -52,11 +52,18 @@ while ($row = $result->fetch_assoc()) {
     $applications[] = $row;
 }
 $stmt->close();
-
+// Debugging: Output the fetched data
 // Check for success message
 $success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
 unset($_SESSION['success_message']);
-?>
+?>it;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">ge
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">$_SESSION['success_message'] : '';
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -221,7 +228,7 @@ unset($_SESSION['success_message']);
     });
 
     $(document).ready(function() {
-        $("#applicationsTable tbody").sortable();
+ $("#applicationsTable tbody").sortable();
         $("#applicationsTable tbody").disableSelection();
     });
 </script>
