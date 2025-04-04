@@ -33,14 +33,26 @@ $query = "SELECT applications.id, applications.status, applications.applied_at, 
           WHERE applications.email = ? 
           ORDER BY applications.applied_at DESC";
 $stmt = $conn->prepare($query);
+if (!$stmt) {
+    die("Query preparation failed: " . $conn->error); // Debugging: Check query preparation
+}
 $stmt->bind_param("s", $email);
-$stmt->execute();
+if (!$stmt->execute()) {
+    die("Query execution failed: " . $stmt->error); // Debugging: Check query execution
+}
 $result = $stmt->get_result();
 $applications = [];
 while ($row = $result->fetch_assoc()) {
     $applications[] = $row;
 }
 $stmt->close();
+
+// Debugging: Print applications array
+if (empty($applications)) {
+    error_log("No applications found for email: $email"); // Log the issue
+} else {
+    error_log("Applications fetched successfully: " . print_r($applications, true)); // Log the data
+}
 
 // Check for success message
 $success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
