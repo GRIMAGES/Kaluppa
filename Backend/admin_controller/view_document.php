@@ -1,48 +1,45 @@
 <?php
-require_once '../connection.php';
+session_start();
+require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
-    $application_id = $_GET['application_id'];
-    $file_name = $_GET['file'];
+if (!isset($_SESSION['email'])) {
+    header("Location: /Frontend/index.php");
+    exit();
+}
+
+if (isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
+    $applicationId = intval($_GET['application_id']);
+    $fileName = isset($_GET['file']) ? basename($_GET['file']) : ''; // Sanitize and check file name
     $action = $_GET['action'];
 
-    // Fetch the document path from the database
-    $stmt = $conn->prepare("SELECT documents FROM applications WHERE id = ?");
-    $stmt->bind_param("s", $application_id);
-    $stmt->execute();
-    $stmt->bind_result($documents_json);
-    if ($stmt->fetch()) {
-        $stmt->close();
-        $documents = json_decode($documents_json, true);
-        foreach ($documents as $document) {
-            if ($document['file_name'] === $file_name) {
-                $file_path = '../../uploads/' . $document['file_path']; // Adjust the path as needed
-                if (file_exists($file_path)) {
-                    if ($action === 'view') {
-                        header('Content-Type: application/pdf'); // Adjust MIME type if not PDF
-                        readfile($file_path);
-                        exit();
-                    } elseif ($action === 'download') {
-                        header('Content-Description: File Transfer');
-                        header('Content-Type: application/octet-stream');
-                        header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
-                        header('Expires: 0');
-                        header('Cache-Control: must-revalidate');
-                        header('Pragma: public');
-                        header('Content-Length: ' . filesize($file_path));
-                        readfile($file_path);
-                        exit();
-                    }
-                } else {
-                    die('File not found.');
-                }
-            }
+    if (empty($fileName)) {
+        echo "<script>alert('File parameter is missing.'); window.history.back();</script>";
+        exit();
+    }
+
+    // Define the directory where documents are stored
+    $documentDir = '../../uploads/documents/';
+    $filePath = $documentDir . $fileName;
+
+    if (file_exists($filePath)) {
+        if ($action === 'view') {
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: inline; filename="' . $fileName . '"');
+            readfile($filePath);
+        } elseif ($action === 'download') {
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . $fileName . '"');
+            readfile($filePath);
         }
+        // Log the action
+        insertLog($_SESSION['user_id'], ucfirst($action) . ' Document', "Admin $action document $fileName for application ID $applicationId", 'info');
     } else {
-        $stmt->close();
-        die('Invalid application ID or file.');
+        // Log the error
+        insertLog($_SESSION['user_id'], 'File Not Found', "Attempted to $action non-existent file $fileName for application ID $applicationId", 'error');
+        echo "<script>alert('File not found.'); window.history.back();</script>";
     }
 } else {
-    die('Invalid request.');
+    echo "<script>alert('Invalid request.'); window.history.back();</script>";
 }
 ?>
