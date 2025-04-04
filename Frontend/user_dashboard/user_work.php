@@ -217,40 +217,41 @@ if (!$workResult) {
                                                     <ul class="dropdown-menu w-100" aria-labelledby="daysDropdown">
                                                         <li>
                                                             <label class="dropdown-item">
-                                                                <input type="checkbox" name="available_days[]" value="Monday"> Monday
+                                                                <input type="checkbox" class="day-checkbox" value="Monday"> Monday
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label class="dropdown-item">
-                                                                <input type="checkbox" name="available_days[]" value="Tuesday"> Tuesday
+                                                                <input type="checkbox" class="day-checkbox" value="Tuesday"> Tuesday
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label class="dropdown-item">
-                                                                <input type="checkbox" name="available_days[]" value="Wednesday"> Wednesday
+                                                                <input type="checkbox" class="day-checkbox" value="Wednesday"> Wednesday
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label class="dropdown-item">
-                                                                <input type="checkbox" name="available_days[]" value="Thursday"> Thursday
+                                                                <input type="checkbox" class="day-checkbox" value="Thursday"> Thursday
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label class="dropdown-item">
-                                                                <input type="checkbox" name="available_days[]" value="Friday"> Friday
+                                                                <input type="checkbox" class="day-checkbox" value="Friday"> Friday
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label class="dropdown-item">
-                                                                <input type="checkbox" name="available_days[]" value="Saturday"> Saturday
+                                                                <input type="checkbox" class="day-checkbox" value="Saturday"> Saturday
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label class="dropdown-item">
-                                                                <input type="checkbox" name="available_days[]" value="Sunday"> Sunday
+                                                                <input type="checkbox" class="day-checkbox" value="Sunday"> Sunday
                                                             </label>
                                                         </li>
                                                     </ul>
+                                                    <input type="hidden" name="available_days" id="availableDaysInput">
                                                 </div>
                                             </div>
                                             <div class="mb-3">
@@ -421,9 +422,22 @@ if (!$workResult) {
                 });
             });
         });
-    });
 
-   
+        const checkboxes = document.querySelectorAll(".day-checkbox");
+        const daysInput = document.getElementById("availableDaysInput");
+        const dropdownButton = document.getElementById("daysDropdown");
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                const selectedDays = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                daysInput.value = selectedDays.join(",");
+                dropdownButton.textContent = selectedDays.length > 0 ? selectedDays.join(", ") : "Select Days";
+            });
+        });
+    });
 </script>
 </body>
 </html>
