@@ -1,11 +1,15 @@
 <?php
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // Log errors to a file inside the Backend/logs folder
 ini_set("log_errors", 1);
+
 require_once '../../Backend/connection.php';
 require_once '../../Backend/aes_key.php';
 require_once '../../Backend/log_helper.php'; // Include log_helper.php
+
 session_start();
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -29,7 +33,7 @@ if ($stmt->fetch()) {
 // Fetch all applications for the logged-in user
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'applications';
 
-if ($filter === 'volunteer_application') {
+if ($filter === 'volunteer_applications') {
     $query = "SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, works.title AS work_title, volunteer_application.documents 
               FROM volunteer_application 
               JOIN works ON volunteer_application.work_id = works.id 
@@ -52,18 +56,11 @@ while ($row = $result->fetch_assoc()) {
     $applications[] = $row;
 }
 $stmt->close();
-// Debugging: Output the fetched data
+
 // Check for success message
 $success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
 unset($_SESSION['success_message']);
-?>it;
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">ge
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">$_SESSION['success_message'] : '';
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions</title>
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,11 +70,8 @@ unset($_SESSION['success_message']);
     <title>Transactions</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_transaction.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <!-- New CSS for smooth animations -->
     <link rel="stylesheet" href="../CSS/user_css/animations.css">
     <style>
         .floating-alert {
@@ -93,8 +87,8 @@ unset($_SESSION['success_message']);
 <?php include 'topbar.php'; ?>
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content"> <!-- Add custom-modal class -->
-            <div class="modal-header bg-theme text-white"> <!-- Add bg-theme and text-white classes -->
+        <div class="modal-content">
+            <div class="modal-header bg-theme text-white">
                 <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -104,7 +98,6 @@ unset($_SESSION['success_message']);
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
-
             </div>
         </div>
     </div>
@@ -141,7 +134,7 @@ unset($_SESSION['success_message']);
                                 <td>
                                     <?php 
                                     if ($filter === 'volunteer_applications') {
-                                        echo htmlspecialchars($application['work_title'] ?? 'N/A'); // Use 'N/A' if work_title is not available
+                                        echo htmlspecialchars($application['work_title'] ?? 'N/A');
                                     } else {
                                         echo htmlspecialchars($application['course_name']);
                                     }
@@ -228,7 +221,7 @@ unset($_SESSION['success_message']);
     });
 
     $(document).ready(function() {
- $("#applicationsTable tbody").sortable();
+        $("#applicationsTable tbody").sortable();
         $("#applicationsTable tbody").disableSelection();
     });
 </script>
