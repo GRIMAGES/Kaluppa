@@ -76,10 +76,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     $fileMime = mime_content_type($fileTmpPath);
     $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
+    // Convert file to PDF if not already in PDF format
     if (!in_array($fileMime, $allowedMime) || !in_array($fileExt, $allowedExt)) {
-        error_log("Invalid file type uploaded: $fileMime.$fileExt");
-        echo "<script>var errorToast = new bootstrap.Toast(document.getElementById('errorToast')); errorToast.show();</script>";
-        exit();
+        $pdfContent = '';
+        // Use TCPDF to create a PDF from the uploaded file
+        $pdf = new \TCPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('helvetica', '', 12);
+        $fileContent = file_get_contents($fileTmpPath);
+        $pdf->Write(0, $fileContent);
+        $pdfContent = $pdf->Output('', 'S'); // Get PDF content as a string
+
+        // Save the converted PDF to a temporary file
+        $tempPdfPath = $uploadDir . DIRECTORY_SEPARATOR . pathinfo($fileName, PATHINFO_FILENAME) . '.pdf';
+        file_put_contents($tempPdfPath, $pdfContent);
+
+        // Update file path and name for further processing
+        $fileTmpPath = $tempPdfPath;
+        $fileName = pathinfo($fileName, PATHINFO_FILENAME) . '.pdf';
+        $fileMime = 'application/pdf';
+        $fileExt = 'pdf';
     }
 
     $uploadFilePath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;

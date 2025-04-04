@@ -125,19 +125,26 @@ try {
             if (isset($_FILES['documents']) && is_array($_FILES['documents']['name'])) {
                 foreach ($_FILES['documents']['name'] as $key => $name) {
                     if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
-                        $fileType = mime_content_type($_FILES['documents']['tmp_name'][$key]);
+                        $tmpFilePath = $_FILES['documents']['tmp_name'][$key];
                         $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
 
-                        // ✅ Check for PDF only
-                        if ($fileType !== 'application/pdf' || strtolower($fileExtension) !== 'pdf') {
-                            echo json_encode(['success' => false, 'error_code' => 10, 'message' => 'Only PDF documents are allowed.']);
-                            exit();
+                        // Convert file to PDF
+                        $pdfContent = '';
+                        if (strtolower($fileExtension) !== 'pdf') {
+                            // Use TCPDF to create a PDF from the uploaded file
+                            $pdf = new \TCPDF();
+                            $pdf->AddPage();
+                            $pdf->SetFont('helvetica', '', 12);
+                            $fileContent = file_get_contents($tmpFilePath);
+                            $pdf->Write(0, $fileContent);
+                            $pdfContent = $pdf->Output('', 'S'); // Get PDF content as a string
+                        } else {
+                            $pdfContent = file_get_contents($tmpFilePath); // Use the original PDF content
                         }
 
                         // 🔒 Proceed with AES encryption
-                        $originalContent = file_get_contents($_FILES['documents']['tmp_name'][$key]);
                         $encryptedData = openssl_encrypt(
-                            $originalContent,
+                            $pdfContent,
                             'AES-256-CBC',
                             AES_KEY,
                             OPENSSL_RAW_DATA,
@@ -145,7 +152,7 @@ try {
                         );
                         $encodedData = base64_encode($encryptedData);
                         $encryptedDocuments[] = [
-                            'file_name' => $name,
+                            'file_name' => pathinfo($name, PATHINFO_FILENAME) . '.pdf', // Ensure the file name ends with .pdf
                             'file_data' => $encodedData
                         ];
                     }
@@ -153,7 +160,7 @@ try {
             }
 
             // Serialize the encrypted documents array for storage in DB
-            $documentData = json_encode($encryptedDocuments);  // Store as JSON string
+            $documentData = json_encode($encryptedDocuments); // Store as JSON string
 
             // Call the function to generate a unique ID
             try {
