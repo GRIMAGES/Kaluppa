@@ -204,6 +204,26 @@ if (!$workResult) {
                                                 <label class="form-label">Upload Resume</label>
                                                 <input type="file" class="form-control" name="resume" accept=".pdf, .doc, .docx" required>
                                             </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Facebook Profile</label>
+                                                <input type="text" class="form-control" name="facebook_profile" placeholder="Name in your Facebook account" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Days of the Week</label>
+                                                <select class="form-control" name="available_days[]" multiple required>
+                                                    <option value="Monday">Monday</option>
+                                                    <option value="Tuesday">Tuesday</option>
+                                                    <option value="Wednesday">Wednesday</option>
+                                                    <option value="Thursday">Thursday</option>
+                                                    <option value="Friday">Friday</option>
+                                                    <option value="Saturday">Saturday</option>
+                                                    <option value="Sunday">Sunday</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Hours per Week</label>
+                                                <input type="number" class="form-control" name="hours_per_week" min="1" required>
+                                            </div>
                                             <button type="submit" class="btn btn-primary w-100">Submit Application</button>
                                         </form>
                                     </div>

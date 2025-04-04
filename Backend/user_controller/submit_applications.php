@@ -45,13 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     $email = $_POST['email'] ?? $user['email'];
     $work_id = $_POST['work_id'];
     $phone = $_POST['phone'] ?? '';
-    $house_number = $_POST['house_number'] ?? '';
-    $street = $_POST['street'] ?? '';
     $barangay = $_POST['barangay'] ?? '';
-    $district = $_POST['district'] ?? '';
-    $city = $_POST['city'] ?? '';
-    $region = $_POST['region'] ?? '';
-    $postal_code = $_POST['postal_code'] ?? '';
+    $province = $_POST['province'] ?? '';
+    $municipality = $_POST['municipality'] ?? '';
+    $facebook_profile = $_POST['facebook_profile'] ?? '';
+    $available_days = isset($_POST['available_days']) ? implode(',', $_POST['available_days']) : '';
+    $hours_per_week = $_POST['hours_per_week'] ?? 0;
 
     // Upload Directory
     $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
@@ -106,8 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     // Insert into DB
     $insertQuery = "INSERT INTO volunteer_application (
         id, work_id, user_id, first_name, middle_name, last_name, email,
-        phone, house_number, street, barangay, district, city, region, postal_code, resume
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        phone, barangay, province, municipality, facebook_profile, available_days, hours_per_week, resume
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($insertQuery);
     if (!$stmt) {
@@ -117,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     }
 
     $stmt->bind_param(
-        'siisssssssssssss',
+        'siissssssssssis',
         $newId,
         $work_id,
         $user_id,
@@ -126,13 +125,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
         $last_name,
         $email,
         $phone,
-        $house_number,
-        $street,
         $barangay,
-        $district,
-        $city,
-        $region,
-        $postal_code,
+        $province,
+        $municipality,
+        $facebook_profile,
+        $available_days,
+        $hours_per_week,
         $resumePathToSave
     );
 
@@ -147,4 +145,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     exit();
 }
 ?>
- 
