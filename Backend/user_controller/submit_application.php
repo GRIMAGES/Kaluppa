@@ -256,6 +256,10 @@ try {
                 echo json_encode(['success' => true, 'message' => 'Application submitted successfully, but failed to send notification email.']);
             }
 
+            // Log the application submission
+            require_once '../../Backend/log_helper.php';
+            insertLog($user_id, 'APPLICATION_SUBMISSION', "User submitted an application for course ID: $courseId", 'SUBMISSION');
+
             $insertStmt->close();
             $conn->close();
         } else {

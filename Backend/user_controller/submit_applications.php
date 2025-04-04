@@ -138,6 +138,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     // Execute and check success
     if ($stmt->execute()) {
         $_SESSION['success'] = "Your application has been submitted!";
+
+        // Log the volunteer application submission
+        require_once '../../Backend/log_helper.php';
+        insertLog($user_id, 'VOLUNTEER_APPLICATION_SUBMISSION', "User submitted a volunteer application for work ID: $work_id", 'SUBMISSION');
     } else {
         error_log("Insert execution failed: " . $stmt->error); // Log the error
         $_SESSION['error'] = "Something went wrong. Please try again.";
