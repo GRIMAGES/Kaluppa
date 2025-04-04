@@ -29,12 +29,12 @@ if ($stmt->fetch()) {
 // Fetch all applications for the logged-in user
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'applications';
 
-if ($filter === 'volunteer_applications') {
-    $query = "SELECT volunteer_applications.id, volunteer_applications.status, volunteer_applications.applied_at, events.name AS event_name, volunteer_applications.documents 
-              FROM volunteer_applications 
-              JOIN events ON volunteer_applications.event_id = events.id 
-              WHERE volunteer_applications.email = ? 
-              ORDER BY volunteer_applications.applied_at DESC";
+if ($filter === 'volunteer_application') {
+    $query = "SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, events.name AS event_name, volunteer_application.documents 
+              FROM volunteer_application 
+              JOIN events ON volunteer_application.event_id = events.id 
+              WHERE volunteer_application.email = ? 
+              ORDER BY volunteer_application.applied_at DESC";
 } else {
     $query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
               FROM applications 
