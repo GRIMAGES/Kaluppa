@@ -20,9 +20,11 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($user_id);
 if ($stmt->fetch()) {
+    $stmt->close(); // Close the statement before calling insertLog
     insertLog($user_id, 'View', 'User accessed the transactions page', 'info'); // Log user action
+} else {
+    $stmt->close(); // Ensure the statement is closed even if no user is found
 }
-$stmt->close();
 
 // Fetch all applications for the logged-in user
 $query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
