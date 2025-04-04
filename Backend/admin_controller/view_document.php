@@ -19,10 +19,11 @@ if (isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
     }
 
     // Define the directory where documents are stored
-    $documentDir = '../../uploads/documents/';
+    $documentDir = realpath('../../Backend/Documents/Scholarship/') . DIRECTORY_SEPARATOR;
     $filePath = $documentDir . $fileName;
 
-    if (file_exists($filePath)) {
+    // Check if the file exists and is within the allowed directory
+    if (file_exists($filePath) && strpos(realpath($filePath), $documentDir) === 0) {
         if ($action === 'view') {
             header('Content-Type: application/pdf');
             header('Content-Disposition: inline; filename="' . $fileName . '"');
