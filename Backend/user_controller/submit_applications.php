@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     $municipality = $_POST['municipality'] ?? '';
     $facebook_profile = $_POST['facebook_profile'] ?? '';
     $available_days = isset($_POST['available_days']) ? implode(',', $_POST['available_days']) : '';
+    error_log("Available Days: " . $available_days); // Log the value of available_days
     $hours_per_week = $_POST['hours_per_week'] ?? 0;
 
     // Upload Directory
@@ -138,8 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['work_id'])) {
     if ($stmt->execute()) {
         $_SESSION['success'] = "Your application has been submitted!";
     } else {
-        error_log("Insert execution failed: " . $stmt->error);
-        $_SESSION['error'] = "Something went wrong.";
+        error_log("Insert execution failed: " . $stmt->error); // Log the error
+        $_SESSION['error'] = "Something went wrong. Please try again.";
+        echo json_encode(['success' => false, 'message' => 'Database insertion failed.']);
+        exit();
     }
 
     exit();
