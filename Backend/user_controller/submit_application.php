@@ -120,7 +120,7 @@ try {
                 exit();
             }
 
-            // Handle File Upload with AES-256 Encryption
+            // Handle File Upload with AES-256 Encryption and PDF Conversion
             $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Scholarship/');
             if (!is_dir($uploadDir)) {
                 error_log("Upload directory does not exist: $uploadDir");
@@ -133,16 +133,26 @@ try {
                 foreach ($_FILES['documents']['name'] as $key => $name) {
                     if ($_FILES['documents']['error'][$key] === UPLOAD_ERR_OK) {
                         $tmpFilePath = $_FILES['documents']['tmp_name'][$key];
-                        $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
-                        $safeFileName = uniqid() . '_' . basename($name); // Generate a unique file name
+                        $fileExtension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+                        $safeFileName = uniqid() . '_' . pathinfo($name, PATHINFO_FILENAME) . '.pdf'; // Ensure the file name ends with .pdf
                         $destinationPath = $uploadDir . DIRECTORY_SEPARATOR . $safeFileName;
 
-                        // Read file content
-                        $fileContent = file_get_contents($tmpFilePath);
+                        // Convert file to PDF if not already a PDF
+                        $pdfContent = '';
+                        if ($fileExtension !== 'pdf') {
+                            $pdf = new \TCPDF();
+                            $pdf->AddPage();
+                            $pdf->SetFont('helvetica', '', 12);
+                            $fileContent = file_get_contents($tmpFilePath);
+                            $pdf->Write(0, $fileContent);
+                            $pdfContent = $pdf->Output('', 'S'); // Get PDF content as a string
+                        } else {
+                            $pdfContent = file_get_contents($tmpFilePath); // Use the original PDF content
+                        }
 
-                        // Encrypt the file content
+                        // Encrypt the PDF content
                         $encryptedData = openssl_encrypt(
-                            $fileContent,
+                            $pdfContent,
                             'AES-256-CBC',
                             AES_KEY,
                             OPENSSL_RAW_DATA,
