@@ -84,6 +84,7 @@ $result = $conn->query($query);
             <option value="ERROR">ERROR</option>
             <option value="SECURITY">SECURITY</option>
             <option value="DEBUG">DEBUG</option>
+            <option value="SUBMISSION">SUBMISSION</option>
         </select>
     </div>
     <table id="logsTable" class="table table-striped table-bordered">
