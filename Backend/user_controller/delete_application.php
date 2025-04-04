@@ -1,9 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-require_once '../connection.php';
-require_once '../log_helper.php';
+require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
@@ -11,36 +8,51 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['application_id'])) {
-    $application_id = intval($_POST['application_id']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate input
+    if (!isset($_POST['application_id']) || empty($_POST['application_id'])) {
+        die("Application ID is required.");
+    }
+
+    $application_id = $_POST['application_id'];
     $email = $_SESSION['email'];
 
-    // Verify the application belongs to the logged-in user
-    $stmt = $conn->prepare("SELECT id FROM applications WHERE id = ? AND email = ?");
-    $stmt->bind_param("is", $application_id, $email);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
+    // Fetch user ID
+    $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
+    if (!$stmt) {
+        die("Query preparation failed: " . $conn->error);
+    }
+    $stmt->bind_param("s", $email);
+    if (!$stmt->execute()) {
+        die("Query execution failed: " . $stmt->error);
+    }
+    $stmt->bind_result($user_id);
+    if (!$stmt->fetch()) {
         $stmt->close();
-
-        // Delete the application
-        $delete_stmt = $conn->prepare("DELETE FROM applications WHERE id = ?");
-        $delete_stmt->bind_param("i", $application_id);
-        if ($delete_stmt->execute()) {
-            // Log the deletion
-            $user_id = $_SESSION['user_id']; // Assuming user_id is stored in session
-            insertLog($user_id, 'Delete', "Deleted application ID $application_id", 'warning');
-            $_SESSION['success_message'] = "Application deleted successfully.";
-        } else {
-            $_SESSION['success_message'] = "Failed to delete the application.";
-        }
-        $delete_stmt->close();
-    } else {
-        $_SESSION['success_message'] = "Invalid application ID.";
+        die("User not found.");
     }
     $stmt->close();
-}
 
-header("Location: /Kaluppa/Frontend/user_dashboard/user_transactions.php");
-exit();
+    // Delete application
+    $stmt = $conn->prepare("DELETE FROM applications WHERE id = ? AND email = ?");
+    if (!$stmt) {
+        die("Query preparation failed: " . $conn->error);
+    }
+    $stmt->bind_param("is", $application_id, $email);
+    if (!$stmt->execute()) {
+        die("Query execution failed: " . $stmt->error);
+    }
+
+    // Log the deletion
+    insertLog($user_id, 'Delete', "Deleted application with ID $application_id", 'info');
+
+    $stmt->close();
+
+    // Redirect with success message
+    $_SESSION['success_message'] = "Application deleted successfully.";
+    header("Location: /Kaluppa/Frontend/user_dashboard/user_transactions.php");
+    exit();
+} else {
+    die("Invalid request method.");
+}
+?>
