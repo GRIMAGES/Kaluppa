@@ -17,9 +17,11 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($user_id);
 if ($stmt->fetch()) {
+    $stmt->close(); // Close the statement before calling insertLog
     insertLog($user_id, 'View', 'User accessed the calendar page', 'info'); // Log user action
+} else {
+    $stmt->close(); // Ensure the statement is closed even if no user is found
 }
-$stmt->close();
 
 $events = [];
 $eventsQuery = "SELECT event_time, title FROM events ORDER BY event_time ASC";
