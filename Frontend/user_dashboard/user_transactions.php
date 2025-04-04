@@ -1,12 +1,12 @@
 <?php
 ini_set('display_errors', 1);
-
-// Log errors to a file inside the Backend/logs folder
 ini_set("log_errors", 1);
+
 require_once '../../Backend/connection.php';
 require_once '../../Backend/aes_key.php';
-require_once '../../Backend/log_helper.php'; // Include log_helper.php
+require_once '../../Backend/log_helper.php';
 session_start();
+
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
     exit();
@@ -20,25 +20,33 @@ $stmt->bind_param("s", $email);
 $stmt->execute();
 $stmt->bind_result($user_id);
 if ($stmt->fetch()) {
-    $stmt->close(); // Close the statement before calling insertLog
-    insertLog($user_id, 'View', 'User accessed the transactions page', 'info'); // Log user action
+    $stmt->close();
+    insertLog($user_id, 'View', 'User accessed the transactions page', 'info');
 } else {
-    $stmt->close(); // Ensure the statement is closed even if no user is found
+    $stmt->close();
+    die("User not found.");
 }
 
-// Fetch all applications for the logged-in user
-$query = "SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents 
-          FROM applications 
-          JOIN courses ON applications.course_id = courses.id 
-          WHERE applications.email = ? 
-          ORDER BY applications.applied_at DESC";
+// Fetch all applications and volunteer applications for the logged-in user
+$query = "
+    SELECT applications.id, applications.status, applications.applied_at, courses.name AS course_name, applications.documents, 'Application' AS type
+    FROM applications
+    JOIN courses ON applications.course_id = courses.id
+    WHERE applications.email = ?
+    UNION
+    SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, volunteer_roles.name AS course_name, volunteer_application.documents, 'Volunteer' AS type
+    FROM volunteer_application
+    JOIN volunteer_roles ON volunteer_application.role_id = volunteer_roles.id
+    WHERE volunteer_application.email = ?
+    ORDER BY applied_at DESC";
+
 $stmt = $conn->prepare($query);
 if (!$stmt) {
-    die("Query preparation failed: " . $conn->error); // Debugging: Check query preparation
+    die("Query preparation failed: " . $conn->error);
 }
-$stmt->bind_param("s", $email);
+$stmt->bind_param("ss", $email, $email);
 if (!$stmt->execute()) {
-    die("Query execution failed: " . $stmt->error); // Debugging: Check query execution
+    die("Query execution failed: " . $stmt->error);
 }
 $result = $stmt->get_result();
 $applications = [];
@@ -46,13 +54,6 @@ while ($row = $result->fetch_assoc()) {
     $applications[] = $row;
 }
 $stmt->close();
-
-// Debugging: Print applications array
-if (empty($applications)) {
-    error_log("No applications found for email: $email"); // Log the issue
-} else {
-    error_log("Applications fetched successfully: " . print_r($applications, true)); // Log the data
-}
 
 // Check for success message
 $success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
@@ -67,11 +68,8 @@ unset($_SESSION['success_message']);
     <title>Transactions</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/user_css/user_transaction.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <!-- New CSS for smooth animations -->
     <link rel="stylesheet" href="../CSS/user_css/animations.css">
     <style>
         .floating-alert {
@@ -85,25 +83,7 @@ unset($_SESSION['success_message']);
 <body style="background-color: #ddead1;">
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content"> <!-- Add custom-modal class -->
-            <div class="modal-header bg-theme text-white"> <!-- Add bg-theme and text-white classes -->
-                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p>Are you sure you want to log out?</p>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
 
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Transactions Section -->
 <div class="container mt-5 mb-5">
     <?php if ($success_message): ?>
         <div class="alert alert-success alert-dismissible fade show floating-alert" role="alert">
@@ -117,7 +97,8 @@ unset($_SESSION['success_message']);
             <table id="applicationsTable" class="display table table-bordered">
                 <thead style="background-color: #f2f2f2; color: black;">
                     <tr>
-                        <th>Course Name</th>
+                        <th>Type</th>
+                        <th>Course/Role Name</th>
                         <th>Status</th>
                         <th>Applied At</th>
                         <th>Document</th>
@@ -128,11 +109,12 @@ unset($_SESSION['success_message']);
                     <?php if (!empty($applications)): ?>
                         <?php foreach ($applications as $application): ?>
                             <tr>
+                                <td><?php echo htmlspecialchars($application['type']); ?></td>
                                 <td><?php echo htmlspecialchars($application['course_name']); ?></td>
                                 <td><?php echo htmlspecialchars($application['status']); ?></td>
                                 <td><?php echo htmlspecialchars($application['applied_at']); ?></td>
                                 <td>
-                                <a href="/Kaluppa/Backend/admin_controller/view_document.php?file=<?php echo urlencode($application['documents']); ?>&action=view" target="_blank">View</a>
+                                    <a href="/Kaluppa/Backend/admin_controller/view_document.php?file=<?php echo urlencode($application['documents']); ?>&action=view" target="_blank">View</a>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editDocumentModal" data-application-id="<?php echo $application['id']; ?>" data-document="<?php echo htmlspecialchars($application['documents']); ?>">
@@ -147,7 +129,7 @@ unset($_SESSION['success_message']);
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="text-center">No applications found.</td>
+                            <td colspan="6" class="text-center">No applications found.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -156,7 +138,6 @@ unset($_SESSION['success_message']);
     </div>
 </div>
 
-<!-- Edit Document Modal -->
 <div class="modal fade" id="editDocumentModal" tabindex="-1" aria-labelledby="editDocumentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -178,7 +159,6 @@ unset($_SESSION['success_message']);
     </div>
 </div>
 
-<!-- DataTables JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
@@ -191,15 +171,10 @@ unset($_SESSION['success_message']);
         editDocumentModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var applicationId = button.getAttribute('data-application-id');
-            var document = button.getAttribute('data-document');
-            var modalTitle = editDocumentModal.querySelector('.modal-title');
             var modalBodyInput = editDocumentModal.querySelector('.modal-body input#applicationId');
-
-            modalTitle.textContent = 'Edit Document for Application ID ' + applicationId;
             modalBodyInput.value = applicationId;
         });
 
-        // Auto-hide alert after 5 seconds
         var alert = document.querySelector('.floating-alert');
         if (alert) {
             setTimeout(function() {
@@ -208,13 +183,7 @@ unset($_SESSION['success_message']);
             }, 5000);
         }
     });
-
-    $(document).ready(function() {
-        $("#applicationsTable tbody").sortable();
-        $("#applicationsTable tbody").disableSelection();
-    });
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
