@@ -210,48 +210,28 @@ if (!$workResult) {
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label">Days of the Week</label>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="daysDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        Select Days
-                                                    </button>
-                                                    <ul class="dropdown-menu w-100" aria-labelledby="daysDropdown">
-                                                        <li>
-                                                            <label class="dropdown-item">
-                                                                <input type="checkbox" class="day-checkbox" value="Monday"> Monday
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="dropdown-item">
-                                                                <input type="checkbox" class="day-checkbox" value="Tuesday"> Tuesday
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="dropdown-item">
-                                                                <input type="checkbox" class="day-checkbox" value="Wednesday"> Wednesday
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="dropdown-item">
-                                                                <input type="checkbox" class="day-checkbox" value="Thursday"> Thursday
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="dropdown-item">
-                                                                <input type="checkbox" class="day-checkbox" value="Friday"> Friday
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="dropdown-item">
-                                                                <input type="checkbox" class="day-checkbox" value="Saturday"> Saturday
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="dropdown-item">
-                                                                <input type="checkbox" class="day-checkbox" value="Sunday"> Sunday
-                                                            </label>
-                                                        </li>
-                                                    </ul>
-                                                    <input type="hidden" name="available_days" id="availableDaysInput">
+                                                <div>
+                                                    <label class="form-check">
+                                                        <input type="checkbox" class="form-check-input day-checkbox" name="available_days[]" value="Monday"> Monday
+                                                    </label>
+                                                    <label class="form-check">
+                                                        <input type="checkbox" class="form-check-input day-checkbox" name="available_days[]" value="Tuesday"> Tuesday
+                                                    </label>
+                                                    <label class="form-check">
+                                                        <input type="checkbox" class="form-check-input day-checkbox" name="available_days[]" value="Wednesday"> Wednesday
+                                                    </label>
+                                                    <label class="form-check">
+                                                        <input type="checkbox" class="form-check-input day-checkbox" name="available_days[]" value="Thursday"> Thursday
+                                                    </label>
+                                                    <label class="form-check">
+                                                        <input type="checkbox" class="form-check-input day-checkbox" name="available_days[]" value="Friday"> Friday
+                                                    </label>
+                                                    <label class="form-check">
+                                                        <input type="checkbox" class="form-check-input day-checkbox" name="available_days[]" value="Saturday"> Saturday
+                                                    </label>
+                                                    <label class="form-check">
+                                                        <input type="checkbox" class="form-check-input day-checkbox" name="available_days[]" value="Sunday"> Sunday
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div class="mb-3">
