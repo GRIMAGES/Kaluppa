@@ -30,7 +30,7 @@ if ($stmt->fetch()) {
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'applications';
 
 if ($filter === 'volunteer_application') {
-    $query = "SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, works.work_id, volunteer_application.documents 
+    $query = "SELECT volunteer_application.id, volunteer_application.status, volunteer_application.applied_at, works.title, volunteer_application.documents 
               FROM volunteer_application 
               JOIN works ON volunteer_application.work_id = works.id 
               WHERE volunteer_application.email = ? 
@@ -120,7 +120,7 @@ unset($_SESSION['success_message']);
             <table id="applicationsTable" class="display table table-bordered">
                 <thead style="background-color: #f2f2f2; color: black;">
                     <tr>
-                        <th><?php echo $filter === 'volunteer_applications' ? 'Work ID' : 'Course Name'; ?></th>
+                        <th><?php echo $filter === 'volunteer_applications' ? 'Title' : 'Course Name'; ?></th>
                         <th>Status</th>
                         <th>Applied At</th>
                         <th>Document</th>
@@ -134,7 +134,7 @@ unset($_SESSION['success_message']);
                                 <td>
                                     <?php 
                                     if ($filter === 'volunteer_applications') {
-                                        echo htmlspecialchars($application['work_id'] ?? 'N/A'); // Use 'N/A' if work_id is not available
+                                        echo htmlspecialchars($application['title'] ?? 'N/A'); // Use 'N/A' if title is not available
                                     } else {
                                         echo htmlspecialchars($application['course_name']);
                                     }
