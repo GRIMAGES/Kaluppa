@@ -404,17 +404,10 @@ if (!$workResult) {
         });
 
         const checkboxes = document.querySelectorAll(".day-checkbox");
-        const daysInput = document.getElementById("availableDaysInput");
-        const dropdownButton = document.getElementById("daysDropdown");
 
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener("change", () => {
-                const selectedDays = Array.from(checkboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-
-                daysInput.value = selectedDays.join(",");
-                dropdownButton.textContent = selectedDays.length > 0 ? selectedDays.join(", ") : "Select Days";
+                // Removed code for updating `availableDaysInput` as it is no longer needed.
             });
         });
     });
