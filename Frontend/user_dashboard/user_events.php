@@ -59,7 +59,7 @@ if ($result->num_rows > 0) {
 </div>
 
 <div class="main-content">
-    <div class="event-container">
+    <div class="event-container row">
         <?php
         // Query to fetch events from the database
         $query = "SELECT * FROM events ORDER BY event_time ASC";
@@ -70,17 +70,25 @@ if ($result->num_rows > 0) {
                 // Generate a unique ID for the modal
                 $modalId = 'eventModal' . htmlspecialchars($event['id']);
                 ?>
-                <div class="event-card shadow-lg rounded-4" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; padding: 15px; margin-bottom: 20px; text-align: center;">
-                    <!-- Event Image -->
-                    <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image" style="max-height: 200px; object-fit: cover; width: 100%;">
+                <div class="col-md-6 mb-4">
+                    <div class="event-card shadow-lg rounded-4" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; padding: 15px; text-align: center;">
+                        <!-- Event Image -->
+                        <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image" style="max-height: 200px; object-fit: cover; width: 100%;">
 
-                    <!-- Event Details -->
-                    <h3 class="event-title mb-2" style="font-weight: bold;"><?php echo htmlspecialchars($event['title']); ?></h3>
-                    <p class="event-time mb-2"><i class="far fa-clock me-2"></i><?php echo htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))); ?></p>
-                    <p class="event-organizer mb-3"><i class="fas fa-user-tie me-2"></i>Organizer: <?php echo htmlspecialchars($event['organizer']); ?></p>
-                    <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
-                        View Details
-                    </button>
+                        <!-- Event Details -->
+                        <h3 class="event-title mb-2" style="font-weight: bold; color: white;">
+                            <?php echo htmlspecialchars($event['title']); ?>
+                        </h3>
+                        <p class="event-time mb-2" style="color: white;">
+                            <i class="far fa-clock me-2"></i><?php echo htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))); ?>
+                        </p>
+                        <p class="event-organizer mb-3" style="color: white;">
+                            <i class="fas fa-user-tie me-2"></i>Organizer: <?php echo htmlspecialchars($event['organizer']); ?>
+                        </p>
+                        <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
+                            View Details
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Event Details Modal -->
