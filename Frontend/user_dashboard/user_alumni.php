@@ -162,7 +162,7 @@ $alumni_result = $alumni_stmt->get_result();
                 <div class="card-body">
                     <i class="fas fa-question-circle card-icon"></i>
                     <h5 class="card-title" style="color: white;">Inquiries</h5>
-                    <p class="card-text">Submit your questions or concerns.</p>
+                    <p class="card-text">Submit your questions or concerns or chat with Admin.</p>
                 </div>
             </div>
         </div>
@@ -243,7 +243,7 @@ $alumni_result = $alumni_stmt->get_result();
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="inquiryForm">
                     <div class="mb-3">
                         <label for="inquirySubject" class="form-label">Subject</label>
                         <input type="text" class="form-control" id="inquirySubject" required>
@@ -253,6 +253,17 @@ $alumni_result = $alumni_stmt->get_result();
                         <textarea class="form-control" id="inquiryMessage" rows="3" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit Inquiry</button>
+                </form>
+                <hr>
+                <h5>Chat with Admin</h5>
+                <div id="chatMessages" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                    <!-- Messages will be dynamically loaded here -->
+                </div>
+                <form id="chatForm">
+                    <div class="mb-3">
+                        <textarea class="form-control" id="chatMessage" rows="3" placeholder="Type your message..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send</button>
                 </form>
             </div>
         </div>
@@ -340,6 +351,59 @@ $alumni_result = $alumni_stmt->get_result();
         // Ensure modal backdrop is removed properly
         $('#requestDocumentsModal').on('hidden.bs.modal', function() {
             $('.modal-backdrop').remove();
+        });
+
+        // Open inquiries modal and load chat messages
+        $('#inquiriesModal').on('show.bs.modal', function() {
+            loadMessages();
+        });
+
+        // Load chat messages
+        function loadMessages() {
+            $.ajax({
+                url: '/Kaluppa/Backend/get_chat_messages.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        const chatMessages = $('#chatMessages');
+                        chatMessages.empty();
+                        response.messages.forEach(function(message) {
+                            const messageElement = `<div><strong>${message.sender}:</strong> ${message.text}</div>`;
+                            chatMessages.append(messageElement);
+                        });
+                    } else {
+                        alert('Failed to load messages: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while loading messages.');
+                }
+            });
+        }
+
+        // Handle chat form submission
+        $('#chatForm').on('submit', function(e) {
+            e.preventDefault();
+            const message = $('#chatMessage').val();
+
+            $.ajax({
+                url: '/Kaluppa/Backend/send_chat_message.php',
+                method: 'POST',
+                data: { message: message },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#chatMessage').val('');
+                        loadMessages();
+                    } else {
+                        alert('Failed to send message: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while sending the message.');
+                }
+            });
         });
     });
 </script>
