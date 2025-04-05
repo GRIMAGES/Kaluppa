@@ -189,36 +189,45 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     animation: slideIn 1s ease-in-out; /* Add slide-in effect */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add hover animation */
-}
-
-.right-sidebar:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-    background: #3a4d32; /* Darken background on hover */
 }
 
 .right-sidebar h4 {
     margin-bottom: 20px;
 }
 
-.announcement-item {
+.work-category {
+    margin-bottom: 20px;
+}
+
+.work-category h5 {
+    margin-bottom: 10px;
+}
+
+.work-category .work-item {
     background: #fff;
     color: #333;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
-    transition: background 0.3s ease, transform 0.3s ease; /* Add hover effect */
 }
 
-.announcement-item:hover {
-    background: #f1f1f1;
-    cursor: pointer;
-    transform: translateX(5px); /* Slightly move to the right on hover */
+.work-category .work-item.upcoming {
+    border-left: 5px solid #f39c12;
 }
 
-.announcement-item .megaphone {
-    margin-right: 10px;
+.work-category .work-item.ongoing {
+    border-left: 5px solid #3498db;
+}
+
+.work-category .work-item.completed {
+    border-left: 5px solid #2ecc71;
+}
+
+/* Remove hover effects */
+.work-item:hover {
+    background: none;
+    transform: none;
+    box-shadow: none;
 }
 
 .btn-close, .btn-enroll {
