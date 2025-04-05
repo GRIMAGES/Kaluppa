@@ -70,15 +70,15 @@ if ($result->num_rows > 0) {
                 // Generate a unique ID for the modal
                 $modalId = 'eventModal' . htmlspecialchars($event['id']);
                 ?>
-                <div class="event-card">
+                <div class="event-card" style="color: white;"> <!-- Inline CSS to make text white -->
                     <!-- Event Image -->
                     <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image">
                     <!-- Event Details -->
-                    <h3 class="event-title mb-2"><?php echo htmlspecialchars($event['title']); ?></h3>
-                    <p class="event-time mb-2">
+                    <h3 class="event-title mb-2" style="color: white;"><?php echo htmlspecialchars($event['title']); ?></h3>
+                    <p class="event-time mb-2" style="color: white;">
                         <i class="far fa-clock me-2"></i><?php echo htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))); ?>
                     </p>
-                    <p class="event-organizer mb-3">
+                    <p class="event-organizer mb-3" style="color: white;">
                         <i class="fas fa-user-tie me-2"></i>Organizer: <?php echo htmlspecialchars($event['organizer']); ?>
                     </p>
                     <button class="btn view-details-button" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">

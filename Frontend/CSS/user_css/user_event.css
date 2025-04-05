@@ -353,6 +353,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white; /* Ensure all text in the card is white */
 }
 
 .event-card:hover {
@@ -375,12 +376,17 @@ body {
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 10px;
+    color: white; /* Ensure specific text elements are white */
 }
 
 .event-time {
     font-size: 0.9em;
-    color: #555;
+    color: white; /* Ensure specific text elements are white */
     margin-bottom: 15px;
+}
+
+.event-organizer {
+    color: white; /* Ensure specific text elements are white */
 }
 
 .view-details-button {
