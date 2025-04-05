@@ -161,21 +161,23 @@ if ($result->num_rows > 0) {
 <!-- Announcement Details Modal -->
 <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content shadow-lg rounded-4">
+        <div class="modal-content" style="border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);">
             <!-- Modal Header -->
-            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; border-top-left-radius: 16px; border-top-right-radius: 16px;">
-                <h5 class="modal-title" id="announcementModalLabel">Announcement Details</h5>
+            <div class="modal-header" style="background: linear-gradient(to right, #1a4629, #2c6e49); color: white; border-top-left-radius: 16px; border-top-right-radius: 16px; padding: 20px;">
+                <h5 class="modal-title" id="announcementModalLabel" style="font-weight: bold; font-size: 1.5rem;">Announcement Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <!-- Modal Body -->
-            <div class="modal-body p-4" style="background-color: #f9f9f9; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-                <div id="announcementDetails" class="p-3 bg-light border rounded shadow-sm">
+            <div class="modal-body" style="background-color: #f9f9f9; padding: 25px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                <div id="announcementDetails" style="padding: 20px; background: #ffffff; border: 1px solid #ddd; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
                     <!-- Content dynamically loaded here -->
                 </div>
             </div>
             <!-- Modal Footer -->
-            <div class="modal-footer justify-content-center" style="background-color: #f1f1f1; border-top: 1px solid #ddd;">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer" style="background-color: #f1f1f1; border-top: 1px solid #ddd; padding: 15px; justify-content: center;">
+                <button type="button" class="btn btn-secondary" style="background-color: #1a4629; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold;" data-bs-dismiss="modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
