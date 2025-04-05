@@ -644,4 +644,57 @@ body {
     transform: scale(1.05);
 }
 
+/* Right Sidebar */
+.right-sidebar {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 300px;
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); /* Sidebar background color */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: slideIn 1s ease-in-out; /* Add slide-in effect */
+}
+
+.right-sidebar h4 {
+    margin-bottom: 20px;
+}
+
+.announcement-item {
+    background: #fff;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.announcement-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.legend {
+    margin-top: 20px;
+}
+
+.legend .legend-color {
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 3px;
+}
+
+/* Keyframes for slide-in effect */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
 
