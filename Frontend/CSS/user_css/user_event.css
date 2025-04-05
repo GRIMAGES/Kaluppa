@@ -412,17 +412,26 @@ body {
 }
 
 .custom-modal .modal-header {
-    background-color: #1a4629;
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
     color: white;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
+    padding: 15px 20px;
 }
 
 .custom-modal .modal-body {
     background-color: #f9f9f9;
     color: #333;
+    padding: 20px;
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
+}
+
+.custom-modal .modal-footer {
+    background-color: #f1f1f1;
+    border-top: 1px solid #ddd;
+    padding: 15px;
+    justify-content: center;
 }
 
 /* Featured Card */
