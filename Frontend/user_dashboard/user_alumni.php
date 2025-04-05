@@ -235,7 +235,6 @@ $alumni_result = $alumni_stmt->get_result();
 </div>
 
 <!-- Inquiries Modal -->
-<!-- Inquiries Modal -->
 <div class="modal fade" id="inquiriesModal" tabindex="-1" aria-labelledby="inquiriesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -244,24 +243,19 @@ $alumni_result = $alumni_stmt->get_result();
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="inquiryForm">
-                    <!-- Removed Subject and Message fields -->
-                    <hr>
-                    <h5>Chat with Admin</h5>
-                    <div id="chatMessages" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                <div id="chatContainer" style="display: flex; flex-direction: column; height: 400px;">
+                    <div id="chatMessages" style="flex-grow: 1; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9;">
                         <!-- Messages will be dynamically loaded here -->
                     </div>
-                    <form id="chatForm">
-                        <div class="mb-3">
-                            <textarea class="form-control" id="chatMessage" rows="3" placeholder="Type your message..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send</button>
+                    <form id="chatForm" style="display: flex;">
+                        <textarea class="form-control" id="chatMessage" rows="1" placeholder="Type your message..." required style="flex-grow: 1; resize: none;"></textarea>
+                        <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Send</button>
                     </form>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
 
 <!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
