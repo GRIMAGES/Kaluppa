@@ -254,27 +254,78 @@ if (!$workResult) {
     </div>
 </div>
 
-
-
 <!-- Right Sidebar -->
 <div class="right-sidebar p-3 bg-light border rounded shadow-sm">
-    <h4 class="text-primary">Announcements</h4>
-    <?php
-    // Fetch published announcements
-    $announcementQuery = "SELECT * FROM announcements WHERE status = 'published' ORDER BY created_at DESC";
-    $announcementResult = $conn->query($announcementQuery);
+    <h4 class="text-primary">Works Overview</h4>
+    <div class="work-category">
+        <h5>Upcoming Works</h5>
+        <?php
+        // Fetch and display upcoming works
+        $upcomingWorksQuery = "SELECT * FROM works WHERE status = 'upcoming'";
+        $upcomingWorksResult = $conn->query($upcomingWorksQuery);
 
-    if ($announcementResult->num_rows > 0): ?>
-        <?php while ($announcement = mysqli_fetch_assoc($announcementResult)): ?>
-            <div class="announcement-item p-2 mb-2 border-bottom" onclick="showAnnouncementDetails(<?php echo $announcement['id']; ?>)">
-                <span class="megaphone">📢</span>
-                <h5 class="text-dark"><?php echo htmlspecialchars($announcement['title'] ?? ''); ?></h5>
-            </div>
-        <?php endwhile; ?>
-    <?php else: ?>
-        <p>No announcements available.</p>
-    <?php endif; ?>
+        if ($upcomingWorksResult->num_rows > 0):
+            while ($work = $upcomingWorksResult->fetch_assoc()): ?>
+                <div class="work-item upcoming">
+                    <?php echo htmlspecialchars($work['title']); ?>
+                </div>
+            <?php endwhile;
+        else: ?>
+            <p>No upcoming works available.</p>
+        <?php endif; ?>
+    </div>
+    <div class="work-category">
+        <h5>Ongoing Works</h5>
+        <?php
+        // Fetch and display ongoing works
+        $ongoingWorksQuery = "SELECT * FROM works WHERE status = 'ongoing'";
+        $ongoingWorksResult = $conn->query($ongoingWorksQuery);
+
+        if ($ongoingWorksResult->num_rows > 0):
+            while ($work = $ongoingWorksResult->fetch_assoc()): ?>
+                <div class="work-item ongoing">
+                    <?php echo htmlspecialchars($work['title']); ?>
+                </div>
+            <?php endwhile;
+        else: ?>
+            <p>No ongoing works available.</p>
+        <?php endif; ?>
+    </div>
+    <div class="work-category">
+        <h5>Completed Works</h5>
+        <?php
+        // Fetch and display completed works
+        $completedWorksQuery = "SELECT * FROM works WHERE status = 'completed'";
+        $completedWorksResult = $conn->query($completedWorksQuery);
+
+        if ($completedWorksResult->num_rows > 0):
+            while ($work = $completedWorksResult->fetch_assoc()): ?>
+                <div class="work-item completed">
+                    <?php echo htmlspecialchars($work['title']); ?>
+                </div>
+            <?php endwhile;
+        else: ?>
+            <p>No completed works available.</p>
+        <?php endif; ?>
+    </div>
+    <!-- Legend -->
+    <div class="legend mt-4">
+        <h5>Legend</h5>
+        <div class="d-flex align-items-center mb-2">
+            <div class="legend-color" style="width: 20px; height: 20px; background-color: #f39c12; margin-right: 10px;"></div>
+            <span>Upcoming</span>
+        </div>
+        <div class="d-flex align-items-center mb-2">
+            <div class="legend-color" style="width: 20px; height: 20px; background-color: #3498db; margin-right: 10px;"></div>
+            <span>Ongoing</span>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="legend-color" style="width: 20px; height: 20px; background-color: #2ecc71; margin-right: 10px;"></div>
+            <span>Completed</span>
+        </div>
+    </div>
 </div>
+
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
     <div id="ajaxToast" class="toast text-white bg-success" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -283,27 +334,8 @@ if (!$workResult) {
         </div>
     </div>
 </div>
-<!-- Announcement Details Modal -->
-<div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
-                <h5 class="modal-title" id="announcementModalLabel">Announcement Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="modal-header-overlay"></div>
-            </div>
-            <div class="modal-body p-4 bg-light border rounded shadow-sm">
-                <div id="announcementDetails" class="p-3 bg-light border rounded shadow-sm"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
     <div class="toast align-items-center text-white <?php echo $successMessage ? 'bg-success' : 'bg-danger'; ?> border-0"
@@ -322,41 +354,6 @@ if (!$workResult) {
     function showWorkDetails(workId) {
         var workModal = new bootstrap.Modal(document.getElementById('workModal' + workId));
         workModal.show();
-    }
-
-    function showAnnouncementDetails(announcementId) {
-        fetch(`../../Backend/user_controller/fetch_announcement.php?id=${announcementId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error('Error fetching announcement details:', data.message);
-                } else {
-                    let imagePath = data.image || '';
-
-                    // Clean image path
-                    imagePath = imagePath.replace(/(Frontend\/uploads\/)+/, "Frontend/uploads/").replace(/(uploads\/)+/, "uploads/");
-                    let finalImagePath = imagePath.includes("Frontend/admin_dashboard/uploads/")
-                        ? "../../" + imagePath
-                        : "../../Frontend/admin_dashboard/uploads/" + imagePath.replace("Frontend/uploads/", "");
-
-                    var detailsHtml = `
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">${data.title}</h5>
-                                <p class="card-text">${data.content.replace(/\n/g, '<br>')}</p>
-                                ${data.image ? `<img src="${finalImagePath}" alt="Announcement Image" class="img-fluid rounded">` : ''}
-                            </div>
-                        </div>
-                    `;
-
-                    document.getElementById('announcementDetails').innerHTML = detailsHtml;
-                    var announcementModal = new bootstrap.Modal(document.getElementById('announcementModal'));
-                    announcementModal.show();
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching announcement details:', error);
-            });
     }
 
     document.addEventListener("DOMContentLoaded", () => {

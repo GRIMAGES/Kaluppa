@@ -133,6 +133,82 @@ if ($result->num_rows > 0) {
     </div>
 </div>
 
+<!-- Right Sidebar -->
+<div class="right-sidebar p-3 bg-light border rounded shadow-sm">
+    <h4 class="text-primary">Announcements</h4>
+    <?php
+    // Fetch published announcements
+    $announcementQuery = "SELECT * FROM announcements WHERE status = 'published' ORDER BY created_at DESC";
+    $announcementResult = $conn->query($announcementQuery);
+
+    if ($announcementResult->num_rows > 0): ?>
+        <?php while ($announcement = mysqli_fetch_assoc($announcementResult)): ?>
+            <div class="announcement-item p-2 mb-2 border-bottom" onclick="showAnnouncementDetails(<?php echo $announcement['id']; ?>)">
+                <span class="megaphone">📢</span>
+                <h5 class="text-dark"><?php echo htmlspecialchars($announcement['title'] ?? ''); ?></h5>
+            </div>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p>No announcements available.</p>
+    <?php endif; ?>
+</div>
+
+<!-- Announcement Details Modal -->
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
+                <h5 class="modal-title" id="announcementModalLabel">Announcement Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header-overlay"></div>
+            </div>
+            <div class="modal-body p-4 bg-light border rounded shadow-sm">
+                <div id="announcementDetails" class="p-3 bg-light border rounded shadow-sm"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showAnnouncementDetails(announcementId) {
+    fetch(`../../Backend/user_controller/fetch_announcement.php?id=${announcementId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error fetching announcement details:', data.message);
+            } else {
+                let imagePath = data.image || '';
+
+                // Clean image path
+                imagePath = imagePath.replace(/(Frontend\/uploads\/)+/, "Frontend/uploads/").replace(/(uploads\/)+/, "uploads/");
+                let finalImagePath = imagePath.includes("Frontend/admin_dashboard/uploads/")
+                    ? "../../" + imagePath
+                    : "../../Frontend/admin_dashboard/uploads/" + imagePath.replace("Frontend/uploads/", "");
+
+                var detailsHtml = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${data.title}</h5>
+                            <p class="card-text">${data.content.replace(/\n/g, '<br>')}</p>
+                            ${data.image ? `<img src="${finalImagePath}" alt="Announcement Image" class="img-fluid rounded">` : ''}
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('announcementDetails').innerHTML = detailsHtml;
+                var announcementModal = new bootstrap.Modal(document.getElementById('announcementModal'));
+                announcementModal.show();
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching announcement details:', error);
+        });
+}
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
