@@ -21,9 +21,7 @@ if ($result->num_rows > 0) {
     if (!empty($announcement['image'])) {
         $imagePath = $announcement['image'];
         // Avoid duplicating 'Frontend/uploads/' if it already exists
-        if (!str_contains($imagePath, "Frontend/uploads/")) {
-            $imagePath = "Frontend/uploads/" . $imagePath;
-        }
+        $imagePath = preg_replace('#^(Frontend/uploads/)+#', 'Frontend/uploads/', $imagePath);
         $announcement['image'] = $imagePath;
     } else {
         $announcement['image'] = ''; // No image available
