@@ -235,6 +235,7 @@ $alumni_result = $alumni_stmt->get_result();
 </div>
 
 <!-- Inquiries Modal -->
+<!-- Inquiries Modal -->
 <div class="modal fade" id="inquiriesModal" tabindex="-1" aria-labelledby="inquiriesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -244,31 +245,23 @@ $alumni_result = $alumni_stmt->get_result();
             </div>
             <div class="modal-body">
                 <form id="inquiryForm">
-                    <div class="mb-3">
-                        <label for="inquirySubject" class="form-label">Subject</label>
-                        <input type="text" class="form-control" id="inquirySubject" required>
+                    <!-- Removed Subject and Message fields -->
+                    <hr>
+                    <h5>Chat with Admin</h5>
+                    <div id="chatMessages" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                        <!-- Messages will be dynamically loaded here -->
                     </div>
-                    <div class="mb-3">
-                        <label for="inquiryMessage" class="form-label">Message</label>
-                        <textarea class="form-control" id="inquiryMessage" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Inquiry</button>
-                </form>
-                <hr>
-                <h5>Chat with Admin</h5>
-                <div id="chatMessages" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-                    <!-- Messages will be dynamically loaded here -->
-                </div>
-                <form id="chatForm">
-                    <div class="mb-3">
-                        <textarea class="form-control" id="chatMessage" rows="3" placeholder="Type your message..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send</button>
+                    <form id="chatForm">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="chatMessage" rows="3" placeholder="Type your message..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
                 </form>
             </div>
         </div>
     </div>
-</div>
+</div> 
 
 <!-- Logout Confirmation Modal -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
