@@ -70,14 +70,21 @@ if ($result->num_rows > 0) {
                 // Generate a unique ID for the modal
                 $modalId = 'eventModal' . htmlspecialchars($event['id']);
                 ?>
-                <div class="event-card">
-                    <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="event-image" alt="Event Image">
-                    <div class="event-details">
-                        <h3 class="event-title"><?php echo htmlspecialchars($event['title']); ?></h3>
-                        <p class="event-time"><i class="far fa-clock me-1"></i><?php echo htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))); ?></p>
-                        <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
-                            View Details
-                        </button>
+                <div class="event-card shadow-lg rounded-4" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; padding: 20px; margin-bottom: 20px;">
+                    <div class="row align-items-center">
+                        <!-- Event Image -->
+                        <div class="col-md-4">
+                            <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow" alt="Event Image" style="max-height: 200px; object-fit: cover;">
+                        </div>
+                        <!-- Event Details -->
+                        <div class="col-md-8">
+                            <h3 class="event-title mb-3" style="font-weight: bold;"><?php echo htmlspecialchars($event['title']); ?></h3>
+                            <p class="event-time mb-2"><i class="far fa-clock me-2"></i><?php echo htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))); ?></p>
+                            <p class="event-organizer mb-3"><i class="fas fa-user-tie me-2"></i>Organizer: <?php echo htmlspecialchars($event['organizer']); ?></p>
+                            <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
+                                View Details
+                            </button>
+                        </div>
                     </div>
                 </div>
 
