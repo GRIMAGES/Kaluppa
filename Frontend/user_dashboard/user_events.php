@@ -59,7 +59,7 @@ if ($result->num_rows > 0) {
 </div>
 
 <div class="main-content">
-    <div class="event-container d-flex flex-wrap gap-4 justify-content-start">
+    <div class="event-container">
         <?php
         // Query to fetch events from the database
         $query = "SELECT * FROM events ORDER BY event_time ASC";
@@ -70,18 +70,15 @@ if ($result->num_rows > 0) {
                 // Generate a unique ID for the modal
                 $modalId = 'eventModal' . htmlspecialchars($event['id']);
                 ?>
-                <div class="event-card" style="width: 600px; height: 350px; background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 15px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="event-card">
                     <!-- Event Image -->
-                    <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
-
+                    <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image">
                     <!-- Event Details -->
-                    <h3 class="event-title mb-2" style="font-weight: bold; color: white; text-align: center;">
-                        <?php echo htmlspecialchars($event['title']); ?>
-                    </h3>
-                    <p class="event-time mb-2" style="color: white; text-align: center;">
+                    <h3 class="event-title mb-2"><?php echo htmlspecialchars($event['title']); ?></h3>
+                    <p class="event-time mb-2">
                         <i class="far fa-clock me-2"></i><?php echo htmlspecialchars(date("F j, Y, g:i a", strtotime($event['event_time']))); ?>
                     </p>
-                    <p class="event-organizer mb-3" style="color: white; text-align: center;">
+                    <p class="event-organizer mb-3">
                         <i class="fas fa-user-tie me-2"></i>Organizer: <?php echo htmlspecialchars($event['organizer']); ?>
                     </p>
                     <button class="btn view-details-button" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">

@@ -332,12 +332,12 @@ body {
 
 /* Event Card Styling */
 .event-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Add space between cards */
-    justify-content: flex-start;
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(2, 1fr); /* Two cards per row */
+    gap: 20px; /* Space between cards */
+    justify-content: center; /* Center the cards */
     max-width: 1200px;
-    margin-left: 20px;
+    margin: 0 auto; /* Center the container */
     animation: fadeIn 1s ease-in-out;
 }
 
