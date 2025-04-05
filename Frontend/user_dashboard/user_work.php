@@ -255,8 +255,8 @@ if (!$workResult) {
 </div>
 
 <!-- Right Sidebar -->
-<div class="right-sidebar p-3 bg-light border rounded shadow-sm">
-    <h4 class="text-primary">Works Overview</h4>
+<div class="right-sidebar">
+    <h4>Works Overview</h4>
     <div class="work-category">
         <h5>Upcoming Works</h5>
         <?php
