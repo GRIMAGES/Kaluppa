@@ -8,7 +8,7 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-$email = $_SESSION['email'];
+$Semail = $_SESSION['email'];
 // Use prepared statements to prevent SQL injection
 $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
 $stmt->bind_param("s", $email);
