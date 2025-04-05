@@ -247,9 +247,20 @@ $alumni_result = $alumni_stmt->get_result();
                     <div id="chatMessages" style="flex-grow: 1; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9;">
                         <!-- Messages will be dynamically loaded here -->
                     </div>
-                    <form id="chatForm" style="display: flex;">
-                        <textarea class="form-control" id="chatMessage" rows="1" placeholder="Type your message..." required style="flex-grow: 1; resize: none;"></textarea>
-                        <button type="submit" class="btn btn-primary" style="margin-left: 10px;">Send</button>
+                    <form id="chatForm" style="display: flex; flex-direction: column;">
+                        <div class="mb-3">
+                            <select class="form-select" id="inquiryType" required>
+                                <option value="">Select Inquiry Type</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="billing">Billing</option>
+                                <option value="feedback">Feedback</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" style="flex-grow: 1;">
+                            <textarea class="form-control" id="chatMessage" rows="1" placeholder="Type your message..." required style="resize: none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="align-self: flex-end;">Send</button>
                     </form>
                 </div>
             </div>

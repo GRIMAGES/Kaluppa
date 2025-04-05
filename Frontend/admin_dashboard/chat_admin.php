@@ -1,12 +1,41 @@
 <?php
 require_once '../../Backend/connection.php';
+require_once '../../Backend/log_helper.php'; // Include log_helper.php
+
+if (!function_exists('insertLog')) {
+    error_log("insertLog function is not defined. Please check log_helper.php.");
+    die("Error: insertLog function is missing. Contact the administrator.");
+}
+
 session_start();
 
-if (!isset($_SESSION['admin_email'])) {
-    header("Location: /Frontend/admin_login.php");
+if (!isset($_SESSION['email'])) {
+    header("Location: /Frontend/index.php");
     exit();
 }
 
+$email = $_SESSION['email'];
+
+$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?"); // Corrected table name from 'admin' to 'user'
+$stmt->bind_param("s", $adminEmail);
+$stmt->execute();
+$stmt->bind_result($admin_id);
+if ($stmt->fetch()) {
+    $stmt->close(); // Ensure the result set is closed before calling insertLog
+    insertLog($admin_id, 'View', 'Admin accessed the reports page', 'info'); // Log admin action
+} else {
+    $stmt->close(); // Close the statement even if no result is fetched
+}
+
+
+// Logout logic
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header("Location: /Frontend/index.php");
+    exit();
+}
+
+$adminEmail = $_SESSION['email'] ?? ''; // Initialize adminEmail from session data
 // Fetch all chat messages grouped by user
 $chatStmt = $conn->prepare("
     SELECT u.id AS user_id, u.first_name, u.last_name, c.sender, c.text, c.created_at
@@ -23,15 +52,20 @@ while ($row = $chatResult->fetch_assoc()) {
     $messages[$row['user_id']]['messages'][] = $row;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Chat</title>
+    <title>Reports</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+    <link rel="stylesheet" href="../CSS/admin_css/events.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head> 
 <body>
+<?php include 'sidebar.php'; ?>
 <div class="container mt-5">
     <h1>Chat with Alumni</h1>
     <?php foreach ($messages as $userId => $chat): ?>
