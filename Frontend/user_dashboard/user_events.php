@@ -59,7 +59,7 @@ if ($result->num_rows > 0) {
 </div>
 
 <div class="main-content">
-    <div class="event-container row">
+    <div class="event-container row row-cols-1 row-cols-md-2 g-4">
         <?php
         // Query to fetch events from the database
         $query = "SELECT * FROM events ORDER BY event_time ASC";
@@ -70,8 +70,8 @@ if ($result->num_rows > 0) {
                 // Generate a unique ID for the modal
                 $modalId = 'eventModal' . htmlspecialchars($event['id']);
                 ?>
-                <div class="col-md-6 d-flex align-items-stretch mb-4">
-                    <div class="event-card shadow-lg rounded-4 w-100" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; padding: 15px;">
+                <div class="col">
+                    <div class="event-card shadow-lg rounded-4 h-100" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; padding: 15px;">
                         <!-- Event Image -->
                         <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image" style="max-height: 200px; object-fit: cover; width: 100%;">
 
@@ -150,7 +150,7 @@ if ($result->num_rows > 0) {
 
     if ($announcementResult->num_rows > 0): ?>
         <?php while ($announcement = mysqli_fetch_assoc($announcementResult)): ?>
-            <div class="announcement-item p-3 mb-3 rounded shadow-sm" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white;">
+            <div class="announcement-item p-3 mb-3 rounded shadow-sm" style="background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; cursor: pointer;" onclick="showAnnouncementDetails(<?php echo $announcement['id']; ?>)">
                 <h5 class="mb-2" style="font-weight: bold;">📢 <?php echo htmlspecialchars($announcement['title'] ?? ''); ?></h5>
                 <p class="mb-0" style="font-size: 0.9rem;">Published on: <?php echo htmlspecialchars(date("F j, Y", strtotime($announcement['created_at']))); ?></p>
             </div>
