@@ -70,9 +70,9 @@ if ($result->num_rows > 0) {
                 // Generate a unique ID for the modal
                 $modalId = 'eventModal' . htmlspecialchars($event['id']);
                 ?>
-                <div class="event-card" style="width: 600px; height: 350px; background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 15px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="event-card" style="width: 550px; height: 300px; background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41)); color: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); padding: 10px; display: flex; flex-direction: column; justify-content: space-between;">
                     <!-- Event Image -->
-                    <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image" style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;">
+                    <img src="<?php echo '../Images/' . htmlspecialchars($event['image']); ?>" class="img-fluid rounded shadow mb-3" alt="Event Image" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px;">
 
                     <!-- Event Details -->
                     <h3 class="event-title mb-2" style="font-weight: bold; color: white; text-align: center;">
@@ -84,7 +84,7 @@ if ($result->num_rows > 0) {
                     <p class="event-organizer mb-3" style="color: white; text-align: center;">
                         <i class="fas fa-user-tie me-2"></i>Organizer: <?php echo htmlspecialchars($event['organizer']); ?>
                     </p>
-                    <button class="btn btn-outline-light view-details-button" style="padding: 6px 12px; font-size: 0.85rem;" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
+                    <button class="btn btn-outline-light view-details-button" style="padding: 5px 10px; font-size: 0.9rem;" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
                         View Details
                     </button>
                 </div>
