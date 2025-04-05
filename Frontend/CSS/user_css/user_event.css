@@ -342,23 +342,28 @@ body {
 }
 
 .event-card {
-    width: 300px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    width: 600px; /* Increased width */
+    height: 350px; /* Increased height */
+    background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px; /* Adjusted padding */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
-.event-image {
+.event-card img {
     width: 100%;
-    height: 200px;
+    height: 180px; /* Adjusted height */
     object-fit: cover;
+    border-radius: 8px;
 }
 
 .event-details {
@@ -378,12 +383,12 @@ body {
 }
 
 .view-details-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
+    padding: 6px 12px; /* Smaller padding */
+    font-size: 0.85rem; /* Smaller font size */
     border-radius: 5px;
-    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
     transition: background-color 0.3s ease;
 }
 
