@@ -201,9 +201,9 @@ function showAnnouncementDetails(announcementId) {
                 const imageElement = document.getElementById('announcementImage');
                 if (data.image) {
                     // Resolve the correct image path
-                    const imagePath = data.image.startsWith('Frontend/uploads/')
+                    const imagePath = data.image.startsWith('Frontend/Images/')
                         ? `../../${data.image}`
-                        : `../../Frontend/uploads/${data.image}`;
+                        : `../../Frontend/Images/${data.image}`;
                     
                     imageElement.src = imagePath;
                     imageElement.style.display = 'block';

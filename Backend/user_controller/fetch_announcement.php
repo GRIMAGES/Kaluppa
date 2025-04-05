@@ -20,8 +20,8 @@ if ($result->num_rows > 0) {
     // Ensure the image path is correctly resolved
     if (!empty($announcement['image'])) {
         $imagePath = $announcement['image'];
-        // Avoid duplicating 'Frontend/uploads/' if it already exists
-        $imagePath = preg_replace('#^(Frontend/uploads/)+#', 'Frontend/uploads/', $imagePath);
+        // Avoid duplicating 'Frontend/Images/' if it already exists
+        $imagePath = preg_replace('#^(Frontend/Images/)+#', 'Frontend/Images/', $imagePath);
         $announcement['image'] = $imagePath;
     } else {
         $announcement['image'] = ''; // No image available
