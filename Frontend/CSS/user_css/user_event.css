@@ -343,7 +343,7 @@ body {
 
 .event-card {
     width: 600px; /* Increased width */
-    height: 350px; /* Increased height */
+    height: 400px; /* Increased height */
     background: linear-gradient(to right, rgb(2, 61, 15), rgb(26, 70, 41));
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
