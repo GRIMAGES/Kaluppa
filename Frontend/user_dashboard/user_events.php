@@ -59,7 +59,7 @@ if ($result->num_rows > 0) {
 </div>
 
 <div class="main-content">
-    <div class="event-container">
+    <div class="event-container" style="margin-right: 350px;"> <!-- Inline CSS to shift cards left -->
         <?php
         // Query to fetch events from the database
         $query = "SELECT * FROM events ORDER BY event_time ASC";
