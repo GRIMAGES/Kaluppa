@@ -197,10 +197,15 @@ function showAnnouncementDetails(announcementId) {
             } else {
                 document.getElementById('announcementTitle').textContent = data.title || 'No Title';
                 document.getElementById('announcementContent').innerHTML = data.content.replace(/\n/g, '<br>') || 'No Content';
-                
+
                 const imageElement = document.getElementById('announcementImage');
                 if (data.image) {
-                    imageElement.src = data.image;
+                    // Resolve the correct image path
+                    const imagePath = data.image.startsWith('Frontend/uploads/')
+                        ? `../../${data.image}`
+                        : `../../Frontend/uploads/${data.image}`;
+                    
+                    imageElement.src = imagePath;
                     imageElement.style.display = 'block';
                 } else {
                     imageElement.style.display = 'none';
