@@ -383,17 +383,19 @@ body {
 }
 
 .view-details-button {
-    padding: 6px 12px; /* Smaller padding */
-    font-size: 0.85rem; /* Smaller font size */
+    padding: 8px 16px; /* Adjusted padding for better visibility */
+    font-size: 0.9rem; /* Slightly larger font size */
     border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+    background-color: #007bff; /* Visible blue background */
+    color: white; /* White text color */
     border: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .view-details-button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
 }
 
 .custom-modal .modal-content {
