@@ -223,12 +223,25 @@ body {
     border-left: 5px solid #2ecc71;
 }
 
+/* Legend */
+.legend {
+    margin-top: 20px;
+}
+
+.legend .legend-color {
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 3px;
+}
+
 /* Remove hover effects */
 .work-item:hover {
     background: none;
     transform: none;
     box-shadow: none;
 }
+
+/* Remove hover effects */
 
 .btn-close, .btn-enroll {
     border-radius: 5px;
