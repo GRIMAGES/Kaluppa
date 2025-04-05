@@ -173,7 +173,7 @@ if ($result->num_rows > 0) {
                     <h4 style="font-weight: bold; color: #2c3e50; margin-bottom: 15px;">Title: <span id="announcementTitle" style="color: #1a4629;"></span></h4>
                     <p style="color: #555; line-height: 1.6; margin-bottom: 15px;">Content: <span id="announcementContent"></span></p>
                     <div id="announcementImageContainer" style="text-align: center; margin-top: 20px;">
-                        <img id="announcementImage" src="" alt="Announcement Image" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: none;">
+                        <img id="announcementImage" src="" alt="Announcement Image" style="max-width: 100%; height: 400px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: none;">
                     </div>
                 </div>
             </div>
