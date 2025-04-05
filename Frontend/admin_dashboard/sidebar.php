@@ -56,6 +56,7 @@ $navLinks = [
         ['href' => 'admin_certificate.php?type=scholarship', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship'],
     ]],
     ['href' => 'admin_logs.php', 'icon' => 'fas fa-file-alt', 'text' => 'Admin Logs'],
+    ['href' => 'chat_admin.php', 'icon' => 'fas fa-comments', 'text' => 'Chat Admin'],
 ];
 ?>
 
