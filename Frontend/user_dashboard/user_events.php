@@ -126,9 +126,6 @@ if ($result->num_rows > 0) {
         } else {
             echo '<p class="text-center">No upcoming events at this time.</p>';
         }
-
-        // Close the database connection
-        mysqli_close($conn);
         ?>
     </div>
 </div>
@@ -151,6 +148,9 @@ if ($result->num_rows > 0) {
     <?php else: ?>
         <p>No announcements available.</p>
     <?php endif; ?>
+
+    <!-- Move mysqli_close($conn) here -->
+    <?php mysqli_close($conn); ?>
 </div>
 
 <!-- Announcement Details Modal -->
