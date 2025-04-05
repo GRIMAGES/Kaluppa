@@ -84,7 +84,7 @@ if ($result->num_rows > 0) {
                     <p class="event-organizer mb-3" style="color: white; text-align: center;">
                         <i class="fas fa-user-tie me-2"></i>Organizer: <?php echo htmlspecialchars($event['organizer']); ?>
                     </p>
-                    <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
+                    <button class="btn btn-outline-light view-details-button" style="padding: 5px 10px; font-size: 0.9rem;" data-bs-toggle="modal" data-bs-target="#<?php echo $modalId; ?>">
                         View Details
                     </button>
                 </div>
