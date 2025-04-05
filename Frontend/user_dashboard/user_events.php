@@ -170,7 +170,11 @@ if ($result->num_rows > 0) {
             <!-- Modal Body -->
             <div class="modal-body" style="background-color: #f9f9f9; padding: 25px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
                 <div id="announcementDetails" style="padding: 20px; background: #ffffff; border: 1px solid #ddd; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-                    <!-- Content dynamically loaded here -->
+                    <h4 style="font-weight: bold; color: #2c3e50; margin-bottom: 15px;">Title: <span id="announcementTitle" style="color: #1a4629;"></span></h4>
+                    <p style="color: #555; line-height: 1.6; margin-bottom: 15px;">Content: <span id="announcementContent"></span></p>
+                    <div id="announcementImageContainer" style="text-align: center; margin-top: 20px;">
+                        <img id="announcementImage" src="" alt="Announcement Image" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: none;">
+                    </div>
                 </div>
             </div>
             <!-- Modal Footer -->
@@ -191,26 +195,18 @@ function showAnnouncementDetails(announcementId) {
             if (data.error) {
                 console.error('Error fetching announcement details:', data.message);
             } else {
-                let imagePath = data.image || '';
+                document.getElementById('announcementTitle').textContent = data.title || 'No Title';
+                document.getElementById('announcementContent').innerHTML = data.content.replace(/\n/g, '<br>') || 'No Content';
+                
+                const imageElement = document.getElementById('announcementImage');
+                if (data.image) {
+                    imageElement.src = data.image;
+                    imageElement.style.display = 'block';
+                } else {
+                    imageElement.style.display = 'none';
+                }
 
-                // Clean image path
-                imagePath = imagePath.replace(/(Frontend\/uploads\/)+/, "Frontend/uploads/").replace(/(uploads\/)+/, "uploads/");
-                let finalImagePath = imagePath.includes("Frontend/admin_dashboard/uploads/")
-                    ? "../../" + imagePath
-                    : "../../Frontend/admin_dashboard/uploads/" + imagePath.replace("Frontend/uploads/", "");
-
-                var detailsHtml = `
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">${data.title}</h5>
-                            <p class="card-text">${data.content.replace(/\n/g, '<br>')}</p>
-                            ${data.image ? `<img src="${finalImagePath}" alt="Announcement Image" class="img-fluid rounded">` : ''}
-                        </div>
-                    </div>
-                `;
-
-                document.getElementById('announcementDetails').innerHTML = detailsHtml;
-                var announcementModal = new bootstrap.Modal(document.getElementById('announcementModal'));
+                const announcementModal = new bootstrap.Modal(document.getElementById('announcementModal'));
                 announcementModal.show();
             }
         })
