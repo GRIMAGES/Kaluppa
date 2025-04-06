@@ -334,7 +334,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'view' || $_GET['action'] ===
                         $applied_at = htmlspecialchars($row['applied_at']);
                         $documents = json_decode($row['documents'], true); // Decode documents JSON
 
-                        echo '<tr data-course-id="' . htmlspecialchars($row['course_id']) . '">
+                        echo '<tr data-application-id="' . htmlspecialchars($id) . '">
                         <td>
                             <input type="checkbox" name="selected_students[]" value="' . $id . '" form="bulkUpdateForm" class="select-student">
                         </td>
@@ -428,6 +428,11 @@ function deleteApplication(applicationId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Remove the row from the table
+                const row = document.querySelector(`tr[data-application-id='${applicationId}']`);
+                if (row) {
+                    row.remove();
+                }
                 showToast('Application deleted successfully.', 'success');
             } else {
                 showToast('Failed to delete application: ' + data.message, 'error');
