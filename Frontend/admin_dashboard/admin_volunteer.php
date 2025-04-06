@@ -55,11 +55,6 @@ if (isset($_POST['logout'])) {
     exit();
 }
 // Logout logic
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("Location: /Frontend/index.php");
-    exit();
-}
 
 if (isset($_POST['update_status'])) {
     $application_id = $_POST['application_id'];
@@ -82,21 +77,6 @@ exit();
     } else {
         die("SQL error during execution: " . $stmt->error);
     }
-}
-
-function deleteApplication($applicationId) {
-    global $conn;
-    $delete_sql = "DELETE FROM volunteer_application WHERE id = ?";
-    $stmt = $conn->prepare($delete_sql);
-
-    if ($stmt) {
-        $stmt->bind_param('s', $applicationId);
-        if ($stmt->execute()) {
-            return true;
-        }
-        $stmt->close();
-    }
-    return false;
 }
 
 if (isset($_POST['delete_application'])) {
@@ -123,6 +103,21 @@ $sql = "
     FROM volunteer_application a
 ";
 $result = mysqli_query($conn, $sql);
+
+function deleteApplication($applicationId) {
+    global $conn;
+    $delete_sql = "DELETE FROM volunteer_application WHERE id = ?";
+    $stmt = $conn->prepare($delete_sql);
+
+    if ($stmt) {
+        $stmt->bind_param('s', $applicationId);
+        if ($stmt->execute()) {
+            return true;
+        }
+        $stmt->close();
+    }
+    return false;
+}
 ?>
 
 <!DOCTYPE html>
@@ -320,15 +315,19 @@ $result = mysqli_query($conn, $sql);
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 
-    function deleteApplication(applicationId) {
-        if (confirm('Are you sure you want to delete this application?')) {
-            // Create a form and submit it to delete the application
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.innerHTML = '<input type="hidden" name="delete_application" value="1"><input type="hidden" name="application_id" value="' + applicationId + '">';
-            document.body.appendChild(form);
-            form.submit();
+    function deleteApplication($applicationId) {
+        global $conn;
+        $delete_sql = "DELETE FROM volunteer_application WHERE id = ?";
+        $stmt = $conn->prepare($delete_sql);
+
+        if ($stmt) {
+            $stmt->bind_param('s', $applicationId);
+            if ($stmt->execute()) {
+                return true;
+            }
+            $stmt->close();
         }
+        return false;
     }
 </script>
 </body>
