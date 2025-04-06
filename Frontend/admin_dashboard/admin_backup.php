@@ -64,7 +64,13 @@ function createBackup($conn, $key, $customFilename = null) {
 
     // Determine the backup filename
     $filename = $customFilename ? $customFilename : 'backup_' . date('Y-m-d_H-i-s');
-    $backupFile = '../../Backups/' . $filename . '.bak';
+    $backupDir = '../../Backend/backups/';
+    $backupFile = $backupDir . $filename . '.bak';
+
+    // Check if the Backups directory exists, if not, create it
+    if (!is_dir($backupDir)) {
+        mkdir($backupDir, 0777, true);
+    }
 
     // Save the encrypted data to a file
     file_put_contents($backupFile, $encryptedData);
