@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 require_once '../../Backend/log_helper.php'; // Include log_helper.php
+require_once '../../Backend/aes_key.php'; // Include aes_key.php
 session_start();
 // Set session timeout duration (in seconds)
 $timeout_duration = 1000; // 30 minutes
@@ -38,18 +39,18 @@ if (isset($_POST['logout'])) {
 }
 
 // Function to encrypt data
-function encryptData($data, $key) {
-    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-    $encrypted = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+function encryptData($data) {
+    $iv = AES_IV;
+    $encrypted = openssl_encrypt($data, 'aes-256-cbc', AES_KEY, 0, $iv);
     return base64_encode($iv . $encrypted);
 }
 
 // Function to decrypt data
-function decryptData($data, $key) {
+function decryptData($data) {
     $data = base64_decode($data);
     $iv = substr($data, 0, openssl_cipher_iv_length('aes-256-cbc'));
     $encrypted = substr($data, openssl_cipher_iv_length('aes-256-cbc'));
-    return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
+    return openssl_decrypt($encrypted, 'aes-256-cbc', AES_KEY, 0, $iv);
 }
 
 // Function to create a backup with a custom filename
@@ -60,7 +61,7 @@ function createBackup($conn, $key, $customFilename = null) {
     $data = json_encode($result->fetch_all(MYSQLI_ASSOC));
 
     // Encrypt the data
-    $encryptedData = encryptData($data, $key);
+    $encryptedData = encryptData($data);
 
     // Determine the backup filename
     $filename = $customFilename ? $customFilename : 'backup_' . date('Y-m-d_H-i-s');
@@ -103,7 +104,7 @@ function restoreBackup($conn, $backupFile, $key) {
     $encryptedData = file_get_contents($backupFile);
 
     // Decrypt the data
-    $data = decryptData($encryptedData, $key);
+    $data = decryptData($encryptedData);
 
     // Convert JSON data back to array
     $dataArray = json_decode($data, true);
