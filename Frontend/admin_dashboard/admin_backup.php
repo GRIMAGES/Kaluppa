@@ -260,6 +260,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }, 500);
     });
 
+    document.getElementById('downloadBackupBtn').addEventListener('click', function() {
+        // Fetch the latest backup file from the server
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'admin_backup.php?fetch_backups=true', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const backups = JSON.parse(xhr.responseText);
+                if (backups.length > 0) {
+                    const latestBackup = backups[0]; // Assuming the first one is the latest due to ordering
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = '../../Backend/backups/' + latestBackup.filename + '.bak';
+                    downloadLink.download = latestBackup.filename + '.bak';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                } else {
+                    showAlert('No backups available for download.', 'warning');
+                }
+            }
+        };
+        xhr.send();
+    });
+
     function showAlert(message, type) {
         let alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-' + type + ' alert-dismissible fade show';
