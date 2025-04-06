@@ -323,12 +323,15 @@ $result = mysqli_query($conn, $sql);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Remove the row from the table
-                    const row = document.querySelector(`tr[data-application-id='${applicationId}']`);
-                    if (row) {
-                        row.remove();
-                    }
-                    showToast('Application deleted successfully.', 'success');
+                    // Option 1: Reload the page to refresh the data
+                    location.reload();
+
+                    // Option 2: Remove the row from the table (if you prefer not to reload)
+                    // const row = document.querySelector(`tr[data-application-id='${applicationId}']`);
+                    // if (row) {
+                    //     row.remove();
+                    // }
+                    // showToast('Application deleted successfully.', 'success');
                 } else {
                     showToast('Failed to delete application: ' + data.message, 'error');
                 }
