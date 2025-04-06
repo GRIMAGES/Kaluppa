@@ -49,8 +49,8 @@ function decryptData($data, $key) {
     return openssl_decrypt($encrypted, 'aes-256-cbc', $key, 0, $iv);
 }
 
-// Function to create a backup
-function createBackup($conn, $key) {
+// Function to create a backup with a custom filename
+function createBackup($conn, $key, $customFilename = null) {
     // Fetch data from the database
     $query = "SELECT * FROM your_table"; // Replace 'your_table' with your actual table name
     $result = $conn->query($query);
@@ -59,11 +59,26 @@ function createBackup($conn, $key) {
     // Encrypt the data
     $encryptedData = encryptData($data, $key);
 
+    // Determine the backup filename
+    $filename = $customFilename ? $customFilename : 'backup_' . date('Y-m-d_H-i-s');
+    $backupFile = '../../Backups/' . $filename . '.bak';
+
     // Save the encrypted data to a file
-    $backupFile = '../../Backups/backup_' . date('Y-m-d_H-i-s') . '.bak';
     file_put_contents($backupFile, $encryptedData);
 
+    // Store backup metadata in the database
+    $stmt = $conn->prepare("INSERT INTO backups (filename) VALUES (?)");
+    $stmt->bind_param('s', $filename);
+    $stmt->execute();
+
     return $backupFile;
+}
+
+// Function to get backup versions
+function getBackupVersions($conn) {
+    $query = "SELECT filename, created_at FROM backups ORDER BY created_at DESC";
+    $result = $conn->query($query);
+    return $result->fetch_all(MYSQLI_ASSOC);
 }
 
 // Function to restore from a backup
@@ -142,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="card mb-4">
         <div class="card-header">Backup</div>
         <div class="card-body">
+            <input type="text" id="backupFilename" class="form-control mb-3" placeholder="Enter custom filename (optional)">
             <button class="btn btn-primary" id="createBackupBtn">Create Backup</button>
             <div class="progress mt-3" id="backupProgress" style="display: none;">
                 <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
@@ -173,24 +189,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Fetch backup versions and populate the dropdown
+    function fetchBackupVersions() {
+        // Make an AJAX call to fetch backup versions
+        // Populate the #backupVersions dropdown with the results
+    }
+
     document.getElementById('createBackupBtn').addEventListener('click', function() {
-        // Simulate backup process
-        document.getElementById('backupProgress').style.display = 'block';
-        let progressBar = document.querySelector('#backupProgress .progress-bar');
-        let progress = 0;
-        let interval = setInterval(function() {
-            if (progress >= 100) {
-                clearInterval(interval);
-                document.getElementById('lastBackupInfo').textContent = 'Last Backup: ' + new Date().toLocaleString();
-                document.getElementById('downloadBackupBtn').style.display = 'block';
-                showAlert('Backup Successful', 'success');
-            } else {
-                progress += 10;
-                progressBar.style.width = progress + '%';
-                progressBar.textContent = progress + '%';
-            }
-        }, 500);
+        const customFilename = document.getElementById('backupFilename').value;
+        // Pass customFilename to the backend when creating a backup
     });
+
+    // Call fetchBackupVersions on page load
+    document.addEventListener('DOMContentLoaded', fetchBackupVersions);
 
     document.getElementById('restoreBackupBtn').addEventListener('click', function() {
         // Simulate restore process
