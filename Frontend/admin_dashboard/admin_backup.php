@@ -55,7 +55,7 @@ function decryptData($data, $key) {
 // Function to create a backup with a custom filename
 function createBackup($conn, $key, $customFilename = null) {
     // Fetch data from the database
-    $query = "SELECT * FROM your_table"; // Replace 'your_table' with your actual table name
+    $query = "SELECT * FROM backups"; // Replace 'your_table' with your actual table name
     $result = $conn->query($query);
     $data = json_encode($result->fetch_all(MYSQLI_ASSOC));
 
