@@ -57,6 +57,7 @@ $navLinks = [
     ]],
     ['href' => 'admin_logs.php', 'icon' => 'fas fa-file-alt', 'text' => 'Admin Logs'],
     ['href' => 'chat_admin.php', 'icon' => 'fas fa-comments', 'text' => 'Chat Admin'],
+    ['href' => 'admin_backup.php', 'icon' => 'fas fa-database', 'text' => 'Admin Backup'],
 ];
 ?>
 
