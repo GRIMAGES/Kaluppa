@@ -373,7 +373,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'view' || $_GET['action'] ===
                                         </a>';
                                     }
                                 }
-                                echo '<a href="../../Backend/admin_controller/delete_application.php?application_id=' . urlencode($id) . '" class="btn btn-sm btn-outline-danger" onclick="return confirm(\'Are you sure you want to delete this application?\')">Delete</a>';
+                                echo '<a href="#" class="btn btn-sm btn-outline-danger" onclick="deleteApplication(\'' . $id . '\'); return false;">Delete</a>';
                         echo '</div>
                         </td>
                     </tr>';
@@ -421,25 +421,38 @@ function toggleSelectAll(checkbox) {
 }
 
 function deleteApplication(applicationId) {
-    console.log('Attempting to delete application ID:', applicationId);
+    if (confirm('Are you sure you want to delete this application?')) {
+        fetch(`../../Backend/admin_controller/delete_application.php?application_id=${applicationId}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Application deleted successfully.', 'success');
+            } else {
+                showToast('Failed to delete application: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An error occurred while deleting the application.', 'error');
+        });
+    }
+}
 
-    fetch(`../../Backend/admin_controller/delete_application.php?application_id=${applicationId}`, {
-        method: 'GET',
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Response from server:', data);
-        if (data.success) {
-            alert('Application deleted successfully.');
-            location.reload(); // Reload the page to reflect changes
-        } else {
-            alert('Failed to delete application: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while deleting the application.');
-    });
+function showToast(message, type) {
+    // Create a toast element
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerText = message;
+
+    // Append the toast to the body
+    document.body.appendChild(toast);
+
+    // Automatically remove the toast after 3 seconds
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 </script>
 </body>
