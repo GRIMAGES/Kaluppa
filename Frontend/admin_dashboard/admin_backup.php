@@ -90,6 +90,13 @@ function getBackupVersions($conn) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+// Handle AJAX request to fetch backup versions
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_backups'])) {
+    $backups = getBackupVersions($conn);
+    echo json_encode($backups);
+    exit();
+}
+
 // Function to restore from a backup
 function restoreBackup($conn, $backupFile, $key) {
     // Read the encrypted data from the file
@@ -199,11 +206,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Fetch backup versions and populate the dropdown
     function fetchBackupVersions() {
-        // Make an AJAX call to fetch backup versions
-        // Populate the #backupVersions dropdown with the results
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'admin_backup.php?fetch_backups=true', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const backups = JSON.parse(xhr.responseText);
+                const backupSelect = document.getElementById('backupVersions');
+                backupSelect.innerHTML = '<option selected>Select Backup Version</option>';
+                backups.forEach(backup => {
+                    const option = document.createElement('option');
+                    option.value = backup.filename;
+                    option.textContent = `${backup.filename} - ${new Date(backup.created_at).toLocaleString()}`;
+                    backupSelect.appendChild(option);
+                });
+            }
+        };
+        xhr.send();
     }
+
+    document.addEventListener('DOMContentLoaded', fetchBackupVersions);
 
     document.getElementById('createBackupBtn').addEventListener('click', function() {
         const customFilename = document.getElementById('backupFilename').value;
@@ -212,16 +234,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                showAlert(xhr.responseText, 'success');
+                showAlert('Backup created successfully!', 'success');
                 document.getElementById('lastBackupInfo').textContent = 'Last Backup: ' + new Date().toLocaleString();
                 document.getElementById('downloadBackupBtn').style.display = 'block';
             }
         };
         xhr.send('create_backup=true&custom_filename=' + encodeURIComponent(customFilename));
     });
-
-    // Call fetchBackupVersions on page load
-    document.addEventListener('DOMContentLoaded', fetchBackupVersions);
 
     document.getElementById('restoreBackupBtn').addEventListener('click', function() {
         // Simulate restore process
