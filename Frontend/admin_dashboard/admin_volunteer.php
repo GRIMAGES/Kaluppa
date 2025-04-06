@@ -172,7 +172,7 @@ function deleteApplication($applicationId) {
     <div class="container mt-5">
         <h2 class="mb-4 text-center" style="color: white;">Volunteer Applications</h2>
         <div class="table-responsive">
-            <table id="volunteerTable" class="display" style="color: black;">
+            <table id="volunteerTable" class="display" style="color: black; width: 100%;">
                 <thead style="background-color: #f2f2f2; color: black;">
                     <tr>
                         <th>ID</th>
@@ -315,19 +315,16 @@ function deleteApplication($applicationId) {
         window.history.replaceState({}, document.title, window.location.pathname);
     }
 
-    function deleteApplication($applicationId) {
-        global $conn;
-        $delete_sql = "DELETE FROM volunteer_application WHERE id = ?";
-        $stmt = $conn->prepare($delete_sql);
-
-        if ($stmt) {
-            $stmt->bind_param('s', $applicationId);
-            if ($stmt->execute()) {
-                return true;
-            }
-            $stmt->close();
+    function deleteApplication(applicationId) {
+        console.log('Deleting application with ID:', applicationId); // Add this line for debugging
+        if (confirm('Are you sure you want to delete this application?')) {
+            // Create a form and submit it to delete the application
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.innerHTML = '<input type="hidden" name="delete_application" value="1"><input type="hidden" name="application_id" value="' + applicationId + '">';
+            document.body.appendChild(form);
+            form.submit();
         }
-        return false;
     }
 </script>
 </body>
