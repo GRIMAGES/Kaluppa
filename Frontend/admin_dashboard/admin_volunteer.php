@@ -206,7 +206,7 @@ function deleteApplication($applicationId) {
                                         <a href="<?= '/Backend/admin_controller/view_documents.php?file=' . urlencode($row['document']) . '&action=download' ?>" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-download"></i> Download
                                         </a>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteApplication(<?php echo $row['id']; ?>)">Delete</button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteApplication(<?= htmlspecialchars($row['id']) ?>)">Delete</button>
                                     </div>
                                 </td>
                                 <td>
