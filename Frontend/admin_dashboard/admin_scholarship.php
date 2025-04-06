@@ -419,6 +419,27 @@ function toggleSelectAll(checkbox) {
     const checkboxes = document.querySelectorAll('.select-student');
     checkboxes.forEach(cb => cb.checked = checkbox.checked);
 }
+
+function deleteApplication(applicationId) {
+    if (confirm('Are you sure you want to delete this application?')) {
+        fetch(`../../Backend/admin_controller/delete_application.php?application_id=${applicationId}`, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Application deleted successfully.');
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert('Failed to delete application: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the application.');
+        });
+    }
+}
 </script>
 </body>
 </html>
