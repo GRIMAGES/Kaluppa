@@ -79,14 +79,25 @@ exit();
     }
 }
 
-if (isset($_POST['delete_application'])) {
-    $application_id = $_POST['application_id'];
-    if (deleteApplication($application_id)) {
-        header("Location: https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_volunteer.php?status=success");
+if (isset($_GET['application_id'])) {
+    $applicationId = $_GET['application_id'];
+
+    $stmt = $conn->prepare("DELETE FROM volunteer_application WHERE id = ?");
+    $stmt->bind_param('s', $applicationId);
+
+    error_log("Received request to delete application ID: " . $applicationId);
+
+    if ($stmt->execute()) {
+        error_log("Application deleted successfully.");
+        echo json_encode(['success' => true]);
     } else {
-        echo "Failed to delete application.";
+        error_log("Failed to delete application: " . $stmt->error);
+        echo json_encode(['success' => false, 'message' => 'Failed to delete application.']);
     }
-    exit();
+
+    $stmt->close();
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid request.']);
 }
 
 // Fetch volunteer applications
@@ -104,20 +115,7 @@ $sql = "
 ";
 $result = mysqli_query($conn, $sql);
 
-function deleteApplication($applicationId) {
-    global $conn;
-    $delete_sql = "DELETE FROM volunteer_application WHERE id = ?";
-    $stmt = $conn->prepare($delete_sql);
 
-    if ($stmt) {
-        $stmt->bind_param('s', $applicationId);
-        if ($stmt->execute()) {
-            return true;
-        }
-        $stmt->close();
-    }
-    return false;
-}
 ?>
 
 <!DOCTYPE html>
