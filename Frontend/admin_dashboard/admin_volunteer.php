@@ -96,8 +96,10 @@ if (isset($_GET['application_id'])) {
     }
 
     $stmt->close();
-} else {
+    exit();
+} else if (isset($_GET['delete'])) {
     echo json_encode(['success' => false, 'message' => 'Invalid request.']);
+    exit();
 }
 
 // Fetch volunteer applications
@@ -314,15 +316,43 @@ $result = mysqli_query($conn, $sql);
     }
 
     function deleteApplication(applicationId) {
-        console.log('Deleting application with ID:', applicationId); // Debugging line
         if (confirm('Are you sure you want to delete this application?')) {
-            // Create a form and submit it to delete the application
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.innerHTML = '<input type="hidden" name="delete_application" value="1"><input type="hidden" name="application_id" value="' + applicationId + '">';
-            document.body.appendChild(form);
-            form.submit();
+            fetch(`admin_volunteer.php?application_id=${applicationId}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the row from the table
+                    const row = document.querySelector(`tr[data-application-id='${applicationId}']`);
+                    if (row) {
+                        row.remove();
+                    }
+                    showToast('Application deleted successfully.', 'success');
+                } else {
+                    showToast('Failed to delete application: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred while deleting the application.', 'error');
+            });
         }
+    }
+
+    function showToast(message, type) {
+        // Create a toast element
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerText = message;
+
+        // Append the toast to the body
+        document.body.appendChild(toast);
+
+        // Automatically remove the toast after 3 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
     }
 </script>
 </body>
