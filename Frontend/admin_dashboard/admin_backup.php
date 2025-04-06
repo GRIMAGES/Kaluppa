@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once '../../Backend/connection.php';
 require_once '../../Backend/log_helper.php'; // Include log_helper.php
 session_start();
@@ -107,12 +110,13 @@ function restoreBackup($conn, $backupFile, $key) {
 $key = 'your-encryption-key'; // Use a secure key
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['create_backup'])) {
-        $backupFile = createBackup($conn, $key);
-        echo "Backup created: " . $backupFile;
+        $customFilename = $_POST['custom_filename'] ?? null;
+        $backupFile = createBackup($conn, $key, $customFilename);
+        echo "Backup created: " . basename($backupFile);
     } elseif (isset($_POST['restore_backup'])) {
         $backupFile = $_POST['backup_file'];
         restoreBackup($conn, $backupFile, $key);
-        echo "Backup restored from: " . $backupFile;
+        echo "Backup restored from: " . basename($backupFile);
     }
 }
 ?>
@@ -197,7 +201,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     document.getElementById('createBackupBtn').addEventListener('click', function() {
         const customFilename = document.getElementById('backupFilename').value;
-        // Pass customFilename to the backend when creating a backup
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'admin_backup.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                showAlert(xhr.responseText, 'success');
+                document.getElementById('lastBackupInfo').textContent = 'Last Backup: ' + new Date().toLocaleString();
+                document.getElementById('downloadBackupBtn').style.display = 'block';
+            }
+        };
+        xhr.send('create_backup=true&custom_filename=' + encodeURIComponent(customFilename));
     });
 
     // Call fetchBackupVersions on page load
