@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image = '';
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-            $image = 'Frontend/Images/' . basename($_FILES['image']['name']);
+            $image = 'Images/' . basename($_FILES['image']['name']);
             move_uploaded_file($_FILES['image']['tmp_name'], $image);
         }
 
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image = $_POST['existing_image'];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-            $image = 'Frontend/Images/' . basename($_FILES['image']['name']);
+            $image = 'Images/' . basename($_FILES['image']['name']);
             move_uploaded_file($_FILES['image']['tmp_name'], $image);
         }
 
@@ -179,7 +179,7 @@ $announcements = getAnnouncements();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <!-- Include Custom CSS -->
     <link rel="stylesheet" href="../CSS/admin_css/admin_announcement.css">
@@ -389,6 +389,7 @@ $announcements = getAnnouncements();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <?php if (isset($_SESSION['toast'])): ?>
 <script>
