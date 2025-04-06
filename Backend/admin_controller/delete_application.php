@@ -5,7 +5,7 @@ if (isset($_GET['application_id'])) {
     $applicationId = $_GET['application_id'];
 
     $stmt = $conn->prepare("DELETE FROM applications WHERE id = ?");
-    $stmt->bind_param('i', $applicationId);
+    $stmt->bind_param('s', $applicationId);
 
     if ($stmt->execute()) {
         echo json_encode(['success' => true]);
