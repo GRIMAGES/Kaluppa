@@ -83,6 +83,32 @@ exit();
         die("SQL error during execution: " . $stmt->error);
     }
 }
+
+function deleteApplication($applicationId) {
+    global $conn;
+    $delete_sql = "DELETE FROM volunteer_application WHERE id = ?";
+    $stmt = $conn->prepare($delete_sql);
+
+    if ($stmt) {
+        $stmt->bind_param('s', $applicationId);
+        if ($stmt->execute()) {
+            return true;
+        }
+        $stmt->close();
+    }
+    return false;
+}
+
+if (isset($_POST['delete_application'])) {
+    $application_id = $_POST['application_id'];
+    if (deleteApplication($application_id)) {
+        header("Location: https://www.kaluppa.online/Kaluppa/Frontend/admin_dashboard/admin_volunteer.php?status=success");
+    } else {
+        echo "Failed to delete application.";
+    }
+    exit();
+}
+
 // Fetch volunteer applications
 $sql = "
     SELECT 
@@ -292,6 +318,17 @@ $result = mysqli_query($conn, $sql);
 
         // Optionally remove query param after showing toast (for cleaner URL)
         window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    function deleteApplication(applicationId) {
+        if (confirm('Are you sure you want to delete this application?')) {
+            // Create a form and submit it to delete the application
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.innerHTML = '<input type="hidden" name="delete_application" value="1"><input type="hidden" name="application_id" value="' + applicationId + '">';
+            document.body.appendChild(form);
+            form.submit();
+        }
     }
 </script>
 </body>
