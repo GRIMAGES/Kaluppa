@@ -125,6 +125,25 @@ $alumni_result = $alumni_stmt->get_result();
         .btn-primary:hover {
             background-color: rgb(26, 70, 41);
         }
+        #chatMessages div {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            max-width: 70%;
+        }
+        #chatMessages div strong {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #chatMessages div.user-message {
+            background-color: #d1e7dd;
+            align-self: flex-end;
+        }
+        #chatMessages div.admin-message {
+            background-color: #f8d7da;
+            align-self: flex-start;
+        }
     </style>
 </head>
 <body style="background-color: #ddead1;">
@@ -243,24 +262,20 @@ $alumni_result = $alumni_stmt->get_result();
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="chatContainer" style="display: flex; flex-direction: column; height: 400px;">
-                    <div id="chatMessages" style="flex-grow: 1; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #f9f9f9;">
+                <div id="chatContainer" style="display: flex; flex-direction: column; height: 400px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <div id="chatMessages" style="flex-grow: 1; overflow-y: auto; padding: 10px; background-color: #f1f1f1;">
                         <!-- Messages will be dynamically loaded here -->
                     </div>
-                    <form id="chatForm" style="display: flex; flex-direction: column;">
-                        <div class="mb-3">
-                            <select class="form-select" id="inquiryType" required>
-                                <option value="">Select Inquiry Type</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="technical">Technical Support</option>
-                                <option value="billing">Billing</option>
-                                <option value="feedback">Feedback</option>
-                            </select>
-                        </div>
-                        <div class="mb-3" style="flex-grow: 1;">
-                            <textarea class="form-control" id="chatMessage" rows="1" placeholder="Type your message..." required style="resize: none;"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="align-self: flex-end;">Send</button>
+                    <form id="chatForm" style="display: flex; align-items: center; padding: 10px; background-color: #fff; border-top: 1px solid #ccc;">
+                        <select class="form-select" id="inquiryType" required style="max-width: 150px; margin-right: 10px;">
+                            <option value="">Select Type</option>
+                            <option value="general">General</option>
+                            <option value="technical">Technical</option>
+                            <option value="billing">Billing</option>
+                            <option value="feedback">Feedback</option>
+                        </select>
+                        <textarea class="form-control" id="chatMessage" rows="1" placeholder="Type your message..." required style="flex-grow: 1; resize: none; margin-right: 10px;"></textarea>
+                        <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">Send</button>
                     </form>
                 </div>
             </div>

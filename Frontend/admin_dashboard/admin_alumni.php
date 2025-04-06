@@ -111,6 +111,7 @@ if (isset($_POST['logout'])) {
                         <td>
                             <button class='btn btn-primary btn-sm save-status' data-id='" . htmlspecialchars($row['id']) . "'>Save</button>
                             <button class='btn btn-success btn-sm send-document' data-id='" . htmlspecialchars($row['id']) . "' data-email='" . htmlspecialchars($row['email']) . "' data-name='" . htmlspecialchars($row['full_name']) . "'>Send Document</button>
+                            <button class='btn btn-danger btn-sm' onclick='deleteRequest(" . htmlspecialchars($row['id']) . ")'>Delete</button>
                         </td>
                       </tr>";
             }

@@ -373,6 +373,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'view' || $_GET['action'] ===
                                         </a>';
                                     }
                                 }
+                                echo '<button class="btn btn-sm btn-outline-danger" onclick="deleteApplication(' . $id . ')">Delete</button>';
                         echo '</div>
                         </td>
                     </tr>';
