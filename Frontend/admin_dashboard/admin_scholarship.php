@@ -373,7 +373,7 @@ if (isset($_GET['action']) && ($_GET['action'] === 'view' || $_GET['action'] ===
                                         </a>';
                                     }
                                 }
-                                echo '<button class="btn btn-sm btn-outline-danger" onclick="deleteApplication(' . $id . ')">Delete</button>';
+                                echo '<a href="../../Backend/admin_controller/delete_application.php?application_id=' . urlencode($id) . '" class="btn btn-sm btn-outline-danger" onclick="return confirm(\'Are you sure you want to delete this application?\')">Delete</a>';
                         echo '</div>
                         </td>
                     </tr>';
