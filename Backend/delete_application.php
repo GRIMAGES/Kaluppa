@@ -15,7 +15,7 @@ if ($id == 0) {
 }
 
 $stmt = $conn->prepare("DELETE FROM applications WHERE id = ?");
-$stmt->bind_param("i", $id);
+$stmt->bind_param("s", $id);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);
