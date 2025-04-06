@@ -206,7 +206,7 @@ $result = mysqli_query($conn, $sql);
                                         <a href="<?= '/Backend/admin_controller/view_documents.php?file=' . urlencode($row['document']) . '&action=download' ?>" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-download"></i> Download
                                         </a>
-                                        <a href="admin_volunteer.php?application_id=<?= htmlspecialchars($row['id']) ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this application?');">Delete</a>
+                                        <a href="#" class="btn btn-sm btn-outline-danger" onclick="deleteApplication('<?= htmlspecialchars($row['id']) ?>'); return false;">Delete</a>
                                     </div>
                                 </td>
                                 <td>
