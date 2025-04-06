@@ -53,6 +53,21 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
+if (isset($_GET['request_id'])) {
+    $requestId = $_GET['request_id'];
+
+    $stmt = $conn->prepare("DELETE FROM document_requests WHERE id = ?");
+    $stmt->bind_param('s', $requestId);
+
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to delete request.']);
+    }
+
+    $stmt->close();
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -234,6 +249,26 @@ if (isset($_POST['logout'])) {
             $('body > *').removeAttr('inert');
         });
     });
+
+    function deleteRequest(requestId) {
+        if (confirm('Are you sure you want to delete this request?')) {
+            fetch(`admin_alumni.php?request_id=${requestId}`, {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to delete request: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the request.');
+            });
+        }
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
