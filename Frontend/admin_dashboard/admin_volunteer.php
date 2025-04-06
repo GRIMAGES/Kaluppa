@@ -316,7 +316,7 @@ function deleteApplication($applicationId) {
     }
 
     function deleteApplication(applicationId) {
-        console.log('Deleting application with ID:', applicationId); // Add this line for debugging
+        console.log('Deleting application with ID:', applicationId); // Debugging line
         if (confirm('Are you sure you want to delete this application?')) {
             // Create a form and submit it to delete the application
             var form = document.createElement('form');
