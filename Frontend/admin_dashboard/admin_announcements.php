@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image = '';
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-            $image = 'uploads/' . basename($_FILES['image']['name']);
+            $image = 'Frontend/Images/' . basename($_FILES['image']['name']);
             move_uploaded_file($_FILES['image']['tmp_name'], $image);
         }
 
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $image = $_POST['existing_image'];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-            $image = 'uploads/' . basename($_FILES['image']['name']);
+            $image = 'Frontend/Images/' . basename($_FILES['image']['name']);
             move_uploaded_file($_FILES['image']['tmp_name'], $image);
         }
 
