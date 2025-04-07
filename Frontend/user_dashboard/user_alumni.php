@@ -371,10 +371,27 @@ $alumni_result = $alumni_stmt->get_result();
             $('.modal-backdrop').remove();
         });
 
-        // Open inquiries modal and load chat messages
-        $('#inquiriesModal').on('show.bs.modal', function() {
-            loadMessages();
+        // Initially hide the chat form
+        $('#chatForm').hide();
+
+        // Enable chat form and load messages once an inquiry type is selected
+        $('#inquiryType').on('change', function() {
+            const inquiryType = $(this).val();
+            if (inquiryType) {
+                $('#chatForm').show();
+                $('#chatMessage').prop('disabled', false);
+                $('#chatForm button[type="submit"]').prop('disabled', false);
+                loadMessages(); // Load messages for the selected inquiry type
+            } else {
+                $('#chatForm').hide();
+                $('#chatMessage').prop('disabled', true);
+                $('#chatForm button[type="submit"]').prop('disabled', true);
+            }
         });
+
+        // Initialize chat form as hidden and disabled
+        $('#chatMessage').prop('disabled', true);
+        $('#chatForm button[type="submit"]').prop('disabled', true);
 
         // Load chat messages
         function loadMessages() {
@@ -427,17 +444,6 @@ $alumni_result = $alumni_stmt->get_result();
                 }
             });
         });
-
-        // Disable chat form until inquiry type is selected
-        $('#inquiryType').on('change', function() {
-            const inquiryType = $(this).val();
-            $('#chatMessage').prop('disabled', !inquiryType);
-            $('#chatForm button[type="submit"]').prop('disabled', !inquiryType);
-        });
-
-        // Initialize chat form as disabled
-        $('#chatMessage').prop('disabled', true);
-        $('#chatForm button[type="submit"]').prop('disabled', true);
 
         // Handle delete conversation button click
         $('#deleteConversation').on('click', function() {
