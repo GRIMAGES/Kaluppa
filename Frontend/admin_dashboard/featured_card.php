@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_card']) && $cardC
 
     if (!empty($_FILES['image']['name'])) {
         $image = basename($_FILES['image']['name']);
-        $target = "uploads/featured/" . $image;
+        $target = "/opt/bitnami/apache2/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/featured/" . $image;
         move_uploaded_file($_FILES['image']['tmp_name'], $target);
     }
 
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_card'])) {
 
     if (!empty($_FILES['image']['name'])) {
         $image = basename($_FILES['image']['name']);
-        $target = "uploads/featured/" . $image;
+        $target = "/opt/bitnami/apache2/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/featured/" . $image;
         move_uploaded_file($_FILES['image']['tmp_name'], $target);
     }
 
@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_card'])) {
     <?php foreach ($cards as $card): ?>
         <div class="col-md-4 mb-4">
             <div class="card shadow-sm h-100 border-0" style="background-color: #f9f9f9; border-radius: 20px;">
-            <img src="uploads/featured/<?php echo htmlspecialchars($card['image']); ?>"
+            <img src="/opt/bitnami/apache2/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/featured/<?php echo htmlspecialchars($card['image']); ?>"
      class="card-img-top"
      alt="Image"
      style="border-top-left-radius: 20px; border-top-right-radius: 20px; object-fit: cover; height: 220px;">
