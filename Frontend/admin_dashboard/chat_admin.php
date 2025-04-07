@@ -71,12 +71,12 @@ while ($row = $chatResult->fetch_assoc()) {
 <?php include 'sidebar.php'; ?>
 <div class="container-fluid mt-5">
     <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
+        <div class="col-md-3">
+            <div class="card dark-card">
+                <div class="card-header bg-dark text-white">
                     <h5 class="mb-0">Conversations</h5>
                 </div>
-                <div class="list-group list-group-flush" id="conversation-list">
+                <div class="list-group list-group-flush dark-list" id="conversation-list">
                     <?php foreach ($messages as $userId => $chat): ?>
                         <a href="#" class="list-group-item list-group-item-action conversation-item" data-user-id="<?php echo $userId; ?>">
                             <div class="d-flex w-100 justify-content-between">
@@ -94,9 +94,9 @@ while ($row = $chatResult->fetch_assoc()) {
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white" id="active-chat-header">
+        <div class="col-md-9">
+            <div class="card dark-card">
+                <div class="card-header bg-dark text-white" id="active-chat-header">
                     <h5 class="mb-0">Select a conversation</h5>
                 </div>
                 <div class="card-body p-0">
@@ -110,7 +110,7 @@ while ($row = $chatResult->fetch_assoc()) {
                         <form id="message-form" class="d-none">
                             <input type="hidden" name="user_id" id="active-user-id">
                             <div class="input-group">
-                                <textarea class="form-control" name="message" rows="1" placeholder="Type your message..." required></textarea>
+                                <textarea class="form-control dark-input" name="message" rows="1" placeholder="Type your message..." required></textarea>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
@@ -173,20 +173,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         messageDiv.className = `message ${message.sender === 'Admin' ? 'sent' : 'received'} mb-2`;
                         
                         const messageContent = document.createElement('div');
-                        messageContent.className = `p-2 rounded ${message.sender === 'Admin' ? 'bg-primary text-white' : 'bg-light'}`;
-                        messageContent.style.maxWidth = '70%';
-                        messageContent.style.display = 'inline-block';
-                        messageContent.style.wordBreak = 'break-word';
-                        
-                        if (message.sender === 'Admin') {
-                            messageContent.style.float = 'right';
-                            messageContent.style.clear = 'both';
-                        } else {
-                            messageContent.style.float = 'left';
-                            messageContent.style.clear = 'both';
-                        }
-                        
+                        messageContent.className = 'message-content';
                         messageContent.innerHTML = `<strong>${message.sender}:</strong> ${message.text}`;
+                        
                         messageDiv.appendChild(messageContent);
                         chatContainer.appendChild(messageDiv);
                     });
@@ -253,14 +242,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageDiv.className = 'message sent mb-2';
                 
                 const messageContent = document.createElement('div');
-                messageContent.className = 'p-2 rounded bg-primary text-white';
-                messageContent.style.maxWidth = '70%';
-                messageContent.style.display = 'inline-block';
-                messageContent.style.float = 'right';
-                messageContent.style.clear = 'both';
-                messageContent.style.wordBreak = 'break-word';
-                
+                messageContent.className = 'message-content';
                 messageContent.innerHTML = `<strong>Admin:</strong> ${message}`;
+                
                 messageDiv.appendChild(messageContent);
                 chatContainer.appendChild(messageDiv);
                 
@@ -292,6 +276,56 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+/* Dark theme styles */
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+.dark-card {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+
+.dark-card .card-header {
+    border-bottom-color: #333;
+}
+
+.dark-list {
+    background-color: #1e1e1e;
+}
+
+.dark-list .list-group-item {
+    background-color: #1e1e1e;
+    border-color: #333;
+    color: #e0e0e0;
+}
+
+.dark-list .list-group-item:hover {
+    background-color: #2a2a2a;
+}
+
+.dark-list .list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.dark-input {
+    background-color: #2a2a2a;
+    border-color: #333;
+    color: #e0e0e0;
+}
+
+.dark-input:focus {
+    background-color: #2a2a2a;
+    border-color: #0d6efd;
+    color: #e0e0e0;
+}
+
+#chat-container {
+    background-color: #1e1e1e;
+}
+
 .message {
     margin-bottom: 10px;
     clear: both;
@@ -305,25 +339,39 @@ document.addEventListener('DOMContentLoaded', function() {
     text-align: left;
 }
 
-.conversation-item {
-    transition: background-color 0.2s;
+.message-content {
+    padding: 8px 12px;
+    border-radius: 18px;
+    max-width: 70%;
+    display: inline-block;
+    word-break: break-word;
 }
 
-.conversation-item:hover {
-    background-color: #f8f9fa;
+.message.sent .message-content {
+    background-color: #0d6efd;
+    color: white;
+    float: right;
+    clear: both;
 }
 
-.conversation-item.active {
-    background-color: #e9ecef;
-}
-
-#chat-container {
-    background-color: #f8f9fa;
+.message.received .message-content {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    float: left;
+    clear: both;
 }
 
 #message-form textarea {
     resize: none;
     overflow-y: hidden;
+}
+
+/* Adjust for sidebar */
+@media (min-width: 768px) {
+    .container-fluid {
+        margin-left: 250px; /* Adjust based on your sidebar width */
+        width: calc(100% - 250px);
+    }
 }
 </style>
 </body>
