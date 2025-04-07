@@ -116,7 +116,7 @@ if (!$workResult) {
         <?php if ($workResult): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
                 <div class="work-card">
-                    <img src="<?php echo '../admin_dashboard/uploads/' . htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
+                    <img src="<?php echo '../Images/' . htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
                     <div class="work-details">
                         <h3 class="work-title"><?php echo htmlspecialchars($work['title']); ?></h3>
                         <button class="btn btn-outline-light view-details-button" data-bs-toggle="modal" data-bs-target="#workModal<?php echo $work['id']; ?>">
