@@ -376,6 +376,7 @@ $alumni_result = $alumni_stmt->get_result();
             $.ajax({
                 url: '/Kaluppa/Backend/get_chat_messages.php',
                 method: 'GET',
+                data: { user_id: <?php echo $user['id']; ?> },
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
