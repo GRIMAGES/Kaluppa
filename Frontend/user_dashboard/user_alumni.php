@@ -431,6 +431,7 @@ $alumni_result = $alumni_stmt->get_result();
         // Handle delete message button click
         $(document).on('click', '.delete-message', function() {
             const messageId = $(this).data('message-id');
+            console.log('Attempting to delete message ID:', messageId); // Debugging line
             $.ajax({
                 url: '/Kaluppa/Backend/delete_chat_message.php',
                 method: 'POST',
@@ -452,11 +453,14 @@ $alumni_result = $alumni_stmt->get_result();
 
         // Handle delete conversation button click
         $('#deleteConversation').on('click', function() {
+            const userId = <?php echo $user['id']; ?>;
+            const inquiryType = $('#inquiryType').val();
+            console.log('Deleting conversation for user ID:', userId, 'and inquiry type:', inquiryType); // Debugging line
             if (confirm('Are you sure you want to delete the entire conversation?')) {
                 $.ajax({
                     url: '/Kaluppa/Backend/delete_conversation.php',
                     method: 'POST',
-                    data: { user_id: <?php echo $user['id']; ?>, inquiry_type: $('#inquiryType').val() },
+                    data: { user_id: userId, inquiry_type: inquiryType },
                     dataType: 'json',
                     success: function(response) {
                         if (response.success) {
