@@ -419,6 +419,27 @@ $alumni_result = $alumni_stmt->get_result();
                 }
             });
         });
+
+        $('.delete-message').on('click', function() {
+            const messageId = $(this).data('message-id');
+            $.ajax({
+                url: '/Kaluppa/Backend/delete_chat_message.php',
+                method: 'POST',
+                data: { message_id: messageId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the message from the UI
+                        $(`#message-${messageId}`).remove();
+                    } else {
+                        alert('Failed to delete message: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while deleting the message.');
+                }
+            });
+        });
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
