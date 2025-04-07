@@ -187,6 +187,16 @@ $alumni_result = $alumni_stmt->get_result();
                 </div>
             </div>
         </div>
+        <!-- Add a new card in the alumni section -->
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-info-circle card-icon"></i>
+                    <h5 class="card-title" style="color: white;">New Feature</h5>
+                    <p class="card-text">Description of the new feature or information.</p>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row justify-content-center">
         <div class="col-md-12">
@@ -269,13 +279,6 @@ $alumni_result = $alumni_stmt->get_result();
                         <!-- Messages will be dynamically loaded here -->
                     </div>
                     <form id="chatForm" style="display: flex; align-items: center; padding: 10px; background-color: #fff; border-top: 1px solid #ccc;">
-                        <select class="form-select" id="inquiryType" required style="max-width: 150px; margin-right: 10px;">
-                            <option value="">Select Type</option>
-                            <option value="general">General</option>
-                            <option value="technical">Technical</option>
-                            <option value="billing">Billing</option>
-                            <option value="feedback">Feedback</option>
-                        </select>
                         <textarea class="form-control" id="chatMessage" rows="1" placeholder="Type your message..." required style="flex-grow: 1; resize: none; margin-right: 10px;"></textarea>
                         <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">Send</button>
                     </form>
@@ -374,25 +377,6 @@ $alumni_result = $alumni_stmt->get_result();
         // Initially hide the chat form
         $('#chatForm').hide();
 
-        // Enable chat form and load messages once an inquiry type is selected
-        $('#inquiryType').on('change', function() {
-            const inquiryType = $(this).val();
-            if (inquiryType) {
-                $('#chatForm').show();
-                $('#chatMessage').prop('disabled', false);
-                $('#chatForm button[type="submit"]').prop('disabled', false);
-                loadMessages(); // Load messages for the selected inquiry type
-            } else {
-                $('#chatForm').hide();
-                $('#chatMessage').prop('disabled', true);
-                $('#chatForm button[type="submit"]').prop('disabled', true);
-            }
-        });
-
-        // Initialize chat form as hidden and disabled
-        $('#chatMessage').prop('disabled', true);
-        $('#chatForm button[type="submit"]').prop('disabled', true);
-
         // Load chat messages
         function loadMessages() {
             $.ajax({
@@ -448,13 +432,11 @@ $alumni_result = $alumni_stmt->get_result();
         // Handle delete conversation button click
         $('#deleteConversation').on('click', function() {
             const userId = <?php echo $user['id']; ?>;
-            const inquiryType = $('#inquiryType').val();
-            console.log('Deleting conversation for user ID:', userId, 'and inquiry type:', inquiryType); // Debugging line
             if (confirm('Are you sure you want to delete the entire conversation?')) {
                 $.ajax({
                     url: '/Kaluppa/Backend/delete_conversation.php',
                     method: 'POST',
-                    data: { user_id: userId, inquiry_type: inquiryType },
+                    data: { user_id: userId },
                     dataType: 'json',
                     success: function(response) {
                         if (response.success) {
