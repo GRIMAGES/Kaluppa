@@ -177,16 +177,6 @@ $alumni_result = $alumni_stmt->get_result();
                 </div>
             </div>
         </div>
-        <!-- New Card for Inquiries -->
-        <div class="col-md-4">
-            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#inquiriesModal">
-                <div class="card-body">
-                    <i class="fas fa-question-circle card-icon"></i>
-                    <h5 class="card-title" style="color: white;">Inquiries</h5>
-                    <p class="card-text">Submit your questions or concerns or chat with Admin.</p>
-                </div>
-            </div>
-        </div>
         <!-- Add a new card in the alumni section -->
         <div class="col-md-4">
             <div class="card text-center">
