@@ -391,12 +391,14 @@ $alumni_result = $alumni_stmt->get_result();
         // Enable the 'Start Chat' button when an inquiry type is selected
         $('#selectedInquiryType').on('change', function() {
             const inquiryType = $(this).val();
+            console.log('Selected Inquiry Type:', inquiryType); // Debugging line
             $('#startChatButton').prop('disabled', !inquiryType);
         });
 
         // Handle 'Start Chat' button click
         $('#startChatButton').on('click', function() {
             const inquiryType = $('#selectedInquiryType').val();
+            console.log('Starting chat with Inquiry Type:', inquiryType); // Debugging line
             if (inquiryType) {
                 $('#inquiryTypeModal').modal('hide');
                 $('#chatForm').show();
@@ -414,20 +416,19 @@ $alumni_result = $alumni_stmt->get_result();
 
         // Load chat messages
         function loadMessages(inquiryType) {
+            console.log('Loading messages for Inquiry Type:', inquiryType); // Debugging line
             $.ajax({
                 url: '/Kaluppa/Backend/get_chat_messages.php',
                 method: 'GET',
                 data: { user_id: <?php echo $user['id']; ?>, inquiry_type: inquiryType },
                 dataType: 'json',
                 success: function(response) {
+                    console.log('Server Response:', response); // Debugging line
                     if (response.success) {
                         const chatMessages = $('#chatMessages');
                         chatMessages.empty();
                         response.messages.forEach(function(message) {
-                            const isUserMessage = message.sender_id === <?php echo $user['id']; ?>;
-                            const messageClass = isUserMessage ? 'user-message' : 'admin-message';
-                            const deleteButton = isUserMessage ? `<button class="delete-message" data-message-id="${message.id}">Delete</button>` : '';
-                            const messageElement = `<div id="message-${message.id}" class="${messageClass}"><strong>${message.sender}:</strong> ${message.text} ${deleteButton}</div>`;
+                            const messageElement = `<div><strong>${message.sender}:</strong> ${message.text}</div>`;
                             chatMessages.append(messageElement);
                         });
                     } else {
@@ -435,6 +436,7 @@ $alumni_result = $alumni_stmt->get_result();
                     }
                 },
                 error: function(xhr, status, error) {
+                    console.error('Error loading messages:', error); // Debugging line
                     alert('An error occurred while loading messages.');
                 }
             });
