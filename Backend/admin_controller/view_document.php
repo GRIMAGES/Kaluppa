@@ -1,4 +1,7 @@
 <?php
+// Start output buffering to prevent any output before headers
+ob_start();
+
 session_start();
 require_once '../../Backend/connection.php';
 require_once '../../Backend/log_helper.php';
@@ -35,11 +38,11 @@ if (isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
                 break;
             case 'doc':
             case 'docx':
-                $contentType = 'application/msword';
+                $contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
                 break;
             case 'xls':
             case 'xlsx':
-                $contentType = 'application/vnd.ms-excel';
+                $contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                 break;
             case 'jpg':
             case 'jpeg':
@@ -57,8 +60,12 @@ if (isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
         }
         
         // Clear any previous output
-        if (ob_get_length()) ob_clean();
+        ob_clean();
         
+        // Disable error reporting for this operation
+        $errorReporting = error_reporting(0);
+        
+        // Set headers for file download/view
         if ($action === 'view') {
             // For viewing, set inline disposition
             header('Content-Type: ' . $contentType);
@@ -82,11 +89,28 @@ if (isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
             header('Cache-Control: public, must-revalidate, max-age=0');
             header('Pragma: public');
             header('Content-Length: ' . filesize($filePath));
-            readfile($filePath);
+            
+            // Use a more reliable method to read and output the file
+            $handle = fopen($filePath, 'rb');
+            if ($handle) {
+                while (!feof($handle)) {
+                    echo fread($handle, 8192);
+                }
+                fclose($handle);
+            } else {
+                // If we can't open the file, try readfile as a fallback
+                readfile($filePath);
+            }
         }
+        
+        // Restore error reporting
+        error_reporting($errorReporting);
         
         // Log the action
         insertLog($_SESSION['user_id'], ucfirst($action) . ' Document', "Admin $action document $fileName for application ID $applicationId", 'info');
+        
+        // End output buffering and flush
+        ob_end_flush();
         exit(); // Make sure to exit after sending the file
     } else {
         // Log the error
