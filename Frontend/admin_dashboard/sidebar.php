@@ -52,10 +52,7 @@ $navLinks = [
     ['href' => 'admin_analytics.php', 'icon' => 'fas fa-chart-line', 'text' => 'Analytics'],
     ['href' => 'reports.php', 'icon' => 'fas fa-chart-bar', 'text' => 'Reports'],
     ['href' => 'admin_settings.php', 'icon' => 'fas fa-cog', 'text' => 'Admin Settings'],
-    ['href' => '#', 'icon' => 'fas fa-certificate', 'text' => 'Certificates', 'dropdown' => [
-        ['href' => 'admin_certificate.php?type=scholarship', 'icon' => 'fas fa-graduation-cap', 'text' => 'Scholarship'],
-    ]],
-    ['href' => 'admin_logs.php', 'icon' => 'fas fa-file-alt', 'text' => 'Admin Logs'],
+    ['href' => 'admin_logs.php', 'icon' => 'fas fa-file-alt', 'text' => 'Admin Logs', 'role' => 'superadmin'],
     ['href' => 'chat_admin.php', 'icon' => 'fas fa-comments', 'text' => 'Chat Admin'],
     ['href' => 'admin_backup.php', 'icon' => 'fas fa-database', 'text' => 'Admin Backup'],
 ];

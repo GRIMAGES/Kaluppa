@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
 $approvedApplicationsCountSql = "
     SELECT course_id, COUNT(*) as enrolled_students
     FROM applications
-    WHERE status = 'enrolled'
+    WHERE LOWER(status) = 'enrolled'
     GROUP BY course_id
 ";
 $approvedApplicationsCountResult = $conn->query($approvedApplicationsCountSql);
@@ -399,6 +399,26 @@ if ($scholarship_result->num_rows > 0) {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <!-- Current Course Card Preview -->
+                <div class="mb-4">
+                    <h6 class="text-center mb-3" style="color:black;">Current Course Details</h6>
+                    <div class="card">
+                        <div class="card-header">
+                            <strong id="preview_course_name"></strong>
+                        </div>
+                        <div class="card-body">
+                            <img id="preview_course_image" src="" alt="Course Image" class="img-fluid mb-2" style="max-height: 150px; width: auto;" />
+                            <p><strong>Instructor:</strong> <span id="preview_course_instructor"></span></p>
+                            <p><strong>Start Date:</strong> <span id="preview_course_startdate"></span></p>
+                            <p><strong>End Date:</strong> <span id="preview_course_enddate"></span></p>
+                            <p><strong>Capacity:</strong> <span id="preview_course_capacity"></span></p>
+                            <p><strong>Status:</strong> <span id="preview_course_status"></span></p>
+                            <p><strong>Requirements:</strong> <span id="preview_course_requirements" style="white-space: pre-line;"></span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h6 class="text-center mb-3" style="color:black;">Edit Course Details</h6>
                 <form action="admin_courses.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" id="edit_course_id" name="id">
                     <div class="mb-3">
@@ -409,14 +429,14 @@ if ($scholarship_result->num_rows > 0) {
                         <label for="edit_course_description" class="form-label" style="color:black;">Description</label>
                         <textarea class="form-control" id="edit_course_description" name="courseDescription" rows="3" required></textarea>
                     </div>
-                        <div class="mb-3">
-                            <label for="editCourseStartDate" class="form-label" style="color:black;">Start Date</label>
-                            <input type="date" class="form-control" id="editCourseStartDate" name="courseStartDate" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCourseEndDate" class="form-label" style="color:black;">End Date</label>
-                            <input type="date" class="form-control" id="editCourseEndDate" name="courseEndDate" required>
-                        </div>
+                    <div class="mb-3">
+                        <label for="editCourseStartDate" class="form-label" style="color:black;">Start Date</label>
+                        <input type="date" class="form-control" id="editCourseStartDate" name="courseStartDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCourseEndDate" class="form-label" style="color:black;">End Date</label>
+                        <input type="date" class="form-control" id="editCourseEndDate" name="courseEndDate" required>
+                    </div>
                     <div class="mb-3">
                         <label for="edit_course_capacity" class="form-label" style="color:black;">Capacity</label>
                         <input type="number" class="form-control" id="edit_course_capacity" name="courseCapacity" required>
@@ -500,6 +520,7 @@ if ($scholarship_result->num_rows > 0) {
             const startDate = this.getAttribute('data-startdate');
             const endDate = this.getAttribute('data-enddate');
             const requirements = this.getAttribute('data-requirements');
+            const image = this.closest('.course-card').querySelector('img').getAttribute('src');
 
             // Populate modal fields with existing data
             document.getElementById('edit_course_id').value = id;
@@ -512,6 +533,16 @@ if ($scholarship_result->num_rows > 0) {
             document.getElementById('editCourseStartDate').value = startDate;
             document.getElementById('editCourseEndDate').value = endDate;
             document.getElementById('editcourseRequirements').value = requirements;
+            
+            // Populate preview card
+            document.getElementById('preview_course_name').textContent = name;
+            document.getElementById('preview_course_image').src = image;
+            document.getElementById('preview_course_instructor').textContent = instructor;
+            document.getElementById('preview_course_startdate').textContent = startDate;
+            document.getElementById('preview_course_enddate').textContent = endDate;
+            document.getElementById('preview_course_capacity').textContent = capacity;
+            document.getElementById('preview_course_status').textContent = status;
+            document.getElementById('preview_course_requirements').textContent = requirements;
 
             modal.show();
         });
