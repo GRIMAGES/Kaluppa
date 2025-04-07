@@ -388,6 +388,9 @@ $alumni_result = $alumni_stmt->get_result();
             $('.modal-backdrop').remove();
         });
 
+        // Check for existing conversations on page load
+        checkForExistingConversations();
+
         // Enable the 'Start Chat' button when an inquiry type is selected
         $('#selectedInquiryType').on('change', function() {
             const inquiryType = $(this).val();
@@ -409,38 +412,33 @@ $alumni_result = $alumni_stmt->get_result();
                 $('#chatForm button[type="submit"]').prop('disabled', false);
                 // Store the inquiry type for sending messages
                 $('#chatForm').data('inquiryType', inquiryType);
+                loadMessages(inquiryType);
             }
         });
 
-        // Handle chat form submission
-        $('#chatForm').on('submit', function(e) {
-            e.preventDefault();
-            const message = $('#chatMessage').val();
-            const inquiryType = $(this).data('inquiryType'); // Retrieve the stored inquiry type
-
+        // Function to check for existing conversations
+        function checkForExistingConversations() {
             $.ajax({
-                url: '/Kaluppa/Backend/send_chat_message.php',
-                method: 'POST',
-                data: { message: message, inquiry_type: inquiryType },
+                url: '/Kaluppa/Backend/check_existing_conversations.php',
+                method: 'GET',
+                data: { user_id: <?php echo $user['id']; ?> },
                 dataType: 'json',
                 success: function(response) {
-                    if (response.success) {
-                        $('#chatMessage').val('');
-                        loadMessages(inquiryType); // Load messages for the selected inquiry type
-                    } else {
-                        alert('Failed to send message: ' + response.message);
+                    if (response.success && response.inquiry_type) {
+                        console.log('Existing conversation found for Inquiry Type:', response.inquiry_type); // Debugging line
+                        $('#inquiriesModal').modal('show'); // Show the chat modal
+                        $('#chatForm').show();
+                        $('#chatMessage').prop('disabled', false);
+                        $('#chatForm button[type="submit"]').prop('disabled', false);
+                        $('#chatForm').data('inquiryType', response.inquiry_type);
+                        loadMessages(response.inquiry_type);
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert('An error occurred while sending the message.');
+                    console.error('Error checking for existing conversations:', error); // Debugging line
                 }
             });
-        });
-
-        // Initialize chat form as hidden and disabled
-        $('#chatForm').hide();
-        $('#chatMessage').prop('disabled', true);
-        $('#chatForm button[type="submit"]').prop('disabled', true);
+        }
 
         // Load chat messages
         function loadMessages(inquiryType) {
