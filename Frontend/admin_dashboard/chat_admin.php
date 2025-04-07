@@ -69,45 +69,70 @@ while ($row = $chatResult->fetch_assoc()) {
 </head> 
 <body>
 <?php include 'sidebar.php'; ?>
-<div class="container mt-5">
-    <h1>Chat with Alumni</h1>
-    <div id="alert-container"></div>
-    <?php if (isset($_GET['error'])): ?>
-        <div class="alert alert-danger">
-            <?php echo htmlspecialchars($_GET['error']); ?>
-        </div>
-    <?php endif; ?>
-    <?php if (isset($_GET['success'])): ?>
-        <div class="alert alert-success">
-            <?php echo htmlspecialchars($_GET['success']); ?>
-        </div>
-    <?php endif; ?>
-    <?php foreach ($messages as $userId => $chat): ?>
-        <div class="card mb-3">
-            <div class="card-header">
-                Chat with <?php echo htmlspecialchars($chat['user']); ?>
-            </div>
-            <div class="card-body">
-                <div id="chat-messages-<?php echo $userId; ?>" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-                    <?php foreach ($chat['messages'] as $message): ?>
-                        <div><strong><?php echo htmlspecialchars($message['sender']); ?>:</strong> <?php echo htmlspecialchars($message['text']); ?></div>
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Conversations</h5>
+                </div>
+                <div class="list-group list-group-flush" id="conversation-list">
+                    <?php foreach ($messages as $userId => $chat): ?>
+                        <a href="#" class="list-group-item list-group-item-action conversation-item" data-user-id="<?php echo $userId; ?>">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1"><?php echo htmlspecialchars($chat['user']); ?></h6>
+                                <small class="text-muted"><?php echo count($chat['messages']); ?> messages</small>
+                            </div>
+                            <small class="text-muted">
+                                <?php 
+                                $lastMessage = end($chat['messages']);
+                                echo htmlspecialchars(substr($lastMessage['text'], 0, 30)) . (strlen($lastMessage['text']) > 30 ? '...' : '');
+                                ?>
+                            </small>
+                        </a>
                     <?php endforeach; ?>
                 </div>
-                <form class="chat-form" data-user-id="<?php echo $userId; ?>">
-                    <input type="hidden" name="user_id" value="<?php echo $userId; ?>">
-                    <div class="mb-3">
-                        <textarea class="form-control" name="message" rows="3" placeholder="Type your message..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send</button>
-                </form>
             </div>
         </div>
-    <?php endforeach; ?>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white" id="active-chat-header">
+                    <h5 class="mb-0">Select a conversation</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="chat-container" class="p-3" style="height: 400px; overflow-y: auto;">
+                        <div class="text-center text-muted mt-5">
+                            <i class="fas fa-comments fa-3x mb-3"></i>
+                            <p>Select a conversation from the list to start chatting</p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <form id="message-form" class="d-none">
+                            <input type="hidden" name="user_id" id="active-user-id">
+                            <div class="input-group">
+                                <textarea class="form-control" name="message" rows="1" placeholder="Type your message..." required></textarea>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const alertContainer = document.getElementById('alert-container');
+    const chatContainer = document.getElementById('chat-container');
+    const messageForm = document.getElementById('message-form');
+    const activeUserIdInput = document.getElementById('active-user-id');
+    const activeChatHeader = document.getElementById('active-chat-header');
     
     // Function to show alerts
     function showAlert(message, type) {
@@ -126,55 +151,180 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
-    // Handle form submissions
-    document.querySelectorAll('.chat-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const userId = this.dataset.userId;
-            const messageInput = this.querySelector('textarea[name="message"]');
-            const message = messageInput.value;
-            
-            if (!message.trim()) return;
-            
-            // Create form data
-            const formData = new FormData();
-            formData.append('user_id', userId);
-            formData.append('message', message);
-            
-            // Send AJAX request
-            fetch('/Kaluppa/Backend/send_chat_message_admin.php', {
-                method: 'POST',
-                body: formData
-            })
+    // Function to load chat messages
+    function loadChatMessages(userId, userName) {
+        // Clear current chat
+        chatContainer.innerHTML = '';
+        
+        // Update header
+        activeChatHeader.innerHTML = `<h5 class="mb-0">Chat with ${userName}</h5>`;
+        
+        // Show message form
+        messageForm.classList.remove('d-none');
+        activeUserIdInput.value = userId;
+        
+        // Fetch messages for this user
+        fetch(`/Kaluppa/Backend/get_chat_messages.php?user_id=${userId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Add the new message to the chat
-                    const chatMessages = document.getElementById(`chat-messages-${userId}`);
-                    const newMessage = document.createElement('div');
-                    newMessage.innerHTML = `<strong>Admin:</strong> ${message}`;
-                    chatMessages.appendChild(newMessage);
+                    data.messages.forEach(message => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = `message ${message.sender === 'Admin' ? 'sent' : 'received'} mb-2`;
+                        
+                        const messageContent = document.createElement('div');
+                        messageContent.className = `p-2 rounded ${message.sender === 'Admin' ? 'bg-primary text-white' : 'bg-light'}`;
+                        messageContent.style.maxWidth = '70%';
+                        messageContent.style.display = 'inline-block';
+                        messageContent.style.wordBreak = 'break-word';
+                        
+                        if (message.sender === 'Admin') {
+                            messageContent.style.float = 'right';
+                            messageContent.style.clear = 'both';
+                        } else {
+                            messageContent.style.float = 'left';
+                            messageContent.style.clear = 'both';
+                        }
+                        
+                        messageContent.innerHTML = `<strong>${message.sender}:</strong> ${message.text}`;
+                        messageDiv.appendChild(messageContent);
+                        chatContainer.appendChild(messageDiv);
+                    });
                     
                     // Scroll to bottom
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                    
-                    // Clear the input
-                    messageInput.value = '';
-                    
-                    // Show success message
-                    showAlert('Message sent successfully', 'success');
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
                 } else {
-                    showAlert(data.message || 'Failed to send message', 'danger');
+                    showAlert('Failed to load messages', 'danger');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showAlert('Failed to send message. Please try again.', 'danger');
+                showAlert('Failed to load messages', 'danger');
             });
+    }
+    
+    // Handle conversation item clicks
+    document.querySelectorAll('.conversation-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all items
+            document.querySelectorAll('.conversation-item').forEach(i => {
+                i.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Get user ID and name
+            const userId = this.dataset.userId;
+            const userName = this.querySelector('h6').textContent;
+            
+            // Load chat messages
+            loadChatMessages(userId, userName);
         });
+    });
+    
+    // Handle message form submission
+    messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const userId = activeUserIdInput.value;
+        const messageInput = this.querySelector('textarea[name="message"]');
+        const message = messageInput.value;
+        
+        if (!message.trim()) return;
+        
+        // Create form data
+        const formData = new FormData();
+        formData.append('user_id', userId);
+        formData.append('message', message);
+        
+        // Send AJAX request
+        fetch('/Kaluppa/Backend/send_chat_message_admin.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Add the new message to the chat
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message sent mb-2';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'p-2 rounded bg-primary text-white';
+                messageContent.style.maxWidth = '70%';
+                messageContent.style.display = 'inline-block';
+                messageContent.style.float = 'right';
+                messageContent.style.clear = 'both';
+                messageContent.style.wordBreak = 'break-word';
+                
+                messageContent.innerHTML = `<strong>Admin:</strong> ${message}`;
+                messageDiv.appendChild(messageContent);
+                chatContainer.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+                // Clear the input
+                messageInput.value = '';
+                
+                // Show success message
+                showAlert('Message sent successfully', 'success');
+            } else {
+                showAlert(data.message || 'Failed to send message', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Failed to send message. Please try again.', 'danger');
+        });
+    });
+    
+    // Auto-resize textarea
+    const textarea = messageForm.querySelector('textarea');
+    textarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
     });
 });
 </script>
+
+<style>
+.message {
+    margin-bottom: 10px;
+    clear: both;
+}
+
+.message.sent {
+    text-align: right;
+}
+
+.message.received {
+    text-align: left;
+}
+
+.conversation-item {
+    transition: background-color 0.2s;
+}
+
+.conversation-item:hover {
+    background-color: #f8f9fa;
+}
+
+.conversation-item.active {
+    background-color: #e9ecef;
+}
+
+#chat-container {
+    background-color: #f8f9fa;
+}
+
+#message-form textarea {
+    resize: none;
+    overflow-y: hidden;
+}
+</style>
 </body>
 </html>

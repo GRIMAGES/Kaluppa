@@ -1,34 +1,35 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require_once 'connection.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+    echo json_encode(['success' => false, 'message' => 'Not logged in']);
     exit();
 }
 
-$email = $_SESSION['email'];
+$userId = $_GET['user_id'] ?? 0;
 
-// Fetch user ID
-$stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
-$stmt->bind_param("s", $email);
+if ($userId == 0) {
+    echo json_encode(['success' => false, 'message' => 'Invalid user ID']);
+    exit();
+}
+
+// Fetch chat messages for this user
+$stmt = $conn->prepare("
+    SELECT c.sender, c.text, c.created_at
+    FROM chat_messages c
+    WHERE c.user_id = ?
+    ORDER BY c.created_at ASC
+");
+$stmt->bind_param("i", $userId);
 $stmt->execute();
 $result = $stmt->get_result();
-if ($result->num_rows === 0) {
-    echo json_encode(['success' => false, 'message' => 'User not found']);
-    exit();
-}
-$user = $result->fetch_assoc();
-$userId = $user['id'];
-
-// Fetch chat messages
-$chatStmt = $conn->prepare("SELECT sender, text FROM chat_messages WHERE user_id = ? ORDER BY created_at ASC");
-$chatStmt->bind_param("i", $userId);
-$chatStmt->execute();
-$chatResult = $chatStmt->get_result();
 
 $messages = [];
-while ($row = $chatResult->fetch_assoc()) {
+while ($row = $result->fetch_assoc()) {
     $messages[] = $row;
 }
 
