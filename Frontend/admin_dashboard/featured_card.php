@@ -39,7 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_card']) && $cardC
     if (!empty($_FILES['image']['name'])) {
         $image = basename($_FILES['image']['name']);
         $target = "/opt/bitnami/apache2/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/featured/" . $image;
-        move_uploaded_file($_FILES['image']['tmp_name'], $target);
+        $imageFileType = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+
+        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+            if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+                echo "Failed to move uploaded file.";
+            }
+        } else {
+            echo "Invalid image type.";
+        }
     }
 
     $stmt = $conn->prepare("INSERT INTO featured_cards (title, description, details, image) VALUES (?, ?, ?, ?)");
@@ -63,7 +71,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_card'])) {
     if (!empty($_FILES['image']['name'])) {
         $image = basename($_FILES['image']['name']);
         $target = "/opt/bitnami/apache2/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/featured/" . $image;
-        move_uploaded_file($_FILES['image']['tmp_name'], $target);
+        $imageFileType = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+
+        if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+            if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+                echo "Failed to move uploaded file.";
+            }
+        } else {
+            echo "Invalid image type.";
+        }
     }
 
     $stmt = $conn->prepare("UPDATE featured_cards SET title = ?, description = ?, details = ?, image = ? WHERE id = ?");
