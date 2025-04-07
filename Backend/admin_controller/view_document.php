@@ -5,6 +5,7 @@ ob_start();
 session_start();
 require_once '../../Backend/connection.php';
 require_once '../../Backend/log_helper.php';
+require_once '../../Backend/aes_key.php'; // Include the file with encryption constants
 
 if (!isset($_SESSION['email'])) {
     header("Location: /Frontend/index.php");
@@ -65,6 +66,24 @@ if (isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
         // Disable error reporting for this operation
         $errorReporting = error_reporting(0);
         
+        // Read the encrypted file content
+        $encryptedContent = file_get_contents($filePath);
+        
+        // Decrypt the content
+        $decryptedContent = openssl_decrypt(
+            $encryptedContent,
+            'AES-256-CBC',
+            AES_KEY,
+            OPENSSL_RAW_DATA,
+            AES_IV
+        );
+        
+        if ($decryptedContent === false) {
+            // If decryption fails, try to use the file directly (in case it's not encrypted)
+            $decryptedContent = $encryptedContent;
+            error_log("Decryption failed for file: $fileName. Using raw content instead.");
+        }
+        
         // Set headers for file download/view
         if ($action === 'view') {
             // For viewing, set inline disposition
@@ -72,35 +91,20 @@ if (isset($_GET['application_id'], $_GET['file'], $_GET['action'])) {
             header('Content-Disposition: inline; filename="' . $fileName . '"');
             header('Cache-Control: public, must-revalidate, max-age=0');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($filePath));
+            header('Content-Length: ' . strlen($decryptedContent));
             
-            // For PDFs and images, we can display them directly
-            if (in_array($fileExtension, ['pdf', 'jpg', 'jpeg', 'png', 'gif'])) {
-                readfile($filePath);
-            } else {
-                // For other file types, we'll force download instead
-                header('Content-Disposition: attachment; filename="' . $fileName . '"');
-                readfile($filePath);
-            }
+            // Output the decrypted content
+            echo $decryptedContent;
         } elseif ($action === 'download') {
             // For downloading, set attachment disposition
             header('Content-Type: ' . $contentType);
             header('Content-Disposition: attachment; filename="' . $fileName . '"');
             header('Cache-Control: public, must-revalidate, max-age=0');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($filePath));
+            header('Content-Length: ' . strlen($decryptedContent));
             
-            // Use a more reliable method to read and output the file
-            $handle = fopen($filePath, 'rb');
-            if ($handle) {
-                while (!feof($handle)) {
-                    echo fread($handle, 8192);
-                }
-                fclose($handle);
-            } else {
-                // If we can't open the file, try readfile as a fallback
-                readfile($filePath);
-            }
+            // Output the decrypted content
+            echo $decryptedContent;
         }
         
         // Restore error reporting
