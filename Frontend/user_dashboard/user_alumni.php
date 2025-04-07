@@ -383,7 +383,7 @@ $alumni_result = $alumni_stmt->get_result();
                         const chatMessages = $('#chatMessages');
                         chatMessages.empty();
                         response.messages.forEach(function(message) {
-                            const messageElement = `<div><strong>${message.sender}:</strong> ${message.text}</div>`;
+                            const messageElement = `<div id="message-${message.id}"><strong>${message.sender}:</strong> ${message.text} <button class="delete-message" data-message-id="${message.id}">Delete</button></div>`;
                             chatMessages.append(messageElement);
                         });
                     } else {
@@ -420,7 +420,8 @@ $alumni_result = $alumni_stmt->get_result();
             });
         });
 
-        $('.delete-message').on('click', function() {
+        // Handle delete message button click
+        $(document).on('click', '.delete-message', function() {
             const messageId = $(this).data('message-id');
             $.ajax({
                 url: '/Kaluppa/Backend/delete_chat_message.php',

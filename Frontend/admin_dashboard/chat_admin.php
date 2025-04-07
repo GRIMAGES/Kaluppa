@@ -176,7 +176,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         messageContent.className = 'message-content';
                         messageContent.innerHTML = `<strong>${message.sender}:</strong> ${message.text}`;
                         
+                        const deleteButton = document.createElement('button');
+                        deleteButton.className = 'btn btn-danger btn-sm delete-message';
+                        deleteButton.setAttribute('data-message-id', message.id);
+                        deleteButton.textContent = 'Delete';
+                        
                         messageDiv.appendChild(messageContent);
+                        messageDiv.appendChild(deleteButton);
                         chatContainer.appendChild(messageDiv);
                     });
                     
@@ -245,7 +251,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageContent.className = 'message-content';
                 messageContent.innerHTML = `<strong>Admin:</strong> ${message}`;
                 
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'btn btn-danger btn-sm delete-message';
+                deleteButton.setAttribute('data-message-id', data.message_id);
+                deleteButton.textContent = 'Delete';
+                
                 messageDiv.appendChild(messageContent);
+                messageDiv.appendChild(deleteButton);
                 chatContainer.appendChild(messageDiv);
                 
                 // Scroll to bottom
