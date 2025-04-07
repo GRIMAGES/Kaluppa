@@ -401,7 +401,9 @@ $alumni_result = $alumni_stmt->get_result();
             console.log('Starting chat with Inquiry Type:', inquiryType); // Debugging line
             if (inquiryType) {
                 $('#inquiryTypeModal').modal('hide');
+                console.log('Modal should be hidden now.'); // Debugging line
                 $('#chatForm').show();
+                console.log('Chat form should be visible now.'); // Debugging line
                 $('#chatMessage').prop('disabled', false);
                 $('#chatForm button[type="submit"]').prop('disabled', false);
                 // Load messages for the selected inquiry type
