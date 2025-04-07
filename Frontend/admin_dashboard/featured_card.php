@@ -38,12 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_card']) && $cardC
 
     if (!empty($_FILES['image']['name'])) {
         $image = basename($_FILES['image']['name']);
-        $target = "/opt/bitnami/apache2/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/featured/" . $image;
+        $target = "uploads/featured/" . $image;
         $imageFileType = strtolower(pathinfo($target, PATHINFO_EXTENSION));
 
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
             if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-                $_SESSION['toast'] = "Failed to upload image. Please try again.";
+                $_SESSION['toast'] = "Failed to upload image. Error: " . error_get_last()['message'];
                 header("Location: featured_card.php");
                 exit();
             }
@@ -74,12 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_card'])) {
 
     if (!empty($_FILES['image']['name'])) {
         $image = basename($_FILES['image']['name']);
-        $target = "/opt/bitnami/apache2/htdocs/Kaluppa/Frontend/admin_dashboard/uploads/featured/" . $image;
+        $target = "uploads/featured/" . $image;
         $imageFileType = strtolower(pathinfo($target, PATHINFO_EXTENSION));
 
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
             if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-                $_SESSION['toast'] = "Failed to upload image. Please try again.";
+                $_SESSION['toast'] = "Failed to upload image. Error: " . error_get_last()['message'];
                 header("Location: featured_card.php");
                 exit();
             }
