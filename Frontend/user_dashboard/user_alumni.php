@@ -179,11 +179,11 @@ $alumni_result = $alumni_stmt->get_result();
         </div>
         <!-- Add a new card in the alumni section -->
         <div class="col-md-4">
-            <div class="card text-center">
+            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#inquiryTypeModal">
                 <div class="card-body">
                     <i class="fas fa-info-circle card-icon"></i>
-                    <h5 class="card-title" style="color: white;">New Feature</h5>
-                    <p class="card-text">Description of the new feature or information.</p>
+                    <h5 class="card-title" style="color: white;">Inquiries</h5>
+                    <p class="card-text">Select an inquiry type to start chatting with the admin.</p>
                 </div>
             </div>
         </div>
@@ -250,6 +250,30 @@ $alumni_result = $alumni_stmt->get_result();
                         <button type="submit" class="btn btn-primary">Submit Request</button>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inquiry Type Modal -->
+<div class="modal fade" id="inquiryTypeModal" tabindex="-1" aria-labelledby="inquiryTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inquiryTypeModalLabel">Select Inquiry Type</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <select class="form-select" id="selectedInquiryType" required>
+                    <option value="">Select Type</option>
+                    <option value="general">General</option>
+                    <option value="technical">Technical</option>
+                    <option value="billing">Billing</option>
+                    <option value="feedback">Feedback</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="startChatButton" disabled>Start Chat</button>
             </div>
         </div>
     </div>
@@ -364,15 +388,36 @@ $alumni_result = $alumni_stmt->get_result();
             $('.modal-backdrop').remove();
         });
 
-        // Initially hide the chat form
+        // Enable the 'Start Chat' button when an inquiry type is selected
+        $('#selectedInquiryType').on('change', function() {
+            const inquiryType = $(this).val();
+            $('#startChatButton').prop('disabled', !inquiryType);
+        });
+
+        // Handle 'Start Chat' button click
+        $('#startChatButton').on('click', function() {
+            const inquiryType = $('#selectedInquiryType').val();
+            if (inquiryType) {
+                $('#inquiryTypeModal').modal('hide');
+                $('#chatForm').show();
+                $('#chatMessage').prop('disabled', false);
+                $('#chatForm button[type="submit"]').prop('disabled', false);
+                // Load messages for the selected inquiry type
+                loadMessages(inquiryType);
+            }
+        });
+
+        // Initialize chat form as hidden and disabled
         $('#chatForm').hide();
+        $('#chatMessage').prop('disabled', true);
+        $('#chatForm button[type="submit"]').prop('disabled', true);
 
         // Load chat messages
-        function loadMessages() {
+        function loadMessages(inquiryType) {
             $.ajax({
                 url: '/Kaluppa/Backend/get_chat_messages.php',
                 method: 'GET',
-                data: { user_id: <?php echo $user['id']; ?> },
+                data: { user_id: <?php echo $user['id']; ?>, inquiry_type: inquiryType },
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
