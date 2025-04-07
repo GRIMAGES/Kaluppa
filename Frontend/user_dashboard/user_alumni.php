@@ -139,10 +139,12 @@ $alumni_result = $alumni_stmt->get_result();
         #chatMessages div.user-message {
             background-color: #d1e7dd;
             align-self: flex-end;
+            text-align: right;
         }
         #chatMessages div.admin-message {
             background-color: #f8d7da;
             align-self: flex-start;
+            text-align: left;
         }
     </style>
 </head>
@@ -383,7 +385,10 @@ $alumni_result = $alumni_stmt->get_result();
                         const chatMessages = $('#chatMessages');
                         chatMessages.empty();
                         response.messages.forEach(function(message) {
-                            const messageElement = `<div id="message-${message.id}"><strong>${message.sender}:</strong> ${message.text} <button class="delete-message" data-message-id="${message.id}">Delete</button></div>`;
+                            const isUserMessage = message.sender_id === <?php echo $user['id']; ?>;
+                            const messageClass = isUserMessage ? 'user-message' : 'admin-message';
+                            const deleteButton = isUserMessage ? `<button class="delete-message" data-message-id="${message.id}">Delete</button>` : '';
+                            const messageElement = `<div id="message-${message.id}" class="${messageClass}"><strong>${message.sender}:</strong> ${message.text} ${deleteButton}</div>`;
                             chatMessages.append(messageElement);
                         });
                     } else {
