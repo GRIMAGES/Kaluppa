@@ -9,9 +9,10 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 $message = $_POST['message'] ?? '';
+$inquiryType = $_POST['inquiry_type'] ?? '';
 
-if (empty($message)) {
-    echo json_encode(['success' => false, 'message' => 'Message cannot be empty']);
+if (empty($message) || empty($inquiryType)) {
+    echo json_encode(['success' => false, 'message' => 'Message and inquiry type cannot be empty']);
     exit();
 }
 
@@ -27,9 +28,9 @@ if ($result->num_rows === 0) {
 $user = $result->fetch_assoc();
 $userId = $user['id'];
 
-// Insert chat message
-$insertStmt = $conn->prepare("INSERT INTO chat_messages (user_id, sender, text) VALUES (?, 'Alumni', ?)");
-$insertStmt->bind_param("is", $userId, $message);
+// Insert chat message with inquiry type
+$insertStmt = $conn->prepare("INSERT INTO chat_messages (user_id, sender, text, inquiry_type) VALUES (?, 'Alumni', ?, ?)");
+$insertStmt->bind_param("iss", $userId, $message, $inquiryType);
 if ($insertStmt->execute()) {
     echo json_encode(['success' => true]);
 } else {
