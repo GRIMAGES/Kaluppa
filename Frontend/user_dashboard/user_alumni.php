@@ -428,28 +428,16 @@ $alumni_result = $alumni_stmt->get_result();
             });
         });
 
-        // Handle delete message button click
-        $(document).on('click', '.delete-message', function() {
-            const messageId = $(this).data('message-id');
-            console.log('Attempting to delete message ID:', messageId); // Debugging line
-            $.ajax({
-                url: '/Kaluppa/Backend/delete_chat_message.php',
-                method: 'POST',
-                data: { message_id: messageId },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        // Remove the message from the UI
-                        $(`#message-${messageId}`).remove();
-                    } else {
-                        alert('Failed to delete message: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('An error occurred while deleting the message.');
-                }
-            });
+        // Disable chat form until inquiry type is selected
+        $('#inquiryType').on('change', function() {
+            const inquiryType = $(this).val();
+            $('#chatMessage').prop('disabled', !inquiryType);
+            $('#chatForm button[type="submit"]').prop('disabled', !inquiryType);
         });
+
+        // Initialize chat form as disabled
+        $('#chatMessage').prop('disabled', true);
+        $('#chatForm button[type="submit"]').prop('disabled', true);
 
         // Handle delete conversation button click
         $('#deleteConversation').on('click', function() {
@@ -476,16 +464,28 @@ $alumni_result = $alumni_stmt->get_result();
             }
         });
 
-        // Disable chat form until inquiry type is selected
-        $('#inquiryType').on('change', function() {
-            const inquiryType = $(this).val();
-            $('#chatMessage').prop('disabled', !inquiryType);
-            $('#chatForm button[type="submit"]').prop('disabled', !inquiryType);
+        // Handle delete message button click
+        $(document).on('click', '.delete-message', function() {
+            const messageId = $(this).data('message-id');
+            console.log('Attempting to delete message ID:', messageId); // Debugging line
+            $.ajax({
+                url: '/Kaluppa/Backend/delete_chat_message.php',
+                method: 'POST',
+                data: { message_id: messageId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the message from the UI
+                        $(`#message-${messageId}`).remove();
+                    } else {
+                        alert('Failed to delete message: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while deleting the message.');
+                }
+            });
         });
-
-        // Initialize chat form as disabled
-        $('#chatMessage').prop('disabled', true);
-        $('#chatForm button[type="submit"]').prop('disabled', true);
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
