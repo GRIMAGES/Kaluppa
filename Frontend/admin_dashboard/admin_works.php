@@ -67,7 +67,7 @@ if (isset($_POST['add_work'])) {
         $image = $_FILES['image'];
         $imageName = basename($image['name']);
         $imageTmp = $image['tmp_name'];
-        $uploadPath = 'uploads/' . $imageName;
+        $uploadPath = '../Images/' . $imageName;
 
         $ext = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
@@ -112,7 +112,7 @@ if (isset($_POST['edit_work'])) {
         $image = $_FILES['image'];
         $imageName = basename($image['name']);
         $imageTmp = $image['tmp_name'];
-        $uploadPath = 'uploads/' . $imageName;
+        $uploadPath = '../Images/' . $imageName;
 
         $ext = strtolower(pathinfo($imageName, PATHINFO_EXTENSION));
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
@@ -157,8 +157,8 @@ if (isset($_POST['delete_work'])) {
     $res = $conn->query("SELECT image FROM works WHERE id=$id");
     $row = $res->fetch_assoc();
     $imageName = $row['image'];
-    if (file_exists("uploads/" . $imageName)) {
-        unlink("uploads/" . $imageName);
+    if (file_exists("../Images/" . $imageName)) {
+        unlink("../Images/" . $imageName);
     }
 
     $stmt = $conn->prepare("DELETE FROM works WHERE id=?");
@@ -255,7 +255,7 @@ if (isset($_GET['id'])) {
     <?php while ($row = mysqli_fetch_assoc($works)): ?>
         <div class="col-md-4 mb-4">
             <div class="card">
-                <img src="uploads/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Work Image">
+                <img src="../Images/<?php echo htmlspecialchars($row['image']); ?>" class="card-img-top" alt="Work Image">
                 <div class="card-body">
                     <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                     <p class="card-text"><?php echo htmlspecialchars($row['description']); ?></p>
