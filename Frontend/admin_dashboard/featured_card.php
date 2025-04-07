@@ -43,10 +43,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_card']) && $cardC
 
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
             if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-                echo "Failed to move uploaded file.";
+                $_SESSION['toast'] = "Failed to upload image. Please try again.";
+                header("Location: featured_card.php");
+                exit();
             }
         } else {
-            echo "Invalid image type.";
+            $_SESSION['toast'] = "Invalid image type. Please upload JPG, JPEG, PNG or GIF.";
+            header("Location: featured_card.php");
+            exit();
         }
     }
 
@@ -75,10 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_card'])) {
 
         if (in_array($imageFileType, ['jpg', 'jpeg', 'png', 'gif'])) {
             if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
-                echo "Failed to move uploaded file.";
+                $_SESSION['toast'] = "Failed to upload image. Please try again.";
+                header("Location: featured_card.php");
+                exit();
             }
         } else {
-            echo "Invalid image type.";
+            $_SESSION['toast'] = "Invalid image type. Please upload JPG, JPEG, PNG or GIF.";
+            header("Location: featured_card.php");
+            exit();
         }
     }
 
