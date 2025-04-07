@@ -430,6 +430,7 @@ $alumni_result = $alumni_stmt->get_result();
                         const chatMessages = $('#chatMessages');
                         chatMessages.empty();
                         response.messages.forEach(function(message) {
+                            console.log('Appending message:', message); // Debugging line
                             const messageElement = `<div><strong>${message.sender}:</strong> ${message.text}</div>`;
                             chatMessages.append(messageElement);
                         });
