@@ -402,13 +402,39 @@ $alumni_result = $alumni_stmt->get_result();
             if (inquiryType) {
                 $('#inquiryTypeModal').modal('hide');
                 console.log('Modal should be hidden now.'); // Debugging line
+                $('#inquiriesModal').modal('show'); // Show the chat modal
                 $('#chatForm').show();
                 console.log('Chat form should be visible now.'); // Debugging line
                 $('#chatMessage').prop('disabled', false);
                 $('#chatForm button[type="submit"]').prop('disabled', false);
-                // Load messages for the selected inquiry type
-                loadMessages(inquiryType);
+                // Store the inquiry type for sending messages
+                $('#chatForm').data('inquiryType', inquiryType);
             }
+        });
+
+        // Handle chat form submission
+        $('#chatForm').on('submit', function(e) {
+            e.preventDefault();
+            const message = $('#chatMessage').val();
+            const inquiryType = $(this).data('inquiryType'); // Retrieve the stored inquiry type
+
+            $.ajax({
+                url: '/Kaluppa/Backend/send_chat_message.php',
+                method: 'POST',
+                data: { message: message, inquiry_type: inquiryType },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#chatMessage').val('');
+                        loadMessages(inquiryType); // Load messages for the selected inquiry type
+                    } else {
+                        alert('Failed to send message: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while sending the message.');
+                }
+            });
         });
 
         // Initialize chat form as hidden and disabled
@@ -444,30 +470,6 @@ $alumni_result = $alumni_stmt->get_result();
                 }
             });
         }
-
-        // Handle chat form submission
-        $('#chatForm').on('submit', function(e) {
-            e.preventDefault();
-            const message = $('#chatMessage').val();
-
-            $.ajax({
-                url: '/Kaluppa/Backend/send_chat_message.php',
-                method: 'POST',
-                data: { message: message },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#chatMessage').val('');
-                        loadMessages();
-                    } else {
-                        alert('Failed to send message: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('An error occurred while sending the message.');
-                }
-            });
-        });
 
         // Handle delete conversation button click
         $('#deleteConversation').on('click', function() {
