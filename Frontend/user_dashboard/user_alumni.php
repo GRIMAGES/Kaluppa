@@ -280,6 +280,9 @@ $alumni_result = $alumni_stmt->get_result();
                         <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">Send</button>
                     </form>
                 </div>
+                <div class="d-flex justify-content-end mb-2">
+                    <button id="deleteConversation" class="btn btn-danger">Delete Conversation</button>
+                </div>
             </div>
         </div>
     </div>
@@ -446,6 +449,39 @@ $alumni_result = $alumni_stmt->get_result();
                 }
             });
         });
+
+        // Handle delete conversation button click
+        $('#deleteConversation').on('click', function() {
+            if (confirm('Are you sure you want to delete the entire conversation?')) {
+                $.ajax({
+                    url: '/Kaluppa/Backend/delete_conversation.php',
+                    method: 'POST',
+                    data: { user_id: <?php echo $user['id']; ?>, inquiry_type: $('#inquiryType').val() },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#chatMessages').empty();
+                        } else {
+                            alert('Failed to delete conversation: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred while deleting the conversation.');
+                    }
+                });
+            }
+        });
+
+        // Disable chat form until inquiry type is selected
+        $('#inquiryType').on('change', function() {
+            const inquiryType = $(this).val();
+            $('#chatMessage').prop('disabled', !inquiryType);
+            $('#chatForm button[type="submit"]').prop('disabled', !inquiryType);
+        });
+
+        // Initialize chat form as disabled
+        $('#chatMessage').prop('disabled', true);
+        $('#chatForm button[type="submit"]').prop('disabled', true);
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
