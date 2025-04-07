@@ -71,6 +71,7 @@ while ($row = $chatResult->fetch_assoc()) {
 <?php include 'sidebar.php'; ?>
 <div class="container mt-5">
     <h1>Chat with Alumni</h1>
+    <div id="alert-container"></div>
     <?php if (isset($_GET['error'])): ?>
         <div class="alert alert-danger">
             <?php echo htmlspecialchars($_GET['error']); ?>
@@ -87,12 +88,12 @@ while ($row = $chatResult->fetch_assoc()) {
                 Chat with <?php echo htmlspecialchars($chat['user']); ?>
             </div>
             <div class="card-body">
-                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                <div id="chat-messages-<?php echo $userId; ?>" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                     <?php foreach ($chat['messages'] as $message): ?>
                         <div><strong><?php echo htmlspecialchars($message['sender']); ?>:</strong> <?php echo htmlspecialchars($message['text']); ?></div>
                     <?php endforeach; ?>
                 </div>
-                <form method="POST" action="/Kaluppa/Backend/send_chat_message_admin.php">
+                <form class="chat-form" data-user-id="<?php echo $userId; ?>">
                     <input type="hidden" name="user_id" value="<?php echo $userId; ?>">
                     <div class="mb-3">
                         <textarea class="form-control" name="message" rows="3" placeholder="Type your message..." required></textarea>
@@ -104,5 +105,76 @@ while ($row = $chatResult->fetch_assoc()) {
     <?php endforeach; ?>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const alertContainer = document.getElementById('alert-container');
+    
+    // Function to show alerts
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        alertContainer.appendChild(alertDiv);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            alertDiv.classList.remove('show');
+            setTimeout(() => alertDiv.remove(), 150);
+        }, 5000);
+    }
+    
+    // Handle form submissions
+    document.querySelectorAll('.chat-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userId = this.dataset.userId;
+            const messageInput = this.querySelector('textarea[name="message"]');
+            const message = messageInput.value;
+            
+            if (!message.trim()) return;
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('user_id', userId);
+            formData.append('message', message);
+            
+            // Send AJAX request
+            fetch('/Kaluppa/Backend/send_chat_message_admin.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Add the new message to the chat
+                    const chatMessages = document.getElementById(`chat-messages-${userId}`);
+                    const newMessage = document.createElement('div');
+                    newMessage.innerHTML = `<strong>Admin:</strong> ${message}`;
+                    chatMessages.appendChild(newMessage);
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Clear the input
+                    messageInput.value = '';
+                    
+                    // Show success message
+                    showAlert('Message sent successfully', 'success');
+                } else {
+                    showAlert(data.message || 'Failed to send message', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Failed to send message. Please try again.', 'danger');
+            });
+        });
+    });
+});
+</script>
 </body>
 </html>

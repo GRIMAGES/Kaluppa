@@ -6,7 +6,7 @@ require_once 'connection.php';
 session_start();
 
 if (!isset($_SESSION['email'])) {
-    header("Location: /Frontend/index.php");
+    echo json_encode(['success' => false, 'message' => 'Not logged in']);
     exit();
 }
 
@@ -14,16 +14,17 @@ $userId = $_POST['user_id'] ?? 0;
 $message = $_POST['message'] ?? '';
 
 if (empty($message) || $userId == 0) {
-    header("Location: /Frontend/admin_dashboard/chat_admin.php?error=Invalid input");
+    echo json_encode(['success' => false, 'message' => 'Invalid input']);
     exit();
 }
 
 // Insert chat message
 $insertStmt = $conn->prepare("INSERT INTO chat_messages (user_id, sender, text) VALUES (?, 'Admin', ?)");
 $insertStmt->bind_param("is", $userId, $message);
+
 if ($insertStmt->execute()) {
-    header("Location: /Frontend/admin_dashboard/chat_admin.php?success=Message sent");
+    echo json_encode(['success' => true, 'message' => 'Message sent successfully']);
 } else {
-    header("Location: /Frontend/admin_dashboard/chat_admin.php?error=Failed to send message");
+    echo json_encode(['success' => false, 'message' => 'Failed to send message']);
 }
 ?>
