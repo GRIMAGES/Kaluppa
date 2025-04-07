@@ -198,33 +198,6 @@ foreach ($dates as $date) {
             </div>
         </div>
     </div>
-
-    <div class="col-md-4 mb-4">
-        <div class="card shadow border-0">
-            <div class="card-header text-center" style="background: linear-gradient(135deg,rgba(17, 77, 42, 0.9),rgb(16, 134, 65)); color: white;">
-                <h5 class="mb-0">Upcoming Events</h5>
-            </div>
-            <div class="card-body p-3 bg-light">
-                <ul class="list-group list-group-flush">
-                    <?php
-                    if ($resultEvents->num_rows > 0) {
-                        while ($event = $resultEvents->fetch_assoc()) {
-                            echo "<li class='list-group-item d-flex align-items-center'>
-                                    <i class='fas fa-calendar-alt text-primary me-2'></i>
-                                    <span class='event-title'>" . htmlspecialchars($event['title']) . "</span>
-                                  </li>";
-                        }
-                    } else {
-                        echo "<li class='list-group-item text-muted text-center'>No upcoming events</li>";
-                    }
-                    ?>
-                </ul>
-            </div>
-            <div class="card-footer text-center bg-light">
-                <a href="events.php" class="btn btn-outline-primary btn-sm">View All Events</a>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

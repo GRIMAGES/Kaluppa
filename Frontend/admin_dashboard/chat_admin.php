@@ -278,52 +278,55 @@ document.addEventListener('DOMContentLoaded', function() {
 <style>
 /* Dark theme styles */
 body {
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: #ffffff;
+    color: #333333;
 }
 
 .dark-card {
-    background-color: #1e1e1e;
-    border-color: #333;
+    background-color: #ffffff;
+    border-color: #dddddd;
 }
 
 .dark-card .card-header {
-    border-bottom-color: #333;
+    border-bottom-color: #dddddd;
+    background-color: #f8f9fa;
+    color: #333333;
 }
 
 .dark-list {
-    background-color: #1e1e1e;
+    background-color: #ffffff;
 }
 
 .dark-list .list-group-item {
-    background-color: #1e1e1e;
-    border-color: #333;
-    color: #e0e0e0;
+    background-color: #ffffff;
+    border-color: #dddddd;
+    color: #333333;
 }
 
 .dark-list .list-group-item:hover {
-    background-color: #2a2a2a;
+    background-color: #f8f9fa;
 }
 
 .dark-list .list-group-item.active {
     background-color: #0d6efd;
     border-color: #0d6efd;
+    color: #ffffff;
 }
 
 .dark-input {
-    background-color: #2a2a2a;
-    border-color: #333;
-    color: #e0e0e0;
+    background-color: #ffffff;
+    border-color: #dddddd;
+    color: #333333;
 }
 
 .dark-input:focus {
-    background-color: #2a2a2a;
+    background-color: #ffffff;
     border-color: #0d6efd;
-    color: #e0e0e0;
+    color: #333333;
 }
 
 #chat-container {
-    background-color: #1e1e1e;
+    background-color: #ffffff;
 }
 
 .message {
@@ -355,8 +358,8 @@ body {
 }
 
 .message.received .message-content {
-    background-color: #2a2a2a;
-    color: #e0e0e0;
+    background-color: #f8f9fa;
+    color: #333333;
     float: left;
     clear: both;
 }
