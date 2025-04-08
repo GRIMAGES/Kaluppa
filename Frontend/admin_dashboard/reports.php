@@ -138,6 +138,12 @@ $stmt->close();
                     <option value="scholarship_applications">Scholarship Applications</option>
                     <option value="volunteer_applications">Volunteer Applications</option>
                     <option value="document_requests">Document Requests</option>
+                    <option value="INFO_logs">INFO Logs</option>
+                    <option value="WARNING_logs">WARNING Logs</option>
+                    <option value="ERROR_logs">ERROR Logs</option>
+                    <option value="SECURITY_logs">SECURITY Logs</option>
+                    <option value="DEBUG_logs">DEBUG Logs</option>
+                    <option value="SUBMISSION_logs">SUBMISSION Logs</option>
                 </select>
             </div>
             <div class="mb-3">
@@ -157,26 +163,6 @@ $stmt->close();
             <div class="form-group">
                 <label for="adminEmail" class="form-label">Admin Email</label>
                 <input type="email" class="form-control form-control-sm" id="adminEmail" name="adminEmail" value="<?php echo htmlspecialchars($adminEmail); ?>" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="startDate" class="form-label">Start Date</label>
-                <input type="date" class="form-control form-control-sm" id="startDate" name="start_date">
-            </div>
-            <div class="mb-3">
-                <label for="endDate" class="form-label">End Date</label>
-                <input type="date" class="form-control form-control-sm" id="endDate" name="end_date">
-            </div>
-            <div class="mb-3">
-                <label for="logType" class="form-label">Log Type</label>
-                <select class="form-select form-select-sm" id="logType" name="log_type">
-                    <option value="">All</option>
-                    <option value="INFO">INFO</option>
-                    <option value="WARNING">WARNING</option>
-                    <option value="ERROR">ERROR</option>
-                    <option value="SECURITY">SECURITY</option>
-                    <option value="DEBUG">DEBUG</option>
-                    <option value="SUBMISSION">SUBMISSION</option>
-                </select>
             </div>
             <button type="submit" class="btn btn-primary" onclick="showToast()">Generate Report</button>
         </form>
