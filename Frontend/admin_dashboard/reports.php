@@ -133,6 +133,7 @@ $stmt->close();
                 <select class="form-select form-select-sm" id="reportType" name="report_type">
                     <option value="enrolled_scholars">Enrolled Scholars</option>
                     <option value="accepted_volunteers">Accepted Volunteers</option>
+                    <option value="admin_logs">Admin Logs</option>
                 </select>
             </div>
             <div class="mb-3">

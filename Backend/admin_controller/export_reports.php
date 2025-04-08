@@ -45,7 +45,7 @@ $birthday = new DateTime($adminRow['birthday']);
 $exportPassword = $birthday->format('Ymd');
 
 // Validate report type
-$validReportTypes = ['enrolled_scholars', 'accepted_volunteers'];
+$validReportTypes = ['enrolled_scholars', 'accepted_volunteers', 'admin_logs'];
 if (!in_array($reportType, $validReportTypes)) {
     die("Invalid report type.");
 }
@@ -58,12 +58,20 @@ if ($reportType === 'enrolled_scholars') {
               WHERE a.status = 'enrolled'
               LIMIT 1000"; // Add limit for safety
     $columns = ['ID', 'Last Name', 'Middle Name', 'First Name', 'Course Name'];
-} else {
+} elseif ($reportType === 'accepted_volunteers') {
     $query = "SELECT v.id, v.name, v.email, v.application_date, v.status 
               FROM volunteer_application v 
               WHERE v.status = 'approved'
               LIMIT 1000"; // Add limit for safety
     $columns = ['ID', 'Name', 'Email', 'Application Date', 'Status'];
+} elseif ($reportType === 'admin_logs') {
+    $query = "SELECT logs.id, user.email AS user_email, logs.action, logs.description, logs.ip_address, 
+                     logs.user_agent, logs.timestamp, logs.log_type 
+              FROM logs 
+              LEFT JOIN user ON logs.user_id = user.id 
+              ORDER BY logs.timestamp DESC
+              LIMIT 1000"; // Add limit for safety
+    $columns = ['ID', 'User Email', 'Action', 'Description', 'IP Address', 'User Agent', 'Timestamp', 'Log Type'];
 }
 
 $result = $conn->query($query);
