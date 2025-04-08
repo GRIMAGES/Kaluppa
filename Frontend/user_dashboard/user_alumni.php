@@ -418,12 +418,14 @@ $alumni_result = $alumni_stmt->get_result();
 
         // Function to check for existing conversations
         function checkForExistingConversations() {
+            console.log('Checking for existing conversations...'); // Debugging line
             $.ajax({
                 url: '/Kaluppa/Backend/check_existing_conversations.php',
                 method: 'GET',
                 data: { user_id: <?php echo $user['id']; ?> },
                 dataType: 'json',
                 success: function(response) {
+                    console.log('Check existing conversations response:', response); // Debugging line
                     if (response.success && response.inquiry_type) {
                         console.log('Existing conversation found for Inquiry Type:', response.inquiry_type); // Debugging line
                         $('#inquiriesModal').modal('show'); // Show the chat modal
@@ -432,6 +434,9 @@ $alumni_result = $alumni_stmt->get_result();
                         $('#chatForm button[type="submit"]').prop('disabled', false);
                         $('#chatForm').data('inquiryType', response.inquiry_type);
                         loadMessages(response.inquiry_type);
+                    } else {
+                        console.log('No existing conversation found.'); // Debugging line
+                        $('#inquiryTypeModal').modal('show');
                     }
                 },
                 error: function(xhr, status, error) {
