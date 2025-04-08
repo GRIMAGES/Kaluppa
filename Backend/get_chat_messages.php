@@ -11,6 +11,7 @@ if (!isset($_SESSION['email'])) {
 }
 
 $userId = $_GET['user_id'] ?? 0;
+$inquiryType = $_GET['inquiry_type'] ?? '';
 
 if ($userId == 0) {
     echo json_encode(['success' => false, 'message' => 'Invalid user ID']);
@@ -19,12 +20,19 @@ if ($userId == 0) {
 
 // Fetch chat messages for this user
 $stmt = $conn->prepare("
-    SELECT c.sender, c.text, c.created_at
+    SELECT c.id, c.sender, c.text, c.created_at
     FROM chat_messages c
     WHERE c.user_id = ?
+    " . (!empty($inquiryType) ? "AND c.inquiry_type = ?" : "") . "
     ORDER BY c.created_at ASC
 ");
-$stmt->bind_param("i", $userId);
+
+if (!empty($inquiryType)) {
+    $stmt->bind_param("is", $userId, $inquiryType);
+} else {
+    $stmt->bind_param("i", $userId);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 

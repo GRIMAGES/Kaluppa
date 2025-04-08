@@ -469,15 +469,26 @@ $alumni_result = $alumni_stmt->get_result();
                     if (response.success) {
                         const chatMessages = $('#chatMessages');
                         chatMessages.empty();
-                        response.messages.forEach(function(message) {
-                            console.log('Appending message:', message); // Debugging line
-                            const messageElement = `<div id="message-${message.id}" class="message"><strong>${message.sender}:</strong> ${message.text}</div>`;
-                            // Only add delete button for user's own messages
-                            if (message.sender === 'Alumni') {
-                                messageElement += `<button class="btn btn-danger btn-sm delete-message" data-message-id="${message.id}">Delete</button>`;
-                            }
-                            chatMessages.append(messageElement);
-                        });
+                        
+                        if (response.messages.length === 0) {
+                            chatMessages.append('<div class="text-center text-muted">No messages yet. Start the conversation!</div>');
+                        } else {
+                            response.messages.forEach(function(message) {
+                                console.log('Appending message:', message); // Debugging line
+                                const messageClass = message.sender === 'Alumni' ? 'user-message' : 'admin-message';
+                                const messageElement = `<div id="message-${message.id}" class="message ${messageClass}"><strong>${message.sender}:</strong> ${message.text}</div>`;
+                                
+                                // Only add delete button for user's own messages
+                                if (message.sender === 'Alumni') {
+                                    messageElement += `<button class="btn btn-danger btn-sm delete-message" data-message-id="${message.id}">Delete</button>`;
+                                }
+                                
+                                chatMessages.append(messageElement);
+                            });
+                            
+                            // Scroll to the bottom of the chat
+                            chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                        }
                     } else {
                         alert('Failed to load messages: ' + response.message);
                     }
@@ -524,12 +535,15 @@ $alumni_result = $alumni_stmt->get_result();
                 return;
             }
 
+            console.log('Sending message:', message, 'for inquiry type:', inquiryType); // Debugging line
+
             $.ajax({
                 url: '/Kaluppa/Backend/send_chat_message.php',
                 method: 'POST',
                 data: { message: message, inquiry_type: inquiryType },
                 dataType: 'json',
                 success: function(response) {
+                    console.log('Send message response:', response); // Debugging line
                     if (response.success) {
                         $('#chatMessage').val(''); // Clear the input field
                         loadMessages(inquiryType); // Reload messages to include the new one
@@ -538,6 +552,7 @@ $alumni_result = $alumni_stmt->get_result();
                     }
                 },
                 error: function(xhr, status, error) {
+                    console.error('Error sending message:', error); // Debugging line
                     alert('An error occurred while sending the message.');
                 }
             });
