@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'], $_POST['pass
     // Check if CAPTCHA is required
     if ($_SESSION['failed_attempts'] >= 3) {
         $captcha_response = $_POST['g-recaptcha-response'] ?? '';
-        $captcha_secret = '6LcFFwkrAAAAAF8A7HUSxUEqohFCijLgQPBfDJL7';
+        $captcha_secret = '6LfmsQ0rAAAAALp-niVmlENMaCfNoYwHr-VOOMqk';
         $captcha_verify = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$captcha_secret&response=$captcha_response");
         $captcha_result = json_decode($captcha_verify, true);
 
