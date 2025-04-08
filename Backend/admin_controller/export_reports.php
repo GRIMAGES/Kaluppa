@@ -121,47 +121,72 @@ if ($reportType === 'enrolled_scholars') {
         }
         $pdf->Ln();
     }
+} elseif ($reportType === 'volunteer_applications') {
+    // Fetch total count of volunteer applications
+    $query = "SELECT COUNT(*) AS total_volunteers FROM volunteer_application WHERE status = 'approved'";
+    $result = $conn->query($query);
+    if (!$result) {
+        die("Query error: " . $conn->error);
+    }
+    $row = $result->fetch_assoc();
+    $totalVolunteers = $row['total_volunteers'];
+    
+    // Prepare data for the report
+    $data = [['Total Volunteers', $totalVolunteers]];
+    $columns = ['Metric', 'Value'];
 
-    // Add a simple bar graph
+    // Generate PDF
     $pdf->AddPage();
     $pdf->SetFont('helvetica', 'B', 12);
-    $pdf->Cell(0, 10, 'Graph', 0, 1, 'C');
+    $pdf->Cell(0, 10, 'Volunteer Applications Report', 0, 1, 'C');
     $pdf->SetFont('helvetica', '', 10);
 
-    // Include Chart.js and generate graph
-    $chartScript = "<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>\n";
-    $chartScript .= "<canvas id='chartCanvas' width='400' height='200'></canvas>\n";
-    $chartScript .= "<script>\n";
-    $chartScript .= "var ctx = document.getElementById('chartCanvas').getContext('2d');\n";
-    $chartScript .= "var chart = new Chart(ctx, {\n";
-    $chartScript .= "    type: 'bar',\n";
-    $chartScript .= "    data: {\n";
-    $chartScript .= "        labels: ['Total Applications'],\n";
-    $chartScript .= "        datasets: [{\n";
-    $chartScript .= "            label: 'Applications',\n";
-    $chartScript .= "            data: [$totalApplications],\n";
-    $chartScript .= "            backgroundColor: 'rgba(75, 192, 192, 0.2)',\n";
-    $chartScript .= "            borderColor: 'rgba(75, 192, 192, 1)',\n";
-    $chartScript .= "            borderWidth: 1\n";
-    $chartScript .= "        }]\n";
-    $chartScript .= "    },\n";
-    $chartScript .= "    options: {\n";
-    $chartScript .= "        scales: {\n";
-    $chartScript .= "            y: {\n";
-    $chartScript .= "                beginAtZero: true\n";
-    $chartScript .= "            }\n";
-    $chartScript .= "        }\n";
-    $chartScript .= "    }\n";
-    $chartScript .= "});\n";
-    $chartScript .= "</script>\n";
+    // Add headers
+    foreach ($columns as $col) {
+        $pdf->Cell(95, 10, $col, 1, 0, 'C');
+    }
+    $pdf->Ln();
 
-    $pdf->writeHTML($chartScript, true, false, true, false, '');
-} elseif ($reportType === 'volunteer_applications') {
-    $query = "SELECT period, total FROM volunteer_filtered_data";
-    $columns = ['Period', 'Total Applications'];
+    // Add data
+    foreach ($data as $row) {
+        foreach ($row as $cell) {
+            $pdf->Cell(95, 10, $cell, 1, 0, 'L');
+        }
+        $pdf->Ln();
+    }
 } elseif ($reportType === 'document_requests') {
-    $query = "SELECT month, total FROM document_requests_monthly_data";
-    $columns = ['Month', 'Total Requests'];
+    // Fetch total count of document requests
+    $query = "SELECT COUNT(*) AS total_requests FROM document_requests";
+    $result = $conn->query($query);
+    if (!$result) {
+        die("Query error: " . $conn->error);
+    }
+    $row = $result->fetch_assoc();
+    $totalRequests = $row['total_requests'];
+    
+    // Prepare data for the report
+    $data = [['Total Document Requests', $totalRequests]];
+    $columns = ['Metric', 'Value'];
+
+    // Generate PDF
+    $pdf->AddPage();
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, 'Document Requests Report', 0, 1, 'C');
+    $pdf->SetFont('helvetica', '', 10);
+
+    // Add headers
+    foreach ($columns as $col) {
+        $pdf->Cell(95, 10, $col, 1, 0, 'C');
+    }
+    $pdf->Ln();
+
+    // Add data
+    foreach ($data as $row) {
+        foreach ($row as $cell) {
+            $pdf->Cell(95, 10, $cell, 1, 0, 'L');
+        }
+        $pdf->Ln();
+    }
 }
 
 // Adjust query for log types based on report type
