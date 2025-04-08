@@ -476,7 +476,7 @@ $alumni_result = $alumni_stmt->get_result();
                             response.messages.forEach(function(message) {
                                 console.log('Appending message:', message); // Debugging line
                                 const messageClass = message.sender === 'Alumni' ? 'user-message' : 'admin-message';
-                                const messageElement = `<div id="message-${message.id}" class="message ${messageClass}"><strong>${message.sender}:</strong> ${message.text}</div>`;
+                                let messageElement = `<div id="message-${message.id}" class="message ${messageClass}"><strong>${message.sender}:</strong> ${message.text}</div>`;
                                 
                                 // Only add delete button for user's own messages
                                 if (message.sender === 'Alumni') {
