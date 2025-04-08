@@ -28,6 +28,10 @@ $customFileName = isset($_GET['customTitle']) ? htmlspecialchars($_GET['customTi
 $fileType = isset($_GET['file_type']) ? strtolower($_GET['file_type']) : 'pdf';
 $adminEmail = $_SESSION['email'];
 
+$startDate = isset($_GET['start_date']) ? $_GET['start_date'] : null;
+$endDate = isset($_GET['end_date']) ? $_GET['end_date'] : null;
+$logType = isset($_GET['log_type']) ? $_GET['log_type'] : null;
+
 // Fetch admin details and format birthday properly
 $adminQuery = $conn->prepare("SELECT first_name, middle_name, last_name, birthday FROM user WHERE email = ?");
 $adminQuery->bind_param('s', $adminEmail);
@@ -69,8 +73,17 @@ if ($reportType === 'enrolled_scholars') {
                      logs.user_agent, logs.timestamp, logs.log_type 
               FROM logs 
               LEFT JOIN user ON logs.user_id = user.id 
-              ORDER BY logs.timestamp DESC
-              LIMIT 1000"; // Add limit for safety
+              WHERE 1=1 ";
+    if ($startDate) {
+        $query .= " AND logs.timestamp >= '" . $conn->real_escape_string($startDate) . "'";
+    }
+    if ($endDate) {
+        $query .= " AND logs.timestamp <= '" . $conn->real_escape_string($endDate) . "'";
+    }
+    if ($logType) {
+        $query .= " AND logs.log_type = '" . $conn->real_escape_string($logType) . "'";
+    }
+    $query .= " ORDER BY logs.timestamp DESC LIMIT 1000";
     $columns = ['ID', 'User Email', 'Action', 'Description', 'IP Address', 'User Agent', 'Timestamp', 'Log Type'];
 }
 
@@ -123,6 +136,25 @@ foreach ($data as $row) {
     }
     $pdf->Ln();
 }
+
+// Add export history section
+$pdf->AddPage();
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(0, 10, 'Export History', 0, 1, 'C');
+$pdf->SetFont('helvetica', '', 10);
+$historyQuery = "SELECT * FROM export_logs WHERE admin_email = '" . $conn->real_escape_string($adminEmail) . "' ORDER BY export_date DESC LIMIT 10";
+$historyResult = $conn->query($historyQuery);
+while ($historyRow = $historyResult->fetch_assoc()) {
+    $pdf->Cell(0, 10, implode(' | ', $historyRow), 0, 1);
+}
+
+// Add super admin signature section
+$pdf->AddPage();
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(0, 10, 'Super Admin Signature', 0, 1, 'C');
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(0, 10, '_________________________', 0, 1, 'C');
+$pdf->Cell(0, 10, 'Signature', 0, 1, 'C');
 
 $pdf->Output($tempFilePath, 'F');
 
