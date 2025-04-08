@@ -471,7 +471,7 @@ $alumni_result = $alumni_stmt->get_result();
                         chatMessages.empty();
                         response.messages.forEach(function(message) {
                             console.log('Appending message:', message); // Debugging line
-                            const messageElement = `<div><strong>${message.sender}:</strong> ${message.text}</div>`;
+                            const messageElement = `<div id="message-${message.id}" class="message"><strong>${message.sender}:</strong> ${message.text}</div><button class="btn btn-danger btn-sm delete-message" data-message-id="${message.id}">Delete</button>`;
                             chatMessages.append(messageElement);
                         });
                     } else {
