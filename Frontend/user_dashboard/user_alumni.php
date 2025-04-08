@@ -297,9 +297,6 @@ $alumni_result = $alumni_stmt->get_result();
                         <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">Send</button>
                     </form>
                 </div>
-                <div class="d-flex justify-content-end mb-2">
-                    <button id="deleteConversation" class="btn btn-danger">Delete Conversation</button>
-                </div>
             </div>
         </div>
     </div>
@@ -487,32 +484,6 @@ $alumni_result = $alumni_stmt->get_result();
                 }
             });
         }
-
-        // Handle delete conversation button click
-        $('#deleteConversation').on('click', function() {
-            const userId = <?php echo $user['id']; ?>;
-            if (confirm('Are you sure you want to delete the entire conversation?')) {
-                $.ajax({
-                    url: '/Kaluppa/Backend/delete_conversation.php',
-                    method: 'POST',
-                    data: { user_id: userId },
-                    dataType: 'json',
-                    success: function(response) {
-                        console.log('Delete conversation response:', response); // Debugging line
-                        if (response.success) {
-                            $('#chatMessages').empty();
-                            alert('Conversation deleted successfully.');
-                        } else {
-                            alert('Failed to delete conversation: ' + response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error deleting conversation:', error); // Debugging line
-                        alert('An error occurred while deleting the conversation.');
-                    }
-                });
-            }
-        });
 
         // Handle delete message button click
         $(document).on('click', '.delete-message', function() {
