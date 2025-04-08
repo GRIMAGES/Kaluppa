@@ -511,6 +511,37 @@ $alumni_result = $alumni_stmt->get_result();
                 }
             });
         });
+
+        // Handle chat form submission
+        $('#chatForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const message = $('#chatMessage').val();
+            const inquiryType = $('#chatForm').data('inquiryType');
+
+            if (message.trim() === '') {
+                alert('Message cannot be empty');
+                return;
+            }
+
+            $.ajax({
+                url: '/Kaluppa/Backend/send_chat_message.php',
+                method: 'POST',
+                data: { message: message, inquiry_type: inquiryType },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#chatMessage').val(''); // Clear the input field
+                        loadMessages(inquiryType); // Reload messages to include the new one
+                    } else {
+                        alert('Failed to send message: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while sending the message.');
+                }
+            });
+        });
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
