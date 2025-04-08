@@ -498,13 +498,16 @@ $alumni_result = $alumni_stmt->get_result();
                     data: { user_id: userId },
                     dataType: 'json',
                     success: function(response) {
+                        console.log('Delete conversation response:', response); // Debugging line
                         if (response.success) {
                             $('#chatMessages').empty();
+                            alert('Conversation deleted successfully.');
                         } else {
                             alert('Failed to delete conversation: ' + response.message);
                         }
                     },
                     error: function(xhr, status, error) {
+                        console.error('Error deleting conversation:', error); // Debugging line
                         alert('An error occurred while deleting the conversation.');
                     }
                 });
