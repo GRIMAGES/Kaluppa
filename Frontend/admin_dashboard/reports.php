@@ -134,9 +134,6 @@ $stmt->close();
                     <option value="enrolled_scholars">Enrolled Scholars</option>
                     <option value="accepted_volunteers">Accepted Volunteers</option>
                     <option value="admin_logs">Admin Logs</option>
-                    <option value="scholarship_applications">Scholarship Applications</option>
-                    <option value="volunteer_applications">Volunteer Applications</option>
-                    <option value="document_requests">Document Requests</option>
                     <option value="INFO_logs">INFO Logs</option>
                     <option value="WARNING_logs">WARNING Logs</option>
                     <option value="ERROR_logs">ERROR Logs</option>
