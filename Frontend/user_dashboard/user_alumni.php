@@ -471,7 +471,11 @@ $alumni_result = $alumni_stmt->get_result();
                         chatMessages.empty();
                         response.messages.forEach(function(message) {
                             console.log('Appending message:', message); // Debugging line
-                            const messageElement = `<div id="message-${message.id}" class="message"><strong>${message.sender}:</strong> ${message.text}</div><button class="btn btn-danger btn-sm delete-message" data-message-id="${message.id}">Delete</button>`;
+                            const messageElement = `<div id="message-${message.id}" class="message"><strong>${message.sender}:</strong> ${message.text}</div>`;
+                            // Only add delete button for user's own messages
+                            if (message.sender === 'Alumni') {
+                                messageElement += `<button class="btn btn-danger btn-sm delete-message" data-message-id="${message.id}">Delete</button>`;
+                            }
                             chatMessages.append(messageElement);
                         });
                     } else {
@@ -490,7 +494,7 @@ $alumni_result = $alumni_stmt->get_result();
             const messageId = $(this).data('message-id');
             console.log('Attempting to delete message ID:', messageId); // Debugging line
             $.ajax({
-                url: '/Kaluppa/Backend/delete_chat_message.php',
+                url: '/Kaluppa/Backend/delete_user_message.php',
                 method: 'POST',
                 data: { message_id: messageId },
                 dataType: 'json',
