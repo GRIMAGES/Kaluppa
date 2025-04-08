@@ -403,16 +403,30 @@ $alumni_result = $alumni_stmt->get_result();
             const inquiryType = $('#selectedInquiryType').val();
             console.log('Starting chat with Inquiry Type:', inquiryType); // Debugging line
             if (inquiryType) {
-                $('#inquiryTypeModal').modal('hide');
-                console.log('Modal should be hidden now.'); // Debugging line
-                $('#inquiriesModal').modal('show'); // Show the chat modal
-                $('#chatForm').show();
-                console.log('Chat form should be visible now.'); // Debugging line
-                $('#chatMessage').prop('disabled', false);
-                $('#chatForm button[type="submit"]').prop('disabled', false);
-                // Store the inquiry type for sending messages
-                $('#chatForm').data('inquiryType', inquiryType);
-                loadMessages(inquiryType);
+                $.ajax({
+                    url: '/Kaluppa/Backend/start_conversation.php', // Ensure this is the correct endpoint
+                    method: 'POST',
+                    data: { inquiry_type: inquiryType },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('Start conversation response:', response); // Debugging line
+                        if (response.success) {
+                            $('#inquiryTypeModal').modal('hide');
+                            $('#inquiriesModal').modal('show'); // Show the chat modal
+                            $('#chatForm').show();
+                            $('#chatMessage').prop('disabled', false);
+                            $('#chatForm button[type="submit"]').prop('disabled', false);
+                            $('#chatForm').data('inquiryType', inquiryType);
+                            loadMessages(inquiryType);
+                        } else {
+                            alert('Failed to start conversation: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error starting conversation:', error); // Debugging line
+                        alert('An error occurred while starting the conversation.');
+                    }
+                });
             }
         });
 
