@@ -475,6 +475,7 @@ $alumni_result = $alumni_stmt->get_result();
                         } else {
                             response.messages.forEach(function(message) {
                                 console.log('Appending message:', message); // Debugging line
+                                // Check if the message is from the user (Alumni) or from the admin
                                 const messageClass = message.sender === 'Alumni' ? 'user-message' : 'admin-message';
                                 let messageElement = `<div id="message-${message.id}" class="message ${messageClass}"><strong>${message.sender}:</strong> ${message.text}</div>`;
                                 
