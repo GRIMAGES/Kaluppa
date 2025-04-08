@@ -103,21 +103,38 @@ if ($reportType === 'enrolled_scholars') {
     $columns = ['Metric', 'Value'];
 
     // Generate PDF
+    $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
+    $pdf->SetCreator('Report System');
+    $pdf->SetAuthor($adminEmail);
+    $pdf->SetTitle($customFileName);
+
+    // Use the formatted password for PDF protection
+    $pdf->SetProtection(
+        array('print', 'copy'), 
+        $exportPassword,
+        $exportPassword,
+        3,
+        null
+    );
+
     $pdf->AddPage();
     $pdf->SetFont('helvetica', 'B', 12);
-    $pdf->Cell(0, 10, 'Scholarship Applications Report', 0, 1, 'C');
-    $pdf->SetFont('helvetica', '', 10);
+
+    // Calculate column widths
+    $pageWidth = $pdf->GetPageWidth() - 20; // Leave margins
+    $colWidth = $pageWidth / count($columns);
 
     // Add headers
-    foreach ($columns as $col) {
-        $pdf->Cell(95, 10, $col, 1, 0, 'C');
+    foreach ($columns as $index => $col) {
+        $pdf->Cell($colWidth, 10, $col, 1, 0, 'C');
     }
     $pdf->Ln();
 
     // Add data
+    $pdf->SetFont('helvetica', '', 10);
     foreach ($data as $row) {
         foreach ($row as $cell) {
-            $pdf->Cell(95, 10, $cell, 1, 0, 'L');
+            $pdf->Cell($colWidth, 10, $cell, 1, 0, 'L');
         }
         $pdf->Ln();
     }
@@ -136,21 +153,38 @@ if ($reportType === 'enrolled_scholars') {
     $columns = ['Metric', 'Value'];
 
     // Generate PDF
+    $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
+    $pdf->SetCreator('Report System');
+    $pdf->SetAuthor($adminEmail);
+    $pdf->SetTitle($customFileName);
+
+    // Use the formatted password for PDF protection
+    $pdf->SetProtection(
+        array('print', 'copy'), 
+        $exportPassword,
+        $exportPassword,
+        3,
+        null
+    );
+
     $pdf->AddPage();
     $pdf->SetFont('helvetica', 'B', 12);
-    $pdf->Cell(0, 10, 'Volunteer Applications Report', 0, 1, 'C');
-    $pdf->SetFont('helvetica', '', 10);
+
+    // Calculate column widths
+    $pageWidth = $pdf->GetPageWidth() - 20; // Leave margins
+    $colWidth = $pageWidth / count($columns);
 
     // Add headers
-    foreach ($columns as $col) {
-        $pdf->Cell(95, 10, $col, 1, 0, 'C');
+    foreach ($columns as $index => $col) {
+        $pdf->Cell($colWidth, 10, $col, 1, 0, 'C');
     }
     $pdf->Ln();
 
     // Add data
+    $pdf->SetFont('helvetica', '', 10);
     foreach ($data as $row) {
         foreach ($row as $cell) {
-            $pdf->Cell(95, 10, $cell, 1, 0, 'L');
+            $pdf->Cell($colWidth, 10, $cell, 1, 0, 'L');
         }
         $pdf->Ln();
     }
@@ -169,21 +203,38 @@ if ($reportType === 'enrolled_scholars') {
     $columns = ['Metric', 'Value'];
 
     // Generate PDF
+    $pdf = new \setasign\Fpdi\Tcpdf\Fpdi('L', 'mm', 'A4');
+    $pdf->SetCreator('Report System');
+    $pdf->SetAuthor($adminEmail);
+    $pdf->SetTitle($customFileName);
+
+    // Use the formatted password for PDF protection
+    $pdf->SetProtection(
+        array('print', 'copy'), 
+        $exportPassword,
+        $exportPassword,
+        3,
+        null
+    );
+
     $pdf->AddPage();
     $pdf->SetFont('helvetica', 'B', 12);
-    $pdf->Cell(0, 10, 'Document Requests Report', 0, 1, 'C');
-    $pdf->SetFont('helvetica', '', 10);
+
+    // Calculate column widths
+    $pageWidth = $pdf->GetPageWidth() - 20; // Leave margins
+    $colWidth = $pageWidth / count($columns);
 
     // Add headers
-    foreach ($columns as $col) {
-        $pdf->Cell(95, 10, $col, 1, 0, 'C');
+    foreach ($columns as $index => $col) {
+        $pdf->Cell($colWidth, 10, $col, 1, 0, 'C');
     }
     $pdf->Ln();
 
     // Add data
+    $pdf->SetFont('helvetica', '', 10);
     foreach ($data as $row) {
         foreach ($row as $cell) {
-            $pdf->Cell(95, 10, $cell, 1, 0, 'L');
+            $pdf->Cell($colWidth, 10, $cell, 1, 0, 'L');
         }
         $pdf->Ln();
     }
