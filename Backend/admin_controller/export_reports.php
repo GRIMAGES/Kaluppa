@@ -49,7 +49,7 @@ $birthday = new DateTime($adminRow['birthday']);
 $exportPassword = $birthday->format('Ymd');
 
 // Validate report type
-$validReportTypes = ['enrolled_scholars', 'accepted_volunteers', 'admin_logs'];
+$validReportTypes = ['enrolled_scholars', 'accepted_volunteers', 'admin_logs', 'performance_analytics', 'scholarship_applications', 'volunteer_applications', 'document_requests'];
 if (!in_array($reportType, $validReportTypes)) {
     die("Invalid report type.");
 }
@@ -85,6 +85,18 @@ if ($reportType === 'enrolled_scholars') {
     }
     $query .= " ORDER BY logs.timestamp DESC LIMIT 1000";
     $columns = ['ID', 'User Email', 'Action', 'Description', 'IP Address', 'User Agent', 'Timestamp', 'Log Type'];
+} elseif ($reportType === 'performance_analytics') {
+    $query = "SELECT Metric, Value FROM performance_data";
+    $columns = ['Metric', 'Value'];
+} elseif ($reportType === 'scholarship_applications') {
+    $query = "SELECT period, total FROM scholarship_filtered_data";
+    $columns = ['Period', 'Total Applications'];
+} elseif ($reportType === 'volunteer_applications') {
+    $query = "SELECT period, total FROM volunteer_filtered_data";
+    $columns = ['Period', 'Total Applications'];
+} elseif ($reportType === 'document_requests') {
+    $query = "SELECT month, total FROM document_requests_monthly_data";
+    $columns = ['Month', 'Total Requests'];
 }
 
 $result = $conn->query($query);
@@ -155,6 +167,42 @@ $pdf->Cell(0, 10, 'Super Admin Signature', 0, 1, 'C');
 $pdf->SetFont('helvetica', '', 10);
 $pdf->Cell(0, 10, '_________________________', 0, 1, 'C');
 $pdf->Cell(0, 10, 'Signature', 0, 1, 'C');
+
+// Generate graph using Chart.js
+$pdf->AddPage();
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(0, 10, 'Graph', 0, 1, 'C');
+$pdf->SetFont('helvetica', '', 10);
+
+// Include Chart.js and generate graph
+$chartData = json_encode($data);
+$chartScript = "<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>\n";
+$chartScript .= "<canvas id='chartCanvas' width='400' height='200'></canvas>\n";
+$chartScript .= "<script>\n";
+$chartScript .= "var ctx = document.getElementById('chartCanvas').getContext('2d');\n";
+$chartScript .= "var chart = new Chart(ctx, {\n";
+$chartScript .= "    type: 'bar',\n";
+$chartScript .= "    data: {\n";
+$chartScript .= "        labels: " . json_encode(array_column($data, 0)) . ",\n";
+$chartScript .= "        datasets: [{\n";
+$chartScript .= "            label: 'Data',\n";
+$chartScript .= "            data: " . json_encode(array_column($data, 1)) . ",\n";
+$chartScript .= "            backgroundColor: 'rgba(75, 192, 192, 0.2)',\n";
+$chartScript .= "            borderColor: 'rgba(75, 192, 192, 1)',\n";
+$chartScript .= "            borderWidth: 1\n";
+$chartScript .= "        }]\n";
+$chartScript .= "    },\n";
+$chartScript .= "    options: {\n";
+$chartScript .= "        scales: {\n";
+$chartScript .= "            y: {\n";
+$chartScript .= "                beginAtZero: true\n";
+$chartScript .= "            }\n";
+$chartScript .= "        }\n";
+$chartScript .= "    }\n";
+$chartScript .= "});\n";
+$chartScript .= "</script>\n";
+
+$pdf->writeHTML($chartScript, true, false, true, false, '');
 
 $pdf->Output($tempFilePath, 'F');
 
