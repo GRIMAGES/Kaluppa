@@ -60,6 +60,22 @@ if (isset($_GET['archive_event'])) {
     $stmt->close();
 }
 
+// Restore Event
+if (isset($_GET['restore_event'])) {
+    $eventId = $_GET['restore_event'];
+    $restoreQuery = "UPDATE events SET status = 'active' WHERE id = ?";
+    $stmt = $conn->prepare($restoreQuery);
+    $stmt->bind_param("i", $eventId);
+    if ($stmt->execute()) {
+        $_SESSION['toast_success'] = "Event restored successfully!";
+        header("Location: admin_events.php?filter=archived");
+        exit();
+    } else {
+        echo "<div class='alert alert-danger'>Error restoring event: " . $stmt->error . "</div>";
+    }
+    $stmt->close();
+}
+
 // Fetch data from the events table based on filter
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 $query = "SELECT * FROM events";
@@ -277,8 +293,13 @@ if (isset($_GET['edit_event'])) {
                                 <p class="card-text"><?php echo nl2br(htmlspecialchars($row['description'])); ?></p>
                             </div>
                             <div class="mt-3 d-flex justify-content-between">
+                                <?php if ($filter === 'archived'): ?>
+                                <a href="admin_events.php?restore_event=<?php echo $row['id']; ?>" class="btn btn-success">Restore</a>
+                                <?php endif; ?>
                                 <a href="#" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEventModal<?php echo $row['id']; ?>"><i class="fas fa-edit me-1"></i>Edit</a>
+                                <?php if ($filter !== 'archived'): ?>
                                 <a href="admin_events.php?archive_event=<?php echo $row['id']; ?>" class="btn btn-outline-secondary btn-sm" onclick="return confirm('Are you sure you want to archive this event?');"><i class="fas fa-archive me-1"></i>Archive</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
