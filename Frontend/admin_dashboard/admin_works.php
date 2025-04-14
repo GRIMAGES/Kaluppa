@@ -166,8 +166,30 @@ if (isset($_POST['archive_work'])) {
     exit;
 }
 
-// Fetch works for display (no pre-fetching)
-$works = mysqli_query($conn, "SELECT * FROM works");
+// RESTORE WORK (using POST method)
+if (isset($_POST['restore_work'])) {
+    $id = $_POST['work_id'];
+    $stmt = $conn->prepare("UPDATE works SET status='active' WHERE id=?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        $_SESSION['toast_success'] = "✅ Work restored successfully!";
+    } else {
+        $_SESSION['toast_success'] = "❌ Error restoring the work.";
+    }
+    $stmt->close();
+    header("Location: admin_works.php?filter=archived");
+    exit;
+}
+
+// Fetch data from the works table based on filter
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+$query = "SELECT * FROM works";
+if ($filter === 'all') {
+    $query .= " WHERE status != 'archived'";
+} elseif ($filter === 'archived') {
+    $query .= " WHERE status = 'archived'";
+}
+$works = $conn->query($query);
 
 if (isset($_GET['id'])) {
     $workId = $_GET['id'];
@@ -244,8 +266,8 @@ if (isset($_GET['id'])) {
 </button>
 
 <div class="filter-buttons">
-    <button type="button" class="btn btn-primary" onclick="filterWorks('all')">Show All Courses</button>
-    <button type="button" class="btn btn-secondary" onclick="filterWorks('archived')">Show Archived Courses</button>
+    <button type="button" class="btn btn-primary" onclick="filterWorks('all')">Show Works</button>
+    <button type="button" class="btn btn-secondary" onclick="filterWorks('archived')">Show Archived Works</button>
 </div>
 
 <div class="row">
@@ -268,12 +290,21 @@ if (isset($_GET['id'])) {
                     </button>
 
                     <!-- Archive Button -->
-                    <form method="POST" class="d-inline">
-                        <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
-                        <button type="submit" name="archive_work" class="btn btn-warning archive-btn" onclick="return confirm('Are you sure you want to archive this work?');">
-                            <i class="fas fa-archive"></i> Archive
-                        </button>
-                    </form>
+                    <?php if ($row['status'] != 'archived'): ?>
+                        <form method="POST" class="d-inline">
+                            <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
+                            <button type="submit" name="archive_work" class="btn btn-warning archive-btn" onclick="return confirm('Are you sure you want to archive this work?');">
+                                <i class="fas fa-archive"></i> Archive
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <form method="POST" class="d-inline">
+                            <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
+                            <button type="submit" name="restore_work" class="btn btn-success restore-btn" onclick="return confirm('Are you sure you want to restore this work?');">
+                                <i class="fas fa-undo-alt"></i> Restore
+                            </button>
+                        </form>
+                    <?php endif; ?>
 
                 </div>
             </div>
