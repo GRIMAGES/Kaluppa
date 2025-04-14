@@ -49,20 +49,6 @@ if (isset($_POST['logout'])) {
 // Initialize user name for display
 $name = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest';
 
-
-// Delete Course
-if (isset($_GET['delete_course'])) {
-    $courseId = $_GET['delete_course'];
-    $deleteQuery = "DELETE FROM courses WHERE id = ?";
-    $stmt = $conn->prepare($deleteQuery);
-    $stmt->bind_param("i", $courseId);
-    if ($stmt->execute()) {
-        echo "<script>$('#deleteSuccessModal').modal('show');</script>";
-    } else {
-        echo "<script>$('#deleteErrorModal').modal('show');</script>";
-    }
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addCourse'])) {
     // Get course details from the form
     $name = $_POST['courseName'];
@@ -143,6 +129,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['editCourse'])) {
     }
 }
 
+// Archive Course
+if (isset($_GET['archive_course'])) {
+    $courseId = $_GET['archive_course'];
+    $archiveQuery = "UPDATE courses SET status = 'archived' WHERE id = ?";
+    $stmt = $conn->prepare($archiveQuery);
+    $stmt->bind_param("i", $courseId);
+    if ($stmt->execute()) {
+        echo "<script>$('#archiveSuccessModal').modal('show');</script>";
+    } else {
+        echo "<script>$('#archiveErrorModal').modal('show');</script>";
+    }
+}
+
+// Filter to show only archived courses
+$filter = "";
+if (isset($_GET['filter']) && $_GET['filter'] == 'archived') {
+    $filter = "WHERE status = 'archived'";
+}
+
 // Fetch the count of approved applications for each course
 $approvedApplicationsCountSql = "
     SELECT course_id, COUNT(*) as enrolled_students
@@ -167,9 +172,9 @@ if ($approvedApplicationsCountResult->num_rows > 0) {
     }
 }
 
-
-// Fetch all courses
-$result = $conn->query("SELECT * FROM courses");
+// Fetch courses with optional filter
+$courseQuery = "SELECT * FROM courses $filter";
+$result = $conn->query($courseQuery);
 
 // Fetch courses
 $course_sql = "SELECT * FROM courses";
@@ -272,7 +277,7 @@ if ($scholarship_result->num_rows > 0) {
                         </button>
                     </div>
                     <div class="actions">
-                        <a href="admin_courses.php?delete_course=<?= $course['id'] ?>" class="btn btn-danger btn-icon"><i class="fas fa-trash-alt"></i></a>
+                        <a href="admin_courses.php?archive_course=<?= $course['id'] ?>" class="btn btn-secondary btn-icon"><i class="fas fa-archive"></i></a>
                         <button class="btn btn-warning btn-icon"
                             data-bs-toggle="modal"
                             data-bs-target="#editCourseModal"
@@ -327,6 +332,9 @@ if ($scholarship_result->num_rows > 0) {
         <p class="text-center">No courses available.</p>
     <?php endif; ?>
 </div>
+
+<!-- Filter Button -->
+<a href="admin_courses.php?filter=archived" class="btn btn-info">Show Archived Courses</a>
 
 <!-- Add Course Modal -->
 <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
