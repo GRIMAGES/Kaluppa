@@ -146,6 +146,8 @@ if (isset($_GET['archive_course'])) {
 $filter = "";
 if (isset($_GET['filter']) && $_GET['filter'] == 'archived') {
     $filter = "WHERE status = 'archived'";
+} elseif (isset($_GET['filter']) && $_GET['filter'] == 'all') {
+    $filter = "";
 }
 
 // Fetch the count of approved applications for each course
@@ -230,6 +232,11 @@ if ($scholarship_result->num_rows > 0) {
         <!-- Add New Course Button -->
         <h2>Manage Courses</h2>
         <button class="btn btn-primary mb-4 color-black" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add New Course</button>
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+            <a href="admin_courses.php?filter=all" class="btn btn-info">Show All Courses</a>
+            <a href="admin_courses.php?filter=archived" class="btn btn-info">Show Archived Courses</a>
+        </div>
 
         <!-- Success/Error Message -->
         <?php if (isset($_SESSION['success_message'])) {echo '<div class="alert alert-success alert-dismissible fade show" role="alert">' . $_SESSION['success_message'] . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';unset($_SESSION['success_message']);} ?>
@@ -332,9 +339,6 @@ if ($scholarship_result->num_rows > 0) {
         <p class="text-center">No courses available.</p>
     <?php endif; ?>
 </div>
-
-<!-- Filter Button -->
-<a href="admin_courses.php?filter=archived" class="btn btn-info">Show Archived Courses</a>
 
 <!-- Add Course Modal -->
 <div class="modal fade" id="addCourseModal" tabindex="-1" aria-labelledby="addCourseModalLabel" aria-hidden="true">
