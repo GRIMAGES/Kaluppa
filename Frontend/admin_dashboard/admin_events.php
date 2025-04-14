@@ -60,19 +60,15 @@ if (isset($_GET['archive_event'])) {
     $stmt->close();
 }
 
-// Fetch events with filter
-$statusFilter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
-
-if ($statusFilter === 'all') {
-    $query = "SELECT * FROM events ORDER BY event_time DESC";
-    $result = $conn->query($query);
-} else {
-    $query = "SELECT * FROM events WHERE status = ? ORDER BY event_time DESC";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $statusFilter);
-    $stmt->execute();
-    $result = $stmt->get_result();
+// Fetch data from the events table based on filter
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+$query = "SELECT * FROM events";
+if ($filter === 'all') {
+    $query .= " WHERE status != 'archived'";
+} elseif ($filter === 'archived') {
+    $query .= " WHERE status = 'archived'";
 }
+$result = $conn->query($query);
 
 // Handle form submissions for adding new events
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addEvent'])) {
@@ -259,7 +255,7 @@ if (isset($_GET['edit_event'])) {
         <a href="#" class="btn btn-add-event text-white" data-bs-toggle="modal" data-bs-target="#addEventModal">
             <i class="fas fa-plus-circle me-1"></i> Add Event
         </a>
-        <a href="admin_events.php?filter=all" class="btn btn-secondary">Show All Events</a>
+        <a href="admin_events.php?filter=all" class="btn btn-secondary">Show Events</a>
         <a href="admin_events.php?filter=archived" class="btn btn-secondary">Show Archived Events</a>
     </div>
 </div>
