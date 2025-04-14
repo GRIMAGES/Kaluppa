@@ -33,7 +33,7 @@ if ($result->num_rows > 0) {
 } else {
     echo "User not found.";
 }
-$courseQuery = "SELECT * FROM courses WHERE archived = 0";
+$courseQuery = "SELECT * FROM courses WHERE status != 'archived'";
 $courseResult = mysqli_query($conn, $courseQuery);
 
 if (!$courseResult) {
@@ -225,7 +225,7 @@ $categorizedCourses = categorizeCourses($courseResult);
                 <input type="file" class="form-control" id="documents" name="documents[]" multiple accept=".pdf" required>
               </div>
 
-              <!-- ✅ File preview list -->
+              <!-- File preview list -->
               <div id="file-list" class="mb-3"></div>
 
               <input type="hidden" id="course_id" name="course_id">
