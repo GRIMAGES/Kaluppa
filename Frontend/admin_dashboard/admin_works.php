@@ -149,24 +149,16 @@ if (isset($_POST['edit_work'])) {
     exit;
 }
 
-// DELETE WORK (using POST method)
-if (isset($_POST['delete_work'])) {
+// ARCHIVE WORK (using POST method)
+if (isset($_POST['archive_work'])) {
     $id = $_POST['work_id'];
 
-    // Optional: Get image name first to delete it from folder
-    $res = $conn->query("SELECT image FROM works WHERE id=$id");
-    $row = $res->fetch_assoc();
-    $imageName = $row['image'];
-    if (file_exists("../Images/" . $imageName)) {
-        unlink("../Images/" . $imageName);
-    }
-
-    $stmt = $conn->prepare("DELETE FROM works WHERE id=?");
+    $stmt = $conn->prepare("UPDATE works SET status='archived' WHERE id=?");
     $stmt->bind_param("i", $id);
     if ($stmt->execute()) {
-        $_SESSION['toast_success'] = "✅ Work deleted successfully!";
+        $_SESSION['toast_success'] = "✅ Work archived successfully!";
     } else {
-        $_SESSION['toast_success'] = "❌ Error deleting the work.";
+        $_SESSION['toast_success'] = "❌ Error archiving the work.";
     }
     $stmt->close();
 
@@ -251,6 +243,11 @@ if (isset($_GET['id'])) {
     <i class="fas fa-plus"></i> Add Work
 </button>
 
+<div class="filter-buttons">
+    <button type="button" class="btn btn-primary" onclick="filterWorks('all')">Show All Courses</button>
+    <button type="button" class="btn btn-secondary" onclick="filterWorks('archived')">Show Archived Courses</button>
+</div>
+
 <div class="row">
     <?php while ($row = mysqli_fetch_assoc($works)): ?>
         <div class="col-md-4 mb-4">
@@ -270,14 +267,13 @@ if (isset($_GET['id'])) {
                         <i class="fas fa-edit"></i> Edit
                     </button>
 
-                    <!-- Delete Button -->
-                    <<form method="POST" class="d-inline">
-    <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
-    <button type="submit" name="delete_work" class="btn btn-custom-delete" onclick="return confirm('Are you sure you want to delete this work?');">
-
-        <i class="fas fa-trash-alt"></i> Delete
-    </button>
-</form>
+                    <!-- Archive Button -->
+                    <form method="POST" class="d-inline">
+                        <input type="hidden" name="work_id" value="<?php echo $row['id']; ?>">
+                        <button type="submit" name="archive_work" class="btn btn-warning archive-btn" onclick="return confirm('Are you sure you want to archive this work?');">
+                            <i class="fas fa-archive"></i> Archive
+                        </button>
+                    </form>
 
                 </div>
             </div>
@@ -434,6 +430,13 @@ const editButtons = document.querySelectorAll('[data-bs-target="#editWorkModal"]
             document.getElementById('edit-work_datetime').value = button.getAttribute('data-datetime');
         });
     });
+
+    function filterWorks(filter) {
+        // Implement AJAX call or page reload logic to filter works based on the selected filter
+        console.log('Filter:', filter);
+        // Example: Reload page with query parameter
+        window.location.href = `admin_works.php?filter=${filter}`;
+    }
 
     function showToast(message) {
     const toastEl = document.getElementById('toastNotification');
