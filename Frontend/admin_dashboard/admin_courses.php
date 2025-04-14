@@ -142,41 +142,15 @@ if (isset($_GET['archive_course'])) {
     }
 }
 
-// Filter to show only archived courses
-$filter = "";
-if (isset($_GET['filter']) && $_GET['filter'] == 'archived') {
-    $filter = "WHERE status = 'archived'";
-} elseif (isset($_GET['filter']) && $_GET['filter'] == 'all') {
-    $filter = "";
+// Fetch data from the courses table based on filter
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+$query = "SELECT * FROM courses";
+if ($filter === 'all') {
+    $query .= " WHERE status != 'archived'";
+} elseif ($filter === 'archived') {
+    $query .= " WHERE status = 'archived'";
 }
-
-// Fetch the count of approved applications for each course
-$approvedApplicationsCountSql = "
-    SELECT course_id, COUNT(*) as enrolled_students
-    FROM applications
-    WHERE LOWER(status) = 'enrolled'
-    GROUP BY course_id
-";
-$approvedApplicationsCountResult = $conn->query($approvedApplicationsCountSql);
-
-if ($approvedApplicationsCountResult->num_rows > 0) {
-    while ($row = $approvedApplicationsCountResult->fetch_assoc()) {
-        $course_id = $row['course_id'];
-        $enrolled_students = $row['enrolled_students'];
-
-        // Update the courses table with the count of enrolled students
-        $updateCourseSql = "
-            UPDATE courses
-            SET enrolled_students = $enrolled_students
-            WHERE id = $course_id
-        ";
-        $conn->query($updateCourseSql);
-    }
-}
-
-// Fetch courses with optional filter
-$courseQuery = "SELECT * FROM courses WHERE status != 'archived' $filter";
-$result = $conn->query($courseQuery);
+$result = $conn->query($query);
 
 // Fetch courses
 $course_sql = "SELECT * FROM courses";
