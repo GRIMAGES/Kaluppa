@@ -142,6 +142,19 @@ if (isset($_GET['archive_course'])) {
     }
 }
 
+// Restore Course
+if (isset($_GET['restore_course'])) {
+    $courseId = $_GET['restore_course'];
+    $restoreQuery = "UPDATE courses SET status = 'upcoming' WHERE id = ?";
+    $stmt = $conn->prepare($restoreQuery);
+    $stmt->bind_param("i", $courseId);
+    if ($stmt->execute()) {
+        echo "<script>$('#restoreSuccessModal').modal('show');</script>";
+    } else {
+        echo "<script>$('#restoreErrorModal').modal('show');</script>";
+    }
+}
+
 // Fetch data from the courses table based on filter
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
 $query = "SELECT * FROM courses";
@@ -255,7 +268,11 @@ if ($scholarship_result->num_rows > 0) {
                         </button>
                     </div>
                     <div class="actions">
-                        <a href="admin_courses.php?archive_course=<?= $course['id'] ?>" class="btn btn-secondary btn-icon" style="background-color: #6c757d; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;"><i class="fas fa-archive"></i></a>
+                        <?php if ($filter === 'archived') { ?>
+                            <a href="admin_courses.php?restore_course=<?= $course['id'] ?>" class="btn btn-success">Restore</a>
+                        <?php } else { ?>
+                            <a href="admin_courses.php?archive_course=<?= $course['id'] ?>" class="btn btn-secondary btn-icon" style="background-color: #6c757d; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;"><i class="fas fa-archive"></i></a>
+                        <?php } ?>
                         <button class="btn btn-warning btn-icon" style="background-color: #ffc107; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;"
                             data-bs-toggle="modal"
                             data-bs-target="#editCourseModal"
