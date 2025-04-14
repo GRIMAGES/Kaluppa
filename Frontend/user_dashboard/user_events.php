@@ -61,8 +61,8 @@ if ($result->num_rows > 0) {
 <div class="main-content">
     <div class="event-container" style="margin-right: 350px;"> <!-- Inline CSS to shift cards left -->
         <?php
-        // Query to fetch events from the database
-        $query = "SELECT * FROM events ORDER BY event_time ASC";
+        // Query to fetch non-archived events from the database
+        $query = "SELECT * FROM events WHERE status != 'archived' ORDER BY event_time ASC";
         $result = mysqli_query($conn, $query);
 
         if (mysqli_num_rows($result) > 0) {
