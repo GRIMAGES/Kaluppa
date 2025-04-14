@@ -42,8 +42,28 @@ if (isset($_POST['logout'])) {
 }
 
 // Fetch events from the database
-$query = "SELECT * FROM events ORDER BY event_time DESC";
-$result = $conn->query($query);
+if (isset($_GET['archive_event'])) {
+    $eventId = $_GET['archive_event'];
+    $archiveQuery = "UPDATE events SET status = 'archived' WHERE id = ?";
+    $stmt = $conn->prepare($archiveQuery);
+    $stmt->bind_param("i", $eventId);
+    if ($stmt->execute()) {
+        $_SESSION['toast_success'] = "Event archived successfully!";
+        header("Location: admin_events.php");
+        exit();
+    } else {
+        echo "<div class='alert alert-danger'>Error archiving event: " . $stmt->error . "</div>";
+    }
+    $stmt->close();
+}
+
+// Fetch events with filter
+$statusFilter = isset($_GET['filter']) && $_GET['filter'] === 'archived' ? 'archived' : 'active';
+$query = "SELECT * FROM events WHERE status = ? ORDER BY event_time DESC";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $statusFilter);
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Handle form submissions for adding new events
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addEvent'])) {
@@ -60,14 +80,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addEvent'])) {
 
     // Validate and move image file
     if (move_uploaded_file($_FILES["eventImage"]["tmp_name"], $targetFilePath)) {
-        $stmt = $conn->prepare("INSERT INTO events (title, image, event_time, organizer, description) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO events (title, image, event_time, organizer, description, status) VALUES (?, ?, ?, ?, ?, 'active')");
         $stmt->bind_param("sssss", $title, $imageName, $eventTime, $organizer, $description);
         
         if ($stmt->execute()) {
             // Redirect to trigger the modal after event is added
             $_SESSION['toast_success'] = "Event added successfully!";
-header("Location: admin_events.php");
-exit();
+            header("Location: admin_events.php");
+            exit();
 
             ;
         } else {
@@ -117,22 +137,6 @@ if (isset($_GET['edit_event'])) {
             echo "<div class='alert alert-danger'>Error editing event: " . $stmt->error . "</div>";
         }
     }
-}
-
-// Delete Event
-if (isset($_GET['delete_event'])) {
-    $eventId = $_GET['delete_event'];
-    $deleteQuery = "DELETE FROM events WHERE id = ?";
-    $stmt = $conn->prepare($deleteQuery);
-    $stmt->bind_param("i", $eventId);
-    if ($stmt->execute()) {
-        $_SESSION['toast_success'] = "Event deleted successfully!";
-        header("Location: admin_events.php");
-        exit();
-    } else {
-        echo "<div class='alert alert-danger'>Error deleting event: " . $stmt->error . "</div>";
-    }
-    $stmt->close();
 }
 
 ?>
@@ -245,6 +249,15 @@ if (isset($_GET['delete_event'])) {
     <a href="#" class="btn btn-add-event text-white" data-bs-toggle="modal" data-bs-target="#addEventModal">
         <i class="fas fa-plus-circle me-1"></i> Add Event
     </a>
+    <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Filter
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="admin_events.php">All Events</a></li>
+            <li><a class="dropdown-item" href="admin_events.php?filter=archived">Archived Events</a></li>
+        </ul>
+    </div>
 </div>
 
 
@@ -265,7 +278,7 @@ if (isset($_GET['delete_event'])) {
                             </div>
                             <div class="mt-3 d-flex justify-content-between">
                                 <a href="#" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEventModal<?php echo $row['id']; ?>"><i class="fas fa-edit me-1"></i>Edit</a>
-                                <a href="admin_events.php?delete_event=<?php echo $row['id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this event?');"><i class="fas fa-trash-alt me-1"></i>Delete</a>
+                                <a href="admin_events.php?archive_event=<?php echo $row['id']; ?>" class="btn btn-outline-secondary btn-sm" onclick="return confirm('Are you sure you want to archive this event?');"><i class="fas fa-archive me-1"></i>Archive</a>
                             </div>
                         </div>
                     </div>
