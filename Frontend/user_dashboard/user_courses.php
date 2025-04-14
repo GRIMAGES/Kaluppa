@@ -33,7 +33,7 @@ if ($result->num_rows > 0) {
 } else {
     echo "User not found.";
 }
-$courseQuery = "SELECT * FROM courses";
+$courseQuery = "SELECT * FROM courses WHERE archived = 0";
 $courseResult = mysqli_query($conn, $courseQuery);
 
 if (!$courseResult) {
