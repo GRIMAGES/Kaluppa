@@ -231,15 +231,12 @@ if ($scholarship_result->num_rows > 0) {
     <div class="content">
         <!-- Add New Course Button -->
         <h2>Manage Courses</h2>
-        <button class="btn btn-primary mb-4 color-black" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add New Course</button>
+        <button class="btn btn-primary mb-4" style="background-color: #007bff; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add New Course</button>
         <!-- Filter Buttons -->
-        <div class="filter-buttons">
-            <a href="admin_courses.php?filter=all" class="btn btn-info">Show All Courses</a>
-            <a href="admin_courses.php?filter=archived" class="btn btn-info">Show Archived Courses</a>
+        <div class="filter-buttons" style="margin-bottom: 20px;">
+            <a href="admin_courses.php?filter=all" class="btn btn-info" style="background-color: #17a2b8; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;">Show All Courses</a>
+            <a href="admin_courses.php?filter=archived" class="btn btn-info" style="background-color: #17a2b8; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;">Show Archived Courses</a>
         </div>
-
-        <!-- Success/Error Message -->
-        <?php if (isset($_SESSION['success_message'])) {echo '<div class="alert alert-success alert-dismissible fade show" role="alert">' . $_SESSION['success_message'] . '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';unset($_SESSION['success_message']);} ?>
 
 <!-- Course List with Advanced Design -->
 <div class="row">
@@ -284,8 +281,8 @@ if ($scholarship_result->num_rows > 0) {
                         </button>
                     </div>
                     <div class="actions">
-                        <a href="admin_courses.php?archive_course=<?= $course['id'] ?>" class="btn btn-secondary btn-icon"><i class="fas fa-archive"></i></a>
-                        <button class="btn btn-warning btn-icon"
+                        <a href="admin_courses.php?archive_course=<?= $course['id'] ?>" class="btn btn-secondary btn-icon" style="background-color: #6c757d; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;"><i class="fas fa-archive"></i></a>
+                        <button class="btn btn-warning btn-icon" style="background-color: #ffc107; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;"
                             data-bs-toggle="modal"
                             data-bs-target="#editCourseModal"
                             data-id="<?= $course['id'] ?>"
