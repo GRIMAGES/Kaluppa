@@ -259,16 +259,8 @@ if (isset($_GET['edit_event'])) {
         <a href="#" class="btn btn-add-event text-white" data-bs-toggle="modal" data-bs-target="#addEventModal">
             <i class="fas fa-plus-circle me-1"></i> Add Event
         </a>
-        <div class="btn-group">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                Filter
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="admin_events.php?filter=all">All Events</a></li>
-                <li><a class="dropdown-item" href="admin_events.php?filter=active">Active Events</a></li>
-                <li><a class="dropdown-item" href="admin_events.php?filter=archived">Archived Events</a></li>
-            </ul>
-        </div>
+        <a href="admin_events.php?filter=all" class="btn btn-secondary">Show All Events</a>
+        <a href="admin_events.php?filter=archived" class="btn btn-secondary">Show Archived Events</a>
     </div>
 </div>
 
