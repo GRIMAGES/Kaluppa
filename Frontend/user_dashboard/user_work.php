@@ -43,7 +43,7 @@ if ($result->num_rows > 0) {
 }
 
 // Fetch data from the works table
-$query = "SELECT * FROM works";
+$query = "SELECT * FROM works WHERE status != 'archived'";
 $workResult = $conn->query($query);
 
 if (!$workResult) {
