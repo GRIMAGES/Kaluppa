@@ -61,12 +61,18 @@ if (isset($_GET['archive_event'])) {
 }
 
 // Fetch events with filter
-$statusFilter = isset($_GET['filter']) && $_GET['filter'] === 'archived' ? 'archived' : 'active';
-$query = "SELECT * FROM events WHERE status = ? ORDER BY event_time DESC";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("s", $statusFilter);
-$stmt->execute();
-$result = $stmt->get_result();
+$statusFilter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
+
+if ($statusFilter === 'all') {
+    $query = "SELECT * FROM events ORDER BY event_time DESC";
+    $result = $conn->query($query);
+} else {
+    $query = "SELECT * FROM events WHERE status = ? ORDER BY event_time DESC";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $statusFilter);
+    $stmt->execute();
+    $result = $stmt->get_result();
+}
 
 // Handle form submissions for adding new events
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['addEvent'])) {
@@ -249,17 +255,20 @@ if (isset($_GET['edit_event'])) {
 
         <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="text-white">Event Listings</h2>
-    <a href="#" class="btn btn-add-event text-white" data-bs-toggle="modal" data-bs-target="#addEventModal">
-        <i class="fas fa-plus-circle me-1"></i> Add Event
-    </a>
-    <div class="btn-group">
-        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Filter
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="admin_events.php">All Events</a></li>
-            <li><a class="dropdown-item" href="admin_events.php?filter=archived">Archived Events</a></li>
-        </ul>
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="#" class="btn btn-add-event text-white" data-bs-toggle="modal" data-bs-target="#addEventModal">
+            <i class="fas fa-plus-circle me-1"></i> Add Event
+        </a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Filter
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="admin_events.php?filter=all">All Events</a></li>
+                <li><a class="dropdown-item" href="admin_events.php?filter=active">Active Events</a></li>
+                <li><a class="dropdown-item" href="admin_events.php?filter=archived">Archived Events</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 
