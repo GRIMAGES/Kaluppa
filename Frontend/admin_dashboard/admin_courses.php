@@ -175,7 +175,7 @@ if ($approvedApplicationsCountResult->num_rows > 0) {
 }
 
 // Fetch courses with optional filter
-$courseQuery = "SELECT * FROM courses $filter";
+$courseQuery = "SELECT * FROM courses WHERE status != 'archived' $filter";
 $result = $conn->query($courseQuery);
 
 // Fetch courses
@@ -234,7 +234,7 @@ if ($scholarship_result->num_rows > 0) {
         <button class="btn btn-primary mb-4" style="background-color: #007bff; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;" data-bs-toggle="modal" data-bs-target="#addCourseModal">Add New Course</button>
         <!-- Filter Buttons -->
         <div class="filter-buttons" style="margin-bottom: 20px;">
-            <a href="admin_courses.php?filter=all" class="btn btn-info" style="background-color: #17a2b8; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;">Show All Courses</a>
+            <a href="admin_courses.php?filter=all" class="btn btn-info" style="background-color: #17a2b8; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;">Show Courses</a>
             <a href="admin_courses.php?filter=archived" class="btn btn-info" style="background-color: #17a2b8; border: none; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 12px;">Show Archived Courses</a>
         </div>
 
