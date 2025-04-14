@@ -86,6 +86,24 @@ function updateAnnouncement($id, $title, $content, $image, $status) {
 }
 
 /**
+ * Archive an announcement
+ */
+function archiveAnnouncement($id) {
+    global $conn;
+    $sql = "UPDATE announcements SET status='archived' WHERE id=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    
+    if ($stmt->execute()) {
+      $_SESSION['toast'] = "Announcement archived successfully!";
+      echo "<script>window.location.href='admin_announcements.php';</script>";
+      exit;
+    } else {
+        return "Error: " . $stmt->error;
+    }
+}
+
+/**
  * Fetch all announcements
  */
 function getAnnouncements() {
@@ -160,6 +178,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         $message = updateAnnouncement($id, $title, $content, $image, $status);
+    } elseif (isset($_POST['archive_announcement'])) {
+        $id = $_POST['id'];
+        $message = archiveAnnouncement($id);
     } elseif (isset($_POST['delete_announcement'])) {
         $id = $_POST['id'];
         $message = deleteAnnouncement($id);
@@ -229,6 +250,10 @@ $announcements = getAnnouncements();
         <div class="mb-4">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAnnouncementModal">Add Announcement</button>
         </div>
+        <div class="mb-4">
+            <button class="btn btn-secondary" onclick="filterAnnouncements('all')">Show All Announcements</button>
+            <button class="btn btn-secondary" onclick="filterAnnouncements('archived')">Show Archived Announcements</button>
+        </div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
     <?php foreach ($announcements as $announcement): ?>
         <div class="col">
@@ -239,7 +264,7 @@ $announcements = getAnnouncements();
                 <div class="card-body">
                     <h5 class="card-title"><?php echo htmlspecialchars($announcement['title']); ?></h5>
                     <p class="card-text"><?php echo nl2br(htmlspecialchars($announcement['content'])); ?></p>
-                    <span class="badge bg-<?php echo $announcement['status'] === 'published' ? 'success' : 'secondary'; ?>">
+                    <span class="badge bg-<?php echo $announcement['status'] === 'published' ? 'success' : ($announcement['status'] === 'archived' ? 'secondary' : 'warning'); ?>">
                         <?php echo htmlspecialchars($announcement['status']); ?>
                     </span>
                 </div>
@@ -249,11 +274,11 @@ $announcements = getAnnouncements();
         <i class="bi bi-pencil-square me-1"></i> Edit
     </button>
 
-    <!-- Delete Form with Icon Button -->
+    <!-- Archive Form with Icon Button -->
     <form method="POST" style="display:inline;">
         <input type="hidden" name="id" value="<?php echo $announcement['id']; ?>">
-        <button type="submit" name="delete_announcement" class="btn btn-sm btn-outline-danger d-flex align-items-center">
-            <i class="bi bi-trash3 me-1"></i> Delete
+        <button type="submit" name="archive_announcement" class="btn btn-sm btn-outline-warning d-flex align-items-center">
+            <i class="bi bi-archive me-1"></i> Archive
         </button>
     </form>
 </div>
@@ -398,6 +423,17 @@ $announcements = getAnnouncements();
     });
 </script>
 <?php unset($_SESSION['toast']); endif; ?>
+
+<script>
+    function filterAnnouncements(status) {
+        if (status === 'all') {
+            $('.card').show();
+        } else if (status === 'archived') {
+            $('.card').hide();
+            $('.card-footer .badge.bg-secondary').closest('.card').show();
+        }
+    }
+</script>
 
 </body>
 </html>
