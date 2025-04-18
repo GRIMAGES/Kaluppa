@@ -78,21 +78,7 @@ $categorizedCourses = categorizeCourses($courseResult);
     <link rel="stylesheet" href="../CSS/user_css/user_courses.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .spinner {
-            display: none;
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #000;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+    
 </head>
 
 <body style="background: #ddead1;">
@@ -245,7 +231,6 @@ $categorizedCourses = categorizeCourses($courseResult);
               <input type="hidden" id="course_id" name="course_id">
 
               <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
-              <div id="loadingSpinner" style="display:none;">Submitting...</div>
             </form>
           </div>
         </div>
@@ -395,34 +380,25 @@ function getStatusColor(status) {
     }
 }
 
-document.getElementById('applicationForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+document.getElementById('applicationForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // prevent default form submission
 
-    const spinner = document.getElementById('loadingSpinner');
-    const modal = document.getElementById('courseApplicationModal');
+    const formData = new FormData(this);
 
-    spinner.style.display = 'block'; // Show the spinner
-
-    // Example AJAX request
-    fetch(this.action, {
+    fetch('https://www.kaluppa.online/Kaluppa/Backend/user_controller/submit_application.php', {
         method: 'POST',
-        body: new FormData(this)
+        body: formData
     })
-    .then(response => response.json())
+    .then(response => response.text())  // assuming your PHP returns plain success or error text
     .then(data => {
-        spinner.style.display = 'none'; // Hide the spinner
-        if (data.success) {
-            // Close the modal
-            const courseApplicationModal = bootstrap.Modal.getInstance(modal);
-            courseApplicationModal.hide();
+        if (data.includes("success")) {
+            showToast("Application submitted successfully!", "success");
         } else {
-            // Handle submission errors
-            alert('Submission failed');
+            showToast("Error submitting application: " + data, "danger");
         }
     })
     .catch(error => {
-        spinner.style.display = 'none'; // Hide the spinner
-        alert('An error occurred');
+        showToast("Submission failed: " + error.message, "danger");
     });
 });
 
@@ -528,15 +504,6 @@ document.getElementById("courseModal").addEventListener("hidden.bs.modal", funct
       } else {
         fileList.innerHTML = '<small class="text-muted">No file selected</small>';
       }
-    });
-  });
-
-  document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form'); // Ensure this matches your form selector
-    const spinner = document.getElementById('loadingSpinner');
-
-    form.addEventListener('submit', function() {
-        spinner.style.display = 'block'; // Show the spinner
     });
   });
 </script>
