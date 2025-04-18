@@ -89,7 +89,7 @@ $categorizedCourses = categorizeCourses($courseResult);
             color: white;
             padding: 20px;
             border-radius: 5px;
-            z-index: 1000;
+            z-index: 1050; /* Increased to ensure it appears above modals */
         }
     </style>
 </head>
@@ -425,9 +425,13 @@ function hideLoadingIndicator() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('applicationForm'); 
+    var form = document.getElementById('applicationForm'); // Ensure this ID matches your form
     form.addEventListener('submit', function(event) {
         showLoadingIndicator();
+        // Simulate form submission for demonstration purposes
+        setTimeout(function() {
+            hideLoadingIndicator();
+        }, 3000); // Adjust this timeout as needed
     });
 });
 
