@@ -426,16 +426,11 @@ function hideLoadingIndicator() {
 
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById('applicationForm'); // Ensure this ID matches your form
-    var modal = document.getElementById('courseApplicationModal'); // Replace with your modal ID
-
     form.addEventListener('submit', function(event) {
         showLoadingIndicator();
         // Simulate form submission for demonstration purposes
         setTimeout(function() {
             hideLoadingIndicator();
-            if (modal) {
-                modal.style.display = 'none'; // Hide the modal
-            }
         }, 3000); // Adjust this timeout as needed
     });
 });
