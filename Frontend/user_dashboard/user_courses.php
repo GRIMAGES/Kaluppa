@@ -245,7 +245,7 @@ $categorizedCourses = categorizeCourses($courseResult);
               <input type="hidden" id="course_id" name="course_id">
 
               <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
-              <div class="spinner" id="loadingSpinner"></div>
+              <div id="loadingSpinner" style="display:none;">Submitting...</div>
             </form>
           </div>
         </div>
