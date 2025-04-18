@@ -395,25 +395,34 @@ function getStatusColor(status) {
     }
 }
 
-document.getElementById('applicationForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // prevent default form submission
+document.getElementById('applicationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-    const formData = new FormData(this);
+    const spinner = document.getElementById('loadingSpinner');
+    const modal = document.getElementById('courseApplicationModal');
 
-    fetch('https://www.kaluppa.online/Kaluppa/Backend/user_controller/submit_application.php', {
+    spinner.style.display = 'block'; // Show the spinner
+
+    // Example AJAX request
+    fetch(this.action, {
         method: 'POST',
-        body: formData
+        body: new FormData(this)
     })
-    .then(response => response.text())  // assuming your PHP returns plain success or error text
+    .then(response => response.json())
     .then(data => {
-        if (data.includes("success")) {
-            showToast("Application submitted successfully!", "success");
+        spinner.style.display = 'none'; // Hide the spinner
+        if (data.success) {
+            // Close the modal
+            const courseApplicationModal = bootstrap.Modal.getInstance(modal);
+            courseApplicationModal.hide();
         } else {
-            showToast("Error submitting application: " + data, "danger");
+            // Handle submission errors
+            alert('Submission failed');
         }
     })
     .catch(error => {
-        showToast("Submission failed: " + error.message, "danger");
+        spinner.style.display = 'none'; // Hide the spinner
+        alert('An error occurred');
     });
 });
 
