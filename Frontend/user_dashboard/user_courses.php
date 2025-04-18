@@ -78,7 +78,20 @@ $categorizedCourses = categorizeCourses($courseResult);
     <link rel="stylesheet" href="../CSS/user_css/user_courses.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    
+    <style>
+        #loadingIndicator {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 
 <body style="background: #ddead1;">
@@ -300,6 +313,7 @@ $categorizedCourses = categorizeCourses($courseResult);
 
 <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
+<div id="loadingIndicator">Submitting...</div>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
@@ -399,6 +413,21 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
     })
     .catch(error => {
         showToast("Submission failed: " + error.message, "danger");
+    });
+});
+
+function showLoadingIndicator() {
+    document.getElementById('loadingIndicator').style.display = 'block';
+}
+
+function hideLoadingIndicator() {
+    document.getElementById('loadingIndicator').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('applicationForm'); 
+    form.addEventListener('submit', function(event) {
+        showLoadingIndicator();
     });
 });
 
