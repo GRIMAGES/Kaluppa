@@ -112,7 +112,7 @@ if (!$workResult) {
 </div>
 
 <!-- Loading Modal -->
-<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" style="z-index: 1055;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center">
             <div class="modal-body">
