@@ -4,8 +4,8 @@ require_once '../../Backend/log_helper.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Generate a unique ID for the application (shortened to fit column length)
-        $applicationId = 'VOL-' . substr(uniqid(), -8);
+        // Generate a unique ID for the application (11 characters max)
+        $applicationId = 'VOL-' . substr(uniqid(), -7);
 
         // Collect form data
         $workId = $_POST['work_id'];
