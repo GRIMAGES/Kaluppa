@@ -366,11 +366,6 @@ if (!$workResult) {
 </div>
 
 <script>
-    function showWorkDetails(workId) {
-        var workModal = new bootstrap.Modal(document.getElementById('workModal' + workId));
-        workModal.show();
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll('.application-form').forEach(form => {
             form.addEventListener('submit', function (e) {
@@ -388,7 +383,7 @@ if (!$workResult) {
                 })
                 .then(response => response.text())
                 .then(data => {
-                    // Hide loading modal
+                    // Hide loading modal before showing success toast
                     loadingModal.hide();
 
                     // Show success toast
@@ -411,7 +406,7 @@ if (!$workResult) {
                     document.body.style.overflow = '';
                 })
                 .catch(error => {
-                    // Hide loading modal
+                    // Hide loading modal before showing error toast
                     loadingModal.hide();
 
                     // Show error toast
