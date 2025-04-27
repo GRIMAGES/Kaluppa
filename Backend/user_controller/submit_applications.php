@@ -4,6 +4,9 @@ require_once '../../Backend/log_helper.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Generate a unique ID for the application
+        $applicationId = 'VOL-' . uniqid();
+
         // Collect form data
         $workId = $_POST['work_id'];
         $firstName = $_POST['first_name'];
@@ -27,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert into database
-        $stmt = $conn->prepare("INSERT INTO volunteer_application (work_id, first_name, middle_name, last_name, email, phone, barangay, province, municipality, facebook_profile, available_days, hours_per_week, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("issssssssssss", $workId, $firstName, $middleName, $lastName, $email, $phone, $barangay, $province, $municipality, $facebookProfile, $availableDays, $hoursPerWeek, $resumePath);
+        $stmt = $conn->prepare("INSERT INTO volunteer_application (id, work_id, first_name, middle_name, last_name, email, phone, barangay, province, municipality, facebook_profile, available_days, hours_per_week, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sissssssssssss", $applicationId, $workId, $firstName, $middleName, $lastName, $email, $phone, $barangay, $province, $municipality, $facebookProfile, $availableDays, $hoursPerWeek, $resumePath);
 
         if ($stmt->execute()) {
             echo "Application submitted successfully!";
