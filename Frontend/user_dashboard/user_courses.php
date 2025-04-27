@@ -233,9 +233,6 @@ $categorizedCourses = categorizeCourses($courseResult);
               <button type="submit" class="btn btn-success" name="submit_application">
                   Submit Application
               </button>
-              <div id="loadingSpinner" class="spinner-border text-primary mt-3 d-none" role="status">
-                  <span class="visually-hidden">Submitting...</span>
-              </div>
             </form>
           </div>
         </div>
@@ -244,7 +241,19 @@ $categorizedCourses = categorizeCourses($courseResult);
   </div>
 </div>
 
-
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Submitting...</span>
+                </div>
+                <p class="mt-3">Submitting your application. Please wait...</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Success Toast -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -388,9 +397,9 @@ function getStatusColor(status) {
 document.getElementById('applicationForm').addEventListener('submit', function(e) {
     e.preventDefault(); // prevent default form submission
 
-    // Show loading spinner
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    loadingSpinner.classList.remove('d-none');
+    // Show loading modal
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    loadingModal.show();
 
     const formData = new FormData(this);
 
@@ -400,8 +409,8 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
     })
     .then(response => response.text())  // assuming your PHP returns plain success or error text
     .then(data => {
-        // Hide loading spinner
-        loadingSpinner.classList.add('d-none');
+        // Hide loading modal
+        loadingModal.hide();
 
         if (data.includes("success")) {
             showToast("Application submitted successfully!", "success");
@@ -410,8 +419,8 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
         }
     })
     .catch(error => {
-        // Hide loading spinner
-        loadingSpinner.classList.add('d-none');
+        // Hide loading modal
+        loadingModal.hide();
         showToast("Submission failed: " + error.message, "danger");
     });
 });
