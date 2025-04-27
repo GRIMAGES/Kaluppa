@@ -230,7 +230,12 @@ $categorizedCourses = categorizeCourses($courseResult);
 
               <input type="hidden" id="course_id" name="course_id">
 
-              <button type="submit" class="btn btn-success" name="submit_application">Submit Application</button>
+              <button type="submit" class="btn btn-success" name="submit_application">
+                  Submit Application
+              </button>
+              <div id="loadingSpinner" class="spinner-border text-primary mt-3 d-none" role="status">
+                  <span class="visually-hidden">Submitting...</span>
+              </div>
             </form>
           </div>
         </div>
@@ -383,6 +388,10 @@ function getStatusColor(status) {
 document.getElementById('applicationForm').addEventListener('submit', function(e) {
     e.preventDefault(); // prevent default form submission
 
+    // Show loading spinner
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    loadingSpinner.classList.remove('d-none');
+
     const formData = new FormData(this);
 
     fetch('https://www.kaluppa.online/Kaluppa/Backend/user_controller/submit_application.php', {
@@ -391,6 +400,9 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
     })
     .then(response => response.text())  // assuming your PHP returns plain success or error text
     .then(data => {
+        // Hide loading spinner
+        loadingSpinner.classList.add('d-none');
+
         if (data.includes("success")) {
             showToast("Application submitted successfully!", "success");
         } else {
@@ -398,6 +410,8 @@ document.getElementById('applicationForm').addEventListener('submit', function(e
         }
     })
     .catch(error => {
+        // Hide loading spinner
+        loadingSpinner.classList.add('d-none');
         showToast("Submission failed: " + error.message, "danger");
     });
 });
