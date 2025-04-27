@@ -47,7 +47,8 @@ $query = "SELECT * FROM works WHERE status != 'archived'";
 $workResult = $conn->query($query);
 
 if (!$workResult) {
-    die("Query failed: " . $conn->error);
+    error_log("Query failed: " . $conn->error); // Log the error
+    die("An error occurred while fetching works. Please try again later."); // Display a user-friendly message
 }
 ?>
 <!DOCTYPE html>
@@ -113,7 +114,7 @@ if (!$workResult) {
 
 <div class="main-content">
     <div class="work-container">
-        <?php if ($workResult): ?>
+        <?php if ($workResult && $workResult->num_rows > 0): ?>
             <?php while ($work = mysqli_fetch_assoc($workResult)): ?>
                 <div class="work-card">
                     <img src="<?php echo '../Images/' . htmlspecialchars($work['image']); ?>" class="work-image" alt="Work Image">
