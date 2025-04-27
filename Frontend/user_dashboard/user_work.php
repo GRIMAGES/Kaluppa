@@ -392,7 +392,10 @@ if (!$workResult) {
                 })
                 .then(data => {
                     // Hide loading modal
-                    loadingModal.hide();
+                    const loadingModalInstance = bootstrap.Modal.getInstance(document.getElementById('loadingModal'));
+                    if (loadingModalInstance) {
+                        loadingModalInstance.hide();
+                    }
 
                     // Show success toast
                     const toastEl = document.getElementById('ajaxToast');
@@ -413,7 +416,10 @@ if (!$workResult) {
                 })
                 .catch(error => {
                     // Hide loading modal
-                    loadingModal.hide();
+                    const loadingModalInstance = bootstrap.Modal.getInstance(document.getElementById('loadingModal'));
+                    if (loadingModalInstance) {
+                        loadingModalInstance.hide();
+                    }
 
                     // Show error toast
                     const toastEl = document.getElementById('ajaxToast');
