@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("sissssssssssss", $applicationId, $workId, $firstName, $middleName, $lastName, $email, $phone, $barangay, $province, $municipality, $facebookProfile, $availableDays, $hoursPerWeek, $resumePath);
 
         if ($stmt->execute()) {
+            sleep(3); // Simulate a 3-second delay
             echo "Application submitted successfully!";
         } else {
             throw new Exception("Database error: " . $stmt->error);
