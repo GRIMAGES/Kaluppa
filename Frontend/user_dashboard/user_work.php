@@ -112,7 +112,7 @@ if (!$workResult) {
 </div>
 
 <!-- Loading Modal -->
-<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" style="z-index: 1055;">
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" style="z-index: 2000;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center">
             <div class="modal-body">
@@ -375,7 +375,10 @@ if (!$workResult) {
                 e.preventDefault();
 
                 // Show loading modal
-                const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+                const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'), {
+                    backdrop: 'static', // Prevent closing the modal by clicking outside
+                    keyboard: false     // Disable closing the modal with the keyboard
+                });
                 loadingModal.show();
 
                 const formData = new FormData(this);
