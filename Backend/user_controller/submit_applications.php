@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert into database
-        $stmt = $conn->prepare("INSERT INTO volunteer_application (work_id, first_name, middle_name, last_name, email, phone, barangay, province, municipality, facebook_profile, available_days, hours_per_week, resume_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO volunteer_application (work_id, first_name, middle_name, last_name, email, phone, barangay, province, municipality, facebook_profile, available_days, hours_per_week, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("issssssssssss", $workId, $firstName, $middleName, $lastName, $email, $phone, $barangay, $province, $municipality, $facebookProfile, $availableDays, $hoursPerWeek, $resumePath);
 
         if ($stmt->execute()) {
