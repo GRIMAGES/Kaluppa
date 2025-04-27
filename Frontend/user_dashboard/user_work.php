@@ -111,6 +111,20 @@ if (!$workResult) {
     </div>
 </div>
 
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-body">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Submitting...</span>
+                </div>
+                <p class="mt-3">Submitting your application. Please wait...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="main-content">
     <div class="work-container">
         <?php if ($workResult): ?>
@@ -360,6 +374,10 @@ if (!$workResult) {
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
 
+                // Show loading modal
+                const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+                loadingModal.show();
+
                 const formData = new FormData(this);
 
                 fetch('/Kaluppa/Backend/user_controller/submit_applications.php', {
@@ -373,6 +391,9 @@ if (!$workResult) {
                     return response.text();
                 })
                 .then(data => {
+                    // Hide loading modal
+                    loadingModal.hide();
+
                     // Show success toast
                     const toastEl = document.getElementById('ajaxToast');
                     const toastBody = document.getElementById('ajaxToastMessage');
@@ -391,6 +412,9 @@ if (!$workResult) {
                     document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
                 })
                 .catch(error => {
+                    // Hide loading modal
+                    loadingModal.hide();
+
                     // Show error toast
                     const toastEl = document.getElementById('ajaxToast');
                     const toastBody = document.getElementById('ajaxToastMessage');
