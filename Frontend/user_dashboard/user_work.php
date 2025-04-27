@@ -253,7 +253,6 @@ if (!$workResult) {
         <?php endif; ?>
     </div>
 </div>
-
 <!-- Right Sidebar -->
 <div class="right-sidebar">
     <h4>Works Overview</h4>
@@ -367,14 +366,19 @@ if (!$workResult) {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        return response.text().then(text => { throw new Error(text); });
+                    }
+                    return response.text();
+                })
                 .then(data => {
                     // Show success toast
                     const toastEl = document.getElementById('ajaxToast');
                     const toastBody = document.getElementById('ajaxToastMessage');
                     toastEl.classList.remove('bg-danger');
                     toastEl.classList.add('bg-success');
-                    toastBody.textContent = "Application submitted successfully!";
+                    toastBody.textContent = data;
                     const toast = new bootstrap.Toast(toastEl);
                     toast.show();
 
@@ -382,11 +386,6 @@ if (!$workResult) {
                     this.reset();
                     const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
                     modal.hide();
-
-                    // Remove backdrop manually (optional cleanup)
-                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                    document.body.classList.remove('modal-open');
-                    document.body.style.overflow = '';
                 })
                 .catch(error => {
                     // Show error toast
@@ -394,7 +393,7 @@ if (!$workResult) {
                     const toastBody = document.getElementById('ajaxToastMessage');
                     toastEl.classList.remove('bg-success');
                     toastEl.classList.add('bg-danger');
-                    toastBody.textContent = "Failed to submit application. Please try again.";
+                    toastBody.textContent = error.message;
                     const toast = new bootstrap.Toast(toastEl);
                     toast.show();
                 });
