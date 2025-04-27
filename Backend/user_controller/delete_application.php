@@ -36,9 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Determine the table to delete from
     if ($application_type === 'Application') {
-        $query = "DELETE FROM applications WHERE id = ? AND email = ?";
+        $query = "DELETE FROM applications WHERE id = ?";
     } elseif ($application_type === 'Volunteer') {
-        $query = "DELETE FROM volunteer_application WHERE id = ? AND email = ?";
+        $query = "DELETE FROM volunteer_application WHERE id = ?";
     } else {
         die("Invalid application type.");
     }
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$stmt) {
         die("Query preparation failed: " . $conn->error);
     }
-    $stmt->bind_param("is", $application_id, $email);
+    $stmt->bind_param("i", $application_id);
 
     if ($stmt->execute()) {
         // Log the deletion
