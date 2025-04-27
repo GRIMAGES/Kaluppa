@@ -127,6 +127,7 @@ unset($_SESSION['success_message']);
                                     </button>
                                     <form method="POST" action="/Kaluppa/Backend/user_controller/delete_application.php" style="display:inline;">
                                         <input type="hidden" name="application_id" value="<?php echo $application['id']; ?>">
+                                        <input type="hidden" name="application_type" value="<?php echo htmlspecialchars($application['type']); ?>"> <!-- New hidden input -->
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this application?');">Delete</button>
                                     </form>
                                 </td>
