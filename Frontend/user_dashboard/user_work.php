@@ -409,7 +409,9 @@ if (!$workResult) {
                     // Reset form and close modal
                     this.reset();
                     const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
-                    modal.hide();
+                    if (modal) {
+                        modal.hide();
+                    }
 
                     // Remove modal backdrop if it persists
                     document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
