@@ -13,7 +13,13 @@ if (isset($_GET['code'])) {
     $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
 
     if (isset($token['error'])) {
-        echo "Error fetching token: " . $token['error'];
+        echo "Error fetching token: " . htmlspecialchars($token['error']);
+        exit;
+    }
+
+    // Validate the token to ensure it is issued by Google
+    if (!$client->verifyIdToken($token['id_token'])) {
+        echo "Invalid ID token.";
         exit;
     }
 
@@ -23,13 +29,17 @@ if (isset($_GET['code'])) {
     $userInfo = $oauth2->userinfo->get();
 
     // Extract Google user info
-    $email = $userInfo->email;
-    $first_name = $userInfo->givenName;
-    $last_name = $userInfo->familyName;
-    $profile_picture = $userInfo->picture;
+    $email = filter_var($userInfo->email, FILTER_SANITIZE_EMAIL);
+    $first_name = htmlspecialchars($userInfo->givenName);
+    $last_name = htmlspecialchars($userInfo->familyName);
+    $profile_picture = filter_var($userInfo->picture, FILTER_SANITIZE_URL);
 
     // Check if user already exists
     $stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
+    if (!$stmt) {
+        error_log("Database error: " . $conn->error);
+        exit("An error occurred. Please try again later.");
+    }
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -37,6 +47,7 @@ if (isset($_GET['code'])) {
     if ($result->num_rows > 0) {
         // Existing user
         $user = $result->fetch_assoc();
+        session_regenerate_id(true); // Prevent session fixation attacks
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['first_name'] = $user['first_name'];
@@ -57,6 +68,7 @@ if (isset($_GET['code'])) {
 
         $newUserId = $conn->insert_id;
 
+        session_regenerate_id(true); // Prevent session fixation attacks
         $_SESSION['user_id'] = $newUserId;
         $_SESSION['email'] = $email;
         $_SESSION['first_name'] = $first_name;
