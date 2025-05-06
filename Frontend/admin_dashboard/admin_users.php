@@ -280,10 +280,10 @@ if (isset($_POST['logout'])) {
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
-                        // Extract only the last line which contains our success/error message
+                        console.log('Response from server:', response); // Log the full response for debugging
                         const lines = response.split('\n');
                         const lastLine = lines[lines.length - 1].trim();
-                        
+
                         if (lastLine.includes('successfully')) {
                             alert('User added successfully and email sent');
                             location.reload();
@@ -292,6 +292,7 @@ if (isset($_POST['logout'])) {
                         }
                     },
                     error: function(xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText); // Log the full error response
                         alert('Error adding user: ' + error);
                     }
                 });
