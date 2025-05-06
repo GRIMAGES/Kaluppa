@@ -76,6 +76,49 @@ if (isset($_POST['logout'])) {
     </div>
 </div>
 
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel" style="color: green;">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                <p id="successMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel" style="color: red;">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
 <!-- Add User Modal -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -275,25 +318,36 @@ if (isset($_POST['logout'])) {
 
             $('#addUserForm').on('submit', function(e) {
                 e.preventDefault();
+                $('#loadingSpinner').show(); // Show loading spinner
                 $.ajax({
                     url: '/Kaluppa/Backend/add_users.php',
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
+                        $('#loadingSpinner').hide(); // Hide loading spinner
                         console.log('Response from server:', response); // Log the full response for debugging
                         const lines = response.split('\n');
                         const lastLine = lines[lines.length - 1].trim();
 
                         if (lastLine.includes('successfully')) {
-                            alert('User added successfully and email sent');
-                            location.reload();
+                            $('#successMessage').text('User added successfully and email sent.');
+                            $('#successModal').modal('show');
+                            $('#successModal').on('hidden.bs.modal', function() {
+                                location.reload();
+                            });
+                        } else if (lastLine.includes('Duplicate entry')) {
+                            $('#errorMessage').text('Error: Duplicate entry. The email already exists.');
+                            $('#errorModal').modal('show');
                         } else {
-                            alert('Error: ' + lastLine);
+                            $('#errorMessage').text('Error: ' + lastLine);
+                            $('#errorModal').modal('show');
                         }
                     },
                     error: function(xhr, status, error) {
+                        $('#loadingSpinner').hide(); // Hide loading spinner
                         console.error('AJAX Error:', xhr.responseText); // Log the full error response
-                        alert('Error adding user: ' + error);
+                        $('#errorMessage').text('Error adding user: ' + error);
+                        $('#errorModal').modal('show');
                     }
                 });
             });
