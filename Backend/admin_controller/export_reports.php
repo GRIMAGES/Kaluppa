@@ -169,7 +169,7 @@ try {
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
     $mail->Username = 'wgonzales@kaluppa.org';
-    $mail->Password = 'qfsp ihop mdqg ngoy';
+    $mail->Password = 'buhr zocw kmos ttye';
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 

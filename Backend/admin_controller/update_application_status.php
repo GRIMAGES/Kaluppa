@@ -16,7 +16,7 @@ function sendEnrollmentNotification($email, $firstName, $courseName, $courseStar
         $mail->Host = 'smtp.gmail.com'; // Use Gmail's SMTP server
         $mail->SMTPAuth = true;
         $mail->Username = 'wgonzales@kaluppa.org'; // Your Gmail address
-        $mail->Password = 'qfsp ihop mdqg ngoy'; // Your Gmail App Password
+        $mail->Password = 'buhr zocw kmos ttye'; // Your Gmail App Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 

@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['forgot_password'])) {
             $mail->Host       = 'smtp.gmail.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'wgonzales@kaluppa.org';
-            $mail->Password   = 'qfsp ihop mdqg ngoy';
+            $mail->Password   = 'buhr zocw kmos ttye';
             $mail->SMTPSecure = 'tls';
             $mail->Port       = 587;
 
