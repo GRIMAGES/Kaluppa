@@ -1,6 +1,8 @@
 <?php
 require_once '../../Backend/connection.php';
 require_once '../../Backend/log_helper.php';
+require_once '../../Backend/aes_key.php'; // AES_KEY and AES_IV defined here
+require_once '../../Backend/vendor/autoload.php'; // TCPDF autoload
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -21,17 +23,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $availableDays = implode(',', $_POST['available_days'] ?? []);
         $hoursPerWeek = $_POST['hours_per_week'];
 
-        // Handle file upload with AES-256 Encryption and PDF Conversion (copied from submit_application.php, but using uploads directory)
-        $uploadDir = realpath(__DIR__ . '/../../Backend/uploads/');
+        // Handle file upload with PDF conversion and AES encryption
+        $uploadDir = realpath(__DIR__ . '/../../Backend/Documents/Volunteer/');
         if (!is_dir($uploadDir)) {
-            error_log("Upload directory does not exist: $uploadDir");
-            throw new Exception('Upload directory not found.');
+            if (!mkdir($uploadDir, 0777, true)) {
+                throw new Exception('Failed to create upload directory.');
+            }
         }
 
-        $uploadedDocuments = [];
+        $uploadedResume = null;
         if (isset($_FILES['resume']) && $_FILES['resume']['error'] === UPLOAD_ERR_OK) {
-            require_once '../../Backend/aes_key.php'; // AES_KEY and AES_IV defined here
-            require_once '../../vendor/autoload.php'; // TCPDF should be in the Backend vendor folder.
             $name = $_FILES['resume']['name'];
             $tmpFilePath = $_FILES['resume']['tmp_name'];
             $fileExtension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
@@ -61,17 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
 
             if ($encryptedData === false) {
-                error_log("Failed to encrypt file: $name");
                 throw new Exception('Failed to encrypt uploaded resume.');
             }
 
             // Save the encrypted file
             if (file_put_contents($destinationPath, $encryptedData) === false) {
-                error_log("Failed to save encrypted file: $name");
                 throw new Exception('Failed to save encrypted resume.');
             }
 
-            $uploadedDocuments[] = [
+            $uploadedResume = [
                 'file_name' => $safeFileName,
                 'file_path' => $destinationPath
             ];
@@ -79,12 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Resume upload failed.');
         }
 
-        // Serialize the uploaded documents array for storage in DB
-        $documentData = json_encode($uploadedDocuments); // Store as JSON string
+        // Store the resume info as JSON in the database
+        $resumePath = json_encode($uploadedResume);
 
         // Insert into database
         $stmt = $conn->prepare("INSERT INTO volunteer_application (id, work_id, first_name, middle_name, last_name, email, phone, barangay, province, municipality, facebook_profile, available_days, hours_per_week, resume) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sissssssssssss", $applicationId, $workId, $firstName, $middleName, $lastName, $email, $phone, $barangay, $province, $municipality, $facebookProfile, $availableDays, $hoursPerWeek, $documentData);
+        $stmt->bind_param("sissssssssssss", $applicationId, $workId, $firstName, $middleName, $lastName, $email, $phone, $barangay, $province, $municipality, $facebookProfile, $availableDays, $hoursPerWeek, $resumePath);
 
         if ($stmt->execute()) {
             sleep(3); // Simulate a 3-second delay
