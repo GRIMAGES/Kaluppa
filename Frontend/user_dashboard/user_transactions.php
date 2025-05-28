@@ -84,6 +84,27 @@ unset($_SESSION['success_message']);
 <?php include 'sidebar.php'; ?>
 <?php include 'topbar.php'; ?>
 
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-theme text-white">
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Are you sure you want to log out?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="/Kaluppa/Frontend/logout.php" class="btn btn-theme">Logout</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="container mt-5 mb-5">
     <?php if ($success_message): ?>
         <div class="alert alert-success alert-dismissible fade show floating-alert" role="alert">
