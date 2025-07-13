@@ -115,6 +115,24 @@ if ($result->num_rows > 0) {
                                                 <p><?php echo htmlspecialchars($event['description']); ?></p>
                                             </div>
                                         </div>
+
+                                        <!-- Registration Form -->
+                                        <hr>
+                                        <div class="event-registration-section mt-3">
+                                            <h5 class="mb-2">Register for this Event</h5>
+                                            <form action="../../Backend/user_controller/register_event.php" method="POST">
+                                                <input type="hidden" name="event_id" value="<?php echo htmlspecialchars($event['id']); ?>">
+                                                <div class="mb-2">
+                                                    <label for="reg_name_<?php echo $event['id']; ?>" class="form-label">Name</label>
+                                                    <input type="text" class="form-control" id="reg_name_<?php echo $event['id']; ?>" name="name" value="<?php echo htmlspecialchars($fullName); ?>" required>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label for="reg_email_<?php echo $event['id']; ?>" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="reg_email_<?php echo $event['id']; ?>" name="email" value="<?php echo htmlspecialchars($Semail); ?>" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-theme mt-2">Register</button>
+                                            </form>
+                                        </div>
                                     </div>
 
                                     <!-- Right Column: Event Image -->

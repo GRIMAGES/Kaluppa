@@ -36,6 +36,8 @@ while ($row = $result->fetch_assoc()) {
     $notifications[] = $row;
 }
 $stmt->close();
+
+echo '<pre>'; print_r($notifications); echo '</pre>';
 ?>
 <!DOCTYPE html>
 <html lang="en">
