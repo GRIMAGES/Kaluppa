@@ -120,7 +120,7 @@ if ($result->num_rows > 0) {
                                         <hr>
                                         <div class="event-registration-section mt-3">
                                             <h5 class="mb-2">Register for this Event</h5>
-                                            <form action="../../Backend/user_controller/register_event.php" method="POST">
+                                            <form class="event-registration-form" data-event-id="<?php echo $event['id']; ?>">
                                                 <input type="hidden" name="event_id" value="<?php echo htmlspecialchars($event['id']); ?>">
                                                 <div class="mb-2">
                                                     <label for="reg_name_<?php echo $event['id']; ?>" class="form-label">Name</label>
@@ -136,28 +136,6 @@ if ($result->num_rows > 0) {
                                                     <i class="fas fa-check-circle me-2"></i>Register
                                                 </button>
                                             </form>
-                                            <!-- View Registrations Button -->
-                                            <button type="button" class="btn btn-outline-primary btn-sm mt-3" onclick="loadRegistrations(<?php echo $event['id']; ?>)" data-event-id="<?php echo $event['id']; ?>">
-                                                <i class="fas fa-users"></i> View Registrations
-                                            </button>
-                                            <!-- Registrations Table Container -->
-                                            <div id="registrations_table_<?php echo $event['id']; ?>" class="mt-3" style="display:none;">
-                                                <h6>Registrations</h6>
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered table-sm align-middle">
-                                                        <thead class="table-success">
-                                                            <tr>
-                                                                <th>Name</th>
-                                                                <th>Email</th>
-                                                                <th>Registered At</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="registrations_body_<?php echo $event['id']; ?>">
-                                                            <!-- Filled by JS -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -231,6 +209,21 @@ if ($result->num_rows > 0) {
     </div>
 </div>
 
+<!-- Registration Feedback Modal -->
+<div class="modal fade" id="registrationFeedbackModal" tabindex="-1" aria-labelledby="registrationFeedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 16px;">
+            <div class="modal-header" style="background: linear-gradient(to right, #1a4629, #2c6e49); color: white; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title" id="registrationFeedbackModalLabel">Registration Status</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="registrationFeedbackMessage" style="padding: 25px; text-align: center;">
+                <!-- Message will be set by JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function showAnnouncementDetails(announcementId) {
     fetch(`../../Backend/user_controller/fetch_announcement.php?id=${announcementId}`)
@@ -264,31 +257,38 @@ function showAnnouncementDetails(announcementId) {
         });
 }
 
-function loadRegistrations(eventId) {
-    const tableContainer = document.getElementById('registrations_table_' + eventId);
-    const tableBody = document.getElementById('registrations_body_' + eventId);
-    tableBody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
-    tableContainer.style.display = 'block';
-
-    fetch(`../../Backend/user_controller/register_event.php?event_id=${eventId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (Array.isArray(data) && data.length > 0) {
-                tableBody.innerHTML = '';
-                data.forEach(row => {
-                    tableBody.innerHTML += `<tr>
-                        <td>${row.name}</td>
-                        <td>${row.email}</td>
-                        <td>${row.registered_at}</td>
-                    </tr>`;
-                });
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="3">No registrations yet.</td></tr>';
-            }
-        })
-        .catch(() => {
-            tableBody.innerHTML = '<tr><td colspan="3">Failed to load registrations.</td></tr>';
+// Handle registration form submission via AJAX and show feedback modal
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.event-registration-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch('../../Backend/user_controller/register_event.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                let msg = data.message || "Unknown response.";
+                let modalBody = document.getElementById('registrationFeedbackMessage');
+                modalBody.textContent = msg;
+                let feedbackModal = new bootstrap.Modal(document.getElementById('registrationFeedbackModal'));
+                feedbackModal.show();
+            })
+            .catch(() => {
+                let modalBody = document.getElementById('registrationFeedbackMessage');
+                modalBody.textContent = "Registration failed. Please try again.";
+                let feedbackModal = new bootstrap.Modal(document.getElementById('registrationFeedbackModal'));
+                feedbackModal.show();
+            });
         });
+    });
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 }
 </script>
 
