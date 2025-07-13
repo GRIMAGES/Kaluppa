@@ -1,7 +1,7 @@
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-require_once '../../connection.php';
+require_once '../connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $event_id = isset($_POST['event_id']) ? intval($_POST['event_id']) : 0;
