@@ -130,7 +130,11 @@ if ($result->num_rows > 0) {
                                                     <label for="reg_email_<?php echo $event['id']; ?>" class="form-label">Email</label>
                                                     <input type="email" class="form-control" id="reg_email_<?php echo $event['id']; ?>" name="email" value="<?php echo htmlspecialchars($Semail); ?>" required>
                                                 </div>
-                                                <button type="submit" class="btn btn-theme mt-2">Register</button>
+                                                <button type="submit" 
+    class="btn btn-success mt-2 w-100"
+    style="background: linear-gradient(90deg, #1a4629 0%, #2c6e49 100%); border: none; color: #fff; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 12px rgba(44,110,73,0.15); transition: background 0.3s;">
+    <i class="fas fa-check-circle me-2"></i>Register
+</button>
                                             </form>
                                         </div>
                                     </div>
