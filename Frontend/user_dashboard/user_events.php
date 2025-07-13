@@ -131,11 +131,33 @@ if ($result->num_rows > 0) {
                                                     <input type="email" class="form-control" id="reg_email_<?php echo $event['id']; ?>" name="email" value="<?php echo htmlspecialchars($Semail); ?>" required>
                                                 </div>
                                                 <button type="submit" 
-    class="btn btn-success mt-2 w-100"
-    style="background: linear-gradient(90deg, #1a4629 0%, #2c6e49 100%); border: none; color: #fff; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 12px rgba(44,110,73,0.15); transition: background 0.3s;">
-    <i class="fas fa-check-circle me-2"></i>Register
-</button>
+                                                    class="btn btn-success mt-2 w-100"
+                                                    style="background: linear-gradient(90deg, #1a4629 0%, #2c6e49 100%); border: none; color: #fff; font-weight: bold; border-radius: 8px; box-shadow: 0 4px 12px rgba(44,110,73,0.15); transition: background 0.3s;">
+                                                    <i class="fas fa-check-circle me-2"></i>Register
+                                                </button>
                                             </form>
+                                            <!-- View Registrations Button -->
+                                            <button type="button" class="btn btn-outline-primary btn-sm mt-3" onclick="loadRegistrations(<?php echo $event['id']; ?>)" data-event-id="<?php echo $event['id']; ?>">
+                                                <i class="fas fa-users"></i> View Registrations
+                                            </button>
+                                            <!-- Registrations Table Container -->
+                                            <div id="registrations_table_<?php echo $event['id']; ?>" class="mt-3" style="display:none;">
+                                                <h6>Registrations</h6>
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-sm align-middle">
+                                                        <thead class="table-success">
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Email</th>
+                                                                <th>Registered At</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="registrations_body_<?php echo $event['id']; ?>">
+                                                            <!-- Filled by JS -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -239,6 +261,33 @@ function showAnnouncementDetails(announcementId) {
         })
         .catch(error => {
             console.error('Error fetching announcement details:', error);
+        });
+}
+
+function loadRegistrations(eventId) {
+    const tableContainer = document.getElementById('registrations_table_' + eventId);
+    const tableBody = document.getElementById('registrations_body_' + eventId);
+    tableBody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
+    tableContainer.style.display = 'block';
+
+    fetch(`../../Backend/user_controller/register_event.php?event_id=${eventId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                tableBody.innerHTML = '';
+                data.forEach(row => {
+                    tableBody.innerHTML += `<tr>
+                        <td>${row.name}</td>
+                        <td>${row.email}</td>
+                        <td>${row.registered_at}</td>
+                    </tr>`;
+                });
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="3">No registrations yet.</td></tr>';
+            }
+        })
+        .catch(() => {
+            tableBody.innerHTML = '<tr><td colspan="3">Failed to load registrations.</td></tr>';
         });
 }
 </script>
