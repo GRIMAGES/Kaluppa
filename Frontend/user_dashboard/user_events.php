@@ -224,6 +224,20 @@ if ($result->num_rows > 0) {
     </div>
 </div>
 
+<!-- Registration Loading Modal -->
+<div class="modal fade" id="registrationLoadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center" style="background: transparent; border: none; box-shadow: none;">
+            <div class="modal-body">
+                <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Registering...</span>
+                </div>
+                <p class="mt-3 text-white" style="font-weight:bold;">Processing registration...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function showAnnouncementDetails(announcementId) {
     fetch(`../../Backend/user_controller/fetch_announcement.php?id=${announcementId}`)
@@ -257,11 +271,15 @@ function showAnnouncementDetails(announcementId) {
         });
 }
 
-// Handle registration form submission via AJAX and show feedback modal
+// Handle registration form submission via AJAX and show feedback modal with loading spinner
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.event-registration-form').forEach(function(form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+            // Show loading modal
+            var loadingModal = new bootstrap.Modal(document.getElementById('registrationLoadingModal'));
+            loadingModal.show();
+
             const formData = new FormData(form);
             fetch('../../Backend/user_controller/register_event.php', {
                 method: 'POST',
@@ -269,6 +287,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(resp => resp.json())
             .then(data => {
+                loadingModal.hide();
                 let msg = data.message || "Unknown response.";
                 let modalBody = document.getElementById('registrationFeedbackMessage');
                 modalBody.textContent = msg;
@@ -276,6 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 feedbackModal.show();
             })
             .catch(() => {
+                loadingModal.hide();
                 let modalBody = document.getElementById('registrationFeedbackMessage');
                 modalBody.textContent = "Registration failed. Please try again.";
                 let feedbackModal = new bootstrap.Modal(document.getElementById('registrationFeedbackModal'));
@@ -284,12 +304,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
